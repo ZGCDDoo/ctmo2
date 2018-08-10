@@ -32,12 +32,14 @@ class ABC_Model_2D
                                        U_(jj["U"].get<double>()),
                                        delta_(jj["delta"].get<double>()),
                                        beta_(jj["beta"].get<double>()),
-                                       mu_(jj["mu"].get<double>()),
+                                       muVec_(jj["muVec"].get<std::vector<double>>()),
                                        K_(jj["K"].get<double>()),
                                        gamma_(std::acosh(1.0 + U_ * beta_ * TH0::Nc / (2.0 * K_))),
                                        NOrb_(jj["NOrb"].get<size_t>())
         {
                 mpiUt::Print("start abc_model constructor ");
+                assert(NOrb_ == muVec_.size());
+
                 if (mpiUt::Rank() == mpiUt::master)
                 {
 
@@ -118,7 +120,7 @@ class ABC_Model_2D
         virtual ~ABC_Model_2D() = 0;
 
         //Getters
-        double mu() const { return mu_; };
+        double mu() const { return muVec_.at(0); };
         double U() const { return U_; };
         double delta() const { return delta_; };
         double beta() const { return beta_; };
@@ -171,7 +173,7 @@ class ABC_Model_2D
         }
 
         double auxU() const { return U_ / 2.0; };
-        double auxMu() const { return mu_ - U_ / 2.0; };
+        double auxMu() const { return muVec_.at(0) - U_ / 2.0; };
         double auxDO() const { return delta_ * (1.0 + delta_); };
         double K() const { return K_; };
         double gamma() const { return gamma_; };
@@ -190,7 +192,7 @@ class ABC_Model_2D
         const double U_;
         const double delta_;
         const double beta_;
-        double mu_;
+        std::vector<double> muVec_;
         const double K_;
         const double gamma_;
         const size_t NOrb_;

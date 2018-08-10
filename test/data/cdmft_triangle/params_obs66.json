@@ -6,7 +6,9 @@
     "EGreen": 15,
     "SEED": 25105,
     "PROBFLIP": 0.25,
-    "mu": 3.178,
+    "muVec": [
+        3.178
+    ],
     "S": 1.0,
     "THERMALIZATION_TIME": 1.5,
     "MEASUREMENT_TIME": 10,

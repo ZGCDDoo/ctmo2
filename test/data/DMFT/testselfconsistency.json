@@ -13,7 +13,9 @@
     "tPrime": -0.0,
     "tPrimePrime": -0.00,
     "U": 3.0,
-    "mu": 1.5,
+    "muVec": [
+        1.5
+    ],
     "delta": 0.01,
     "n": 0.5,
     "HybFile": "../test/data/hybfm_SIAM_Square",
