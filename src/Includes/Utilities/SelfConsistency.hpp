@@ -206,8 +206,8 @@ class SelfConsistency : public ABC_SelfConsistency
 
             hybNext_ *= (1.0 - weights_);
             hybNext_ += weights_ * hybridization_.data();
-            ioModel_.SaveCube("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), hybSavePrecision);
-            ioModel_.SaveCube("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), hybSavePrecision);
+            ioModel_.SaveCube("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
+            ioModel_.SaveCube("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
             mpiUt::Print("After Selfonsistency DOSC Parallel");
         }
@@ -242,8 +242,8 @@ class SelfConsistency : public ABC_SelfConsistency
 
             hybNext_ *= (1.0 - weights_);
             hybNext_ += weights_ * hybridization_.data();
-            ioModel_.SaveCube("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), hybSavePrecision);
-            ioModel_.SaveCube("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), hybSavePrecision);
+            ioModel_.SaveCube("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
+            ioModel_.SaveCube("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
             std::cout << "After Selfonsistency DOSC serial" << std::endl;
         }

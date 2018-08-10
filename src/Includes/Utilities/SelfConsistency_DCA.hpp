@@ -169,7 +169,7 @@ class SelfConsistency : public ABC_SelfConsistency
                 }
             }
 
-            ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), hybSavePrecision);
+            ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
 
             for (size_t nn = 0; nn < gImpUpNext.n_slices; nn++)
             {
@@ -177,7 +177,7 @@ class SelfConsistency : public ABC_SelfConsistency
                 hybNext_.slice(nn) = -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(Nc, Nc).eye() - model_.tLoc();
             }
 
-            ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), hybSavePrecision);
+            ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
             std::cout << "After Selfonsistency DOSC serial" << std::endl;
         }
@@ -271,8 +271,8 @@ class SelfConsistency : public ABC_SelfConsistency
 
             hybNext_ *= (1.0 - weights_);
             hybNext_ += weights_ * hybridization_.data();
-            ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), hybSavePrecision);
-            ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), hybSavePrecision);
+            ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
+            ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
             mpiUt::Print("After Selfonsistency DOSC Parallel");
         }
