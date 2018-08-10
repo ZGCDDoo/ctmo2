@@ -21,7 +21,8 @@ class GreenBinning
                                                               ioModel_(modelPtr_->ioModel()),
                                                               dataCT_(dataCT),
                                                               NMat_(0.5 * (jj["EGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0)),
-                                                              spin_(spin)
+                                                              spin_(spin),
+                                                              NOrb_(jj["NOrb"].get<size_t>())
     {
 
         const size_t LL = ioModel_.indepSites().size();
@@ -115,7 +116,7 @@ class GreenBinning
                 indep_M_matsubara_sampled(ll) = temp_matsubara;
             }
 
-            const ClusterMatrixCD_t dummy1 = ioModel_.IndepToFull(indep_M_matsubara_sampled);
+            const ClusterMatrixCD_t dummy1 = ioModel_.IndepToFull(indep_M_matsubara_sampled, NOrb_);
             const ClusterMatrixCD_t green0 = green0CubeMatsubara.slice(n);
 
             greenCube.slice(n) = green0 - green0 * dummy1 * green0 / (dataCT_->beta_ * signMeas);
@@ -141,6 +142,7 @@ class GreenBinning
 
     const size_t NMat_;
     const FermionSpin_t spin_;
+    const size_t NOrb_;
 };
 
 } // namespace Obs

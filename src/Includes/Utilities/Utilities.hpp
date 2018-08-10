@@ -29,6 +29,7 @@ using cd_t = std::complex<double>;
 using Sign_t = int;
 using Site_t = size_t;
 using Tau_t = double;
+using Orbital_t = size_t;
 
 enum class AuxSpin_t
 {

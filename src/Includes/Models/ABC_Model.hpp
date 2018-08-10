@@ -34,7 +34,8 @@ class ABC_Model_2D
                                        beta_(jj["beta"].get<double>()),
                                        mu_(jj["mu"].get<double>()),
                                        K_(jj["K"].get<double>()),
-                                       gamma_(std::acosh(1.0 + U_ * beta_ * TH0::Nc / (2.0 * K_)))
+                                       gamma_(std::acosh(1.0 + U_ * beta_ * TH0::Nc / (2.0 * K_))),
+                                       NOrb_(jj["NOrb"].get<size_t>())
         {
                 mpiUt::Print("start abc_model constructor ");
                 if (mpiUt::Rank() == mpiUt::master)
@@ -63,14 +64,14 @@ class ABC_Model_2D
         {
                 std::string hybNameUp = jj["HybFileUp"].get<std::string>();
 #ifdef DCA
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp + ".dat");
+                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp + ".dat", NOrb_);
 #else
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp + ".dat");
+                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp + ".dat", NOrb_);
 #endif
 
 #ifdef AFM
                 std::string hybNameDown = jj["HybFileDown"].get<std::string>();
-                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown + ".dat");
+                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown + ".dat", NOrb_);
 #endif
 
                 const size_t NHyb = hybtmpUp.n_slices;
@@ -104,7 +105,7 @@ class ABC_Model_2D
                 //save green0mat
                 if (mpiUt::Rank() == mpiUt::master)
                 {
-                        ioModel_.SaveCube("giwn", this->greenCluster0MatUp_.data(), this->beta_);
+                        ioModel_.SaveCube("giwn", this->greenCluster0MatUp_.data(), this->beta_, NOrb_);
                 }
 #ifndef AFM
                 this->greenCluster0MatDown_ = greenCluster0MatUp_;
@@ -121,6 +122,7 @@ class ABC_Model_2D
         double U() const { return U_; };
         double delta() const { return delta_; };
         double beta() const { return beta_; };
+        size_t NOrb() const { return NOrb_; };
         ClusterMatrixCD_t tLoc() const { return tLoc_; };
         GreenMat::GreenCluster0Mat const greenCluster0MatUp() { return greenCluster0MatUp_; };
         GreenMat::GreenCluster0Mat const greenCluster0MatDown() { return greenCluster0MatDown_; };
@@ -191,6 +193,7 @@ class ABC_Model_2D
         double mu_;
         const double K_;
         const double gamma_;
+        const size_t NOrb_;
 };
 
 template <typename TIOModel, typename TH0>

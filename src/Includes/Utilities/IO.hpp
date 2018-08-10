@@ -2,7 +2,6 @@
 
 #include "Utilities.hpp"
 #include "MPIUtilities.hpp"
-#include <boost/filesystem.hpp>
 
 namespace IO
 {
@@ -12,12 +11,15 @@ const size_t Nx4 = 4;
 const size_t Nx6 = 6;
 const size_t Nx8 = 8;
 
+using SuperSite_t = std::pair<size_t, size_t>; //site, then orbital number
+
 template <size_t TNX, size_t TNY>
 class Base_IOModel
 {
 
   public:
     const size_t Nc = TNX * TNY;
+    static const size_t INVALID;
 
     Base_IOModel(){};
 
@@ -89,6 +91,17 @@ class Base_IOModel
         return fullSiteToIndepSite_.at(s1 * Nc + s2);
     }
 
+    size_t FindIndepSuperSiteIndex(const SuperSite_t &s1, const SuperSite_t &s2, const size_t &NOrb)
+    {
+
+        const size_t NSitesIndep = fullSiteToIndepSite_.size();
+        // const size_t NOrbIndep = GetNOrbIndep(NOrb);
+
+        const size_t siteIndex = fullSiteToIndepSite_.at(s1.first * Nc + s2.first); //arranged by row major ordering here, one of the only places where this happens
+        const size_t orbitalIndex = GetIndepOrbitalIndex(s1.second, s2.second, NOrb);
+        return (siteIndex + orbitalIndex * NSitesIndep);
+    }
+
     void SetnOfAssociatedSites()
     {
         nOfAssociatedSites_.resize(indepSites_.size());
@@ -100,41 +113,18 @@ class Base_IOModel
             {
                 size_t ll = FindIndepSiteIndex(ii, jj);
                 nOfAssociatedSites_.at(ll) = nOfAssociatedSites_.at(ll) + 1;
+
+                // if (indepSites_.at(ll).first == indepSites_[ll].second)
+                // {
+                //     nOfFillingSites_ += 1;
+                // }
             }
         }
     }
 
-    //Read a green in .arma format.
-    ClusterCubeCD_t ReadGreen(const std::string &filename) const
-    {
-        mpiUt::Print("In IOModel READGREEN ");
-
-        ClusterMatrixCD_t fileMat;
-        ClusterMatrixCD_t tmp(Nc, Nc);
-        fileMat.load(filename);
-        assert(fileMat.n_cols == this->indepSites_.size());
-
-        ClusterCubeCD_t cubetmp(Nc, Nc, fileMat.n_rows);
-
-        for (size_t n = 0; n < cubetmp.n_slices; n++)
-        {
-            for (size_t ii = 0; ii < Nc; ii++)
-            {
-                for (size_t jj = 0; jj < Nc; jj++)
-                {
-                    size_t index = FindIndepSiteIndex(ii, jj);
-                    tmp(ii, jj) = fileMat(n, index);
-                }
-            }
-
-            cubetmp.slice(n) = tmp;
-        }
-
-        return cubetmp;
-    }
-
+#ifdef DCA
     //read a green in .dat format.
-    ClusterCubeCD_t ReadGreenKDat(const std::string &filename) const
+    ClusterCubeCD_t ReadGreenKDat(const std::string &filename, const size_t &NOrb) const
     {
         mpiUt::Print("In IOModel ReadGreenKDat ");
 
@@ -160,28 +150,42 @@ class Base_IOModel
 
         return cubetmp;
     }
+#endif
 
-    //Read a green in .dat format.
-    ClusterCubeCD_t ReadGreenDat(const std::string &filename) const
+    //Read green in .dat format.
+    ClusterCubeCD_t ReadGreenDat(const std::string &filename, const size_t &NOrb)
     {
-        mpiUt::Print("In IOModel ReadGreenDat ");
+        mpiUt::Print("In IOModel ReadGreenNDat ");
+
+        const size_t NN = Nc * NOrb;
+        const size_t NOrbIndep = GetNOrbIndep(NOrb);
+        const size_t NSitesIndep = indepSites_.size();
 
         ClusterMatrix_t fileMat;
-        ClusterMatrixCD_t tmp(Nc, Nc);
+        ClusterMatrixCD_t tmp(NN, NN);
         fileMat.load(filename);
-        assert(fileMat.n_cols == 2 * this->indepSites_.size() + 1);
+
+        assert(fileMat.n_cols == NOrbIndep * 2 * NSitesIndep + 1);
         fileMat.shed_col(0); // we dont want the matsubara frequencies
 
-        ClusterCubeCD_t cubetmp(Nc, Nc, fileMat.n_rows);
+        ClusterCubeCD_t cubetmp(NN, NN, fileMat.n_rows);
 
         for (size_t n = 0; n < cubetmp.n_slices; n++)
         {
-            for (size_t ii = 0; ii < Nc; ii++)
+            for (Orbital_t o1 = 0; o1 < NOrb; o1++)
             {
-                for (size_t jj = 0; jj < Nc; jj++)
+                for (Orbital_t o2 = o1; o2 < NOrb; o2++)
                 {
-                    const size_t index = FindIndepSiteIndex(ii, jj);
-                    tmp(ii, jj) = cd_t(fileMat(n, 2 * index), fileMat(n, 2 * index + 1));
+                    for (size_t ii = 0; ii < Nc; ii++)
+                    {
+                        for (size_t jj = 0; jj < Nc; jj++)
+                        {
+
+                            const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
+                            tmp(ii + o1 * Nc, jj + o2 * Nc) = cd_t(fileMat(n, 2 * indexIndepSuperSite), fileMat(n, 2 * indexIndepSuperSite + 1));
+                            tmp(jj + o2 * Nc, ii + o1 * Nc) = tmp(ii + o1 * Nc, jj + o2 * Nc); //symmetrize
+                        }
+                    }
                 }
             }
 
@@ -191,42 +195,43 @@ class Base_IOModel
         return cubetmp;
     }
 
-    void SaveCube(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &precision = 10, const bool &saveArma = false) const
+    void SaveCube(const std::string &fname, const ClusterCubeCD_t &green, const double &beta,
+                  const size_t &NOrb, const size_t &precision = 10, const bool &saveArma = false)
     {
         const size_t NMat = green.n_slices;
-        ClusterMatrixCD_t greenOut(NMat, this->indepSites_.size());
+        const size_t NOrbIndep = GetNOrbIndep(NOrb);
+        const size_t NSitesIndep = this->indepSites_.size();
+
+        assert(green.n_rows == green.n_cols);
+        std::cout << "green.n_rows , Nc , NOrb = " << green.n_rows << ", " << Nc << ", " << NOrb << std::endl;
+        assert(green.n_rows == Nc * NOrb);
+        ClusterMatrixCD_t greenOut(NMat, NOrbIndep * NSitesIndep);
 
         std::ofstream fout;
-        if (!boost::filesystem::exists("outPutConvention.dat"))
-        {
-            fout.open("outPutConvention.dat", std::ios::out);
-            for (Site_t ii = 0; ii < this->indepSites_.size(); ii++)
-            {
-                const Site_t s1 = this->indepSites_.at(ii).first;
-                const Site_t s2 = this->indepSites_.at(ii).second;
-                const std::string tmpss = "(" + std::to_string(s1) + "; " + std::to_string(s2) + ")";
-                fout << tmpss << std::endl;
-            }
-            fout << std::endl;
-            fout.close();
-        }
-
         fout.open(fname + std::string(".dat"), std::ios::out);
         for (size_t nn = 0; nn < green.n_slices; nn++)
         {
             const double iwn = (2.0 * nn + 1.0) * M_PI / beta;
             fout << iwn << " ";
 
-            for (Site_t ii = 0; ii < this->indepSites_.size(); ii++)
+            for (Orbital_t o1 = 0; o1 < NOrb; o1++)
             {
-                const Site_t s1 = this->indepSites_.at(ii).first;
-                const Site_t s2 = this->indepSites_.at(ii).second;
+                for (Orbital_t o2 = o1; o2 < NOrb; o2++)
+                {
+                    for (Site_t ii = 0; ii < NSitesIndep; ii++)
+                    {
+                        const Site_t r1 = this->indepSites_.at(ii).first;
+                        const Site_t r2 = this->indepSites_.at(ii).second;
 
-                greenOut(nn, ii) = green(s1, s2, nn);
-                fout << std::setprecision(precision) << green(s1, s2, nn).real()
-                     << " "
-                     << std::setprecision(precision) << green(s1, s2, nn).imag()
-                     << " ";
+                        const cd_t value = green(r1 + o1 * Nc, r2 + o2 * Nc, nn);
+                        const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(r1, o1), std::make_pair(r2, o2), NOrb);
+                        greenOut(nn, indexIndepSuperSite) = value;
+                        fout << std::setprecision(precision) << value.real()
+                             << " "
+                             << std::setprecision(precision) << value.imag()
+                             << " ";
+                    }
+                }
             }
             fout << "\n";
         }
@@ -237,10 +242,11 @@ class Base_IOModel
         {
             greenOut.save(fname + std::string(".arma"), arma::arma_ascii);
         }
+        return;
     }
 
 #ifdef DCA
-    void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &precision = 6) const
+    void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb, const size_t &precision = 6) const
     {
 
         std::ofstream fout;
@@ -265,22 +271,56 @@ class Base_IOModel
     }
 
 #endif
-    //return the full matrix for only a vector with elements being the indep sites values.
-    //i.e for one matsubara frequency, return the full matrix associated to the independant
-    //elements of that matrix
+
+    //get the number of indep orbitals
+    static size_t GetNOrbIndep(const size_t &NOrb)
+    {
+        size_t NOrbIndep = 0;
+        for (Orbital_t o1 = 0; o1 < NOrb; o1++)
+        {
+            for (Orbital_t o2 = o1; o2 < NOrb; o2++)
+            {
+                NOrbIndep++;
+            }
+        }
+        return NOrbIndep;
+    };
+
+    static size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NOrb)
+    {
+        size_t indepOrbitalIndex = 0;
+        const std::pair<size_t, size_t> pairTarget = o1 < o2 ? std::make_pair(o1, o2) : std::make_pair(o2, o1);
+
+        for (Orbital_t nu1 = 0; nu1 < NOrb; nu1++)
+        {
+            for (Orbital_t nu2 = nu1; nu2 < NOrb; nu2++)
+            {
+
+                if (pairTarget == std::make_pair(nu1, nu2))
+                {
+                    return indepOrbitalIndex;
+                }
+                indepOrbitalIndex++;
+            }
+        }
+
+        throw std::runtime_error("Miseria, here");
+        return INVALID;
+    }
 
     template <typename T1_t, typename T2_t = ClusterMatrixCD_t>
-    T2_t IndepToFull(const T1_t &indepElements) //in practice will be a Sitevector_t or SitevectorCD_t
+    T2_t IndepToFull(const T1_t &indepElements, const size_t &NOrb) //in practice T1_t will be a Sitevector_t or SitevectorCD_t
     {
-
+        assert(indepElements.n_elem == GetNOrbIndep(NOrb) * indepSites_.size());
         T2_t fullMatrix(Nc, Nc);
+        fullMatrix.zeros();
 
         for (size_t ii = 0; ii < Nc; ii++)
         {
             for (size_t jj = 0; jj < Nc; jj++)
             {
                 size_t index = FindIndepSiteIndex(ii, jj);
-                fullMatrix(ii, jj) = indepElements.at(index);
+                fullMatrix(ii, jj) = indepElements(index);
             }
         }
 
@@ -289,15 +329,15 @@ class Base_IOModel
 
     //from th full cube return the independant in tabular form
     template <typename T1_t>
-    ClusterMatrixCD_t FullCubeToIndep(const T1_t &greenCube) //TT = {ClusterCube_t or clustercubeCD_t}
+    ClusterMatrixCD_t FullCubeToIndep(const T1_t &greenCube) //T1_t = {ClusterCube_t or ClustercubeCD_t}
     {
-
         ClusterMatrixCD_t indepTabular(greenCube.n_slices, indepSites_.size());
+        indepTabular.zeros();
 
         for (size_t i = 0; i < indepSites_.size(); i++)
         {
-            const Site_t s1 = indepSites_.at(i).first;
-            const Site_t s2 = indepSites_.at(i).second;
+            Site_t s1 = indepSites_.at(i).first;
+            Site_t s2 = indepSites_.at(i).second;
             for (size_t n = 0; n < greenCube.n_slices; n++)
             {
                 indepTabular(n, i) = greenCube(s1, s2, n);
@@ -337,7 +377,6 @@ class Base_IOModel
 
     std::pair<size_t, size_t> FindSitesRng(const size_t &s1, const size_t &s2, const double &rngDouble)
     {
-
         const size_t indepSiteIndex = FindIndepSiteIndex(s1, s2);
         const size_t equivalentSize = equivalentSites_.at(indepSiteIndex).size();
         const size_t intRng = rngDouble * equivalentSize;
@@ -345,13 +384,34 @@ class Base_IOModel
     }
 
     //Getters
-    std::vector<std::pair<size_t, size_t>> const indepSites() { return indepSites_; };
-    std::vector<std::vector<std::pair<size_t, size_t>>> const GreenSites() { return GreenSites_; };
-    std::vector<std::vector<std::pair<size_t, size_t>>> const equivalentSites() { return equivalentSites_; };
-    std::vector<size_t> const nOfAssociatedSites() { return nOfAssociatedSites_; };
-    std::vector<size_t> const fillingSites() { return fillingSites_; };
-    std::vector<size_t> const fillingSitesIndex() { return fillingSitesIndex_; };
-    std::vector<size_t> const downEquivalentSites() { return downEquivalentSites_; };
+    std::vector<std::pair<size_t, size_t>> const indepSites()
+    {
+        return indepSites_;
+    };
+    std::vector<std::vector<std::pair<size_t, size_t>>> const GreenSites()
+    {
+        return GreenSites_;
+    };
+    std::vector<std::vector<std::pair<size_t, size_t>>> const equivalentSites()
+    {
+        return equivalentSites_;
+    };
+    std::vector<size_t> const nOfAssociatedSites()
+    {
+        return nOfAssociatedSites_;
+    };
+    std::vector<size_t> const fillingSites()
+    {
+        return fillingSites_;
+    };
+    std::vector<size_t> const fillingSitesIndex()
+    {
+        return fillingSitesIndex_;
+    };
+    std::vector<size_t> const downEquivalentSites()
+    {
+        return downEquivalentSites_;
+    };
 
   protected:
     std::vector<std::pair<size_t, size_t>> indepSites_;
@@ -363,6 +423,9 @@ class Base_IOModel
     std::vector<size_t> fillingSitesIndex_; //the indexes of the fillingsites in the indepSites_
     std::vector<size_t> downEquivalentSites_;
 };
+
+template <size_t TNX, size_t TNY>
+const size_t Base_IOModel<TNX, TNY>::INVALID = 999;
 
 class IOTriangle2x2 : public Base_IOModel<Nx2, Nx2>
 {
@@ -623,4 +686,7 @@ class IOSquare8x8 : public Base_IOModel<Nx8, Nx8>
         FinishConstructor();
     }
 };
+
+// template <size_t TNX, size_t TNY>
+// const size_t Base_IOModel<TNX, TNY>::Nc = TNX *TNY;
 } // namespace IO

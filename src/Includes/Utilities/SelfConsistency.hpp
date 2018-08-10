@@ -54,7 +54,8 @@ class SelfConsistency : public ABC_SelfConsistency
                                                                                                                             selfEnergy_(),
                                                                                                                             hybNext_(),
                                                                                                                             spin_(spin),
-                                                                                                                            weights_(cd_t(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>()))
+                                                                                                                            weights_(cd_t(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>())),
+                                                                                                                            NOrb_(jj["NOrb"].get<size_t>())
     {
 
         mpiUt::Print("Start of SC constructor");
@@ -112,7 +113,7 @@ class SelfConsistency : public ABC_SelfConsistency
 
         if (mpiUt::Rank() == mpiUt::master)
         {
-            ioModel_.SaveCube("self" + GetSpinName(spin_), selfEnergy_, model_.beta(), hybSavePrecision);
+            ioModel_.SaveCube("self" + GetSpinName(spin_), selfEnergy_, model_.beta(), NOrb_, hybSavePrecision);
             std::cout << "In Selfonsistency constructor, after save selfenery " << std::endl;
         }
 
@@ -264,6 +265,7 @@ class SelfConsistency : public ABC_SelfConsistency
     ClusterCubeCD_t hybNext_;
     const FermionSpin_t spin_;
     const cd_t weights_;
+    const size_t NOrb_;
 };
 template <typename TIOModel, typename TModel, typename TH0>
 const ClusterMatrixCD_t SelfConsistency<TIOModel, TModel, TH0>::II = ClusterMatrixCD_t(TH0::Nc, TH0::Nc).eye();

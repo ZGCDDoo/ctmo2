@@ -8,6 +8,7 @@ namespace SelfCon
 std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, const FermionSpin_t &spin)
 {
     const std::string modelType = jj["modelType"].get<std::string>();
+    const size_t NOrb = jj["NOrb"].get<size_t>();
 
     if (modelType == "SIAM_Square")
     {
@@ -22,11 +23,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         ClusterCubeCD_t greenImpurity;
         if (spin == FermionSpin_t::Up)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
         }
         else if (spin == FermionSpin_t::Down)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
         }
 
         using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t, H0_t>;
@@ -45,11 +46,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         ClusterCubeCD_t greenImpurity;
         if (spin == FermionSpin_t::Up)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
         }
         else if (spin == FermionSpin_t::Down)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
         }
 
         using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t, H0_t>;
@@ -68,11 +69,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         ClusterCubeCD_t greenImpurity;
         if (spin == FermionSpin_t::Up)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
         }
         else if (spin == FermionSpin_t::Down)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
         }
 
         using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t, H0_t>;
@@ -91,11 +92,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         ClusterCubeCD_t greenImpurity;
         if (spin == FermionSpin_t::Up)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
         }
         else if (spin == FermionSpin_t::Down)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
         }
 
         using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t, H0_t>;
@@ -114,11 +115,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         ClusterCubeCD_t greenImpurity;
         if (spin == FermionSpin_t::Up)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
         }
         else if (spin == FermionSpin_t::Down)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
         }
 
         using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t, H0_t>;
@@ -137,11 +138,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         ClusterCubeCD_t greenImpurity;
         if (spin == FermionSpin_t::Up)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
         }
         else if (spin == FermionSpin_t::Down)
         {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat");
+            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
         }
 
         using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t, H0_t>;

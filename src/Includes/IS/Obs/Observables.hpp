@@ -35,7 +35,8 @@ class Observables
                                       fillingAndDocc_(dataCT_, urngPtr_, jj["N_T_INV"].get<size_t>()),
                                       signMeas_(0.0),
                                       expOrder_(0.0),
-                                      NMeas_(0)
+                                      NMeas_(0),
+                                      NOrb_(jj["NOrb"].get<size_t>())
         {
 
                 mpiUt::Print("In Obs constructor ");
@@ -132,7 +133,7 @@ class Observables
                         fin.close();
 
                         std::cout << "Start Calculating Kinetic Energy " << std::endl;
-                        KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModel_.ReadGreenDat("greenUp.dat"));
+                        KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModel_.ReadGreenDat("greenUp.dat", NOrb_));
                         results["KEnergy"] = {kEnergy.GetKineticEnergy(), 0.0};
                         std::cout << "End Calculating Kinetic Energy " << std::endl;
 
@@ -168,6 +169,8 @@ class Observables
         double expOrder_;
 
         size_t NMeas_;
+
+        const size_t NOrb_;
 };
 
 } // namespace Obs
