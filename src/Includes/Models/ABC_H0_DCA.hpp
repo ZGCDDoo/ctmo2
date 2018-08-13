@@ -13,8 +13,6 @@ class ABC_H0
     static const size_t Nc;
     static const size_t Nx;
     static const size_t Ny;
-    static const size_t n_rows;
-    static const size_t n_cols;
     const size_t NKPTS = 1000;
 
     ABC_H0(const double &t, const double &tp, const double &tpp) : RSites_(Nc),
@@ -41,6 +39,9 @@ class ABC_H0
     }
 
     virtual ~ABC_H0() = 0;
+
+    size_t n_rows() const { return Nc; };
+    size_t n_cols() const { return Nc; };
 
     double t() const { return t_; };
     double tPrime() const { return tPrime_; };
@@ -70,7 +71,6 @@ class ABC_H0
         return (HoppingKTilde / static_cast<double>(Nc));
     }
 
-  
   protected:
     ClusterSites_t RSites_;
     ClusterSites_t KWaveVectors_;
@@ -92,9 +92,4 @@ const size_t ABC_H0<TNX, TNY>::Ny = TNY;
 template <size_t TNX, size_t TNY>
 const size_t ABC_H0<TNX, TNY>::Nc = TNX *TNY;
 
-template <size_t TNX, size_t TNY>
-const size_t ABC_H0<TNX, TNY>::n_rows = TNX *TNY;
-
-template <size_t TNX, size_t TNY>
-const size_t ABC_H0<TNX, TNY>::n_cols = TNX *TNY;
 } // namespace Models

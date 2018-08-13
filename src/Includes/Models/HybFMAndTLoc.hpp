@@ -59,8 +59,9 @@ class HybFMAndTLoc
     {
 
         TKTildeSquared(const TH0 &h0) : h0_(h0){};
-        const size_t n_rows = TH0::n_rows;
-        const size_t n_cols = TH0::n_cols;
+        size_t n_rows() const { return h0_.n_rows(); };
+        size_t n_cols() const { return h0_.n_cols(); };
+
         const size_t Nx = TH0::Nx;
         const size_t Ny = TH0::Ny;
         const size_t Nc = TH0::Nc;

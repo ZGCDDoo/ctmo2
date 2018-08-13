@@ -56,13 +56,13 @@ class ABC_H0
                 const std::string o1o2Name = std::to_string(o1) + std::to_string(o2);
                 const Json &jj = jj["tParameters"][o1o2Name];
 
-                tIntraOrbitalVec_.push_back(jj[o1o2Name]["tIntra"].get<double>());
-                txVec_.push_back(jj[o1o2Name]["tx"].get<double>());
-                tyVec_.push_back(jj[o1o2Name]["ty"].get<double>());
-                txyVec_.push_back(jj[o1o2Name]["tx=y"].get<double>());
-                tx_yVec_.push_back(jj[o1o2Name]["tx=-y"].get<double>());
-                t2xVec_.push_back(jj[o1o2Name]["t2x"].get<double>());
-                t2yVec_.push_back(jj[o1o2Name]["t2y"].get<double>());
+                tIntraOrbitalVec_.push_back(jj["tIntra"].get<double>());
+                txVec_.push_back(jj["tx"].get<double>());
+                tyVec_.push_back(jj["ty"].get<double>());
+                txyVec_.push_back(jj["tx=y"].get<double>());
+                tx_yVec_.push_back(jj["tx=-y"].get<double>());
+                t2xVec_.push_back(jj["t2x"].get<double>());
+                t2yVec_.push_back(jj["t2y"].get<double>());
             }
         }
     }

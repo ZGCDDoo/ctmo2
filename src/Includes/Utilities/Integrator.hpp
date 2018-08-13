@@ -12,8 +12,8 @@ const size_t KXPTS = 64;
 template <typename TFct>
 ClusterMatrixCD_t GridKTilde(TFct fct, size_t kxpts = KXPTS)
 {
-    double fact = 1.0 / (static_cast<double>(kxpts * kxpts));
-    ClusterMatrixCD_t integral(fct.Nc, fct.Nc);
+    const double fact = 1.0 / (static_cast<double>(kxpts * kxpts));
+    ClusterMatrixCD_t integral(fct.n_rows(), fct.n_cols());
     integral.zeros();
 
     for (size_t ii = 0; ii < kxpts; ii++)
@@ -38,15 +38,15 @@ int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim
     TFct fct = *((TFct *)fdata);
 
     ClusterMatrixCD_t tmpMat;
-    for (size_t i = 0; i < fct.n_rows; i++)
+    for (size_t i = 0; i < fct.n_rows(); i++)
     {
-        for (size_t j = 0; j < fct.n_cols; j++)
+        for (size_t j = 0; j < fct.n_cols(); j++)
         {
             //std::cout << " x[0] = " << x[0]
             //        << std::endl;
             tmpMat = fct(x[0], x[1]);
-            fval[i + fct.n_rows * j] = tmpMat(i, j).real();
-            fval[i + fct.n_rows * (fct.n_cols + j)] = tmpMat(i, j).imag();
+            fval[i + fct.n_rows() * j] = tmpMat(i, j).real();
+            fval[i + fct.n_rows() * (fct.n_cols() + j)] = tmpMat(i, j).imag();
         }
     }
 
@@ -56,7 +56,7 @@ int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim
 template <typename TFct>
 ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-6, double relError = 1.49e-6)
 {
-    unsigned nelem = fct.n_rows * fct.n_cols;
+    const unsigned nelem = fct.n_rows() * fct.n_cols();
     double *val = new double[2 * nelem]; //for complex values
     double *err = new double[2 * nelem];
 
@@ -64,14 +64,14 @@ ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals
 
     hcubature(2 * nelem, IntegrandCubature<TFct>, &fct, 2, xmin, xmax, maxevals, absError, relError, ERROR_INDIVIDUAL, val, err);
 
-    ClusterMatrixCD_t result(fct.n_rows, fct.n_cols);
+    ClusterMatrixCD_t result(fct.n_rows(), fct.n_cols());
 
-    for (size_t i = 0; i < fct.n_rows; i++)
+    for (size_t i = 0; i < fct.n_rows(); i++)
     {
-        for (size_t j = 0; j < fct.n_cols; j++)
+        for (size_t j = 0; j < fct.n_cols(); j++)
         {
-            double real = val[i + fct.n_rows * j];
-            double imag = val[i + fct.n_rows * (fct.n_cols + j)];
+            const double real = val[i + fct.n_rows() * j];
+            const double imag = val[i + fct.n_rows() * (fct.n_cols() + j)];
             result(i, j) = cd_t(real, imag);
         }
     }
@@ -82,10 +82,13 @@ ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals
 template <typename TFct>
 ClusterMatrixCD_t CubatureKTilde(TFct fct, size_t maxevals = MAXEVALS)
 {
+
+    assert(fct.n_rows() == fct.n_cols());
+
     double xmin[2] = {-M_PI / (fct.Nx), -M_PI / (fct.Ny)};
     double xmax[2] = {M_PI / (fct.Nx), M_PI / (fct.Ny)};
 
-    double fact = fct.Nc / (4.0 * M_PI * M_PI);
+    const double fact = fct.n_rows() / (4.0 * M_PI * M_PI);
     return (fact * Cubature(fct, xmin, xmax, maxevals));
 }
 
