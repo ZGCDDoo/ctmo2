@@ -283,6 +283,9 @@ class Base_IOModel
                 NOrbIndep++;
             }
         }
+
+        //The number of indep orbitals should be equal to the number of elements in a triangular matrix, i.e:
+        assert(NOrbIndep == NOrb * (NOrb + 1) / 2);
         return NOrbIndep;
     };
 

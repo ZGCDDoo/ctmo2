@@ -182,6 +182,7 @@ if (${TEST})
     endif()
 
     set(TESTS
+    ABC_H0_Vers2_Tests
     Fourier_DCATests
     FourierTests
     FillingAndDoccTests
@@ -189,7 +190,7 @@ if (${TEST})
     GreenMatTests
     GreenTauTests
     H0TriangleTests
-    #HybFMAndTLocTests
+    HybFMAndTLocTests
     IntegratorTests
     ModelTriangle2x2Tests
     UtilitiesTests
