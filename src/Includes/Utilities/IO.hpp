@@ -178,7 +178,7 @@ class Base_IOModel
                 {
                     for (size_t ii = 0; ii < Nc; ii++)
                     {
-                        for (size_t jj = 0; jj < Nc; jj++)
+                        for (size_t jj = ii; jj < Nc; jj++)
                         {
 
                             const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);

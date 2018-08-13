@@ -16,7 +16,8 @@ class ABC_H0
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
     ABC_H0(const Json &tJson) : RSites_(Nc),
-                                KWaveVectors_(Nc)
+                                KWaveVectors_(Nc),
+                                NOrb_(tJson["NOrb"].get<size_t>())
 
     {
         assert(TNX == TNY);
@@ -44,12 +45,12 @@ class ABC_H0
 
     void ReadInHoppings(const Json &tJson)
     {
-        const size_t NOrb = tJson["NOrb"].get<size_t>();
-        assert(tJson["tParameters"].size() == NOrb * (NOrb + 1) / 2);
 
-        for (size_t o1 = 0; o1 < NOrb; o1++)
+        assert(tJson["tParameters"].size() == NOrb_ * (NOrb_ + 1) / 2);
+
+        for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
-            for (size_t o2 = o1; o2 < NOrb; o2++)
+            for (size_t o2 = o1; o2 < NOrb_; o2++)
             {
 
                 const std::string o1o2Name = std::to_string(o1) + std::to_string(o2);
@@ -79,26 +80,38 @@ class ABC_H0
         return eps0k;
     }
 
-    // ClusterMatrixCD_t
-    // operator()(const double &kTildeX, const double &kTildeY) //return t(ktilde)
-    // {
-    //     const cd_t im = cd_t(0.0, 1.0);
-    //     const SiteVector_t ktilde = {kTildeX, kTildeY};
-    //     ClusterMatrixCD_t HoppingKTilde(Nc, Nc);
-    //     HoppingKTilde.zeros();
+    ClusterMatrixCD_t
+    operator()(const double &kTildeX, const double &kTildeY) //return t(ktilde)
+    {
+        const cd_t im = cd_t(0.0, 1.0);
+        const SiteVector_t ktilde = {kTildeX, kTildeY};
+        const size_t NS = Nc * NOrb_;
+        ClusterMatrixCD_t HoppingKTilde(NS, NS);
+        HoppingKTilde.zeros();
 
-    //     for (size_t i = 0; i < Nc; i++)
-    //     {
-    //         for (size_t j = 0; j < Nc; j++)
-    //         {
-    //             for (const SiteVector_t &K : this->KWaveVectors_)
-    //             {
-    //                 HoppingKTilde(i, j) += std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY);
-    //             }
-    //         }
-    //     }
-    //     return (HoppingKTilde / static_cast<double>(Nc));
-    // }
+        size_t NIndepOrbIndex = 0;
+        for (size_t o1 = 0; o1 < NOrb_; o1++)
+        {
+            for (size_t o2 = o1; o2 < NOrb_; o2++)
+            {
+
+                for (size_t i = 0; i < Nc; i++)
+                {
+                    for (size_t j = i; j < Nc; j++)
+                    {
+                        for (const SiteVector_t &K : this->KWaveVectors_)
+                        {
+                            HoppingKTilde(i + o1 * Nc, j + o2 * Nc) += std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY, NIndepOrbIndex);
+                        }
+                        HoppingKTilde(j + o2 * Nc, i + o1 * Nc) = HoppingKTilde(i + o1 * Nc, j + o2 * Nc);
+                    }
+                }
+                NIndepOrbIndex++;
+            }
+        }
+
+        return (HoppingKTilde / static_cast<double>(Nc));
+    }
 
     // void SaveTKTildeAndHybFM()
     // {
@@ -157,13 +170,15 @@ class ABC_H0
     ClusterSites_t RSites_;
     ClusterSites_t KWaveVectors_;
 
-    const std::vector<double> tIntraOrbitalVec_;
-    const std::vector<double> txVec_;
-    const std::vector<double> tyVec_;
-    const std::vector<double> txyVec_;
-    const std::vector<double> tx_yVec_; //along x=-y diagonal
-    const std::vector<double> t2xVec_;
-    const std::vector<double> t2yVec_;
+    std::vector<double> tIntraOrbitalVec_;
+    std::vector<double> txVec_;
+    std::vector<double> tyVec_;
+    std::vector<double> txyVec_;
+    std::vector<double> tx_yVec_; //along x=-y diagonal
+    std::vector<double> t2xVec_;
+    std::vector<double> t2yVec_;
+
+    const size_t NOrb_;
 };
 
 template <size_t TNX, size_t TNY>
