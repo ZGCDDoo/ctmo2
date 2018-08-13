@@ -100,9 +100,7 @@ class ABC_MarkovChainSubMatrix
                                                                            static_cast<double>(jj["beta"].get<double>()),
                                                                            model_, jj["NTAU"].get<double>())),
                                                                    obs_(dataCT_, jj),
-                                                                   KMAX_UPD_(jj["KMAX_UPD"].get<double>()),
-                                                                   expUp_(std::exp(model_.gamma())),
-                                                                   expDown_(std::exp(-model_.gamma()))
+                                                                   KMAX_UPD_(jj["KMAX_UPD"].get<double>())
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -853,9 +851,6 @@ class ABC_MarkovChainSubMatrix
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
 
     const size_t KMAX_UPD_;
-
-    const double expUp_;
-    const double expDown_;
 
     size_t nPhyscialVertices_;
     size_t updatesProposed_;

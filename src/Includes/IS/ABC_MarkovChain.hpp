@@ -51,9 +51,7 @@ class ABC_MarkovChain
                                                               new Obs::ISDataCT<TIOModel, TModel>(
                                                                   jj["beta"].get<double>(),
                                                                   *modelPtr_, jj["NTAU"].get<double>())),
-                                                          obs_(dataCT_, jj),
-                                                          expUp_(std::exp(modelPtr_->gamma())),
-                                                          expDown_(std::exp(-modelPtr_->gamma()))
+                                                          obs_(dataCT_, jj)
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -471,8 +469,6 @@ class ABC_MarkovChain
 
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
 
-    const double expUp_;
-    const double expDown_;
     size_t updatesProposed_;
 };
 

@@ -196,9 +196,7 @@ if (${TEST})
     SelfConsistencyTests
     MarkovChainTests
     MarkovChainSquare2x2Tests
-    MarkovChainAuxTests
     MarkovChainSubMatrixSquare2x2Tests
-    MarkovChainAuxSubMatrixTests
     MarkovChainSubMatrixTests
     MatrixTests
     ObservablesTests

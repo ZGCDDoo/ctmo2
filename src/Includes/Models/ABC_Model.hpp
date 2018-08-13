@@ -33,8 +33,6 @@ class ABC_Model_2D
                                        delta_(jj["delta"].get<double>()),
                                        beta_(jj["beta"].get<double>()),
                                        muVec_(jj["muVec"].get<std::vector<double>>()),
-                                       K_(jj["K"].get<double>()),
-                                       gamma_(std::acosh(1.0 + U_ * beta_ * TH0::Nc / (2.0 * K_))),
                                        NOrb_(jj["NOrb"].get<size_t>())
         {
                 mpiUt::Print("start abc_model constructor ");
@@ -175,8 +173,6 @@ class ABC_Model_2D
         double auxU() const { return U_ / 2.0; };
         double auxMu() const { return muVec_.at(0) - U_ / 2.0; };
         double auxDO() const { return delta_ * (1.0 + delta_); };
-        double K() const { return K_; };
-        double gamma() const { return gamma_; };
 
       protected:
         TIOModel ioModel_;
@@ -193,8 +189,6 @@ class ABC_Model_2D
         const double delta_;
         const double beta_;
         std::vector<double> muVec_;
-        const double K_;
-        const double gamma_;
         const size_t NOrb_;
 };
 
