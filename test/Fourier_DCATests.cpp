@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "../src/Includes/Utilities/Fourier_DCA.hpp"
-#include "../src/Includes/Models/H0Square.hpp"
+#include "../src/Includes/Models/ABC_H0.hpp"
 
 using namespace FourierDCA;
 
