@@ -28,11 +28,9 @@ class GreenCluster0Tau
                                                                                  gfMatCluster_(gfMatCluster),
                                                                                  data_(ioModel_.indepSites().size()),
                                                                                  beta_(gfMatCluster.beta()),
-                                                                                 NTau_()
+                                                                                 NTau_(std::max<double>(static_cast<double>(NTau), beta_ / deltaTau))
     {
         mpiUt::Print("Creating gtau ");
-
-        NTau_ = std::max<double>(static_cast<double>(NTau), beta_ / deltaTau);
 
 #ifdef HAVEMPI
         mpi::communicator world;
@@ -54,7 +52,7 @@ class GreenCluster0Tau
 
         for (size_t tt = 0; tt < NTau_ + 1; tt++)
         {
-            Tau_t tau = gfMatCluster_.beta() * (static_cast<double>(tt)) / double(NTau_);
+            Tau_t tau = gfMatCluster_.beta() * (static_cast<double>(tt)) / static_cast<double>(NTau_);
             if (tt == 0)
             {
                 tau += EPS;
@@ -63,12 +61,13 @@ class GreenCluster0Tau
             {
                 tau -= EPS;
             }
-            size_t s1 = ioModel_.indepSites().at(indepSiteIndex).first;
-            size_t s2 = ioModel_.indepSites().at(indepSiteIndex).second;
-            SiteVectorCD_t greenMat = gfMatCluster_.data().tube(s1, s2);
-            double fm = gfMatCluster_.fm()(s1, s2).real();
-            double sm = gfMatCluster_.sm()(s1, s2).real();
-            double tm = gfMatCluster_.tm()(s1, s2).real();
+
+            const size_t s1 = ioModel_.indepSites().at(indepSiteIndex).first;
+            const size_t s2 = ioModel_.indepSites().at(indepSiteIndex).second;
+            const SiteVectorCD_t greenMat = gfMatCluster_.data().tube(s1, s2);
+            const double fm = gfMatCluster_.fm()(s1, s2).real();
+            const double sm = gfMatCluster_.sm()(s1, s2).real();
+            const double tm = gfMatCluster_.tm()(s1, s2).real();
             result.at(tt) = Fourier::MatToTauAnalytic(greenMat, tau, beta_, fm, sm, tm);
         }
 
@@ -186,6 +185,7 @@ class GreenCluster0Tau
     TIOModel ioModel_;
     GreenCluster0Mat gfMatCluster_;
     Data_t data_;
+
     double beta_;
     size_t NTau_;
 };
