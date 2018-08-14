@@ -8,8 +8,17 @@
 using namespace Integrator;
 
 const double DELTA = 1.49e-8;
-const double t = -1.0;
-const double tp = -0.4;
+const double t_diag = -1.0;
+const double tp_diag = -0.4;
+
+const double t_offdiag = -1.02;
+const double tp_offdiag = 0.230;
+
+const size_t Nc = 4;
+const size_t Nx = 2;
+const size_t Ny = 2;
+const size_t NOrb = 2;
+const double INTRA = -0.01;
 
 struct FctTest
 {
@@ -43,15 +52,29 @@ struct FctTest
 TEST(IntegratorTest, TestGridKTilde)
 {
 
-    using H0_t = Models::ABC_H0<2, 2>;
+    using H0_t = Models::ABC_H0<Nx, Ny>;
     H0_t h0(TestTools::BuildJson());
     ClusterMatrixCD_t tLocTest = GridKTilde(h0, 100);
-    const ClusterMatrixCD_t goodResult = {{0.0, t, t, tp},
-                                          {t, 0.0, 0.0, t},
-                                          {t, 0.0, 0.0, t},
-                                          {tp, t, t, 0.0}};
 
-    for (size_t i = 0; i < goodResult.n_rows; i++)
+    ClusterMatrixCD_t diagonal_part = {{0.0, t_diag, t_diag, tp_diag},
+                                       {t_diag, 0.0, 0.0, t_diag},
+                                       {t_diag, 0.0, 0.0, t_diag},
+                                       {tp_diag, t_diag, t_diag, 0.0}};
+
+    ClusterMatrixCD_t off_diagonal = {{0.0, t_offdiag, t_offdiag, tp_offdiag},
+                                      {t_offdiag, 0.0, tp_offdiag, t_offdiag},
+                                      {t_offdiag, tp_offdiag, 0.0, t_offdiag},
+                                      {tp_offdiag, t_offdiag, t_offdiag, 0.0}};
+
+    ClusterMatrixCD_t goodResult(Nc * NOrb, Nc * NOrb);
+    goodResult.zeros();
+
+    goodResult.submat(0, 0, Nc - 1, Nc - 1) = diagonal_part;
+    goodResult.submat(Nc, Nc, NOrb * Nc - 1, NOrb * Nc - 1) = diagonal_part;
+    goodResult.submat(0, Nc, Nc - 1, NOrb * Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
+    goodResult.submat(Nc, 0, NOrb * Nc - 1, Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
+
+    for (size_t i = 0; i < goodResult.n_cols; i++)
     {
         for (size_t j = 0; j < goodResult.n_rows; j++)
         {
