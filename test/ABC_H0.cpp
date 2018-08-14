@@ -1,7 +1,7 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Models/ABC_H0_Vers2.hpp"
+#include "../src/Includes/Models/ABC_H0.hpp"
 #include "TestTools.hpp"
 
 const double DELTA = 1e-7;
@@ -19,6 +19,8 @@ TEST(ModelTriangle2DTest, Init)
             {"00": 
                 {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": 1.0, "tx=-y": 1.0, "t2x" : 1.0, "t2y": 1.0},
             "01":
+                {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": 1.0, "tx=-y": 1.0, "t2x" : 1.0, "t2y": 1.0},
+            "11":
                 {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": 1.0, "tx=-y": 1.0, "t2x" : 1.0, "t2y": 1.0}
 
             }
@@ -27,7 +29,9 @@ TEST(ModelTriangle2DTest, Init)
 
     std::cout << "tJson.size() = " << tJson.size() << std::endl;
     Json jj = tJson["tParameters"];
-    assert(jj.size() == 2);
+    assert(jj.size() == 3);
+
+    Models::ABC_H0<2, 2> h0_(tJson);
 }
 
 int main(int argc, char **argv)

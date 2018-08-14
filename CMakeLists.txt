@@ -182,7 +182,7 @@ if (${TEST})
     endif()
 
     set(TESTS
-    ABC_H0_Vers2_Tests
+    ABC_H0
     Fourier_DCATests
     FourierTests
     FillingAndDoccTests

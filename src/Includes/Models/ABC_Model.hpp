@@ -26,7 +26,7 @@ class ABC_Model_2D
         static const size_t Nc;
 
         ABC_Model_2D(const Json &jj) : ioModel_(TIOModel()),
-                                       h0_(jj["t"].get<double>(), jj["tPrime"].get<double>(), jj["tPrimePrime"].get<double>()),
+                                       h0_(jj),
                                        hybFM_(),
                                        tLoc_(),
                                        U_(jj["U"].get<double>()),

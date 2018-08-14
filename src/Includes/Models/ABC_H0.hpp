@@ -35,7 +35,9 @@ class ABC_H0
         ReadInHoppings(tJson);
     }
 
-    virtual ~ABC_H0() = 0;
+    ~ABC_H0()
+    {
+    }
 
     // double t() const { return t_; };
     // double tPrime() const { return tPrime_; };
@@ -54,7 +56,8 @@ class ABC_H0
             {
 
                 const std::string o1o2Name = std::to_string(o1) + std::to_string(o2);
-                const Json &jj = jj["tParameters"][o1o2Name];
+                std::cout << "o1o2Name = " << o1o2Name << std::endl;
+                const Json &jj = tJson["tParameters"][o1o2Name];
 
                 tIntraOrbitalVec_.push_back(jj["tIntra"].get<double>());
                 txVec_.push_back(jj["tx"].get<double>());
@@ -113,58 +116,58 @@ class ABC_H0
         return (HoppingKTilde / static_cast<double>(Nc));
     }
 
-    // void SaveTKTildeAndHybFM()
-    // {
-    //     //check if  file exists:
-    //     using boost::filesystem::exists;
-    //     if ((exists("tktilde.arma") && exists("tloc.arma")) && exists("hybFM.arma"))
-    //     {
-    //         ClusterMatrixCD_t tmp;
-    //         tmp.load("tloc.arma");
-    //         if (tmp.n_cols == Nc)
-    //         {
-    //             return;
-    //         }
-    //     }
-    //     std::cout << "Calculating tktilde, tloc and hybFM. " << std::endl;
+    void SaveTKTildeAndHybFM()
+    {
+        //check if  file exists:
+        using boost::filesystem::exists;
+        if ((exists("tktilde.arma") && exists("tloc.arma")) && exists("hybFM.arma"))
+        {
+            ClusterMatrixCD_t tmp;
+            tmp.load("tloc.arma");
+            if (tmp.n_cols == Nc * NOrb_)
+            {
+                return;
+            }
+        }
+        std::cout << "Calculating tktilde, tloc and hybFM. " << std::endl;
 
-    //     const size_t kxtildepts = 2.0 * M_PI / 0.009 / std::min(Nx, Ny);
+        const size_t kxtildepts = 2.0 * M_PI / 0.009 / std::min(Nx, Ny);
+        const size_t NS = Nc * NOrb_;
+        ClusterCubeCD_t tKTildeGrid(NS, NS, kxtildepts * kxtildepts);
+        tKTildeGrid.zeros();
+        ClusterMatrixCD_t tLoc(NS, NS);
+        tLoc.zeros();
 
-    //     ClusterCubeCD_t tKTildeGrid(Nc, Nc, kxtildepts * kxtildepts);
-    //     tKTildeGrid.zeros();
-    //     ClusterMatrixCD_t tLoc(Nc, Nc);
-    //     tLoc.zeros();
+        size_t sliceindex = 0;
+        for (size_t kx = 0; kx < kxtildepts; kx++)
+        {
+            const double kTildeX = static_cast<double>(kx) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Nx);
+            for (size_t ky = 0; ky < kxtildepts; ky++)
+            {
+                const double kTildeY = static_cast<double>(ky) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Ny);
+                tKTildeGrid.slice(sliceindex) = (*this)(kTildeX, kTildeY);
+                tLoc += tKTildeGrid.slice(sliceindex);
+                sliceindex++;
+            }
+        }
 
-    //     size_t sliceindex = 0;
-    //     for (size_t kx = 0; kx < kxtildepts; kx++)
-    //     {
-    //         const double kTildeX = static_cast<double>(kx) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Nx);
-    //         for (size_t ky = 0; ky < kxtildepts; ky++)
-    //         {
-    //             const double kTildeY = static_cast<double>(ky) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Ny);
-    //             tKTildeGrid.slice(sliceindex) = (*this)(kTildeX, kTildeY);
-    //             tLoc += tKTildeGrid.slice(sliceindex);
-    //             sliceindex++;
-    //         }
-    //     }
+        tKTildeGrid.save("tktilde.arma");
+        tLoc /= static_cast<double>(tKTildeGrid.n_slices);
+        tLoc.save("tloc.arma", arma::arma_ascii);
 
-    //     tKTildeGrid.save("tktilde.arma");
-    //     tLoc /= static_cast<double>(tKTildeGrid.n_slices);
-    //     tLoc.save("tloc.arma", arma::arma_ascii);
+        //First moment of hyb
+        ClusterMatrixCD_t hybFM(Nc, Nc);
+        hybFM.zeros();
 
-    //     //First moment of hyb
-    //     ClusterMatrixCD_t hybFM(Nc, Nc);
-    //     hybFM.zeros();
-
-    //     const size_t Nkpts = tKTildeGrid.n_slices;
-    //     for (size_t nn = 0; nn < Nkpts; nn++)
-    //     {
-    //         hybFM += tKTildeGrid.slice(nn) * tKTildeGrid.slice(nn);
-    //     }
-    //     hybFM /= Nkpts;
-    //     hybFM -= tLoc * tLoc;
-    //     hybFM.save("hybFM.arma", arma::arma_ascii);
-    // }
+        const size_t Nkpts = tKTildeGrid.n_slices;
+        for (size_t nn = 0; nn < Nkpts; nn++)
+        {
+            hybFM += tKTildeGrid.slice(nn) * tKTildeGrid.slice(nn);
+        }
+        hybFM /= Nkpts;
+        hybFM -= tLoc * tLoc;
+        hybFM.save("hybFM.arma", arma::arma_ascii);
+    }
 
   protected:
     ClusterSites_t RSites_;
@@ -180,9 +183,6 @@ class ABC_H0
 
     const size_t NOrb_;
 };
-
-template <size_t TNX, size_t TNY>
-ABC_H0<TNX, TNY>::~ABC_H0() {} //destructors must exist
 
 template <size_t TNX, size_t TNY>
 const size_t ABC_H0<TNX, TNY>::Nx = TNX;
