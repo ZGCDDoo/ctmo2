@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Integrator.hpp"
 #include "Utilities.hpp"
-#include "MPIUtilities.hpp"
-#include "ABC_SelfConsistency.hpp"
 
 namespace FourierDCA
 {

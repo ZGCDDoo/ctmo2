@@ -4,6 +4,7 @@
 
 #include "../src/Includes/Utilities/Fourier_DCA.hpp"
 #include "../src/Includes/Models/ABC_H0.hpp"
+#include "TestTools.hpp"
 
 using namespace FourierDCA;
 
@@ -13,7 +14,7 @@ TEST(FourierDCATests, KToR)
     arma::arma_rng::set_seed_random();
     const size_t Nx = 3;
     const size_t NMat = 1;
-    const Models::H0Square<Nx, Nx> h0(-1.0, -0.32, 0.15);
+    const Models::ABC_H0<Nx, Nx> h0(TestTools::BuildJson());
 
     DataK_t greenK(Nx * Nx, Nx * Nx, NMat);
     greenK.zeros();
