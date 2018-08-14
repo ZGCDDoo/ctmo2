@@ -1,5 +1,6 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include "../src/Includes/Utilities/Utilities.hpp"
 
 namespace TestTools
 {
@@ -20,4 +21,22 @@ void RemoveFilesForTests()
     }
 }
 
+Json BuildJson()
+{
+    Json tJson = R"(
+    {   "NOrb": 2,
+        "tParameters": 
+            {"00": 
+                {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0},
+            "01":
+                {"tIntra": -0.01, "tx": -1.02, "ty": -1.02, "tx=y": 0.230, "tx=-y": 0.230, "t2x" : -0.90, "t2y": -0.90},
+            "11":
+                {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0}
+
+            }
+    }
+    )"_json;
+
+    return tJson;
+}
 } // namespace TestTools

@@ -12,8 +12,6 @@ class ABC_H0
     static const size_t Nc;
     static const size_t Nx;
     static const size_t Ny;
-    static const size_t n_rows;
-    static const size_t n_cols;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
     ABC_H0(const Json &tJson) : RSites_(Nc),
@@ -48,8 +46,8 @@ class ABC_H0
     std::vector<double> t2xVec() const { return t2xVec_; };
     std::vector<double> t2yVec() const { return t2yVec_; };
 
-    // double tPrime() const { return tPrime_; };
-    // double tPrimePrime() const { return tPrimePrime_; };
+    size_t n_rows() const { return Nc * NOrb_; };
+    size_t n_cols() const { return Nc * NOrb_; };
     ClusterSites_t RSites() const { return RSites_; };
     ClusterSites_t KWaveVectors() const { return KWaveVectors_; };
 
@@ -197,11 +195,5 @@ const size_t ABC_H0<TNX, TNY>::Ny = TNY;
 
 template <size_t TNX, size_t TNY>
 const size_t ABC_H0<TNX, TNY>::Nc = TNX *TNY;
-
-template <size_t TNX, size_t TNY>
-const size_t ABC_H0<TNX, TNY>::n_rows = TNX *TNY;
-
-template <size_t TNX, size_t TNY>
-const size_t ABC_H0<TNX, TNY>::n_cols = TNX *TNY;
 
 } // namespace Models

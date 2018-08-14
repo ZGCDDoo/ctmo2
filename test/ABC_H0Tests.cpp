@@ -11,25 +11,6 @@ const size_t Ny = 2;
 const size_t NOrb = 2;
 const double INTRA = -0.01;
 
-Json BuildJson()
-{
-    Json tJson = R"(
-    {   "NOrb": 2,
-        "tParameters": 
-            {"00": 
-                {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0},
-            "01":
-                {"tIntra": -0.01, "tx": -1.02, "ty": -1.02, "tx=y": 0.230, "tx=-y": 0.230, "t2x" : -0.90, "t2y": -0.90},
-            "11":
-                {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0}
-
-            }
-    }
-    )"_json;
-
-    return tJson;
-}
-
 TEST(ABC_H0_Tests, Init)
 {
 
@@ -75,7 +56,7 @@ TEST(ABC_H0_Tests, Init)
 
 TEST(ABC_H0_Tests, Init2)
 {
-    Json tJson = BuildJson();
+    Json tJson = TestTools::BuildJson();
 
     Models::ABC_H0<Nx, Ny> h0(tJson);
 
@@ -107,7 +88,7 @@ TEST(ABC_H0_Tests, Init2)
 TEST(ABC_H0_Tests, Hopping)
 {
 
-    Json tJson = BuildJson();
+    Json tJson = TestTools::BuildJson();
 
     Models::ABC_H0<Nx, Nx> h0(tJson);
 
