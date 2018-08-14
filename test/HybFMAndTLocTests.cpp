@@ -1,17 +1,37 @@
 #define DCA
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Models/H0Square.hpp"
+#include "../src/Includes/Models/ABC_H0.hpp"
 #include "../src/Includes/Models/HybFMAndTLoc.hpp"
 
 const double delta = 5e-9;
+
+Json BuildJson()
+{
+    Json tJson = R"(
+    {   "NOrb": 2,
+        "tParameters": 
+            {"00": 
+                {"tIntra": 0.0, "tx": -1.120, "ty": -1.120, "tx=y": 0.1560, "tx=-y": 0.156, "t2x" : 0.23700, "t2y": 0.23700},
+            "01":
+                {"tIntra": -0.01, "tx": -1.02, "ty": -1.02, "tx=y": 0.230, "tx=-y": 0.230, "t2x" : -0.90, "t2y": -0.90},
+            "11":
+                {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0}
+
+            }
+    }
+    )"_json;
+
+    return tJson;
+}
+
 TEST(H0Triangle2DTest, Init)
 {
     const size_t Nx = 4;
     const size_t Nc = Nx * Nx;
 
-    using h0_t = Models::H0Square<Nx, Nx>;
-    h0_t h0(-1.12, 0.156, 0.2370);
+    using h0_t = Models::ABC_H0<Nx, Nx>;
+    h0_t h0(BuildJson());
 
     Models::HybFMAndTLoc<h0_t>::CalculateHybFMAndTLoc(h0);
 

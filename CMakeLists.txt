@@ -118,10 +118,10 @@ endif ()
 ################################
 set(EXECECUTABLES
     cttg
-    cttg_sub
-    cttg_afm
-    cttg_sub_afm
-    cttg_DCA
+    #cttg_sub
+    #cttg_afm
+    #cttg_sub_afm
+    #cttg_DCA
 )
 
 foreach(executable ${EXECECUTABLES})
@@ -189,7 +189,6 @@ if (${TEST})
     GreenBinningTests
     GreenMatTests
     GreenTauTests
-    H0TriangleTests
     HybFMAndTLocTests
     IntegratorTests
     ModelTriangle2x2Tests
