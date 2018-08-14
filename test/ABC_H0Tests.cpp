@@ -17,11 +17,11 @@ TEST(ModelTriangle2DTest, Init)
     {   "NOrb": 2,
         "tParameters": 
             {"00": 
-                {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": 1.0, "tx=-y": 1.0, "t2x" : 1.0, "t2y": 1.0},
+                {"tIntra": 0.0, "tx": 1.0, "ty": 1.08, "tx=y": 1.07, "tx=-y": 1.06, "t2x" : 1.05, "t2y": 1.04},
             "01":
-                {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": 1.0, "tx=-y": 1.0, "t2x" : 1.0, "t2y": 1.0},
+                {"tIntra": -100.0, "tx": 1.10, "ty": 1.09, "tx=y": 1.04, "tx=-y": 1.03, "t2x" : 1.02, "t2y": 1.01},
             "11":
-                {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": 1.0, "tx=-y": 1.0, "t2x" : 1.0, "t2y": 1.0}
+                {"tIntra": 0.201, "tx": -1.01, "ty": 1.01, "tx=y": 1.02, "tx=-y": 1.03, "t2x" : -1.04, "t2y": 1.09}
 
             }
     }
@@ -31,7 +31,26 @@ TEST(ModelTriangle2DTest, Init)
     Json jj = tJson["tParameters"];
     assert(jj.size() == 3);
 
-    Models::ABC_H0<2, 2> h0_(tJson);
+    Models::ABC_H0<Nx, Nx> h0(tJson);
+
+    std::vector<double> tIntraVec = {0.0, -100.0, 0.201};
+    std::vector<double> txVec = {1.0, 1.10, -1.01};
+    std::vector<double> tyVec = {1.08, 1.09, 1.01};
+    std::vector<double> txyVec = {1.07, 1.04, 1.02};
+    std::vector<double> tx_yVec = {1.06, 1.03, 1.03};
+    std::vector<double> t2xVec = {1.05, 1.02, -1.04};
+    std::vector<double> t2yVec = {1.04, 1.01, 1.09};
+
+    for (size_t ii = 0; ii < tIntraVec.size(); ii++)
+    {
+        ASSERT_DOUBLE_EQ(h0.tIntraOrbitalVec().at(ii), tIntraVec.at(ii));
+        ASSERT_DOUBLE_EQ(h0.txVec().at(ii), txVec.at(ii));
+        ASSERT_DOUBLE_EQ(h0.tyVec().at(ii), tyVec.at(ii));
+        ASSERT_DOUBLE_EQ(h0.txyVec().at(ii), txyVec.at(ii));
+        ASSERT_DOUBLE_EQ(h0.tx_yVec().at(ii), tx_yVec.at(ii));
+        ASSERT_DOUBLE_EQ(h0.t2xVec().at(ii), t2xVec.at(ii));
+        ASSERT_DOUBLE_EQ(h0.t2yVec().at(ii), t2yVec.at(ii));
+    }
 }
 
 int main(int argc, char **argv)

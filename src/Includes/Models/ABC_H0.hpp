@@ -39,7 +39,14 @@ class ABC_H0
     {
     }
 
-    // double t() const { return t_; };
+    std::vector<double> tIntraOrbitalVec() const { return tIntraOrbitalVec_; };
+    std::vector<double> txVec() const { return txVec_; };
+    std::vector<double> tyVec() const { return tyVec_; };
+    std::vector<double> txyVec() const { return txyVec_; };
+    std::vector<double> tx_yVec() const { return tx_yVec_; };
+    std::vector<double> t2xVec() const { return t2xVec_; };
+    std::vector<double> t2yVec() const { return t2yVec_; };
+
     // double tPrime() const { return tPrime_; };
     // double tPrimePrime() const { return tPrimePrime_; };
     ClusterSites_t RSites() const { return RSites_; };

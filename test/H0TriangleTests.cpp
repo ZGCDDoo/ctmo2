@@ -6,6 +6,7 @@
 const size_t Nx = 2;
 const size_t Nc = 4;
 const size_t NOrb = 2;
+const double DELTA = 1e-7;
 
 Json BuildJson()
 {
@@ -17,7 +18,7 @@ Json BuildJson()
             "01":
                 {"tIntra": 0.0, "tx": 0.0, "ty": 0.0, "tx=y": 0.0, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0},
             "11":
-                {"tIntra": 0.0, "tx": 1.0, "ty": 1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0}
+                {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0}
 
             }
     }
@@ -64,19 +65,28 @@ TEST(H0Triangle2DTest, Hopping)
 
     Models::ABC_H0<Nx, Nx> h0(tJson);
 
-    ClusterMatrixCD_t GoodHoppingKTilde = {
+    ClusterMatrixCD_t GoodHoppingKTilde(Nc * NOrb, Nc * NOrb);
+    GoodHoppingKTilde.zeros();
+    ClusterMatrixCD_t diagonal_part = {
         {cd_t(0.0, 0.0), cd_t(-1.98006658, 0.19866933), cd_t(-1.82533561, -0.56464247), cd_t(-0.76842440, -0.15576734)},
         {cd_t(-1.98006658, -0.19866933), cd_t(0.0, 0.0), cd_t(-0.72216088, -0.30532472), cd_t(-1.82533561, -0.56464247)},
         {cd_t(-1.82533561, 0.56464247), cd_t(-0.72216088, 0.30532472), cd_t(0.0, 0.0), cd_t(-1.98006658, 0.19866933)},
         {cd_t(-0.76842440, 0.15576734), cd_t(-1.82533561, 0.56464247), cd_t(-1.98006658, -0.19866933), cd_t(0.0, 0.0)}};
 
+    GoodHoppingKTilde.submat(0, 0, Nc - 1, Nc - 1) = diagonal_part;
+
+    GoodHoppingKTilde.submat(Nc, Nc, NOrb * Nc - 1, NOrb * Nc - 1) = diagonal_part;
+
     ClusterMatrixCD_t hopping = h0(0.1, -0.3);
-    for (size_t i = 0; i < 4; i++)
-        for (size_t j = 0; j < 4; j++)
+    for (size_t i = 0; i < Nc; i++)
+    {
+        for (size_t j = 0; j < Nc; j++)
         {
             //std::cout << "i ,j " << i << " " << j << std::endl;
-            ASSERT_NEAR(hopping(i, j).real(), GoodHoppingKTilde(i, j).real(), 1e-7);
+            ASSERT_NEAR(hopping(i, j).real(), GoodHoppingKTilde(i, j).real(), DELTA);
+            ASSERT_NEAR(hopping(i, j).imag(), GoodHoppingKTilde(i, j).imag(), DELTA);
         }
+    }
 }
 
 int main(int argc, char **argv)
