@@ -3,6 +3,7 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/Conventions.hpp"
+#include "../Utilities/Fourier_DCA.hpp"
 
 namespace Models
 {

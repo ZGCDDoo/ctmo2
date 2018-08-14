@@ -128,6 +128,9 @@ class Base_IOModel
     {
         mpiUt::Print("In IOModel ReadGreenKDat ");
 
+        const size_t shutUpWarning = NOrb;
+        std::cout << shutUpWarning << "WARNING, Norb not implemented in ReadGreenKDat" << std::endl;
+
         ClusterMatrix_t fileMat;
         ClusterMatrixCD_t tmp(Nc, Nc);
         fileMat.load(filename);
@@ -248,6 +251,8 @@ class Base_IOModel
 #ifdef DCA
     void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb, const size_t &precision = 6) const
     {
+        const size_t shutUpWarning = NOrb;
+        std::cout << shutUpWarning << "WARNING, Norb not implemented in SaveK" << std::endl;
 
         std::ofstream fout;
         fout.open(fname + std::string(".dat"), std::ios::out);
