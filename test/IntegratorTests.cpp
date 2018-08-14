@@ -74,6 +74,7 @@ TEST(IntegratorTest, TestGridKTilde)
     goodResult.submat(0, Nc, Nc - 1, NOrb * Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
     goodResult.submat(Nc, 0, NOrb * Nc - 1, Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
 
+    assert(goodResult.n_rows == tLocTest.n_rows);
     for (size_t i = 0; i < goodResult.n_cols; i++)
     {
         for (size_t j = 0; j < goodResult.n_rows; j++)
