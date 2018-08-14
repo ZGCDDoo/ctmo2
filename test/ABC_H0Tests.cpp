@@ -9,6 +9,7 @@ const size_t Nc = 4;
 const size_t Nx = 2;
 const size_t Ny = 2;
 const size_t NOrb = 2;
+const double INTRA = -0.01;
 
 Json BuildJson()
 {
@@ -18,7 +19,7 @@ Json BuildJson()
             {"00": 
                 {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0},
             "01":
-                {"tIntra": 0.0, "tx": 0.0, "ty": 0.0, "tx=y": 0.0, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0},
+                {"tIntra": -0.01, "tx": -1.02, "ty": -1.02, "tx=y": 0.230, "tx=-y": 0.230, "t2x" : -0.90, "t2y": -0.90},
             "11":
                 {"tIntra": 0.0, "tx": -1.0, "ty": -1.0, "tx=y": -0.40, "tx=-y": 0.0, "t2x" : 0.0, "t2y": 0.0}
 
@@ -118,10 +119,35 @@ TEST(ABC_H0_Tests, Hopping)
         {cd_t(-1.82533561, 0.56464247), cd_t(-0.72216088, 0.30532472), cd_t(0.0, 0.0), cd_t(-1.98006658, 0.19866933)},
         {cd_t(-0.76842440, 0.15576734), cd_t(-1.82533561, 0.56464247), cd_t(-1.98006658, -0.19866933), cd_t(0.0, 0.0)}};
 
-    ClusterMatrixCD_t off_diagonal = {};
-    GoodHoppingKTilde.submat(0, 0, Nc - 1, Nc - 1) = diagonal_part;
+    ClusterMatrixCD_t off_diagonal = {{
+                                          cd_t(-3.249723947, 0),
+                                          cd_t(-2.019667909, 0.2026427174),
+                                          cd_t(-1.861842327, -0.5759353229),
+                                          cd_t(0.857086533, 0.1737400415),
+                                      },
+                                      {
+                                          cd_t(-2.019667909, -0.2026427174),
+                                          cd_t(-3.249723947, 0),
+                                          cd_t(0.8054850475, 0.3405536159),
+                                          cd_t(-1.861842327, -0.5759353229),
+                                      },
+                                      {
+                                          cd_t(-1.861842327, 0.5759353229),
+                                          cd_t(0.8054850475, -0.3405536159),
+                                          cd_t(-3.249723947, 0),
+                                          cd_t(-2.019667909, 0.2026427174),
+                                      },
+                                      {
+                                          cd_t(0.857086533, -0.1737400415),
+                                          cd_t(-1.861842327, 0.5759353229),
+                                          cd_t(-2.019667909, -0.2026427174),
+                                          cd_t(-3.249723947, 0),
+                                      }};
 
+    GoodHoppingKTilde.submat(0, 0, Nc - 1, Nc - 1) = diagonal_part;
     GoodHoppingKTilde.submat(Nc, Nc, NOrb * Nc - 1, NOrb * Nc - 1) = diagonal_part;
+    GoodHoppingKTilde.submat(0, Nc, Nc - 1, NOrb * Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
+    GoodHoppingKTilde.submat(Nc, 0, NOrb * Nc - 1, Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
 
     ClusterMatrixCD_t hopping = h0(0.1, -0.3);
     for (size_t i = 0; i < Nc * NOrb; i++)
