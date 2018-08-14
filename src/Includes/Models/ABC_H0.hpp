@@ -1,5 +1,6 @@
 #pragma once
 #include "../Utilities/Utilities.hpp"
+#include "../Utilities/IO.hpp"
 
 namespace Models
 {
@@ -99,24 +100,21 @@ class ABC_H0
         ClusterMatrixCD_t HoppingKTilde(NS, NS);
         HoppingKTilde.zeros();
 
-        size_t NIndepOrbIndex = 0;
         for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
-            for (size_t o2 = o1; o2 < NOrb_; o2++)
+            for (size_t o2 = 0; o2 < NOrb_; o2++)
             {
-
+                const size_t NIndepOrbIndex = IO::Base_IOModel<Nx, Ny>::GetIndepOrbitalIndex(o1, o2, NOrb_);
                 for (size_t i = 0; i < Nc; i++)
                 {
-                    for (size_t j = i; j < Nc; j++)
+                    for (size_t j = 0; j < Nc; j++)
                     {
                         for (const SiteVector_t &K : this->KWaveVectors_)
                         {
                             HoppingKTilde(i + o1 * Nc, j + o2 * Nc) += std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY, NIndepOrbIndex);
                         }
-                        HoppingKTilde(j + o2 * Nc, i + o1 * Nc) = HoppingKTilde(i + o1 * Nc, j + o2 * Nc);
                     }
                 }
-                NIndepOrbIndex++;
             }
         }
 

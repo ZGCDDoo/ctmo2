@@ -312,7 +312,7 @@ class Base_IOModel
             }
         }
 
-        throw std::runtime_error("Miseria, here");
+        throw std::runtime_error("Miseria, GetIndepOrbitalIndex problem. Stupido !");
         return INVALID;
     }
 
