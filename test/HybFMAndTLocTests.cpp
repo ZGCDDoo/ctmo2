@@ -28,6 +28,9 @@ TEST(H0Triangle2DTest, Init)
     using h0_t = Models::ABC_H0<Nx, Nx>;
     h0_t h0(BuildJson());
 
+    std::cout << h0.txVec().at(0) << std::endl;
+    std::cout << h0.txVec().size() << std::endl;
+
     Models::HybFMAndTLoc<h0_t>::CalculateHybFMAndTLoc(h0);
 
     ClusterMatrixCD_t tloc_K;

@@ -109,7 +109,12 @@ class ABC_H0
                     {
                         for (const SiteVector_t &K : this->KWaveVectors_)
                         {
+#ifdef DCA
+                            HoppingKTilde(i + o1 * Nc, j + o2 * Nc) += std::exp(im * dot(K, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY, NIndepOrbIndex);
+
+#else
                             HoppingKTilde(i + o1 * Nc, j + o2 * Nc) += std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY, NIndepOrbIndex);
+#endif
                         }
                     }
                 }
