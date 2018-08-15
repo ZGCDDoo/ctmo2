@@ -1,6 +1,5 @@
 #pragma once
 #include "../Utilities/Utilities.hpp"
-#include "../Utilities/IO.hpp"
 
 namespace Models
 {
@@ -102,7 +101,7 @@ class ABC_H0
         {
             for (size_t o2 = 0; o2 < NOrb_; o2++)
             {
-                const size_t NIndepOrbIndex = IO::Base_IOModel<Nx, Ny>::GetIndepOrbitalIndex(o1, o2, NOrb_);
+                const size_t NIndepOrbIndex = Utilities::GetIndepOrbitalIndex(o1, o2, NOrb_);
                 for (size_t i = 0; i < Nc; i++)
                 {
                     for (size_t j = 0; j < Nc; j++)
