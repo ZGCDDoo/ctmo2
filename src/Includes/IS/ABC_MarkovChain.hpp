@@ -87,11 +87,9 @@ class ABC_MarkovChain
         return dataCT_->beta_;
     };
 
-    virtual double gammaUpTrad(const AuxSpin_t &auxxTo, const AuxSpin_t &vauxFrom) = 0;
-    virtual double gammaDownTrad(const AuxSpin_t &auxxTo, const AuxSpin_t &vauxFrom) = 0;
+    virtual double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &vauxFrom) = 0;
     virtual double KAux() = 0;
-    virtual double FAuxUp(const AuxSpin_t &aux) = 0;
-    virtual double FAuxDown(const AuxSpin_t &aux) = 0;
+    virtual double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) = 0;
 
     void ThermalizeFromConfig()
     {
@@ -103,8 +101,8 @@ class ABC_MarkovChain
             for (size_t i = 0; i < kk; i++)
             {
                 AuxSpin_t aux = dataCT_->vertices_.at(i).aux();
-                nfdata_.FVup_(i) = FAuxUp(aux);
-                nfdata_.FVdown_(i) = FAuxDown(aux);
+                nfdata_.FVup_(i) = FAux(FermionSpin_t::Up, aux);
+                nfdata_.FVdown_(i) = FAux(FermionSpin_t::Down, aux);
             }
 
             nfdata_.Nup_.Resize(kk, kk);
@@ -144,8 +142,8 @@ class ABC_MarkovChain
             double fauxdown = nfdata_.FVdown_(p);
             double fauxupM1 = fauxup - 1.0;
             double fauxdownM1 = fauxdown - 1.0;
-            double gammakup = gammaUpTrad(auxTo, auxFrom);
-            double gammakdown = gammaDownTrad(auxTo, auxFrom);
+            double gammakup = gammaTrad(FermionSpin_t::Up, auxTo, auxFrom);
+            double gammakdown = gammaTrad(FermionSpin_t::Down, auxTo, auxFrom);
 
             double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
             double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
@@ -215,8 +213,8 @@ class ABC_MarkovChain
         //AssertSizes();
         updStats_["Inserts"][0]++;
         Vertex vertex = Vertex(dataCT_->beta_ * urng_(), static_cast<Site_t>(Nc * urng_()), urng_() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down);
-        double fauxup = FAuxUp(vertex.aux());
-        double fauxdown = FAuxDown(vertex.aux());
+        double fauxup = FAux(FermionSpin_t::Up, vertex.aux());
+        double fauxdown = FAux(FermionSpin_t::Down, vertex.aux());
         double fauxupM1 = fauxup - 1.0;
         double fauxdownM1 = fauxdown - 1.0;
 

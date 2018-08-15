@@ -134,21 +134,30 @@ class VertexBuilder
 {
   public:
     //must hold the alphas, the values of the U, U' and (U-J_H)
-    VertexBuilder(const Json &jj, const size_t &Nc) : delta_(jj["delta"].get<double>()),
+    VertexBuilder(const Json &jj, const size_t &Nc) : Utensor(jj),
+                                                      delta_(jj["delta"].get<double>()),
                                                       beta_(jj["beta"].get<double>()),
                                                       Nc_(Nc),
-                                                      NOrb_(jj["NOrb"].get<size_t>()),
-                                                      Utensor(jj)
+                                                      NOrb_(jj["NOrb"].get<size_t>())
 
     {
     }
 
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
     {
-        VertexType vertextype = static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
+        VertexType vertextype = NOrb_ == 1 ? VertexType::HubbardIntra : static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
+
         if (vertextype == VertexType::HubbardIntra)
         {
             return BuildHubbardIntra(urng);
+        }
+        else if (vertextype == VertexType::HubbardInter)
+        {
+            return BuildHubbardInter(urng);
+        }
+        else if (vertextype == VertexType::HubbardInterSpin)
+        {
+            return BuildHubbardInterSpin(urng);
         }
         else
         {

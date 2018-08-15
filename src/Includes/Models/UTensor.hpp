@@ -24,11 +24,18 @@ class UTensor
                 const Json &jj = UJson["UParameters"][o1o2Name];
 
                 const double U = jj["U"].get<double>();
-                const double J_H = jj["J_H"].get<double>();
+
+                double J_H = 0.0;
+                double UPrime = 0.0;
+                if (o1 != o2)
+                {
+                    J_H = jj["J_H"].get<double>();
+                    UPrime = U - 2.0 * J_H;
+                }
 
                 UVec_.push_back(U);
                 JHVec_.push_back(J_H);
-                UPrimeVec_.push_back(U - 2.0 * J_H);
+                UPrimeVec_.push_back(UPrime);
             }
         }
     }
