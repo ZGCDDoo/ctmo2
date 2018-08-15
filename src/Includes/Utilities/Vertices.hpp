@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Utilities.hpp"
-#include "UTensor.hpp"
+#include "../Models/UTensor.hpp"
 
 namespace Vertices
 {
@@ -110,7 +110,7 @@ class Vertices
         data_.push_back(vertex);
         vertex.vStart().spin() == FermionSpin_t::Up ? NUp++ : NDown++;
         vertex.vEnd().spin() == FermionSpin_t::Up ? NUp++ : NDown++;
-        assert(2 * vertices.size() == (Nup + NDown));
+        assert(2 * data_.size() == (NUp + NDown));
     }
 
     void RemoveVertex(const size_t &pp)
@@ -137,7 +137,7 @@ class VertexBuilder
     VertexBuilder(const Json &jj, const size_t &Nc) : delta_(jj["delta"].get<double>()),
                                                       beta_(jj["beta"].get<double>()),
                                                       Nc_(Nc),
-                                                      NOrb_(jj["NOrb"].get<size_t>),
+                                                      NOrb_(jj["NOrb"].get<size_t>()),
                                                       Utensor(jj)
 
     {
@@ -145,7 +145,7 @@ class VertexBuilder
 
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
     {
-        VertexType vertextype = static_cast<VertexType>(static_cast<size_t>(U_Tensor.n_rows * urng()));
+        VertexType vertextype = static_cast<VertexType>(static_cast<size_t>(urng()* N_VERTEX_TYPES));
         if (vertextype == VertexType::HubbardIntra)
         {
             return BuildHubbardIntra(urng);
@@ -188,7 +188,7 @@ class VertexBuilder
         VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
         AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, orbital, orbital));
+        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, o1, o2));
     }
 
     Vertex BuildHubbardInterSpin(Utilities::UniformRngMt19937_t &urng)
@@ -210,26 +210,26 @@ class VertexBuilder
         VertexPart vEnd(tau, site, spin, o2);
         AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, orbital, orbital));
+        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, o1, o2));
     }
 
     double GetKxio1o2(const VertexType &vtype, const Orbital_t &o1, const Orbital_t &o2)
     {
 
-        const NIdepOrbitalIndex = Utilities::GetIndepOrbitalIndex(o1, o2, NOrb_);
+        const size_t NIdepOrbitalIndex = Utilities::GetIndepOrbitalIndex(o1, o2, NOrb_);
         double U_xio1o2 = INVALID;
 
-        if (vtype == HubbardIntra)
+        if (vtype == VertexType::HubbardIntra)
         {
-            U_xio1o2 = Utensor.UVec_.at(NIdepOrbitalIndex);
+            U_xio1o2 = Utensor.UVec().at(NIdepOrbitalIndex);
         }
-        else if (vtype == HubbardInter)
+        else if (vtype == VertexType::HubbardInter)
         {
-            U_xio1o2 = Utensor.UPrimeVec_.at(NIdepOrbitalIndex);
+            U_xio1o2 = Utensor.UPrimeVec().at(NIdepOrbitalIndex);
         }
         else
         {
-            U_xio1o2 = Utensor.JHVec_.at(NIdepOrbitalIndex);
+            U_xio1o2 = Utensor.JHVec().at(NIdepOrbitalIndex);
         }
 
         return (-U_xio1o2 * beta_ * Nc_ / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));

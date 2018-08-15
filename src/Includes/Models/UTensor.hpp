@@ -9,7 +9,7 @@ class UTensor
 {
 
   public:
-    UTensor(const Json &UJson) : NOrb_(tJson["NOrb"].get<size_t>())
+    UTensor(const Json &UJson) : NOrb_(UJson["NOrb"].get<size_t>())
 
     {
         assert(UJson["UParameters"].size() == NOrb_ * (NOrb_ + 1) / 2);

@@ -200,6 +200,7 @@ if (${TEST})
     MarkovChainSubMatrixTests
     MatrixTests
     ObservablesTests
+    VerticesTests
     )
 
     set(TESTS_DIR ${PROJECT_SOURCE_DIR}/test)
