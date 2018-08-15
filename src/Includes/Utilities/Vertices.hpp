@@ -145,7 +145,7 @@ class VertexBuilder
 
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
     {
-        VertexType vertextype = static_cast<VertexType>(static_cast<size_t>(urng()* N_VERTEX_TYPES));
+        VertexType vertextype = static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
         if (vertextype == VertexType::HubbardIntra)
         {
             return BuildHubbardIntra(urng);
@@ -278,6 +278,8 @@ class AuxHelper
         const double fsJ = FAux(spin, auxJ);
         return ((FAux(spin, auxI) - fsJ) / fsJ);
     }
+
+    double delta() const { return delta_; };
 
   private:
     const double &delta_;
