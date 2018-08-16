@@ -76,8 +76,8 @@ private:
   GreenTau_t green0CachedDown_;
   std::shared_ptr<Matrix_t> MupPtr_;
   std::shared_ptr<Matrix_t> MdownPtr_;
-  std::vector<Vertex> vertices_;
-  // Diagrammatic::Vertices vertices_;
+  // std::vector<Vertex> vertices_;
+  Diagrammatic::Vertices vertices_;
   const double beta_;
   Sign_t sign_;
 };

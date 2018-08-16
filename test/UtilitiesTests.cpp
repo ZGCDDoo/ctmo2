@@ -311,8 +311,6 @@ TEST(UtilitiesTest, BlockRankOneUpgrade)
 
 TEST(UtilitiesTest, BlockRankTwoUpgrade)
 {
-    //Now test the following: I have the matrix a1 2x2, its inverse is m1. I a1 update it so that it is 3x3 by adding a Row r1 and a Column c1.
-    //Now I want this new matrix a2 and its inverse m2. I can do this by twice the shermann morrison. Lets test that.
 
     const size_t k = 3;
     ClusterMatrix_t a1 = {

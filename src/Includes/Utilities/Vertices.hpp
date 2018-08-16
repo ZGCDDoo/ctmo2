@@ -123,6 +123,10 @@ class Vertices
         vertexpp.vEnd().spin() == FermionSpin_t::Up ? NUp-- : NDown--;
     }
 
+    //Getters
+    size_t size() const { return data_.size(); };
+    Vertex at(const size_t &i) { return data_.at(i); };
+
   private:
     std::vector<Vertex> data_;
     size_t NUp; //Not the CT-Aux N_sigma matrices, but the number of up verticesPart
