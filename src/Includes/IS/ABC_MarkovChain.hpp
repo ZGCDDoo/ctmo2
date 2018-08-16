@@ -217,11 +217,11 @@ class ABC_MarkovChain
 
         if (x.spin() == y.spin())
         {
-            InsertVertexDiffSpin(vertex);
+            InsertVertexSameSpin(vertex);
         }
         else
         {
-            InsertVertexSameSpin(vertex);
+            InsertVertexDiffSpin(vertex);
         }
     }
 
@@ -340,11 +340,11 @@ class ABC_MarkovChain
 
             if (x.spin() == y.spin())
             {
-                RemoveVertexDiffSpin(pp);
+                RemoveVertexSameSpin(pp);
             }
             else
             {
-                RemoveVertexSameSpin(pp);
+                RemoveVertexDiffSpin(pp);
             }
 
             //     double probAcc = static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
@@ -383,39 +383,37 @@ class ABC_MarkovChain
     void RemoveVertexDiffSpin(const size_t &pp)
     {
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const VertexPart x = vertex.vStart();
-        const VertexPart y = vertex.vEnd();
+        // const VertexPart x = vertex.vStart();
+        // const VertexPart y = vertex.vEnd();
 
         //In theory we should find the proper index for each spin
         const double probAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
 
-        //     if (urng_() < std::abs(probAcc))
-        //     {
-        //         //AssertSizes();
-        //         updStats_["Removes"][1]++;
-        //         if (probAcc < .0)
-        //         {
-        //             dataCT_->sign_ *= -1; //not to sure here, should it not just be sign = -1 ??
-        //         }
+        if (urng_() < std::abs(probAcc))
+        {
+            //AssertSizes();
+            updStats_["Removes"][1]++;
+            if (probAcc < .0)
+            {
+                dataCT_->sign_ *= -1; //not to sure here, should it not just be sign = -1 ??
+            }
 
-        //         //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
+            //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
 
-        //         const size_t kk = dataCT_->vertices_.size();
-        //         const size_t kkm1 = kk - 1;
+            const size_t kk = dataCT_->vertices_.size();
+            const size_t kkm1 = kk - 1;
 
-        //         LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, pp);
-        //         LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, pp);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, pp);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, pp);
 
-        //         nfdata_.FVup_.swap_rows(pp, kkm1);
-        //         nfdata_.FVdown_.swap_rows(pp, kkm1);
-        //         nfdata_.FVup_.resize(kkm1);
-        //         nfdata_.FVdown_.resize(kkm1);
+            nfdata_.FVup_.swap_rows(pp, kkm1);
+            nfdata_.FVdown_.swap_rows(pp, kkm1);
+            nfdata_.FVup_.resize(kkm1);
+            nfdata_.FVdown_.resize(kkm1);
 
-        //         std::iter_swap(dataCT_->vertices_.begin() + pp, dataCT_->vertices_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-        //                                                                                             //to be consistent with the updated Mup and dataCT_->Mdown_
-        //         dataCT_->vertices_.pop_back();
-        //         //AssertSizes();
-        //     }
+            dataCT_->vertices_.RemoveVertex(pp);
+            //AssertSizes();
+        }
     }
 
     void RemoveVertexSameSpin(const size_t &pp)
@@ -423,7 +421,7 @@ class ABC_MarkovChain
         assert(false);
     }
 
-    void CleanUpdate(bool print = false)
+    void CleanUpdate()
     {
         //mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
         const size_t kk = dataCT_->vertices_.size();
@@ -436,7 +434,7 @@ class ABC_MarkovChain
         }
 
         AssertSizes();
-        for (size_t iUp = 0; iUp < kk; iUp++)
+        for (size_t iUp = 0; iUp < kkup; iUp++)
         {
             for (size_t jUp = 0; jUp < kk; jUp++)
             {
@@ -450,7 +448,7 @@ class ABC_MarkovChain
             }
         }
 
-        for (size_t iDown = 0; iDown < kk; iDown++)
+        for (size_t iDown = 0; iDown < kkdown; iDown++)
         {
             for (size_t jDown = 0; jDown < kk; jDown++)
             {

@@ -119,16 +119,24 @@ class Vertices
 
     void RemoveVertex(const size_t &pp)
     {
-        // const size_t kkm1 = data_.size() - 1;
-        // const Vertex vertexpp = data_.at(pp);
-        // std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-        //                                                           //to be consistent with the updated Mup and dataCT_->Mdown_
-        // data_.pop_back();
-        // vertexpp.vStart().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
-        // vertexpp.vEnd().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
+        const size_t kkm1 = data_.size() - 1;
+        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+                                                                  //to be consistent with the updated Mup and dataCT_->Mdown_
+        data_.pop_back();
+
+        //Will need to change this when testing for different spin interactions
+        std::iter_swap(vPartUpVec_.begin() + pp, vPartUpVec_.begin() + kkm1);     //swap the last vertex and the vertex pp in vertices.
+        std::iter_swap(vPartDownVec_.begin() + pp, vPartDownVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+        vPartUpVec_.pop_back();
+        vPartDownVec_.pop_back();
     }
 
+    /*
+    Get the index for vPartUpVec corresponding to a given vertex Index (will be the same for only different spin interactions) 
+    */
     // size_t GetIndexSpin()
+    // {
+    // }
 
     //Getters
     size_t size() const { return data_.size(); };
@@ -162,6 +170,8 @@ class VertexBuilder
     {
         VertexType vertextype = NOrb_ == 1 ? VertexType::HubbardIntra : static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
 
+        //The following way to propose is not good ! One should propose according to the different values of the Interaction and their wieght in respect to the total
+        //number of interaction terms.
         if (vertextype == VertexType::HubbardIntra)
         {
             return BuildHubbardIntra(urng);
