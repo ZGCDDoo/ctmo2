@@ -340,11 +340,11 @@ class ABC_MarkovChain
 
             if (x.spin() == y.spin())
             {
-                RemoveVertexDiffSpin(vertex);
+                RemoveVertexDiffSpin(pp);
             }
             else
             {
-                RemoveVertexSameSpin(vertex);
+                RemoveVertexSameSpin(pp);
             }
 
             //     double probAcc = static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
@@ -380,13 +380,14 @@ class ABC_MarkovChain
         }
     }
 
-    void RemoveVertexDiffSpin(const Vertex &vertex)
+    void RemoveVertexDiffSpin(const size_t &pp)
     {
+        const Vertex vertex = dataCT_->vertices_.at(pp);
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
 
-        //     double probAcc = static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
-        //     probAcc *= PROBINSERT / PROBREMOVE;
+        //In theory we should find the proper index for each spin
+        const double probAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
 
         //     if (urng_() < std::abs(probAcc))
         //     {
@@ -417,7 +418,7 @@ class ABC_MarkovChain
         //     }
     }
 
-    void RemoveVertexSameSpin(const Vertex &vertex)
+    void RemoveVertexSameSpin(const size_t &pp)
     {
         assert(false);
     }
