@@ -329,11 +329,61 @@ class ABC_MarkovChain
     void
     RemoveVertex()
     {
-        // //AssertSizes();
-        // updStats_["Removes"][0]++;
-        // if (dataCT_->vertices_.size())
-        // {
-        //     const size_t pp = static_cast<int>(urng_() * dataCT_->vertices_.size());
+        AssertSizes();
+        updStats_["Removes"][0]++;
+        if (dataCT_->vertices_.size())
+        {
+            const size_t pp = static_cast<int>(urng_() * dataCT_->vertices_.size());
+            const Vertex vertex = dataCT_->vertices_.at(pp);
+            const VertexPart x = vertex.vStart();
+            const VertexPart y = vertex.vEnd();
+
+            if (x.spin() == y.spin())
+            {
+                RemoveVertexDiffSpin(vertex);
+            }
+            else
+            {
+                RemoveVertexSameSpin(vertex);
+            }
+
+            //     double probAcc = static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
+            //     probAcc *= PROBINSERT / PROBREMOVE;
+
+            //     if (urng_() < std::abs(probAcc))
+            //     {
+            //         //AssertSizes();
+            //         updStats_["Removes"][1]++;
+            //         if (probAcc < .0)
+            //         {
+            //             dataCT_->sign_ *= -1; //not to sure here, should it not just be sign = -1 ??
+            //         }
+
+            //         //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
+
+            //         const size_t kk = dataCT_->vertices_.size();
+            //         const size_t kkm1 = kk - 1;
+
+            //         LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, pp);
+            //         LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, pp);
+
+            //         nfdata_.FVup_.swap_rows(pp, kkm1);
+            //         nfdata_.FVdown_.swap_rows(pp, kkm1);
+            //         nfdata_.FVup_.resize(kkm1);
+            //         nfdata_.FVdown_.resize(kkm1);
+
+            //         std::iter_swap(dataCT_->vertices_.begin() + pp, dataCT_->vertices_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+            //                                                                                             //to be consistent with the updated Mup and dataCT_->Mdown_
+            //         dataCT_->vertices_.pop_back();
+            //         //AssertSizes();
+            //     }
+        }
+    }
+
+    void RemoveVertexDiffSpin(const Vertex &vertex)
+    {
+        const VertexPart x = vertex.vStart();
+        const VertexPart y = vertex.vEnd();
 
         //     double probAcc = static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
         //     probAcc *= PROBINSERT / PROBREMOVE;
@@ -365,46 +415,56 @@ class ABC_MarkovChain
         //         dataCT_->vertices_.pop_back();
         //         //AssertSizes();
         //     }
-        // }
+    }
+
+    void RemoveVertexSameSpin(const Vertex &vertex)
+    {
+        assert(false);
     }
 
     void CleanUpdate(bool print = false)
     {
-        // //mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
-        // const size_t kk = dataCT_->vertices_.size();
-        // if (kk == 0)
-        // {
-        //     return;
-        // }
+        //mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
+        const size_t kk = dataCT_->vertices_.size();
+        const size_t kkup = dataCT_->vertices_.NUp();
+        const size_t kkdown = dataCT_->vertices_.NDown();
 
-        // //AssertSizes();
-        // for (size_t i = 0; i < kk; i++)
-        // {
-        //     for (size_t j = 0; j < kk; j++)
-        //     {
+        if (kk == 0)
+        {
+            return;
+        }
 
-        //         nfdata_.Nup_(i, j) = -GetGreenTau0Up(dataCT_->vertices_.at(i), dataCT_->vertices_.at(j)) * (nfdata_.FVup_(j) - 1.0);
-        //         nfdata_.Ndown_(i, j) = -GetGreenTau0Down(dataCT_->vertices_[i], dataCT_->vertices_[j]) * (nfdata_.FVdown_(j) - 1.0);
+        AssertSizes();
+        for (size_t iUp = 0; iUp < kk; iUp++)
+        {
+            for (size_t jUp = 0; jUp < kk; jUp++)
+            {
 
-        //         if (i == j)
-        //         {
-        //             nfdata_.Nup_(i, i) += nfdata_.FVup_(i);
-        //             nfdata_.Ndown_(i, i) += nfdata_.FVdown_(i);
-        //         }
-        //     }
-        // }
-        // //AssertSizes();
-        // if (print)
-        // {
-        //     SiteVector_t FVupM1 = -(nfdata_.FVup_ - 1.0);
-        //     SiteVector_t FVdownM1 = -(nfdata_.FVdown_ - 1.0);
-        //     DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
-        //     DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
-        //     (*(dataCT_->MupPtr_)).Print();
-        //     (*(dataCT_->MdownPtr_)).Print();
-        // }
-        // nfdata_.Nup_.Inverse();
-        // nfdata_.Ndown_.Inverse();
+                nfdata_.Nup_(iUp, jUp) = -GetGreenTau0Up(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
+
+                if (iUp == jUp)
+                {
+                    nfdata_.Nup_(iUp, iUp) += nfdata_.FVup_(iUp);
+                }
+            }
+        }
+
+        for (size_t iDown = 0; iDown < kk; iDown++)
+        {
+            for (size_t jDown = 0; jDown < kk; jDown++)
+            {
+
+                nfdata_.Ndown_(iDown, jDown) = -GetGreenTau0Down(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
+
+                if (iDown == jDown)
+                {
+                    nfdata_.Ndown_(iDown, iDown) += nfdata_.FVdown_(iDown);
+                }
+            }
+        }
+
+        nfdata_.Nup_.Inverse();
+        nfdata_.Ndown_.Inverse();
     }
 
     double GetGreenTau0Up(const VertexPart &x, const VertexPart &y) const
