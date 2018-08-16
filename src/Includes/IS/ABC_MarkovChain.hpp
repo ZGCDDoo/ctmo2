@@ -115,14 +115,14 @@ class ABC_MarkovChain
     void DoStep()
     {
 
-        if (urng_() < PROBFLIP)
-        {
-            FlipAux();
-        }
-        else
-        {
-            urng_() < PROBINSERT ? InsertVertex() : RemoveVertex();
-        }
+        // if (urng_() < PROBFLIP)
+        // {
+        //     FlipAux();
+        // }
+        // else
+        // {
+        urng_() < PROBINSERT ? InsertVertex() : RemoveVertex();
+        // }
 
         updatesProposed_++;
     }
@@ -130,74 +130,74 @@ class ABC_MarkovChain
     void FlipAux()
     {
 
-        if (dataCT_->vertices_.size())
-        {
-            updStats_["Flips"][0]++;
-            const size_t p = static_cast<size_t>(dataCT_->vertices_.size() * urng_());
-            Vertex vertex = dataCT_->vertices_.at(p);
-            vertex.FlipAux();
-            const AuxSpin_t auxTo = vertex.aux();
-            const AuxSpin_t auxFrom = dataCT_->vertices_.at(p).aux();
+        // if (dataCT_->vertices_.size())
+        // {
+        //     updStats_["Flips"][0]++;
+        //     const size_t p = static_cast<size_t>(dataCT_->vertices_.size() * urng_());
+        //     Vertex vertex = dataCT_->vertices_.at(p);
+        //     vertex.FlipAux();
+        //     const AuxSpin_t auxTo = vertex.aux();
+        //     const AuxSpin_t auxFrom = dataCT_->vertices_.at(p).aux();
 
-            const double fauxup = nfdata_.FVup_(p);
-            const double fauxdown = nfdata_.FVdown_(p);
-            const double fauxupM1 = fauxup - 1.0;
-            const double fauxdownM1 = fauxdown - 1.0;
-            const double gammakup = gammaTrad(FermionSpin_t::Up, auxTo, auxFrom);
-            double gammakdown = gammaTrad(FermionSpin_t::Down, auxTo, auxFrom);
+        //     const double fauxup = nfdata_.FVup_(p);
+        //     const double fauxdown = nfdata_.FVdown_(p);
+        //     const double fauxupM1 = fauxup - 1.0;
+        //     const double fauxdownM1 = fauxdown - 1.0;
+        //     const double gammakup = gammaTrad(FermionSpin_t::Up, auxTo, auxFrom);
+        //     double gammakdown = gammaTrad(FermionSpin_t::Down, auxTo, auxFrom);
 
-            const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
-            const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
+        //     const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
+        //     const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
 
-            const double probAcc = ratioUp * ratioDown;
+        //     const double probAcc = ratioUp * ratioDown;
 
-            if (urng_() < std::abs(probAcc))
-            {
-                updStats_["Flips"][1]++;
-                if (probAcc < 0.0)
-                {
-                    dataCT_->sign_ *= -1;
-                }
+        //     if (urng_() < std::abs(probAcc))
+        //     {
+        //         updStats_["Flips"][1]++;
+        //         if (probAcc < 0.0)
+        //         {
+        //             dataCT_->sign_ *= -1;
+        //         }
 
-                //AssertSizes();
-                const size_t kk = dataCT_->vertices_.size();
-                double lambdaUp = gammakup / ratioUp;
-                double lambdaDown = gammakdown / ratioDown;
+        //         //AssertSizes();
+        //         const size_t kk = dataCT_->vertices_.size();
+        //         double lambdaUp = gammakup / ratioUp;
+        //         double lambdaDown = gammakdown / ratioDown;
 
-                SiteVector_t rowpUp;
-                SiteVector_t colpUp;
-                LinAlg::ExtractRow(p, rowpUp, nfdata_.Nup_);
-                LinAlg::ExtractCol(p, colpUp, nfdata_.Nup_);
+        //         SiteVector_t rowpUp;
+        //         SiteVector_t colpUp;
+        //         LinAlg::ExtractRow(p, rowpUp, nfdata_.Nup_);
+        //         LinAlg::ExtractCol(p, colpUp, nfdata_.Nup_);
 
-                SiteVector_t rowpDown;
-                SiteVector_t colpDown;
-                LinAlg::ExtractRow(p, rowpDown, nfdata_.Ndown_);
-                LinAlg::ExtractCol(p, colpDown, nfdata_.Ndown_);
+        //         SiteVector_t rowpDown;
+        //         SiteVector_t colpDown;
+        //         LinAlg::ExtractRow(p, rowpDown, nfdata_.Ndown_);
+        //         LinAlg::ExtractCol(p, colpDown, nfdata_.Ndown_);
 
-                for (size_t j = 0; j < kk; j++)
-                {
-                    for (size_t i = 0; i < kk; i++)
-                    {
-                        if (i != p)
-                        {
-                            nfdata_.Nup_(i, j) += (colpUp(i) * fauxup / fauxupM1) * lambdaUp * rowpUp(j);
-                            nfdata_.Ndown_(i, j) += (colpDown(i) * fauxdown / fauxdownM1) * lambdaDown * rowpDown(j);
-                        }
-                        else
-                        {
-                            nfdata_.Nup_(i, j) += (((colpUp(i) * fauxup - 1.0) / fauxupM1) - 1.0) * lambdaUp * rowpUp(j);
-                            nfdata_.Ndown_(i, j) += (((colpDown(i) * fauxdown - 1.0) / fauxdownM1) - 1.0) * lambdaDown * rowpDown(j);
-                        }
-                    }
-                }
+        //         for (size_t j = 0; j < kk; j++)
+        //         {
+        //             for (size_t i = 0; i < kk; i++)
+        //             {
+        //                 if (i != p)
+        //                 {
+        //                     nfdata_.Nup_(i, j) += (colpUp(i) * fauxup / fauxupM1) * lambdaUp * rowpUp(j);
+        //                     nfdata_.Ndown_(i, j) += (colpDown(i) * fauxdown / fauxdownM1) * lambdaDown * rowpDown(j);
+        //                 }
+        //                 else
+        //                 {
+        //                     nfdata_.Nup_(i, j) += (((colpUp(i) * fauxup - 1.0) / fauxupM1) - 1.0) * lambdaUp * rowpUp(j);
+        //                     nfdata_.Ndown_(i, j) += (((colpDown(i) * fauxdown - 1.0) / fauxdownM1) - 1.0) * lambdaDown * rowpDown(j);
+        //                 }
+        //             }
+        //         }
 
-                dataCT_->vertices_.FlipAux(p);
-                nfdata_.FVup_(p) = fauxdown;
-                nfdata_.FVdown_(p) = fauxup;
+        //         dataCT_->vertices_.FlipAux(p);
+        //         nfdata_.FVup_(p) = fauxdown;
+        //         nfdata_.FVdown_(p) = fauxup;
 
-                AssertSizes();
-            }
-        }
+        //         AssertSizes();
+        //     }
+        // }
     }
 
     void AssertSizes()
@@ -226,9 +226,7 @@ class ABC_MarkovChain
 
     void InsertVertexDiffSpin(const Vertex &vertex)
     {
-        mpiUt::Print("In InsertVertexDiffSpin");
 
-        std::cout << "vertex.aux() = " << static_cast<size_t>(vertex.aux()) << std::endl;
         const double fauxup = FAux(FermionSpin_t::Up, vertex.aux());
         const double fauxdown = FAux(FermionSpin_t::Down, vertex.aux());
         const double fauxupM1 = fauxup - 1.0;
@@ -241,10 +239,6 @@ class ABC_MarkovChain
 
         const double sUp = fauxup - GetGreenTau0Up(vertexPartUp, vertexPartUp) * fauxupM1;
         const double sDown = fauxdown - GetGreenTau0Down(vertexPartDown, vertexPartDown) * fauxdownM1;
-        std::cout << "sUp = " << sUp << std::endl;
-        std::cout << "sDown = " << sDown << std::endl;
-        std::cout << "fauxup " << fauxup << std::endl;
-        std::cout << "vertexPartDown.tau() = " << vertexPartDown.tau() << std::endl;
 
         if (dataCT_->vertices_.size())
         {
@@ -264,7 +258,6 @@ class ABC_MarkovChain
             {
                 newLastRowUp_(iUp) = -GetGreenTau0Up(vertexPartUp, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
                 newLastColUp_(iUp) = -GetGreenTau0Up(dataCT_->vertices_.atUp(iUp), vertexPartUp) * fauxupM1;
-                std::cout << "newLastRowUp_(iUp) = " << newLastRowUp_(iUp) << std::endl;
             }
 
             for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
@@ -282,8 +275,6 @@ class ABC_MarkovChain
 
             const double ratio = sTildeUpI * sTildeDownI;
             const double probAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
-            std::cout << "probAcc = " << probAcc << std::endl;
-            //AssertSizes();
             if (urng_() < std::abs(probAcc))
             {
                 updStats_["Inserts"][1]++;
@@ -306,8 +297,6 @@ class ABC_MarkovChain
         {
             AssertSizes();
             const double probAcc = PROBREMOVE / PROBINSERT * vertex.probProb() * sUp * sDown;
-            std::cout << "probAcc = " << probAcc << std::endl;
-            std::cout << "vertex.probProb()  = " << vertex.probProb() << std::endl;
 
             if (urng_() < std::abs(probAcc))
             {
@@ -356,37 +345,6 @@ class ABC_MarkovChain
             {
                 RemoveVertexDiffSpin(pp);
             }
-
-            //     double probAcc = static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
-            //     probAcc *= PROBINSERT / PROBREMOVE;
-
-            //     if (urng_() < std::abs(probAcc))
-            //     {
-            //         //AssertSizes();
-            //         updStats_["Removes"][1]++;
-            //         if (probAcc < .0)
-            //         {
-            //             dataCT_->sign_ *= -1; //not to sure here, should it not just be sign = -1 ??
-            //         }
-
-            //         //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
-
-            //         const size_t kk = dataCT_->vertices_.size();
-            //         const size_t kkm1 = kk - 1;
-
-            //         LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, pp);
-            //         LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, pp);
-
-            //         nfdata_.FVup_.swap_rows(pp, kkm1);
-            //         nfdata_.FVdown_.swap_rows(pp, kkm1);
-            //         nfdata_.FVup_.resize(kkm1);
-            //         nfdata_.FVdown_.resize(kkm1);
-
-            //         std::iter_swap(dataCT_->vertices_.begin() + pp, dataCT_->vertices_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-            //                                                                                             //to be consistent with the updated Mup and dataCT_->Mdown_
-            //         dataCT_->vertices_.pop_back();
-            //         //AssertSizes();
-            //     }
         }
     }
 
@@ -500,7 +458,7 @@ class ABC_MarkovChain
         SiteVector_t FVdownM1 = -(nfdata_.FVdown_ - 1.0);
         DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
         DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
-        //obs_.Measure();
+        obs_.Measure();
     }
 
     void SaveMeas()
