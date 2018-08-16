@@ -102,14 +102,14 @@ class Vertices
 {
 
   public:
-    Vertices() : NUp(0), NDown(0){};
+    Vertices() : NUp_(0), NDown_(0){};
 
     void AppendVertex(const Vertex &vertex)
     {
         data_.push_back(vertex);
-        vertex.vStart().spin() == FermionSpin_t::Up ? NUp++ : NDown++;
-        vertex.vEnd().spin() == FermionSpin_t::Up ? NUp++ : NDown++;
-        assert(2 * data_.size() == (NUp + NDown));
+        vertex.vStart().spin() == FermionSpin_t::Up ? NUp_++ : NDown_++;
+        vertex.vEnd().spin() == FermionSpin_t::Up ? NUp_++ : NDown_++;
+        assert(2 * data_.size() == (NUp_ + NDown_));
     }
 
     void RemoveVertex(const size_t &pp)
@@ -119,18 +119,21 @@ class Vertices
         std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
                                                                   //to be consistent with the updated Mup and dataCT_->Mdown_
         data_.pop_back();
-        vertexpp.vStart().spin() == FermionSpin_t::Up ? NUp-- : NDown--;
-        vertexpp.vEnd().spin() == FermionSpin_t::Up ? NUp-- : NDown--;
+        vertexpp.vStart().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
+        vertexpp.vEnd().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
     }
 
     //Getters
     size_t size() const { return data_.size(); };
+    size_t NUp() const { return NUp_; };
+    size_t NDown() const { return NDown_; };
+
     Vertex at(const size_t &i) { return data_.at(i); };
 
   private:
     std::vector<Vertex> data_;
-    size_t NUp; //Not the CT-Aux N_sigma matrices, but the number of up verticesPart
-    size_t NDown;
+    size_t NUp_; //Not the CT-Aux N_sigma matrices, but the number of up verticesPart
+    size_t NDown_;
 };
 
 class VertexBuilder

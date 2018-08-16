@@ -235,51 +235,53 @@ class ABC_MarkovChain
         const double fauxupM1 = fauxup - 1.0;
         const double fauxdownM1 = fauxdown - 1.0;
 
-        const double sUp = fauxup - GetGreenTau0Up(vertex.vStart(), vertex.vEnd()) * fauxupM1;
-        const double sDown = fauxdown - GetGreenTau0Down(vertex.vStart(), vertex.vEnd()) * fauxdownM1;
+        const VertexPart vertexPartUp = vertex.vStart();
+        const VertexPart vertexPartDown = vertex.vEnd();
+        assert(vertexPartUp.spin() == FermionSpin_t::Up);
+        assert(vertexPartDown.spin() == FermionSpin_t::Down);
+
+        const double sUp = fauxup - GetGreenTau0Up(vertexPartUp, vertexPartUp) * fauxupM1;
+        const double sDown = fauxdown - GetGreenTau0Down(vertexPartDown, vertexPartDown) * fauxdownM1;
 
         if (dataCT_->vertices_.size())
         {
-            //     //AssertSizes();
-            //     const size_t kkold = dataCT_->vertices_.size();
-            //     const size_t kknew = kkold + 1;
+            //AssertSizes();
+            const size_t kkold = dataCT_->vertices_.size();
+            const size_t kknew = kkold + 1;
 
-            //     SiteVector_t newLastColUp_(kkold);
-            //     SiteVector_t newLastRowUp_(kkold);
-            //     SiteVector_t newLastColDown_(kkold);
-            //     SiteVector_t newLastRowDown_(kkold);
+            SiteVector_t newLastColUp_(dataCT_->vertices_.NUp());
+            SiteVector_t newLastRowUp_(dataCT_->vertices_.NUp());
+            SiteVector_t newLastColDown_(dataCT_->vertices_.NDown());
+            SiteVector_t newLastRowDown_(dataCT_->vertices_.NDown());
 
-            //     double sTildeUpI = sUp;
-            //     double sTildeDownI = sDown;
+            //Probably put this in a method
+            // for (size_t i = 0; i < kkold; i++)
+            // {
+            //     newLastRowUp_(i) = -GetGreenTau0Up(vertex, dataCT_->vertices_.at(i)) * (nfdata_.FVup_(i) - 1.0);
+            //     newLastColUp_(i) = -GetGreenTau0Up(dataCT_->vertices_[i], vertex) * fauxupM1;
 
-            //     //Probably put this in a method
-            //     for (size_t i = 0; i < kkold; i++)
+            //     newLastRowDown_(i) = -GetGreenTau0Down(vertex, dataCT_->vertices_[i]) * (nfdata_.FVdown_(i) - 1.0);
+            //     newLastColDown_(i) = -GetGreenTau0Down(dataCT_->vertices_[i], vertex) * fauxdownM1;
+            // }
+
+            SiteVector_t NQUp(kkold); //NQ = N*Q
+            SiteVector_t NQDown(kkold);
+            MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, NQUp);
+            MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, NQDown);
+            const double sTildeUpI = sUp - LinAlg::DotVectors(newLastRowUp_, NQUp);
+            const double sTildeDownI = sDown - LinAlg::DotVectors(newLastRowDown_, NQDown);
+
+            const double ratio = sTildeUpI * sTildeDownI;
+            double probAcc = KAux() / kknew * ratio;
+            probAcc *= PROBREMOVE / PROBINSERT;
+            //AssertSizes();
+            // if (urng_() < std::abs(probAcc))
+            // {
+            //     updStats_["Inserts"][1]++;
+            //     if (probAcc < .0)
             //     {
-            //         newLastRowUp_(i) = -GetGreenTau0Up(vertex, dataCT_->vertices_.at(i)) * (nfdata_.FVup_(i) - 1.0);
-            //         newLastColUp_(i) = -GetGreenTau0Up(dataCT_->vertices_[i], vertex) * fauxupM1;
-
-            //         newLastRowDown_(i) = -GetGreenTau0Down(vertex, dataCT_->vertices_[i]) * (nfdata_.FVdown_(i) - 1.0);
-            //         newLastColDown_(i) = -GetGreenTau0Down(dataCT_->vertices_[i], vertex) * fauxdownM1;
+            //         dataCT_->sign_ *= -1;
             //     }
-
-            //     SiteVector_t NQUp(kkold); //NQ = N*Q
-            //     SiteVector_t NQDown(kkold);
-            //     MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, NQUp);
-            //     MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, NQDown);
-            //     sTildeUpI -= LinAlg::DotVectors(newLastRowUp_, NQUp);
-            //     sTildeDownI -= LinAlg::DotVectors(newLastRowDown_, NQDown);
-
-            //     const double ratio = sTildeUpI * sTildeDownI;
-            //     double probAcc = KAux() / kknew * ratio;
-            //     probAcc *= PROBREMOVE / PROBINSERT;
-            //     //AssertSizes();
-            //     if (urng_() < std::abs(probAcc))
-            //     {
-            //         updStats_["Inserts"][1]++;
-            //         if (probAcc < .0)
-            //         {
-            //             dataCT_->sign_ *= -1;
-            //         }
 
             //         LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, NQUp, newLastRowUp_, 1.0 / sTildeUpI);
             //         LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, NQDown, newLastRowDown_, 1.0 / sTildeDownI);
@@ -289,7 +291,7 @@ class ABC_MarkovChain
             //         nfdata_.FVdown_(kkold) = fauxdown;
             //         dataCT_->vertices_.push_back(vertex);
             //         //AssertSizes();
-            //     }
+            // }
         }
         // else
         // {
