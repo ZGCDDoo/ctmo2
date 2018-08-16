@@ -110,6 +110,13 @@ class Vertices
         AppendVertexPart(vertex.vStart());
         AppendVertexPart(vertex.vEnd());
         assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
+        assert(data_.size() == vPartDownVec_.size());
+        assert(data_.size() == vPartUpVec_.size());
+    }
+
+    void FlipAux(const size_t &p)
+    {
+        data_.at(p).FlipAux();
     }
 
     void AppendVertexPart(const VertexPart &vPart)
@@ -143,7 +150,8 @@ class Vertices
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
 
-    Vertex at(const size_t &i) { return data_.at(i); };
+    Vertex at(const size_t &i) const { return data_.at(i); };
+
     VertexPart atUp(const size_t &i) { return vPartUpVec_.at(i); };
     VertexPart atDown(const size_t &i) { return vPartDownVec_.at(i); };
 
@@ -316,7 +324,7 @@ class AuxHelper
     double delta() const { return delta_; };
 
   private:
-    const double &delta_;
+    const double delta_;
 };
 
 } // namespace Diagrammatic

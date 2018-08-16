@@ -119,7 +119,6 @@ class ABC_Model_2D
         //Getters
         double mu() const { return mu_; };
         double U() const { return U_; };
-        double delta() const { return delta_; };
         double beta() const { return beta_; };
         size_t NOrb() const { return NOrb_; };
         ClusterMatrixCD_t tLoc() const { return tLoc_; };
@@ -130,48 +129,8 @@ class ABC_Model_2D
         TH0 const h0() { return h0_; };
         TIOModel const ioModel() { return ioModel_; };
 
-        //Maybe put everything concerning aux spins in vertex class. therfore delta in vertex constructor.
-        double auxUp(const AuxSpin_t &aux) const { return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_); };
-        double auxDown(const AuxSpin_t &aux) const { return ((aux == AuxSpin_t::Down) ? 1.0 + delta_ : -delta_); };
-
-        double FAuxUp(const AuxSpin_t &aux)
-        {
-                if (aux == AuxSpin_t::Zero)
-                {
-                        return 1.0;
-                }
-                return (auxUp(aux) / (auxUp(aux) - 1.0));
-        };
-
-        double FAuxDown(const AuxSpin_t &aux)
-        {
-                if (aux == AuxSpin_t::Zero)
-                {
-                        return 1.0;
-                }
-                return (auxDown(aux) / (auxDown(aux) - 1.0));
-        };
-
-        double gammaUp(const AuxSpin_t &auxI, const AuxSpin_t &auxJ) //little gamma
-        {
-                double fsJ = FAuxUp(auxJ);
-                return ((FAuxUp(auxI) - fsJ) / fsJ);
-        }
-
-        double gammaDown(const AuxSpin_t &auxI, const AuxSpin_t &auxJ) //little gamma
-        {
-                double fsJ = FAuxDown(auxJ);
-                return ((FAuxDown(auxI) - fsJ) / fsJ);
-        }
-
-        double KAux()
-        {
-                return (-U_ * beta_ * Nc / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
-        }
-
         double auxU() const { return U_ / 2.0; };
         double auxMu() const { return mu_ - U_ / 2.0; };
-        double auxDO() const { return delta_ * (1.0 + delta_); };
 
       protected:
         TIOModel ioModel_;

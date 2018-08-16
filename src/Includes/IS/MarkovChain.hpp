@@ -17,7 +17,6 @@ public:
 
   //Overriding
   double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
-  double KAux() override { return (this->modelPtr_->KAux()); }
   double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override { return (auxH_.FAux(spin, aux)); }
 
 private:

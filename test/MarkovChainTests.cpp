@@ -30,13 +30,13 @@ TEST(MonteCarloTest, DoStep)
 {
     Markov::MarkovChain<IO::IOSIAM, Models::SIAM_Square> mc = BuildMarkovChain();
 
-    for (size_t i = 0; i < 50; i++)
+    for (size_t i = 0; i < 2; i++)
     {
         mc.InsertVertex();
     }
 
     std::cout << "After Insert " << std::endl;
-    for (size_t i = 0; i < 11; i++)
+    for (size_t i = 0; i < 1001; i++)
     {
         mc.InsertVertex();
         mc.RemoveVertex();
@@ -44,7 +44,7 @@ TEST(MonteCarloTest, DoStep)
 
     std::cout << "After Remove " << std::endl;
     size_t ii = 0;
-    for (ii = 0; ii < 10000; ii++)
+    for (ii = 0; ii < 1; ii++)
     {
         mc.DoStep();
     }

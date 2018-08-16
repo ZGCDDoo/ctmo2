@@ -90,7 +90,6 @@ class ABC_MarkovChain
     };
 
     virtual double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &vauxFrom) = 0;
-    virtual double KAux() = 0;
     virtual double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) = 0;
 
     // void ThermalizeFromConfig()
@@ -192,7 +191,7 @@ class ABC_MarkovChain
                     }
                 }
 
-                dataCT_->vertices_.at(p) = vertex;
+                dataCT_->vertices_.FlipAux(p);
                 nfdata_.FVup_(p) = fauxdown;
                 nfdata_.FVdown_(p) = fauxup;
 
@@ -227,6 +226,9 @@ class ABC_MarkovChain
 
     void InsertVertexDiffSpin(const Vertex &vertex)
     {
+        mpiUt::Print("In InsertVertexDiffSpin");
+
+        std::cout << "vertex.aux() = " << static_cast<size_t>(vertex.aux()) << std::endl;
         const double fauxup = FAux(FermionSpin_t::Up, vertex.aux());
         const double fauxdown = FAux(FermionSpin_t::Down, vertex.aux());
         const double fauxupM1 = fauxup - 1.0;
@@ -239,6 +241,10 @@ class ABC_MarkovChain
 
         const double sUp = fauxup - GetGreenTau0Up(vertexPartUp, vertexPartUp) * fauxupM1;
         const double sDown = fauxdown - GetGreenTau0Down(vertexPartDown, vertexPartDown) * fauxdownM1;
+        std::cout << "sUp = " << sUp << std::endl;
+        std::cout << "sDown = " << sDown << std::endl;
+        std::cout << "fauxup " << fauxup << std::endl;
+        std::cout << "vertexPartDown.tau() = " << vertexPartDown.tau() << std::endl;
 
         if (dataCT_->vertices_.size())
         {
@@ -258,6 +264,7 @@ class ABC_MarkovChain
             {
                 newLastRowUp_(iUp) = -GetGreenTau0Up(vertexPartUp, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
                 newLastColUp_(iUp) = -GetGreenTau0Up(dataCT_->vertices_.atUp(iUp), vertexPartUp) * fauxupM1;
+                std::cout << "newLastRowUp_(iUp) = " << newLastRowUp_(iUp) << std::endl;
             }
 
             for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
@@ -274,8 +281,8 @@ class ABC_MarkovChain
             const double sTildeDownI = sDown - LinAlg::DotVectors(newLastRowDown_, NQDown);
 
             const double ratio = sTildeUpI * sTildeDownI;
-            const double probAcc = PROBREMOVE / PROBINSERT * KAux() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
-
+            const double probAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
+            std::cout << "probAcc = " << probAcc << std::endl;
             //AssertSizes();
             if (urng_() < std::abs(probAcc))
             {
@@ -298,7 +305,10 @@ class ABC_MarkovChain
         else
         {
             AssertSizes();
-            const double probAcc = PROBREMOVE / PROBINSERT * KAux() * sUp * sDown;
+            const double probAcc = PROBREMOVE / PROBINSERT * vertex.probProb() * sUp * sDown;
+            std::cout << "probAcc = " << probAcc << std::endl;
+            std::cout << "vertex.probProb()  = " << vertex.probProb() << std::endl;
+
             if (urng_() < std::abs(probAcc))
             {
                 if (probAcc < 0.0)
@@ -387,7 +397,7 @@ class ABC_MarkovChain
         // const VertexPart y = vertex.vEnd();
 
         //In theory we should find the proper index for each spin
-        const double probAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / KAux() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
+        const double probAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
 
         if (urng_() < std::abs(probAcc))
         {
@@ -436,7 +446,7 @@ class ABC_MarkovChain
         AssertSizes();
         for (size_t iUp = 0; iUp < kkup; iUp++)
         {
-            for (size_t jUp = 0; jUp < kk; jUp++)
+            for (size_t jUp = 0; jUp < kkdown; jUp++)
             {
 
                 nfdata_.Nup_(iUp, jUp) = -GetGreenTau0Up(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
@@ -450,7 +460,7 @@ class ABC_MarkovChain
 
         for (size_t iDown = 0; iDown < kkdown; iDown++)
         {
-            for (size_t jDown = 0; jDown < kk; jDown++)
+            for (size_t jDown = 0; jDown < kkdown; jDown++)
             {
 
                 nfdata_.Ndown_(iDown, jDown) = -GetGreenTau0Down(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);

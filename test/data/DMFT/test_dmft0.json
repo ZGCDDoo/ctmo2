@@ -21,7 +21,7 @@
     "PROBFLIP": 0.25,
     "beta": 10.0,
     "EGreen": 13,
-    "NTAU": 100000,
+    "NTAU": 10000,
     "UPDATESMEAS": 10000,
     "THERMALIZATION_TIME": 1,
     "MEASUREMENT_TIME": 3,
