@@ -102,38 +102,47 @@ class Vertices
 {
 
   public:
-    Vertices() : NUp_(0), NDown_(0){};
+    Vertices(){};
 
     void AppendVertex(const Vertex &vertex)
     {
         data_.push_back(vertex);
-        vertex.vStart().spin() == FermionSpin_t::Up ? NUp_++ : NDown_++;
-        vertex.vEnd().spin() == FermionSpin_t::Up ? NUp_++ : NDown_++;
-        assert(2 * data_.size() == (NUp_ + NDown_));
+        AppendVertexPart(vertex.vStart());
+        AppendVertexPart(vertex.vEnd());
+        assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
+    }
+
+    void AppendVertexPart(const VertexPart &vPart)
+    {
+        vPart.spin() == FermionSpin_t::Up ? vPartUpVec_.push_back(vPart) : vPartDownVec_.push_back(vPart);
     }
 
     void RemoveVertex(const size_t &pp)
     {
-        const size_t kkm1 = data_.size() - 1;
-        const Vertex vertexpp = data_.at(pp);
-        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-                                                                  //to be consistent with the updated Mup and dataCT_->Mdown_
-        data_.pop_back();
-        vertexpp.vStart().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
-        vertexpp.vEnd().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
+        // const size_t kkm1 = data_.size() - 1;
+        // const Vertex vertexpp = data_.at(pp);
+        // std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+        //                                                           //to be consistent with the updated Mup and dataCT_->Mdown_
+        // data_.pop_back();
+        // vertexpp.vStart().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
+        // vertexpp.vEnd().spin() == FermionSpin_t::Up ? NUp_-- : NDown_--;
     }
+
+    // size_t GetIndexSpin()
 
     //Getters
     size_t size() const { return data_.size(); };
-    size_t NUp() const { return NUp_; };
-    size_t NDown() const { return NDown_; };
+    size_t NUp() const { return vPartUpVec_.size(); };
+    size_t NDown() const { return vPartDownVec_.size(); };
 
     Vertex at(const size_t &i) { return data_.at(i); };
+    VertexPart atUp(const size_t &i) { return vPartUpVec_.at(i); };
+    VertexPart atDown(const size_t &i) { return vPartDownVec_.at(i); };
 
   private:
     std::vector<Vertex> data_;
-    size_t NUp_; //Not the CT-Aux N_sigma matrices, but the number of up verticesPart
-    size_t NDown_;
+    std::vector<VertexPart> vPartUpVec_;
+    std::vector<VertexPart> vPartDownVec_;
 };
 
 class VertexBuilder

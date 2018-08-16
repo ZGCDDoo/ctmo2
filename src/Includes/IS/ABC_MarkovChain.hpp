@@ -196,7 +196,7 @@ class ABC_MarkovChain
                 nfdata_.FVup_(p) = fauxdown;
                 nfdata_.FVdown_(p) = fauxup;
 
-                //AssertSizes();
+                AssertSizes();
             }
         }
     }
@@ -204,15 +204,12 @@ class ABC_MarkovChain
     void AssertSizes()
     {
         const size_t kk = dataCT_->vertices_.size();
-        assert(kk == nfdata_.Nup_.n_rows());
-        assert(kk == nfdata_.Nup_.n_cols());
-        assert(kk == nfdata_.Ndown_.n_rows());
-        assert(kk == nfdata_.Ndown_.n_cols());
+        assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
     }
 
     void InsertVertex()
     {
-        // AssertSizes();
+        AssertSizes();
         updStats_["Inserts"][0]++;
         Vertex vertex = vertexBuilder_.BuildVertex(urng_);
         VertexPart x = vertex.vStart();
@@ -245,84 +242,88 @@ class ABC_MarkovChain
 
         if (dataCT_->vertices_.size())
         {
-            //AssertSizes();
-            const size_t kkold = dataCT_->vertices_.size();
-            const size_t kknew = kkold + 1;
+            AssertSizes();
+            const size_t kkoldUp = dataCT_->vertices_.NUp();
+            const size_t kknewUp = kkoldUp + 1;
+            const size_t kkoldDown = dataCT_->vertices_.NDown();
+            const size_t kknewDown = kkoldDown + 1;
 
-            SiteVector_t newLastColUp_(dataCT_->vertices_.NUp());
-            SiteVector_t newLastRowUp_(dataCT_->vertices_.NUp());
-            SiteVector_t newLastColDown_(dataCT_->vertices_.NDown());
-            SiteVector_t newLastRowDown_(dataCT_->vertices_.NDown());
+            SiteVector_t newLastColUp_(kkoldUp);
+            SiteVector_t newLastRowUp_(kkoldUp);
+            SiteVector_t newLastColDown_(kkoldDown);
+            SiteVector_t newLastRowDown_(kkoldDown);
 
             //Probably put this in a method
-            // for (size_t i = 0; i < kkold; i++)
-            // {
-            //     newLastRowUp_(i) = -GetGreenTau0Up(vertex, dataCT_->vertices_.at(i)) * (nfdata_.FVup_(i) - 1.0);
-            //     newLastColUp_(i) = -GetGreenTau0Up(dataCT_->vertices_[i], vertex) * fauxupM1;
+            for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
+            {
+                newLastRowUp_(iUp) = -GetGreenTau0Up(vertexPartUp, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
+                newLastColUp_(iUp) = -GetGreenTau0Up(dataCT_->vertices_.atUp(iUp), vertexPartUp) * fauxupM1;
+            }
 
-            //     newLastRowDown_(i) = -GetGreenTau0Down(vertex, dataCT_->vertices_[i]) * (nfdata_.FVdown_(i) - 1.0);
-            //     newLastColDown_(i) = -GetGreenTau0Down(dataCT_->vertices_[i], vertex) * fauxdownM1;
-            // }
+            for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
+            {
+                newLastRowDown_(iDown) = -GetGreenTau0Down(vertexPartDown, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
+                newLastColDown_(iDown) = -GetGreenTau0Down(dataCT_->vertices_.atDown(iDown), vertexPartDown) * fauxdownM1;
+            }
 
-            SiteVector_t NQUp(kkold); //NQ = N*Q
-            SiteVector_t NQDown(kkold);
+            SiteVector_t NQUp(kkoldUp); //NQ = N*Q
+            SiteVector_t NQDown(kkoldDown);
             MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, NQUp);
             MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, NQDown);
             const double sTildeUpI = sUp - LinAlg::DotVectors(newLastRowUp_, NQUp);
             const double sTildeDownI = sDown - LinAlg::DotVectors(newLastRowDown_, NQDown);
 
             const double ratio = sTildeUpI * sTildeDownI;
-            double probAcc = KAux() / kknew * ratio;
-            probAcc *= PROBREMOVE / PROBINSERT;
+            const double probAcc = PROBREMOVE / PROBINSERT * KAux() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
+
             //AssertSizes();
-            // if (urng_() < std::abs(probAcc))
-            // {
-            //     updStats_["Inserts"][1]++;
-            //     if (probAcc < .0)
-            //     {
-            //         dataCT_->sign_ *= -1;
-            //     }
+            if (urng_() < std::abs(probAcc))
+            {
+                updStats_["Inserts"][1]++;
+                if (probAcc < .0)
+                {
+                    dataCT_->sign_ *= -1;
+                }
 
-            //         LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, NQUp, newLastRowUp_, 1.0 / sTildeUpI);
-            //         LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, NQDown, newLastRowDown_, 1.0 / sTildeDownI);
-            //         nfdata_.FVup_.resize(kknew);
-            //         nfdata_.FVdown_.resize(kknew);
-            //         nfdata_.FVup_(kkold) = fauxup;
-            //         nfdata_.FVdown_(kkold) = fauxdown;
-            //         dataCT_->vertices_.push_back(vertex);
-            //         //AssertSizes();
-            // }
+                LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, NQUp, newLastRowUp_, 1.0 / sTildeUpI);
+                LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, NQDown, newLastRowDown_, 1.0 / sTildeDownI);
+                nfdata_.FVup_.resize(kknewUp);
+                nfdata_.FVdown_.resize(kknewDown);
+                nfdata_.FVup_(kkoldUp) = fauxup;
+                nfdata_.FVdown_(kkoldDown) = fauxdown;
+                dataCT_->vertices_.AppendVertex(vertex);
+                AssertSizes();
+            }
         }
-        // else
-        // {
-        //     //AssertSizes();
-        //     double probAcc = KAux() * sUp * sDown;
-        //     probAcc *= PROBREMOVE / PROBINSERT;
-        //     if (urng_() < std::abs(probAcc))
-        //     {
-        //         if (probAcc < .0)
-        //         {
-        //             dataCT_->sign_ *= -1;
-        //         }
+        else
+        {
+            AssertSizes();
+            const double probAcc = PROBREMOVE / PROBINSERT * KAux() * sUp * sDown;
+            if (urng_() < std::abs(probAcc))
+            {
+                if (probAcc < 0.0)
+                {
+                    dataCT_->sign_ *= -1;
+                }
 
-        //         nfdata_.Nup_ = Matrix_t(1, 1);
-        //         nfdata_.Ndown_ = Matrix_t(1, 1);
-        //         nfdata_.Nup_(0, 0) = 1.0 / sUp;
-        //         nfdata_.Ndown_(0, 0) = 1.0 / sDown;
+                nfdata_.Nup_ = Matrix_t(1, 1);
+                nfdata_.Ndown_ = Matrix_t(1, 1);
+                nfdata_.Nup_(0, 0) = 1.0 / sUp;
+                nfdata_.Ndown_(0, 0) = 1.0 / sDown;
 
-        //         nfdata_.FVup_ = SiteVector_t(1);
-        //         nfdata_.FVdown_ = SiteVector_t(1);
-        //         nfdata_.FVup_(0) = fauxup;
-        //         nfdata_.FVdown_(0) = fauxdown;
+                nfdata_.FVup_ = SiteVector_t(1);
+                nfdata_.FVdown_ = SiteVector_t(1);
+                nfdata_.FVup_(0) = fauxup;
+                nfdata_.FVdown_(0) = fauxdown;
 
-        //         dataCT_->vertices_.push_back(vertex);
-        //     }
-        //     //AssertSizes();
-        // }
+                dataCT_->vertices_.AppendVertex(vertex);
+            }
+        }
     }
 
     void InsertVertexSameSpin(const Vertex &vertex)
     {
+        assert(false);
     }
 
     void
