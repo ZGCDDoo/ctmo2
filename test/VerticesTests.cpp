@@ -15,7 +15,7 @@ const double delta = 0.01;
 
 TEST(Vertices2DTest, AuxHelper)
 {
-    Vertices::AuxHelper auxHelper(delta);
+    Diagrammatic::AuxHelper auxHelper(delta);
 
     ASSERT_NEAR(auxHelper.delta(), delta, DELTA_SMALL);
 

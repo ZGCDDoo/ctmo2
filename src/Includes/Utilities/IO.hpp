@@ -11,8 +11,6 @@ const size_t Nx4 = 4;
 const size_t Nx6 = 6;
 const size_t Nx8 = 8;
 
-using SuperSite_t = std::pair<size_t, size_t>; //site, then orbital number
-
 template <size_t TNX, size_t TNY>
 class Base_IOModel
 {
@@ -294,7 +292,6 @@ class Base_IOModel
         return NOrbIndep;
     };
 
-   
     template <typename T1_t, typename T2_t = ClusterMatrixCD_t>
     T2_t IndepToFull(const T1_t &indepElements, const size_t &NOrb) //in practice T1_t will be a Sitevector_t or SitevectorCD_t
     {

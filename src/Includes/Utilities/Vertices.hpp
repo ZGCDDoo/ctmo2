@@ -3,7 +3,7 @@
 #include "Utilities.hpp"
 #include "../Models/UTensor.hpp"
 
-namespace Vertices
+namespace Diagrammatic
 {
 
 enum class VertexType
@@ -70,6 +70,8 @@ class Vertex
     AuxSpin_t aux() const { return aux_; };
     VertexType vtype() const { return vtype_; };
     double probProb() const { return probProb_; };
+    VertexPart vStart() const { return vStart_; };
+    VertexPart vEnd() const { return vEnd_; };
 
     //Setters
     void SetAux(AuxSpin_t aux)
@@ -87,9 +89,6 @@ class Vertex
         }
         return (aux_ == AuxSpin_t::Up ? 1.0 : -1.0);
     }
-    //Getters
-    VertexPart vStart() const { return vStart_; };
-    VertexPart vEnd() const { return vEnd_; };
 
   private:
     VertexType vtype_;
@@ -294,4 +293,4 @@ class AuxHelper
     const double &delta_;
 };
 
-} // namespace Vertices
+} // namespace Diagrammatic

@@ -21,6 +21,6 @@ public:
   double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override { return (auxH_.FAux(spin, aux)); }
 
 private:
-  Vertices::AuxHelper auxH_;
+  Diagrammatic::AuxHelper auxH_;
 };
 } // namespace Markov

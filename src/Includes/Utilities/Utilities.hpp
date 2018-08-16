@@ -31,6 +31,8 @@ using Site_t = size_t;
 using Tau_t = double;
 using Orbital_t = size_t;
 
+using SuperSite_t = std::pair<size_t, size_t>; //site, then orbital number
+
 enum class AuxSpin_t
 {
 	Up,

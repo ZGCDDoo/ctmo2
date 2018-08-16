@@ -3,12 +3,7 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "../Utilities/Matrix.hpp"
-
-// #if defined(SUBMATRIX)
-// #include "ABC_MarkovChainSubMatrix.hpp"
-// #else
-// #include "ABC_MarkovChain.hpp"
-// #endif
+#include "../Utilities/Vertices.hpp"
 
 namespace Markov
 {
@@ -82,6 +77,7 @@ private:
   std::shared_ptr<Matrix_t> MupPtr_;
   std::shared_ptr<Matrix_t> MdownPtr_;
   std::vector<Vertex> vertices_;
+  // Diagrammatic::Vertices vertices_;
   const double beta_;
   Sign_t sign_;
 };
