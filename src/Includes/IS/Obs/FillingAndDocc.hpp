@@ -88,7 +88,7 @@ class FillingAndDocc
 
     void MeasureFillingAndDocc()
     {
-        mpiUt::Print("Start of MeasureFillingAndDocc ");
+        // mpiUt::Print("Start of MeasureFillingAndDocc ");
         ResetCurrent();
 
         const size_t KK = dataCT_->vertices_.size();
@@ -98,6 +98,8 @@ class FillingAndDocc
 
         const double eps = 1e-12;
 
+        assert(KKUp == KKDown);
+        assert(2 * KK == KKUp + KKDown);
         SiteVector_t vec1Up(KKUp);
         SiteVector_t vec2Up(KKUp);
         SiteVector_t vec1Down(KKDown);
@@ -106,7 +108,6 @@ class FillingAndDocc
         const double sign = static_cast<double>(dataCT_->sign_);
         const size_t fillingSize = ioModel_.fillingSites().size();
 
-        std::cout << "Here 1 " << std::endl;
         for (Site_t ii = 0; ii < fillingSize; ii++)
         {
             const Site_t s1 = ioModel_.fillingSites()[ii];
@@ -115,7 +116,6 @@ class FillingAndDocc
             {
                 const double tauRng = (*urngPtr_)() * dataCT_->beta_;
                 const Site_t siteRng = ioModel_.FindSitesRng(s1, s1, (*urngPtr_)()).first;
-                std::cout << "Here 2 " << std::endl;
 
                 for (size_t iUp = 0; iUp < KKUp; iUp++)
                 {
@@ -123,17 +123,19 @@ class FillingAndDocc
                     const Tau_t tt = dataCT_->vertices_.atUp(iUp).tau();
                     vec1Up(iUp) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
                     vec2Up(iUp) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
-                    std::cout << "Here 3, iUp =  " << iUp << std::endl;
                 }
                 for (size_t iDown = 0; iDown < KKDown; iDown++)
                 {
-                    std::cout << "Here 4 " << std::endl;
-                    // const Site_t ss = dataCT_->vertices_.atDown(iDown).site();
-                    // const Tau_t tt = dataCT_->vertices_.atDown(iDown).tau();
-                    // vec1Down(iDown) = dataCT_->green0CachedDown_(siteRng, ss, tauRng - tt);
-                    // vec2Down(iDown) = dataCT_->green0CachedDown_(ss, siteRng, tt - tauRng);
+                    const Site_t ss = dataCT_->vertices_.atDown(iDown).site();
+                    const Tau_t tt = dataCT_->vertices_.atDown(iDown).tau();
+#ifdef AFM
+                    vec1Down(iDown) = dataCT_->green0CachedDown_(siteRng, ss, tauRng - tt);
+                    vec2Down(iDown) = dataCT_->green0CachedDown_(ss, siteRng, tt - tauRng);
+#else
+                    vec1Down(iDown) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
+                    vec2Down(iDown) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
+#endif
                 }
-                std::cout << "Here 5 " << std::endl;
 
                 double dotup = 0.0;
                 double dotdown = 0.0;
@@ -145,7 +147,12 @@ class FillingAndDocc
                 }
 
                 const double green00Up = dataCT_->green0CachedUp_(s1, s1, -eps);
+
+#ifdef AFM
                 const double green00Down = dataCT_->green0CachedDown_(s1, s1, -eps);
+#else
+                const double green00Down = dataCT_->green0CachedUp_(s1, s1, -eps);
+#endif
                 const double nUptmp = green00Up - dotup;
                 const double nDowntmp = green00Down - dotdown;
 
@@ -168,7 +175,7 @@ class FillingAndDocc
             Sz_[ii] += SzCurrent_[ii];
         }
 
-        mpiUt::Print("End of MeasureFillingAndDocc");
+        // mpiUt::Print("End of MeasureFillingAndDocc");
     }
 
     void Finalize(const double &signMeas, const double &NMeas)
