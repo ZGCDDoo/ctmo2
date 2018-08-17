@@ -88,20 +88,22 @@ class FillingAndDocc
 
     void MeasureFillingAndDocc()
     {
-        // mpiUt::Print("start of MeasureFillingAndDocc");
+        // mpiUt::Print("Start of MeasureFillingAndDocc ");
         ResetCurrent();
-        // mpiUt::Print("After resetcurrent");
 
         const size_t KK = dataCT_->vertices_.size();
+        const size_t KKUp = dataCT_->vertices_.NUp();
+        const size_t KKDown = dataCT_->vertices_.NDown();
 
         const double eps = 1e-12;
 
-        SiteVector_t vec1Up(KK);
-        SiteVector_t vec2Up(KK);
-#ifdef AFM
-        SiteVector_t vec1Down(KK);
-        SiteVector_t vec2Down(KK);
-#endif
+        assert(KKUp == KKDown);
+        assert(2 * KK == KKUp + KKDown);
+        SiteVector_t vec1Up(KKUp);
+        SiteVector_t vec2Up(KKUp);
+        SiteVector_t vec1Down(KKDown);
+        SiteVector_t vec2Down(KKDown);
+
         const double sign = static_cast<double>(dataCT_->sign_);
         const size_t fillingSize = ioModel_.fillingSites().size();
 
@@ -114,50 +116,52 @@ class FillingAndDocc
                 const double tauRng = (*urngPtr_)() * dataCT_->beta_;
                 const Site_t siteRng = ioModel_.FindSitesRng(s1, s1, (*urngPtr_)()).first;
 
-                for (size_t kk = 0; kk < KK; kk++)
+                for (size_t iUp = 0; iUp < KKUp; iUp++)
                 {
-                    const Site_t ss = dataCT_->vertices_.at(kk).site();
-                    const Tau_t tt = dataCT_->vertices_[kk].tau();
-                    vec1Up(kk) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
-                    vec2Up(kk) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
+                    const Site_t ss = dataCT_->vertices_.atUp(iUp).site();
+                    const Tau_t tt = dataCT_->vertices_.atUp(iUp).tau();
+                    vec1Up(iUp) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
+                    vec2Up(iUp) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
+                }
+                for (size_t iDown = 0; iDown < KKDown; iDown++)
+                {
+                    const Site_t ss = dataCT_->vertices_.atDown(iDown).site();
+                    const Tau_t tt = dataCT_->vertices_.atDown(iDown).tau();
 #ifdef AFM
-                    vec1Down(kk) = dataCT_->green0CachedDown_(siteRng, ss, tauRng - tt);
-                    vec2Down(kk) = dataCT_->green0CachedDown_(ss, siteRng, tt - tauRng);
+                    vec1Down(iDown) = dataCT_->green0CachedDown_(siteRng, ss, tauRng - tt);
+                    vec2Down(iDown) = dataCT_->green0CachedDown_(ss, siteRng, tt - tauRng);
+#else
+                    vec1Down(iDown) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
+                    vec2Down(iDown) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
 #endif
                 }
 
-                // mpiUt::Print("In loop before dots");
                 double dotup = 0.0;
                 double dotdown = 0.0;
 
                 if (KK)
                 {
                     dotup = LinAlg::Dot(vec1Up, *(dataCT_->MupPtr_), vec2Up);
-#ifndef AFM
-                    dotdown = LinAlg::Dot(vec1Up, *(dataCT_->MdownPtr_), vec2Up);
-#endif
-#ifdef AFM
                     dotdown = LinAlg::Dot(vec1Down, *(dataCT_->MdownPtr_), vec2Down);
-#endif
                 }
 
                 const double green00Up = dataCT_->green0CachedUp_(s1, s1, -eps);
-                double green00Down = green00Up;
+
 #ifdef AFM
-                green00Down = dataCT_->green0CachedDown_(s1, s1, -eps);
+                const double green00Down = dataCT_->green0CachedDown_(s1, s1, -eps);
+#else
+                const double green00Down = dataCT_->green0CachedUp_(s1, s1, -eps);
 #endif
                 const double nUptmp = green00Up - dotup;
                 const double nDowntmp = green00Down - dotdown;
+
                 fillingUpCurrent_[ii] += sign * nUptmp;
                 fillingDownCurrent_[ii] += sign * nDowntmp;
                 doccCurrent_[ii] += sign * (nUptmp * nDowntmp);
-                // mpiUt::Print("here");
 
                 const double ndiff = nUptmp - nDowntmp;
                 SzCurrent_[ii] += sign * ndiff;
-                // mpiUt::Print("here2");
             }
-            // mpiUt::Print("here3");
 
             fillingUpCurrent_[ii] /= static_cast<double>(N_T_INV_);
             fillingDownCurrent_[ii] /= static_cast<double>(N_T_INV_);
@@ -171,7 +175,6 @@ class FillingAndDocc
         }
 
         // mpiUt::Print("End of MeasureFillingAndDocc");
-        return;
     }
 
     void Finalize(const double &signMeas, const double &NMeas)

@@ -25,15 +25,15 @@ class ABC_Model_2D
       public:
         static const size_t Nc;
 
-        ABC_Model_2D(const Json &jj) : ioModel_(TIOModel()),
-                                       h0_(jj["t"].get<double>(), jj["tPrime"].get<double>(), jj["tPrimePrime"].get<double>()),
-                                       hybFM_(),
-                                       tLoc_(),
-                                       U_(jj["U"].get<double>()),
-                                       delta_(jj["delta"].get<double>()),
-                                       beta_(jj["beta"].get<double>()),
-                                       mu_(jj["mu"].get<double>()),
-                                       NOrb_(jj["NOrb"].get<size_t>())
+        ABC_Model_2D(const Json &jjSim) : ioModel_(),
+                                          h0_(jjSim),
+                                          hybFM_(),
+                                          tLoc_(),
+                                          U_(jjSim["U"].get<double>()),
+                                          delta_(jjSim["delta"].get<double>()),
+                                          beta_(jjSim["beta"].get<double>()),
+                                          mu_(jjSim["mu"].get<double>()),
+                                          NOrb_(jjSim["NOrb"].get<size_t>())
         {
                 mpiUt::Print("start abc_model constructor ");
 
@@ -55,13 +55,13 @@ class ABC_Model_2D
                 assert(tLoc_.load("tloc.arma"));
                 assert(hybFM_.load("hybFM.arma"));
 #endif
-                FinishConstructor(jj);
+                FinishConstructor(jjSim);
                 mpiUt::Print(" End of ABC_Model Constructor ");
         };
 
-        void FinishConstructor(const Json &jj)
+        void FinishConstructor(const Json &jjSim)
         {
-                std::string hybNameUp = jj["HybFileUp"].get<std::string>();
+                std::string hybNameUp = jjSim["HybFileUp"].get<std::string>();
 #ifdef DCA
                 ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp + ".dat", NOrb_);
 #else
@@ -69,7 +69,7 @@ class ABC_Model_2D
 #endif
 
 #ifdef AFM
-                std::string hybNameDown = jj["HybFileDown"].get<std::string>();
+                std::string hybNameDown = jjSim["HybFileDown"].get<std::string>();
                 ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown + ".dat", NOrb_);
 #endif
 
@@ -119,59 +119,18 @@ class ABC_Model_2D
         //Getters
         double mu() const { return mu_; };
         double U() const { return U_; };
-        double delta() const { return delta_; };
         double beta() const { return beta_; };
         size_t NOrb() const { return NOrb_; };
         ClusterMatrixCD_t tLoc() const { return tLoc_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatUp() { return greenCluster0MatUp_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatDown() { return greenCluster0MatDown_; };
+        GreenMat::GreenCluster0Mat const greenCluster0MatUp() const { return greenCluster0MatUp_; };
+        GreenMat::GreenCluster0Mat const greenCluster0MatDown() const { return greenCluster0MatDown_; };
         GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; };
         GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; };
-        TH0 const h0() { return h0_; };
-        TIOModel const ioModel() { return ioModel_; };
-
-        //Maybe put everything concerning aux spins in vertex class. therfore delta in vertex constructor.
-        double auxUp(const AuxSpin_t &aux) const { return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_); };
-        double auxDown(const AuxSpin_t &aux) const { return ((aux == AuxSpin_t::Down) ? 1.0 + delta_ : -delta_); };
-
-        double FAuxUp(const AuxSpin_t &aux)
-        {
-                if (aux == AuxSpin_t::Zero)
-                {
-                        return 1.0;
-                }
-                return (auxUp(aux) / (auxUp(aux) - 1.0));
-        };
-
-        double FAuxDown(const AuxSpin_t &aux)
-        {
-                if (aux == AuxSpin_t::Zero)
-                {
-                        return 1.0;
-                }
-                return (auxDown(aux) / (auxDown(aux) - 1.0));
-        };
-
-        double gammaUp(const AuxSpin_t &auxI, const AuxSpin_t &auxJ) //little gamma
-        {
-                double fsJ = FAuxUp(auxJ);
-                return ((FAuxUp(auxI) - fsJ) / fsJ);
-        }
-
-        double gammaDown(const AuxSpin_t &auxI, const AuxSpin_t &auxJ) //little gamma
-        {
-                double fsJ = FAuxDown(auxJ);
-                return ((FAuxDown(auxI) - fsJ) / fsJ);
-        }
-
-        double KAux()
-        {
-                return (-U_ * beta_ * Nc / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
-        }
+        TH0 const h0() const { return h0_; };
+        TIOModel const ioModel() const { return ioModel_; };
 
         double auxU() const { return U_ / 2.0; };
         double auxMu() const { return mu_ - U_ / 2.0; };
-        double auxDO() const { return delta_ * (1.0 + delta_); };
 
       protected:
         TIOModel ioModel_;

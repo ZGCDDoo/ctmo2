@@ -262,47 +262,47 @@ void SaveUpdStats(const std::string &fname, std::vector<UpdStats_t> &updStatsVec
     fout.close();
 }
 
-void SaveConfig(const std::vector<Utilities::Vertex> &vertices)
-{
-    using Utilities::Vertex;
+// void SaveConfig(const std::vector<Utilities::Vertex> &vertices)
+// {
+//     using Utilities::Vertex;
 
-    size_t KK = vertices.size();
-    ClusterMatrix_t config(KK, 3);
-    for (size_t i = 0; i < KK; i++)
-    {
-        Vertex vertex = vertices.at(i);
-        config(i, 0) = vertex.tau();
-        config(i, 1) = vertex.site();
-        config(i, 2) = vertex.Ising();
-    }
+//     size_t KK = vertices.size();
+//     ClusterMatrix_t config(KK, 3);
+//     for (size_t i = 0; i < KK; i++)
+//     {
+//         Vertex vertex = vertices.at(i);
+//         config(i, 0) = vertex.tau();
+//         config(i, 1) = vertex.site();
+//         config(i, 2) = vertex.Ising();
+//     }
 
-    std::string filename = std::string("config") + std::to_string(mpiUt::Rank()) + std::string(".dat");
-    config.save(filename);
-    return;
-}
+//     std::string filename = std::string("config") + std::to_string(mpiUt::Rank()) + std::string(".dat");
+//     config.save(filename);
+//     return;
+// }
 
-bool LoadConfig(std::vector<Utilities::Vertex> &vertices)
-{
-    using Utilities::Vertex;
-    ClusterMatrix_t config;
-    std::string filename = std::string("config") + std::to_string(mpiUt::Rank()) + std::string(".dat");
-    if (!config.load(filename))
-    {
-        return false;
-    }
+// bool LoadConfig(std::vector<Utilities::Vertex> &vertices)
+// {
+//     using Utilities::Vertex;
+//     ClusterMatrix_t config;
+//     std::string filename = std::string("config") + std::to_string(mpiUt::Rank()) + std::string(".dat");
+//     if (!config.load(filename))
+//     {
+//         return false;
+//     }
 
-    const double eps = 0.1;
-    for (size_t i = 0; i < config.n_rows; i++)
-    {
-        Tau_t tau = config(i, 0);
-        Site_t site = config(i, 1) + eps;
-        AuxSpin_t aux = config(i, 2) > 0.0 ? AuxSpin_t::Up : AuxSpin_t::Down;
-        vertices.push_back(Vertex(tau, site, aux));
-    }
-    // std::cout << "Config = " << std::endl;
-    //config.print();
-    return true;
-}
+//     const double eps = 0.1;
+//     for (size_t i = 0; i < config.n_rows; i++)
+//     {
+//         Tau_t tau = config(i, 0);
+//         Site_t site = config(i, 1) + eps;
+//         AuxSpin_t aux = config(i, 2) > 0.0 ? AuxSpin_t::Up : AuxSpin_t::Down;
+//         vertices.push_back(Vertex(tau, site, aux));
+//     }
+//     // std::cout << "Config = " << std::endl;
+//     //config.print();
+//     return true;
+// }
 
 std::vector<cd_t> CubeCDToVecCD(const ClusterCubeCD_t &cubeCD)
 {

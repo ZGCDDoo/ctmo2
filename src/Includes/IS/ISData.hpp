@@ -3,12 +3,7 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "../Utilities/Matrix.hpp"
-
-// #if defined(SUBMATRIX)
-// #include "ABC_MarkovChainSubMatrix.hpp"
-// #else
-// #include "ABC_MarkovChain.hpp"
-// #endif
+#include "../Utilities/Vertices.hpp"
 
 namespace Markov
 {
@@ -47,13 +42,15 @@ class ISDataCT
   using GreenTau_t = GreenTau::GreenCluster0Tau<TIOModel>;
 
 public:
-  ISDataCT(const double &beta, TModel model, const size_t &NTau) : MupPtr_(new Matrix_t()),
-                                                                   MdownPtr_(new Matrix_t()),
-                                                                   vertices_(),
-                                                                   beta_(beta),
-                                                                   sign_(1)
+  ISDataCT(const Json &jj, const TModel &model) : MupPtr_(new Matrix_t()),
+                                                  MdownPtr_(new Matrix_t()),
+                                                  vertices_(),
+                                                  beta_(jj["beta"].get<double>()),
+                                                  NOrb_(jj["NOrb"].get<size_t>()),
+                                                  sign_(1)
 
   {
+    const size_t NTau = jj["NTAU"].get<size_t>();
 #ifdef AFM
     green0CachedUp_ = GreenTau::GreenCluster0Tau<TIOModel>(model.greenCluster0MatUp(), NTau);
     green0CachedDown_ = GreenTau::GreenCluster0Tau<TIOModel>(model.greenCluster0MatDown(), NTau);
@@ -64,6 +61,7 @@ public:
   }
 
   double beta() const { return beta_; };
+  double NOrb() const { return NOrb_; };
 
 private:
   friend class Markov::Obs::Observables<TIOModel, TModel>;
@@ -81,8 +79,10 @@ private:
   GreenTau_t green0CachedDown_;
   std::shared_ptr<Matrix_t> MupPtr_;
   std::shared_ptr<Matrix_t> MdownPtr_;
-  std::vector<Vertex> vertices_;
+  // std::vector<Vertex> vertices_;
+  Diagrammatic::Vertices vertices_;
   const double beta_;
+  const size_t NOrb_;
   Sign_t sign_;
 };
 } // namespace Obs

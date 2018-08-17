@@ -1,15 +1,15 @@
 #pragma once
 
 #include "ABC_Model.hpp"
-#include "H0Square.hpp"
+#include "ABC_H0.hpp"
 
 namespace Models
 {
 
-class ModelSquare8x8 : public ABC_Model_2D<IO::IOSquare8x8, H0Square<Nx8, Nx8>>
+class ModelSquare8x8 : public ABC_Model_2D<IO::IOSquare8x8, ABC_H0<Nx8, Nx8>>
 {
 
-  using H0_t = H0Square<Nx8, Nx8>;
+  using H0_t = ABC_H0<Nx8, Nx8>;
   using IOModel_t = IO::IOSquare8x8;
 
 public:

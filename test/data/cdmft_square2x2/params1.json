@@ -1,6 +1,5 @@
 {
     "NOrb": 1,
-    "tPrime": 0.3,
     "U": 5.0,
     "EGreen": 60,
     "SEED": 25105,
@@ -13,10 +12,25 @@
     "KMAX_UPD": 100,
     "CLEANUPDATE": 100,
     "HybFileUp": "../test/data/cdmft_square2x2/hyb_Pat_R23",
-    "t": -1.0,
+    "tParameters": {
+        "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.30,
+            "tx=-y": 0.30,
+            "t2x": -0.20,
+            "t2y": -0.20
+        }
+    },
+    "UParameters": {
+        "00": {
+            "U": 5.0,
+            "J_H": 0.0
+        }
+    },
     "beta": 50.0,
     "NTAU": 5000,
-    "tPrimePrime": -0.20,
     "MEASURE_FILLING": true,
     "K": 1.0,
     "PRECISE": false,

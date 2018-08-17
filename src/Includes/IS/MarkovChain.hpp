@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ABC_MarkovChain.hpp"
+#include "../Utilities/Vertices.hpp"
 
 namespace Markov
 {
@@ -10,17 +11,15 @@ class MarkovChain : public ABC_MarkovChain<TIOModel, TModel>
 {
 
 public:
-  MarkovChain(const Json &jj, const size_t &seed) : ABC_MarkovChain<TIOModel, TModel>(jj, seed){};
+  MarkovChain(const Json &jj, const size_t &seed) : ABC_MarkovChain<TIOModel, TModel>(jj, seed), auxH_(jj["delta"].get<double>()){};
 
   ~MarkovChain(){};
 
   //Overriding
-  double gammaUpTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaUp(auxTo, auxFrom)); }
-  double gammaDownTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaDown(auxTo, auxFrom)); }
-  double KAux() override { return (this->modelPtr_->KAux()); }
-  double FAuxUp(const AuxSpin_t &aux) override { return (this->modelPtr_->FAuxUp(aux)); }
-  double FAuxDown(const AuxSpin_t &aux) override { return (this->modelPtr_->FAuxDown(aux)); }
+  double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
+  double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override { return (auxH_.FAux(spin, aux)); }
 
 private:
+  Diagrammatic::AuxHelper auxH_;
 };
 } // namespace Markov

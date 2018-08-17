@@ -67,7 +67,7 @@ class MonteCarlo : public ABC_MonteCarlo
 
         if (thermFromConfig_)
         {
-            markovchainPtr_->ThermalizeFromConfig();
+            // markovchainPtr_->ThermalizeFromConfig();
         }
         else
         {

@@ -6,11 +6,8 @@
 
 using namespace LinAlg;
 
-const size_t Nx = 2;
-
 using Model_t = Models::ModelSquare2x2;
 using IOModel_t = IO::IOSquare2x2;
-using H0_t = Models::H0Square<Nx, Nx>;
 using Markov_t = Markov::MarkovChainSub<IOModel_t, Model_t>;
 
 const double DELTA = 1e-11;

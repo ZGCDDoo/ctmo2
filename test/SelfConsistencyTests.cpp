@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "../src/Includes/Utilities/SelfConsistency.hpp"
-#include "../src/Includes/Models/H0Square.hpp"
+#include "../src/Includes/Models/ABC_H0.hpp"
 #include "../src/Includes/Models/SIAM_Square.hpp"
 
 const double DELTA = 1e-5;
@@ -50,7 +50,7 @@ TEST(SelfConsistencyTests, SelfConsistency)
     nSigma.zeros();
     nSigma.save("nUpMatrix.dat");
     nSigma.save("nDownMatrix.dat");
-    SelfCon::SelfConsistency<IO::IOSIAM, Models::SIAM_Square, Models::H0Square<1, 1>> selfcon(jj, siamsquare, greenImpurity, FermionSpin_t::Up);
+    SelfCon::SelfConsistency<IO::IOSIAM, Models::SIAM_Square, Models::ABC_H0<1, 1>> selfcon(jj, siamsquare, greenImpurity, FermionSpin_t::Up);
     selfcon.DoSCGrid();
 
     cd_t hybNext0 = cd_t(0.309056, -1.25789);

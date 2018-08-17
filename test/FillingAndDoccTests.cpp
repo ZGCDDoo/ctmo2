@@ -23,8 +23,8 @@ FillingAndDocc_t BuildFillingAndDocc() //for Square2x2
     Model_t model(jj);
     std::shared_ptr<ISDataCT_t> dataCT(
         new ISDataCT_t(
-            jj["beta"].get<double>(),
-            model, jj["NTAU"].get<double>()));
+            jj,
+            model));
 
     Utilities::EngineTypeFibonacci3217_t rng(0);
     std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr(new Utilities::UniformRngFibonacci3217_t(rng, Utilities::UniformDistribution_t(0.0, 1.0)));

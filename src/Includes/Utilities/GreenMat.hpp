@@ -88,27 +88,28 @@ class GreenCluster0Mat
                                                                                                                          beta_(beta)
     {
         assert(tLoc_.n_rows == hyb.data().n_rows);
-        const size_t Nc = hyb_.data().n_rows;
+        const size_t NS = hyb_.data().n_rows;
         const size_t ll = hyb.data().n_slices;
+        const ClusterMatrixCD_t EYE = ClusterMatrixCD_t(NS, NS).eye();
+        const ClusterMatrixCD_t ZEROS = ClusterMatrixCD_t(NS, NS).zeros();
 
-        data_.resize(Nc, Nc, ll);
+        data_.resize(NS, NS, ll);
         data_.zeros();
-        zm_.resize(Nc, Nc);
-        fm_.resize(Nc, Nc);
-        sm_.resize(Nc, Nc);
-        tm_.resize(Nc, Nc);
+        zm_.resize(NS, NS);
+        fm_.resize(NS, NS);
+        sm_.resize(NS, NS);
+        tm_.resize(NS, NS);
 
-        zm_ = ClusterMatrixCD_t(Nc, Nc).zeros();
-        fm_ = ClusterMatrixCD_t(Nc, Nc).eye();
-        sm_ = tLoc_ - mu_ * ClusterMatrixCD_t(Nc, Nc).eye();
-        tm_ = (tLoc_ - mu_ * ClusterMatrixCD_t(Nc, Nc).eye()) * (tLoc_ - mu_ * ClusterMatrixCD_t(Nc, Nc).eye()) + hyb_.fm();
+        zm_ = ZEROS;
+        fm_ = EYE;
+        sm_ = tLoc_ - mu_ * EYE;
+        tm_ = (tLoc_ - mu_ * EYE) * (tLoc_ - mu_ * EYE) + hyb_.fm();
 
-        ClusterMatrixCD_t tmp;
-        for (size_t n = 0; n < ll; n++)
+        for (size_t nn = 0; nn < ll; nn++)
         {
-            const cd_t zz = cd_t(mu_, (2.0 * n + 1.0) * M_PI / beta_);
-            tmp = zz * ClusterMatrixCD_t(Nc, Nc).eye() - tLoc_ - hyb_.slice(n);
-            data_.slice(n) = tmp.i();
+            const cd_t zz = cd_t(mu_, (2.0 * nn + 1.0) * M_PI / beta_);
+            const ClusterMatrixCD_t tmp = zz * EYE - tLoc_ - hyb_.slice(nn);
+            data_.slice(nn) = tmp.i();
         }
     }
 

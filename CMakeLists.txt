@@ -68,7 +68,7 @@ if(${MPI_BUILD})
     set(TEST OFF)
 endif()
 if(${MPI_BUILD} AND ${HOME})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ") #-Werror")
     set(TEST OFF)
 endif()
 
@@ -118,10 +118,10 @@ endif ()
 ################################
 set(EXECECUTABLES
     cttg
-    cttg_sub
-    cttg_afm
-    cttg_sub_afm
-    cttg_DCA
+    #cttg_sub
+    #cttg_afm
+    #cttg_sub_afm
+    #cttg_DCA
 )
 
 foreach(executable ${EXECECUTABLES})
@@ -182,14 +182,13 @@ if (${TEST})
     endif()
 
     set(TESTS
-    ABC_H0_Vers2_Tests
+    ABC_H0Tests
     Fourier_DCATests
     FourierTests
     FillingAndDoccTests
     GreenBinningTests
     GreenMatTests
     GreenTauTests
-    H0TriangleTests
     HybFMAndTLocTests
     IntegratorTests
     ModelTriangle2x2Tests
@@ -197,10 +196,11 @@ if (${TEST})
     SelfConsistencyTests
     MarkovChainTests
     MarkovChainSquare2x2Tests
-    MarkovChainSubMatrixSquare2x2Tests
-    MarkovChainSubMatrixTests
+    #MarkovChainSubMatrixSquare2x2Tests
+    #MarkovChainSubMatrixTests
     MatrixTests
     ObservablesTests
+    VerticesTests
     )
 
     set(TESTS_DIR ${PROJECT_SOURCE_DIR}/test)

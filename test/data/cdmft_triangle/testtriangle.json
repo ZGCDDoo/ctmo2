@@ -9,9 +9,17 @@
     "THERMALIZATION_TIME": 1,
     "MEASUREMENT_TIME": 5,
     "CLEANUPDATE": 5,
-    "t": -1.0,
-    "tPrime": -0.4,
-    "tPrimePrime": -0.00,
+    "tParameters": {
+        "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": -0.40,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        }
+    },
     "U": 3.0,
     "mu": 1.8941850792671628,
     "delta": 0.01,
