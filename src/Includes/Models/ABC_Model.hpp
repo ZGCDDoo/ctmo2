@@ -122,12 +122,12 @@ class ABC_Model_2D
         double beta() const { return beta_; };
         size_t NOrb() const { return NOrb_; };
         ClusterMatrixCD_t tLoc() const { return tLoc_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatUp() { return greenCluster0MatUp_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatDown() { return greenCluster0MatDown_; };
+        GreenMat::GreenCluster0Mat const greenCluster0MatUp() const { return greenCluster0MatUp_; };
+        GreenMat::GreenCluster0Mat const greenCluster0MatDown() const { return greenCluster0MatDown_; };
         GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; };
         GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; };
-        TH0 const h0() { return h0_; };
-        TIOModel const ioModel() { return ioModel_; };
+        TH0 const h0() const { return h0_; };
+        TIOModel const ioModel() const { return ioModel_; };
 
         double auxU() const { return U_ / 2.0; };
         double auxMu() const { return mu_ - U_ / 2.0; };

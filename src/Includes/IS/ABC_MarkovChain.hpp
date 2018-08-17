@@ -50,8 +50,8 @@ class ABC_MarkovChain
                                                           nfdata_(),
                                                           dataCT_(
                                                               new Obs::ISDataCT<TIOModel, TModel>(
-                                                                  jj["beta"].get<double>(),
-                                                                  *modelPtr_, jj["NTAU"].get<double>())),
+                                                                  jj,
+                                                                  *modelPtr_)),
                                                           obs_(dataCT_, jj),
                                                           vertexBuilder_(jj, TModel::Nc)
     {
