@@ -59,13 +59,13 @@ class Observables
 
                 fillingAndDocc_.MeasureFillingAndDocc();
 
-                // #ifndef AFM
-                //                 Maveraged_ = 0.5 * (*(dataCT_->MupPtr_) + *(dataCT_->MdownPtr_));
-                //                 greenBinningUp_.MeasureGreenBinning(Maveraged_);
-                // #else
-                //                 greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
-                //                 greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
-                // #endif
+#ifndef AFM
+                Maveraged_ = 0.5 * (*(dataCT_->MupPtr_) + *(dataCT_->MdownPtr_));
+                greenBinningUp_.MeasureGreenBinning(Maveraged_);
+#else
+                greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
+                greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
+#endif
 
                 // mpiUt::Print("End of Measure");
         }
