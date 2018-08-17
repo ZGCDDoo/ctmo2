@@ -204,6 +204,8 @@ class ABC_MarkovChain
     {
         const size_t kk = dataCT_->vertices_.size();
         assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
+        assert(2 * dataCT_->vertices_.size() == dataCT_->vertices_.NUp() + dataCT_->vertices_.NDown());
+        assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
     }
 
     void InsertVertex()
@@ -454,6 +456,7 @@ class ABC_MarkovChain
 
     void Measure()
     {
+        AssertSizes();
         SiteVector_t FVupM1 = -(nfdata_.FVup_ - 1.0);
         SiteVector_t FVdownM1 = -(nfdata_.FVdown_ - 1.0);
         DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
