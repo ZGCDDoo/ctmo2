@@ -12,7 +12,11 @@ class UTensor
     UTensor(const Json &UJson) : NOrb_(UJson["NOrb"].get<size_t>())
 
     {
+        std::cout << "Start of UTensor constructor" << std::endl;
         assert(UJson["UParameters"].size() == NOrb_ * (NOrb_ + 1) / 2);
+
+        auxMu_ = ClusterMatrixCD_t(NOrb_, NOrb_).zeros();
+        auxMu_ += UJson["mu"].get<double>() * ClusterMatrixCD_t(NOrb_, NOrb_).eye();
 
         for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
@@ -38,6 +42,7 @@ class UTensor
                 UPrimeVec_.push_back(UPrime);
             }
         }
+        std::cout << "End of UTensor constructor" << std::endl;
     }
 
     ~UTensor()
@@ -48,10 +53,13 @@ class UTensor
     std::vector<double> UPrimeVec() const { return UPrimeVec_; };
     std::vector<double> JHVec() const { return JHVec_; };
 
+    ClusterMatrixCD_t auxMu() const { return auxMu_; };
+
   protected:
     std::vector<double> UVec_;
     std::vector<double> UPrimeVec_;
     std::vector<double> JHVec_;
+    ClusterMatrixCD_t auxMu_;
     const size_t NOrb_;
 };
 

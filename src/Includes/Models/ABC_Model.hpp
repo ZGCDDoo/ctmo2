@@ -25,15 +25,15 @@ class ABC_Model_2D
       public:
         static const size_t Nc;
 
-        ABC_Model_2D(const Json &jj) : ioModel_(TIOModel()),
-                                       h0_(jj),
-                                       hybFM_(),
-                                       tLoc_(),
-                                       U_(jj["U"].get<double>()),
-                                       delta_(jj["delta"].get<double>()),
-                                       beta_(jj["beta"].get<double>()),
-                                       mu_(jj["mu"].get<double>()),
-                                       NOrb_(jj["NOrb"].get<size_t>())
+        ABC_Model_2D(const Json &jjSim) : ioModel_(),
+                                          h0_(jjSim),
+                                          hybFM_(),
+                                          tLoc_(),
+                                          U_(jjSim["U"].get<double>()),
+                                          delta_(jjSim["delta"].get<double>()),
+                                          beta_(jjSim["beta"].get<double>()),
+                                          mu_(jjSim["mu"].get<double>()),
+                                          NOrb_(jjSim["NOrb"].get<size_t>())
         {
                 mpiUt::Print("start abc_model constructor ");
 
@@ -55,13 +55,13 @@ class ABC_Model_2D
                 assert(tLoc_.load("tloc.arma"));
                 assert(hybFM_.load("hybFM.arma"));
 #endif
-                FinishConstructor(jj);
+                FinishConstructor(jjSim);
                 mpiUt::Print(" End of ABC_Model Constructor ");
         };
 
-        void FinishConstructor(const Json &jj)
+        void FinishConstructor(const Json &jjSim)
         {
-                std::string hybNameUp = jj["HybFileUp"].get<std::string>();
+                std::string hybNameUp = jjSim["HybFileUp"].get<std::string>();
 #ifdef DCA
                 ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp + ".dat", NOrb_);
 #else
@@ -69,7 +69,7 @@ class ABC_Model_2D
 #endif
 
 #ifdef AFM
-                std::string hybNameDown = jj["HybFileDown"].get<std::string>();
+                std::string hybNameDown = jjSim["HybFileDown"].get<std::string>();
                 ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown + ".dat", NOrb_);
 #endif
 

@@ -38,7 +38,7 @@ TEST(MarkovChainSquare2x2Tests, DoStep)
     {
         mc.DoStep();
     }
-    mc.CleanUpdate(true);
+    mc.CleanUpdate();
 
     for (size_t ii = 0; ii < 10000; ii++)
     {

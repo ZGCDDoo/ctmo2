@@ -24,8 +24,8 @@ Obs_t BuildObs() //for Square2x2
     Model_t model(jj);
     std::shared_ptr<ISDataCT_t> dataCT(
         new ISDataCT_t(
-            jj["beta"].get<double>(),
-            model, jj["NTAU"].get<double>()));
+            jj,
+            model));
 
     std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
 
