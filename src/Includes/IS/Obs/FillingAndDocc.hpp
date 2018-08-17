@@ -94,7 +94,6 @@ class FillingAndDocc
         const size_t KK = dataCT_->vertices_.size();
         const size_t KKUp = dataCT_->vertices_.NUp();
         const size_t KKDown = dataCT_->vertices_.NDown();
-        std::cout << "NUp =  " << KKUp << std::endl;
 
         const double eps = 1e-12;
 

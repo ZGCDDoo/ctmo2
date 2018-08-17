@@ -50,7 +50,7 @@ public:
                                                   sign_(1)
 
   {
-    const size_t NTau = jj["NTau"].get<double>();
+    const size_t NTau = jj["NTAU"].get<size_t>();
 #ifdef AFM
     green0CachedUp_ = GreenTau::GreenCluster0Tau<TIOModel>(model.greenCluster0MatUp(), NTau);
     green0CachedDown_ = GreenTau::GreenCluster0Tau<TIOModel>(model.greenCluster0MatDown(), NTau);
