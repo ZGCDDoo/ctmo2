@@ -9,7 +9,7 @@ class UTensor
 {
 
   public:
-    UTensor(const Json &UJson) : NOrb_(UJson["NOrb"].get<size_t>())
+    UTensor(const Json &UJson, const size_t &Nc) : NOrb_(UJson["NOrb"].get<size_t>()), Nc_(Nc)
 
     {
         std::cout << "Start of UTensor constructor" << std::endl;
@@ -40,6 +40,7 @@ class UTensor
                 UVec_.push_back(U);
                 JHVec_.push_back(J_H);
                 UPrimeVec_.push_back(UPrime);
+                // auxMu_
             }
         }
         std::cout << "End of UTensor constructor" << std::endl;
@@ -61,6 +62,7 @@ class UTensor
     std::vector<double> JHVec_;
     ClusterMatrixCD_t auxMu_;
     const size_t NOrb_;
+    const size_t Nc_;
 };
 
 } // namespace Models

@@ -165,7 +165,7 @@ class VertexBuilder
 {
   public:
     //must hold the alphas, the values of the U, U' and (U-J_H)
-    VertexBuilder(const Json &jj, const size_t &Nc) : Utensor(jj),
+    VertexBuilder(const Json &jj, const size_t &Nc) : Utensor(jj, Nc),
                                                       delta_(jj["delta"].get<double>()),
                                                       beta_(jj["beta"].get<double>()),
                                                       Nc_(Nc),
