@@ -88,9 +88,7 @@ class FillingAndDocc
 
     void MeasureFillingAndDocc()
     {
-        //         // mpiUt::Print("start of MeasureFillingAndDocc");
         ResetCurrent();
-        //         // mpiUt::Print("After resetcurrent");
 
         const size_t KK = dataCT_->vertices_.size();
         const size_t KKUp = dataCT_->vertices_.NUp();
@@ -130,7 +128,6 @@ class FillingAndDocc
                     vec2Down(iDown) = dataCT_->green0CachedDown_(ss, siteRng, tt - tauRng);
                 }
 
-                // mpiUt::Print("In loop before dots");
                 double dotup = 0.0;
                 double dotdown = 0.0;
 
@@ -140,23 +137,18 @@ class FillingAndDocc
                     dotdown = LinAlg::Dot(vec1Down, *(dataCT_->MdownPtr_), vec2Down);
                 }
 
-                //                 const double green00Up = dataCT_->green0CachedUp_(s1, s1, -eps);
-                //                 double green00Down = green00Up;
-                // #ifdef AFM
-                //                 green00Down = dataCT_->green0CachedDown_(s1, s1, -eps);
-                // #endif
-                //                 const double nUptmp = green00Up - dotup;
-                //                 const double nDowntmp = green00Down - dotdown;
-                //                 fillingUpCurrent_[ii] += sign * nUptmp;
-                //                 fillingDownCurrent_[ii] += sign * nDowntmp;
-                //                 doccCurrent_[ii] += sign * (nUptmp * nDowntmp);
-                //                 // mpiUt::Print("here");
+                const double green00Up = dataCT_->green0CachedUp_(s1, s1, -eps);
+                const double green00Down = dataCT_->green0CachedDown_(s1, s1, -eps);
+                const double nUptmp = green00Up - dotup;
+                const double nDowntmp = green00Down - dotdown;
 
-                //                 const double ndiff = nUptmp - nDowntmp;
-                //                 SzCurrent_[ii] += sign * ndiff;
-                //                 // mpiUt::Print("here2");
+                fillingUpCurrent_[ii] += sign * nUptmp;
+                fillingDownCurrent_[ii] += sign * nDowntmp;
+                doccCurrent_[ii] += sign * (nUptmp * nDowntmp);
+
+                const double ndiff = nUptmp - nDowntmp;
+                SzCurrent_[ii] += sign * ndiff;
             }
-            //             // mpiUt::Print("here3");
 
             //             fillingUpCurrent_[ii] /= static_cast<double>(N_T_INV_);
             //             fillingDownCurrent_[ii] /= static_cast<double>(N_T_INV_);
