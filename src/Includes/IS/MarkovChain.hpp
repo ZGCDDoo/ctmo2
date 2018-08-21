@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ABC_MarkovChain.hpp"
-#include "../Utilities/Vertices.hpp"
+#include "../Utilities/VerticesSimple.hpp"
 
 namespace Markov
 {

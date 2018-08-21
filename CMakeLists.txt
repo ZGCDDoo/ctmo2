@@ -201,6 +201,7 @@ if (${TEST})
     MatrixTests
     ObservablesTests
     VerticesTests
+    VerticesSimpleTests
     )
 
     set(TESTS_DIR ${PROJECT_SOURCE_DIR}/test)

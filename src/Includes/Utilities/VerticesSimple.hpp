@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Utilities.hpp"
-#include "../Models/UTensor.hpp"
+#include "../Models/UTensorSimple.hpp"
 
 namespace Diagrammatic
 {
@@ -11,7 +11,8 @@ enum class VertexType
     HubbardIntra,     //Hubbard intraorbital
     HubbardInter,     // Hubbard interorbital, different spins (U')
     HubbardInterSpin, // Hubbard interorbital same spin (U'-J_H)
-    Phonon
+    Phonon,
+    Invalid
 };
 
 const size_t N_VERTEX_TYPES = 4;
@@ -176,110 +177,62 @@ class VertexBuilder
 
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
     {
-        VertexType vertextype = NOrb_ == 1 ? VertexType::HubbardIntra : static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
+        VertexType vertextype = VertexType::Invalid;
 
         //The following way to propose is not good ! One should propose according to the different values of the Interaction and their wieght in respect to the total
         //number of interaction terms.
-        if (vertextype == VertexType::HubbardIntra)
+
+        //Chose a time, a site and a value for alpha
+        const Tau_t tau = urng() * beta_;
+        const Site_t site = urng() * Nc_;
+        const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
+
+        //The choose two orbitals:
+        const Orbital_t o1 = urng() * NOrb_;
+        const Orbital_t o2 = urng() * NOrb_;
+
+        //And two spins
+        const FermionSpin_t spin1 = urng() < 0.5 ? FermionSpin_t::Up : FermionSpin_t::Down;
+        const FermionSpin_t spin2 = urng() < 0.5 ? FermionSpin_t::Up : FermionSpin_t::Down;
+
+        if (o1 == o2)
         {
-            return BuildHubbardIntra(urng);
-        }
-        else if (vertextype == VertexType::HubbardInter)
-        {
-            return BuildHubbardInter(urng);
-        }
-        else if (vertextype == VertexType::HubbardInterSpin)
-        {
-            return BuildHubbardInterSpin(urng);
+            const VertexType vtype = VertexType::HubbardIntra;
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            const double probProb = GetKxio1o2(vtype);
+            return Vertex(vtype, vStart, vEnd, aux, probProb);
         }
         else
         {
-            throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
+            const VertexType vtype = (spin1 != spin2) ? VertexType::HubbardInter : VertexType::HubbardInterSpin;
+            const VertexPart vStart(tau, site, spin1, o1);
+            const VertexPart vEnd(tau, site, spin2, o2);
+            const double probProb = GetKxio1o2(vtype);
+            return Vertex(vtype, vStart, vEnd, aux, probProb);
         }
     }
 
-    Vertex BuildHubbardIntra(Utilities::UniformRngMt19937_t &urng)
-    {
-        VertexType vtype = VertexType::HubbardIntra;
-        const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
-        const Orbital_t orbital = urng() * NOrb_;
-
-        VertexPart vStart(tau, site, FermionSpin_t::Up, orbital);
-        VertexPart vEnd(tau, site, FermionSpin_t::Down, orbital);
-        AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
-
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, orbital, orbital));
-    }
-
-    Vertex BuildHubbardInter(Utilities::UniformRngMt19937_t &urng)
-    {
-        VertexType vtype = VertexType::HubbardInter;
-        const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
-        const Orbital_t o1 = urng() * NOrb_;
-
-        Orbital_t tmp = urng() * NOrb_;
-        while (tmp == o1)
-        {
-            tmp = urng() * NOrb_;
-        }
-        const Orbital_t o2 = tmp;
-
-        VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
-        VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
-        AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
-
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, o1, o2));
-    }
-
-    Vertex BuildHubbardInterSpin(Utilities::UniformRngMt19937_t &urng)
-    {
-        VertexType vtype = VertexType::HubbardInter;
-        const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
-        const Orbital_t o1 = urng() * NOrb_;
-
-        Orbital_t tmp = urng() * NOrb_;
-        while (tmp == o1)
-        {
-            tmp = urng() * NOrb_;
-        }
-        const Orbital_t o2 = tmp;
-
-        const FermionSpin_t spin = urng() < 0.5 ? FermionSpin_t::Up : FermionSpin_t::Down;
-        VertexPart vStart(tau, site, spin, o1);
-        VertexPart vEnd(tau, site, spin, o2);
-        AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
-
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype, o1, o2));
-    }
-
-    double GetKxio1o2(const VertexType &vtype, const Orbital_t &o1, const Orbital_t &o2)
+    double GetKxio1o2(const VertexType &vtype)
     {
 
-        const size_t NIdepOrbitalIndex = Utilities::GetIndepOrbitalIndex(o1, o2, NOrb_);
         double U_xio1o2 = INVALID;
 
         if (vtype == VertexType::HubbardIntra)
         {
-            U_xio1o2 = Utensor.UVec().at(NIdepOrbitalIndex);
+            U_xio1o2 = Utensor.U();
         }
         else if (vtype == VertexType::HubbardInter)
         {
-            U_xio1o2 = Utensor.UPrimeVec().at(NIdepOrbitalIndex);
+            U_xio1o2 = Utensor.UPrime();
         }
         else
         {
-            U_xio1o2 = Utensor.JHVec().at(NIdepOrbitalIndex);
+            U_xio1o2 = Utensor.JH();
         }
 
         return (-U_xio1o2 * beta_ * Nc_ / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
     }
-
-    // void BuildPhonon()
-    // {
-    // }
 
   private:
     const Models::UTensor Utensor; // the interaction tensor in xi=vertextype and orbital1 and orbital2 indices
@@ -327,4 +280,4 @@ class AuxHelper
     const double delta_;
 };
 
-} // namespace Diagrammatic
+}; // namespace Diagrammatic

@@ -3,7 +3,7 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "../Utilities/Matrix.hpp"
-#include "../Utilities/Vertices.hpp"
+#include "../Utilities/VerticesSimple.hpp"
 
 namespace Markov
 {

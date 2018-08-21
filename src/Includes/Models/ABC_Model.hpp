@@ -7,8 +7,6 @@
 #include "../Utilities/IO.hpp"
 #include "HybFMAndTLoc.hpp"
 
-using Vertex = Utilities::Vertex;
-
 namespace Models
 {
 
