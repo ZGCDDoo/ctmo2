@@ -22,6 +22,7 @@ class ABC_Model_2D
 
       public:
         static const size_t Nc;
+        const double MIN_EHYB = 300;
 
         ABC_Model_2D(const Json &jjSim) : ioModel_(),
                                           h0_(jjSim),
@@ -74,15 +75,15 @@ class ABC_Model_2D
                 const size_t NHyb = hybtmpUp.n_slices;
                 const double factNHyb = 3.0;
                 const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb),
-                                                        0.5 * (300.0 * beta_ / M_PI - 1.0));
-                hybtmpUp.resize(Nc, Nc, NHyb_HF);
+                                                        0.5 * (MIN_EHYB * beta_ / M_PI - 1.0));
+                hybtmpUp.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
 #ifdef AFM
-                hybtmpDown.resize(Nc, Nc, NHyb_HF);
+                hybtmpDown.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
 #endif
 
                 for (size_t nn = NHyb; nn < NHyb_HF; nn++)
                 {
-                        cd_t iwn(0.0, (2.0 * nn + 1.0) * M_PI / beta_);
+                        const cd_t iwn(0.0, (2.0 * nn + 1.0) * M_PI / beta_);
                         hybtmpUp.slice(nn) = hybFM_ / iwn;
 #ifdef AFM
                         hybtmpDown.slice(nn) = hybtmpUp.slice(nn);

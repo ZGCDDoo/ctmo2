@@ -122,7 +122,7 @@ class Vertices
 
     void AppendVertexPart(const VertexPart &vPart)
     {
-        vPart.spin() == FermionSpin_t::Up ? vPartUpVec_.push_back(vPart) : vPartDownVec_.push_back(vPart);
+        (vPart.spin() == FermionSpin_t::Up) ? vPartUpVec_.push_back(vPart) : vPartDownVec_.push_back(vPart);
     }
 
     void RemoveVertex(const size_t &pp)
@@ -187,7 +187,7 @@ class VertexBuilder
         const Site_t site = urng() * Nc_;
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
-        //The choose two orbitals:
+        //Then choose two orbitals:
         const Orbital_t o1 = urng() * NOrb_;
         const Orbital_t o2 = urng() * NOrb_;
 
@@ -226,9 +226,13 @@ class VertexBuilder
         {
             U_xio1o2 = Utensor.UPrime();
         }
-        else
+        else if (vtype == VertexType::HubbardInterSpin)
         {
             U_xio1o2 = Utensor.JH();
+        }
+        else
+        {
+            throw std::runtime_error("Ayaya, Miseria, vertextype problem. Stupido !");
         }
 
         return (-U_xio1o2 * beta_ * Nc_ / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
@@ -280,4 +284,4 @@ class AuxHelper
     const double delta_;
 };
 
-}; // namespace Diagrammatic
+} // namespace Diagrammatic
