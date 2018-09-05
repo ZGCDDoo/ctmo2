@@ -5,6 +5,7 @@
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/GreenMat.hpp"
 #include "../Utilities/IO.hpp"
+#include "UTensorSimple.hpp"
 #include "HybFMAndTLoc.hpp"
 
 namespace Models
@@ -96,7 +97,8 @@ class ABC_Model_2D
 #endif
 
                 //this is in fact greencluster tilde.
-                this->greenCluster0MatUp_ = GreenMat::GreenCluster0Mat(this->hybridizationMatUp_, this->tLoc_, this->auxMu(), this->beta_);
+                const UTensor ut(jjSim);
+                this->greenCluster0MatUp_ = GreenMat::GreenCluster0Mat(this->hybridizationMatUp_, this->tLoc_, ut.auxMu(), this->beta_);
 #ifdef DCA
                 greenCluster0MatUp_.FourierTransform(h0_.RSites(), h0_.KWaveVectors());
 #endif
@@ -109,7 +111,7 @@ class ABC_Model_2D
                 this->greenCluster0MatDown_ = greenCluster0MatUp_;
 #endif
 #ifdef AFM
-                this->greenCluster0MatDown_ = GreenMat::GreenCluster0Mat(this->hybridizationMatDown_, this->tLoc_, this->auxMu(), this->beta_);
+                this->greenCluster0MatDown_ = GreenMat::GreenCluster0Mat(this->hybridizationMatDown_, this->tLoc_, ut.auxMu(), this->beta_);
 #endif
         }
 
@@ -129,7 +131,6 @@ class ABC_Model_2D
         TIOModel const ioModel() const { return ioModel_; };
 
         double auxU() const { return U_ / 2.0; };
-        double auxMu() const { return mu_ - U_ / 2.0; };
 
       protected:
         TIOModel ioModel_;

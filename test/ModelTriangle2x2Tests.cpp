@@ -26,7 +26,6 @@ TEST(ModelTriangle2DTest, Init)
 
     ASSERT_NEAR(modelTriangle.U(), U, DELTA_SMALL);
     ASSERT_NEAR(modelTriangle.mu(), mu, DELTA_SMALL);
-    ASSERT_NEAR(modelTriangle.auxMu(), mu - U / 2.0, DELTA_SMALL);
 }
 
 //Test that the model gives the correct thing for a simulation done by CT-Hyb patrick for the parameters given in testtriangle.json

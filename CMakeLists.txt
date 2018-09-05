@@ -201,6 +201,7 @@ if (${TEST})
     MatrixTests
     ObservablesTests
     VerticesTests
+    UTensorSimpleTests
     VerticesSimpleTests
     )
 
