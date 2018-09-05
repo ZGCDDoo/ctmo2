@@ -30,7 +30,6 @@ class ABC_Model_2D
                                           hybFM_(),
                                           tLoc_(),
                                           U_(jjSim["U"].get<double>()),
-                                          delta_(jjSim["delta"].get<double>()),
                                           beta_(jjSim["beta"].get<double>()),
                                           mu_(jjSim["mu"].get<double>()),
                                           NOrb_(jjSim["NOrb"].get<size_t>())
@@ -144,7 +143,6 @@ class ABC_Model_2D
         ClusterMatrixCD_t tLoc_;
 
         const double U_;
-        const double delta_;
         const double beta_;
         const double mu_;
         const size_t NOrb_;

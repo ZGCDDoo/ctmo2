@@ -4,7 +4,6 @@
 #include "../src/Includes/Models/UTensorSimple.hpp"
 
 const double DELTA = 1e-11;
-const size_t Nc = 4;
 const std::string fname = "../test/data/cdmft_triangle/testtriangle.json";
 
 using namespace Models;
