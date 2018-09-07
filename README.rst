@@ -1,10 +1,10 @@
 ==========================================================================
- CTTG5.3 : Continuous time Tremblay Group
+ CTMO0.1 : Continuous time multi-orbital
 ==========================================================================
 
 :Authors: Charles-David Hébert, Maxime Charlebois, Patrick Sémon 
-:Date: $Date: 2018-06-21 $
-:Revision: $Revision: 5.3.0 $
+:Date: $Date: 2018-09-07 $
+:Revision: $Revision: 0.1.0 $
 :Description: Description
 
 Graham

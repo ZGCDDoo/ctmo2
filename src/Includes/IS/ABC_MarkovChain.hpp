@@ -149,12 +149,12 @@ class ABC_MarkovChain
         //     const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
         //     const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
 
-        //     const double probAcc = ratioUp * ratioDown;
+        //     const double ratioAcc = ratioUp * ratioDown;
 
-        //     if (urng_() < std::abs(probAcc))
+        //     if (urng_() < std::abs(ratioAcc))
         //     {
         //         updStats_["Flips"][1]++;
-        //         if (probAcc < 0.0)
+        //         if (ratioAcc < 0.0)
         //         {
         //             dataCT_->sign_ *= -1;
         //         }
@@ -276,11 +276,11 @@ class ABC_MarkovChain
             const double sTildeDownI = sDown - LinAlg::DotVectors(newLastRowDown_, NQDown);
 
             const double ratio = sTildeUpI * sTildeDownI;
-            const double probAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
-            if (urng_() < std::abs(probAcc))
+            const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
+            if (urng_() < std::abs(ratioAcc))
             {
                 updStats_["Inserts"][1]++;
-                if (probAcc < .0)
+                if (ratioAcc < .0)
                 {
                     dataCT_->sign_ *= -1;
                 }
@@ -298,11 +298,11 @@ class ABC_MarkovChain
         else
         {
             AssertSizes();
-            const double probAcc = PROBREMOVE / PROBINSERT * vertex.probProb() * sUp * sDown;
+            const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() * sUp * sDown;
 
-            if (urng_() < std::abs(probAcc))
+            if (urng_() < std::abs(ratioAcc))
             {
-                if (probAcc < 0.0)
+                if (ratioAcc < 0.0)
                 {
                     dataCT_->sign_ *= -1;
                 }
@@ -357,13 +357,13 @@ class ABC_MarkovChain
         // const VertexPart y = vertex.vEnd();
 
         //In theory we should find the proper index for each spin
-        const double probAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
+        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(pp, pp) * nfdata_.Ndown_(pp, pp);
 
-        if (urng_() < std::abs(probAcc))
+        if (urng_() < std::abs(ratioAcc))
         {
             //AssertSizes();
             updStats_["Removes"][1]++;
-            if (probAcc < .0)
+            if (ratioAcc < .0)
             {
                 dataCT_->sign_ *= -1; //not to sure here, should it not just be sign = -1 ??
             }
