@@ -43,6 +43,8 @@ class GreenCluster0Tau
         {
             Save("gtau.dat");
         }
+
+        gfMatCluster_.clear();
         mpiUt::Print("gtau Created");
     };
 
@@ -119,16 +121,14 @@ class GreenCluster0Tau
     }
 #endif
 
-    ~GreenCluster0Tau()
-    {
-        // delete data_;
-        // ~gfMatCluster_();
-    }
+    ~GreenCluster0Tau() = default;
+    // {
+    // }
 
     GreenCluster0Mat gfMatCluster() const { return gfMatCluster_; };
     size_t NTau() const { return NTau_; };
 
-    void clear()
+    void Clear()
     {
         data_.clear();
         gfMatCluster_.clear();
