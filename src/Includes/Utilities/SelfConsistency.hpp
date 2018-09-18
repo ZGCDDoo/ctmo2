@@ -54,7 +54,7 @@ class SelfConsistency : public ABC_SelfConsistency
                                                                                                                             selfEnergy_(),
                                                                                                                             hybNext_(),
                                                                                                                             spin_(spin),
-                                                                                                                            weights_(cd_t(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>())),
+                                                                                                                            weights_(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>()),
                                                                                                                             NOrb_(jj["NOrb"].get<size_t>()),
                                                                                                                             NSS_(NOrb_ * Nc)
     {
@@ -80,7 +80,7 @@ class SelfConsistency : public ABC_SelfConsistency
         //0.) Extraire la self jusqu'a NGreen
         for (size_t nn = 0; nn < NGreen; nn++)
         {
-            const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
+            const cd_t zz(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
             selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc() - hybridization_.slice(nn);
         }
 

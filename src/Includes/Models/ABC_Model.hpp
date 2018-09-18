@@ -46,14 +46,13 @@ class ABC_Model_2D
 #endif
                 }
 
-//tLoc and hybFM should have been calculated by now.
-#ifdef DCA
-                assert(tLoc_.load("tloc_K.arma"));
-                assert(hybFM_.load("hybFM_K.arma"));
-#else
-                assert(tLoc_.load("tloc.arma"));
-                assert(hybFM_.load("hybFM.arma"));
-#endif
+                //tLoc and hybFM should have been calculated by now.
+
+                Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
+
+                assert(tLoc_.load(mapNames["tlocFile"]));
+                assert(hybFM_.load(mapNames["hybFMFile"]));
+
                 FinishConstructor(jjSim);
                 mpiUt::Print(" End of ABC_Model Constructor ");
         };

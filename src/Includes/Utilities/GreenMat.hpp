@@ -53,7 +53,7 @@ class HybridizationMat
 
         for (size_t nn = NNBefore; nn < NN; nn++)
         {
-            cd_t iwn = cd_t(0.0, (2.0 * nn + 1.0) * M_PI / beta);
+            const cd_t iwn(0.0, (2.0 * nn + 1.0) * M_PI / beta);
             data_.slice(nn) = fm_ / iwn;
         }
     }
@@ -108,7 +108,7 @@ class GreenCluster0Mat
 
         for (size_t nn = 0; nn < ll; nn++)
         {
-            const cd_t zz = cd_t(mu_, (2.0 * nn + 1.0) * M_PI / beta_);
+            const cd_t zz(mu_, (2.0 * nn + 1.0) * M_PI / beta_);
             const ClusterMatrixCD_t tmp = zz * EYE - tLoc_ - hyb_.slice(nn);
             data_.slice(nn) = tmp.i();
         }
