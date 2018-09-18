@@ -292,6 +292,19 @@ class Base_IOModel
         return NOrbIndep;
     };
 
+    std::pair<size_t, size_t> GetIndices(const size_t &indepSuperSiteIndex, const size_t &NOrb) const
+    {
+        const size_t LL = indepSites_.size();
+        const size_t indepSiteIndex = indepSuperSiteIndex % LL;
+        const size_t indepOrbitalIndex = indepSuperSiteIndex / LL;
+        const size_t o1 = indepOrbitalIndex % GetNOrbIndep(NOrb);
+        const size_t o2 = indepOrbitalIndex / GetNOrbIndep(NOrb);
+
+        const std::pair<Site_t, Site_t> sites = indepSites_.at(indepSiteIndex);
+
+        return {sites.first + o1 * Nc, sites.second + o2 * Nc};
+    }
+
     size_t GetNIndepSuperSites(const size_t &NOrb) const
     {
         return (indepSites_.size() * GetNOrbIndep(NOrb));
