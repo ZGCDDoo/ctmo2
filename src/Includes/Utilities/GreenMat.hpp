@@ -162,6 +162,7 @@ class GreenCluster0Mat
     ClusterMatrixCD_t sm() const { return sm_; };
     ClusterMatrixCD_t tm() const { return tm_; };
     SiteVectorCD_t tube(const size_t &s1, const size_t s2) const { return data_.tube(s1, s2); };
+
     double beta() const { return beta_; };
     size_t n_rows() const { return data_.n_rows; };
     size_t n_cols() const { return data_.n_cols; };

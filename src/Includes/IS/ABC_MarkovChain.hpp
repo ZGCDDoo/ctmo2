@@ -327,8 +327,7 @@ class ABC_MarkovChain
         assert(false);
     }
 
-    void
-    RemoveVertex()
+    void RemoveVertex()
     {
         AssertSizes();
         updStats_["Removes"][0]++;
@@ -365,7 +364,7 @@ class ABC_MarkovChain
             updStats_["Removes"][1]++;
             if (ratioAcc < .0)
             {
-                dataCT_->sign_ *= -1; //not to sure here, should it not just be sign = -1 ??
+                dataCT_->sign_ *= -1;
             }
 
             //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp

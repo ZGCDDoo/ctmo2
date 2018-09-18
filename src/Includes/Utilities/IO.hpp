@@ -61,7 +61,7 @@ class Base_IOModel
             for (Site_t s2 = 0; s2 < Nc; s2++)
             {
 
-                std::pair<Site_t, Site_t> pairSites = GreenSites_.at(s1).at(s2);
+                const std::pair<Site_t, Site_t> pairSites = GreenSites_.at(s1).at(s2);
                 std::vector<std::pair<size_t, size_t>>::iterator llit = std::find(indepSites_.begin(), indepSites_.end(), pairSites);
                 if (llit == indepSites_.end())
                 {
@@ -109,7 +109,7 @@ class Base_IOModel
         {
             for (size_t jj = 0; jj < Nc; jj++)
             {
-                size_t ll = FindIndepSiteIndex(ii, jj);
+                const size_t ll = FindIndepSiteIndex(ii, jj);
                 nOfAssociatedSites_.at(ll) = nOfAssociatedSites_.at(ll) + 1;
 
                 // if (indepSites_.at(ll).first == indepSites_[ll].second)
@@ -292,6 +292,11 @@ class Base_IOModel
         return NOrbIndep;
     };
 
+    size_t GetNIndepSuperSites(const size_t &NOrb) const
+    {
+        return (indepSites_.size() * GetNOrbIndep(NOrb));
+    }
+
     template <typename T1_t, typename T2_t = ClusterMatrixCD_t>
     T2_t IndepToFull(const T1_t &indepElements, const size_t &NOrb) //in practice T1_t will be a Sitevector_t or SitevectorCD_t
     {
@@ -303,7 +308,7 @@ class Base_IOModel
         {
             for (size_t jj = 0; jj < Nc; jj++)
             {
-                size_t index = FindIndepSiteIndex(ii, jj);
+                const size_t index = FindIndepSiteIndex(ii, jj);
                 fullMatrix(ii, jj) = indepElements(index);
             }
         }
@@ -320,8 +325,8 @@ class Base_IOModel
 
         for (size_t i = 0; i < indepSites_.size(); i++)
         {
-            Site_t s1 = indepSites_.at(i).first;
-            Site_t s2 = indepSites_.at(i).second;
+            const Site_t s1 = indepSites_.at(i).first;
+            const Site_t s2 = indepSites_.at(i).second;
             for (size_t n = 0; n < greenCube.n_slices; n++)
             {
                 indepTabular(n, i) = greenCube(s1, s2, n);
