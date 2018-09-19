@@ -438,7 +438,7 @@ class ABC_MarkovChain
     double GetGreenTau0Up(const VertexPart &x, const VertexPart &y) const
     {
         assert(x.spin() == y.spin());
-        return (dataCT_->green0CachedUp_(x.site(), y.site(), x.tau() - y.tau()));
+        return (dataCT_->green0CachedUp_(x.superSite(), y.superSite(), x.tau() - y.tau()));
     }
 
     double GetGreenTau0Down(const VertexPart &x, const VertexPart &y) const
@@ -446,7 +446,7 @@ class ABC_MarkovChain
 
 #ifdef AFM
         assert(x.spin() == y.spin());
-        return (dataCT_->green0CachedDown_(x.site(), y.site(), x.tau() - y.tau()));
+        return (dataCT_->green0CachedDown_(x.superSite(), y.superSite(), x.tau() - y.tau()));
 #else
         return GetGreenTau0Up(x, y);
 

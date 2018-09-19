@@ -20,7 +20,7 @@ class FillingAndDocc
                                                                                                            urngPtr_(urngPtr),
                                                                                                            N_T_INV_(N_T_INV)
     {
-        const size_t LL = ioModel_.indepSites().size();
+        const size_t LL = ioModel_.GetNIndepSuperSites(dataCT_->NOrb());
 
         fillingUpCurrent_.resize(LL, 0.0);
         fillingDownCurrent_.resize(LL, 0.0);
@@ -107,71 +107,79 @@ class FillingAndDocc
         const double sign = static_cast<double>(dataCT_->sign_);
         const size_t fillingSize = ioModel_.fillingSites().size();
 
-        for (Site_t ii = 0; ii < fillingSize; ii++)
+        for (size_t oIndex = 0; oIndex < ioModel_.GetNOrbIndep(dataCT_->NOrb()); oIndex++)
         {
-            const Site_t s1 = ioModel_.fillingSites()[ii];
-
-            for (size_t nsamples = 0; nsamples < N_T_INV_; nsamples++)
+            for (Site_t ii = 0; ii < fillingSize; ii++)
             {
-                const double tauRng = (*urngPtr_)() * dataCT_->beta_;
-                const Site_t siteRng = ioModel_.FindSitesRng(s1, s1, (*urngPtr_)()).first;
+                const Site_t s1 = ioModel_.fillingSites()[ii];
+                const SuperSite_t superSite1{s1, 0};
 
-                for (size_t iUp = 0; iUp < KKUp; iUp++)
+                for (size_t nsamples = 0; nsamples < N_T_INV_; nsamples++)
                 {
-                    const Site_t ss = dataCT_->vertices_.atUp(iUp).site();
-                    const Tau_t tt = dataCT_->vertices_.atUp(iUp).tau();
-                    vec1Up(iUp) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
-                    vec2Up(iUp) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
-                }
-                for (size_t iDown = 0; iDown < KKDown; iDown++)
-                {
-                    const Site_t ss = dataCT_->vertices_.atDown(iDown).site();
-                    const Tau_t tt = dataCT_->vertices_.atDown(iDown).tau();
+                    const double tauRng = (*urngPtr_)() * dataCT_->beta_;
+                    const Site_t siteRng = ioModel_.FindSitesRng(s1, s1, (*urngPtr_)()).first;
+                    const SuperSite_t superSiteRng{siteRng, 0};
+
+                    for (size_t iUp = 0; iUp < KKUp; iUp++)
+                    {
+                        const Site_t ss = dataCT_->vertices_.atUp(iUp).site();
+                        const SuperSite_t superSite{ss, 0};
+                        const Tau_t tt = dataCT_->vertices_.atUp(iUp).tau();
+
+                        vec1Up(iUp) = dataCT_->green0CachedUp_(superSiteRng, superSite, tauRng - tt);
+                        vec2Up(iUp) = dataCT_->green0CachedUp_(superSite, superSiteRng, tt - tauRng);
+                    }
+                    for (size_t iDown = 0; iDown < KKDown; iDown++)
+                    {
+                        const Site_t ss = dataCT_->vertices_.atDown(iDown).site();
+                        const SuperSite_t superSite{ss, 0};
+                        const Tau_t tt = dataCT_->vertices_.atDown(iDown).tau();
 #ifdef AFM
-                    vec1Down(iDown) = dataCT_->green0CachedDown_(siteRng, ss, tauRng - tt);
-                    vec2Down(iDown) = dataCT_->green0CachedDown_(ss, siteRng, tt - tauRng);
+                        vec1Down(iDown) = dataCT_->green0CachedDown_(superSiteRng, superSite, tauRng - tt);
+                        vec2Down(iDown) = dataCT_->green0CachedDown_(superSite, superSiteRng, tt - tauRng);
 #else
-                    vec1Down(iDown) = dataCT_->green0CachedUp_(siteRng, ss, tauRng - tt);
-                    vec2Down(iDown) = dataCT_->green0CachedUp_(ss, siteRng, tt - tauRng);
+                        vec1Down(iDown) = dataCT_->green0CachedUp_(superSiteRng, superSite, tauRng - tt);
+                        vec2Down(iDown) = dataCT_->green0CachedUp_(superSite, superSiteRng, tt - tauRng);
 #endif
-                }
+                    }
 
-                double dotup = 0.0;
-                double dotdown = 0.0;
+                    double dotup = 0.0;
+                    double dotdown = 0.0;
 
-                if (KK)
-                {
-                    dotup = LinAlg::Dot(vec1Up, *(dataCT_->MupPtr_), vec2Up);
-                    dotdown = LinAlg::Dot(vec1Down, *(dataCT_->MdownPtr_), vec2Down);
-                }
+                    if (KK)
+                    {
+                        dotup = LinAlg::Dot(vec1Up, *(dataCT_->MupPtr_), vec2Up);
+                        dotdown = LinAlg::Dot(vec1Down, *(dataCT_->MdownPtr_), vec2Down);
+                    }
 
-                const double green00Up = dataCT_->green0CachedUp_(s1, s1, -eps);
+                    const double green00Up = dataCT_->green0CachedUp_(superSite1, superSite1, -eps);
 
 #ifdef AFM
-                const double green00Down = dataCT_->green0CachedDown_(s1, s1, -eps);
+                    const double green00Down = dataCT_->green0CachedDown_(superSite1, superSite1, -eps);
 #else
-                const double green00Down = dataCT_->green0CachedUp_(s1, s1, -eps);
+                    const double green00Down = dataCT_->green0CachedUp_(superSite1, superSite1, -eps);
 #endif
-                const double nUptmp = green00Up - dotup;
-                const double nDowntmp = green00Down - dotdown;
+                    const double nUptmp = green00Up - dotup;
+                    const double nDowntmp = green00Down - dotdown;
 
-                fillingUpCurrent_[ii] += sign * nUptmp;
-                fillingDownCurrent_[ii] += sign * nDowntmp;
-                doccCurrent_[ii] += sign * (nUptmp * nDowntmp);
+                    fillingUpCurrent_[ii] += sign * nUptmp;
+                    fillingDownCurrent_[ii] += sign * nDowntmp;
+                    doccCurrent_[ii] += sign * (nUptmp * nDowntmp);
 
-                const double ndiff = nUptmp - nDowntmp;
-                SzCurrent_[ii] += sign * ndiff;
+                    const double ndiff = nUptmp - nDowntmp;
+                    SzCurrent_[ii] += sign * ndiff;
+                }
+
+                fillingUpCurrent_[ii] /= static_cast<double>(N_T_INV_);
+                fillingDownCurrent_[ii] /= static_cast<double>(N_T_INV_);
+                doccCurrent_[ii] /= static_cast<double>(N_T_INV_);
+                SzCurrent_[ii] /= static_cast<double>(N_T_INV_);
+
+                fillingUp_.at(ii) += fillingUpCurrent_[ii];
+                fillingDown_[ii] += fillingDownCurrent_[ii];
+                docc_[ii] += doccCurrent_[ii];
+                Sz_[ii] += SzCurrent_[ii];
             }
-
-            fillingUpCurrent_[ii] /= static_cast<double>(N_T_INV_);
-            fillingDownCurrent_[ii] /= static_cast<double>(N_T_INV_);
-            doccCurrent_[ii] /= static_cast<double>(N_T_INV_);
-            SzCurrent_[ii] /= static_cast<double>(N_T_INV_);
-
-            fillingUp_.at(ii) += fillingUpCurrent_[ii];
-            fillingDown_[ii] += fillingDownCurrent_[ii];
-            docc_[ii] += doccCurrent_[ii];
-            Sz_[ii] += SzCurrent_[ii];
         }
 
         // mpiUt::Print("End of MeasureFillingAndDocc");

@@ -25,7 +25,8 @@ class VertexPart
                const size_t orbital) : tau_(tau),
                                        site_(site),
                                        spin_(spin),
-                                       orbital_(orbital) {}
+                                       orbital_(orbital),
+                                       superSite_{site, orbital} {}
 
     VertexPart &operator=(const VertexPart &vpart) = default;
 
@@ -34,12 +35,14 @@ class VertexPart
     Site_t site() const { return site_; };
     FermionSpin_t spin() const { return spin_; };
     Orbital_t orbital() const { return orbital_; };
+    SuperSite_t superSite() const { return superSite_; };
 
   private:
     Tau_t tau_;
     Site_t site_;
     FermionSpin_t spin_;
     Orbital_t orbital_;
+    SuperSite_t superSite_;
 };
 
 class Vertex

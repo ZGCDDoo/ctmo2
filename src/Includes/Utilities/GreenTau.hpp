@@ -135,7 +135,7 @@ class GreenCluster0Tau
         gfMatCluster_.clear();
     }
 
-    double operator()(const Site_t &s1, const Site_t &s2, const Tau_t &tauIn)
+    double operator()(const SuperSite_t &s1, const SuperSite_t &s2, const Tau_t &tauIn)
     {
         double tau = tauIn - EPS;
 
@@ -147,7 +147,7 @@ class GreenCluster0Tau
             aps = -1.0;
         }
 
-        const size_t ll = ioModel_.FindIndepSiteIndex(s1, s2);
+        const size_t ll = ioModel_.FindIndepSuperSiteIndex(s1, s2, NOrb_);
         const double nt = std::abs(tau) / beta_ * static_cast<double>(NTau_);
         const size_t n0 = static_cast<size_t>(nt);
         const double greentau0 = aps * ((1.0 - (nt - n0)) * data_.at(ll).at(n0) + (nt - n0) * data_[ll].at(n0 + 1));
