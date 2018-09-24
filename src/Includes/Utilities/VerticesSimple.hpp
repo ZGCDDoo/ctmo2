@@ -143,11 +143,23 @@ class Vertices
     }
 
     /*
-    Get the index for vPartUpVec corresponding to a given vertex Index (will be the same for only different spin interactions) 
+    Get the index for vPartUpVec and vPartDownVec corresponding to a given vertex Index (will be the same for only different spin interactions) 
     */
-    // size_t GetIndexSpin()
-    // {
-    // }
+    std::pair<size_t, size_t> GetIndicesSpins(const size_t &pp) const
+    {
+        size_t indexVertexPartUp = 0;
+        size_t indexVertexPartDown = 0;
+
+        for (size_t ii = 0; ii < pp; ii++)
+        {
+            const VertexPart x = data_.at(ii).vStart();
+            const VertexPart y = data_.at(ii).vEnd();
+            x.spin() == FermionSpin_t::Up ? indexVertexPartUp++ : indexVertexPartDown++;
+            y.spin() == FermionSpin_t::Up ? indexVertexPartUp++ : indexVertexPartDown++;
+        }
+
+        return {indexVertexPartUp, indexVertexPartDown};
+    }
 
     //Getters
     size_t size() const { return data_.size(); };

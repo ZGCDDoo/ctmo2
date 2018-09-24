@@ -369,16 +369,21 @@ class ABC_MarkovChain
 
             //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
 
-            const size_t kk = dataCT_->vertices_.size();
-            const size_t kkm1 = kk - 1;
+            const size_t kkUp = dataCT_->vertices_.NUp();
+            const size_t kkUpm1 = kkUp - 1;
+            const size_t kkDown = dataCT_->vertices_.NDown();
+            const size_t kkDownm1 = kkDown - 1;
+            const auto ppSpins = dataCT_->vertices_.GetIndicesSpins(pp);
+            assert(pp == ppSpins.first);
+            assert(pp == ppSpins.second);
 
-            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, pp);
-            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, pp);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppSpins.first);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppSpins.second);
 
-            nfdata_.FVup_.swap_rows(pp, kkm1);
-            nfdata_.FVdown_.swap_rows(pp, kkm1);
-            nfdata_.FVup_.resize(kkm1);
-            nfdata_.FVdown_.resize(kkm1);
+            nfdata_.FVup_.swap_rows(ppSpins.first, kkUpm1);
+            nfdata_.FVdown_.swap_rows(ppSpins.second, kkDownm1);
+            nfdata_.FVup_.resize(kkUpm1);
+            nfdata_.FVdown_.resize(kkDownm1);
 
             dataCT_->vertices_.RemoveVertex(pp);
             //AssertSizes();

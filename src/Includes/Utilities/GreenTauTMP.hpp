@@ -31,8 +31,7 @@ class GreenCluster0Tau
                                                                                  NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
     {
         mpiUt::Print("Creating gtau ");
-        assert(NOrb_ >= 1);
-        data_.resize(ioModel_.GetNIndepSuperSites(NOrb_));
+        data_.resize(ioModel_.GetNOrbIndep(NOrb_));
 
 #ifdef HAVEMPI
         mpi::communicator world;
@@ -50,7 +49,7 @@ class GreenCluster0Tau
         mpiUt::Print("gtau Created");
     };
 
-    Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) //return g_i(tau)
+    Vector_t BuildOneGTau(const size_t &indepSiteIndex) //return g_i(tau)
     {
         Vector_t result(NTau_ + 1);
 
@@ -66,10 +65,8 @@ class GreenCluster0Tau
                 tau -= EPS;
             }
 
-            const std::pair<size_t, size_t> indices = ioModel_.GetIndices(indepSuperSiteIndex, NOrb_);
-            const size_t s1 = indices.first;
-            const size_t s2 = indices.second;
-
+            const size_t s1 = ioModel_.indepSites().at(indepSiteIndex).first;
+            const size_t s2 = ioModel_.indepSites().at(indepSiteIndex).second;
             const SiteVectorCD_t greenMat = gfMatCluster_.data().tube(s1, s2);
             const double fm = gfMatCluster_.fm()(s1, s2).real();
             const double sm = gfMatCluster_.sm()(s1, s2).real();
@@ -82,9 +79,16 @@ class GreenCluster0Tau
 
     void BuildSerial()
     {
-        for (size_t i = 0; i < ioModel_.GetNIndepSuperSites(NOrb_); i++)
+
+        for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
-            data_.at(i) = BuildOneGTau(i);
+            for (size_t o2 = o1; o2 < NOrb_; o2++)
+            {
+                for (size_t i = 0; i < ioModel_.IndepSites().size(); i++)
+                {
+                    data_.at(i) = BuildOneGTau(i);
+                }
+            }
         }
     }
 
@@ -95,14 +99,14 @@ class GreenCluster0Tau
 
         std::vector<Data_t> dataVec;
         size_t ii = 0;
-        while (ii * mpiUt::NWorkers() < ioModel_.GetNIndepSuperSites(NOrb_))
+        while (ii * mpiUt::NWorkers() < ioModel_.indepSites().size())
         {
-            const size_t indepSuperSiteIndex = mpiUt::Rank() + ii * mpiUt::NWorkers();
+            size_t indepSiteIndex = mpiUt::Rank() + ii * mpiUt::NWorkers();
             Vector_t g0Tau;
 
-            if (indepSiteIndex < ioModel_.GetNIndepSuperSites(NOrb_))
+            if (indepSiteIndex < ioModel_.indepSites().size())
             {
-                g0Tau = BuildOneGTau(indepSuperSiteIndex);
+                g0Tau = BuildOneGTau(indepSiteIndex);
             }
 
             Data_t dataResult;
@@ -136,9 +140,8 @@ class GreenCluster0Tau
         gfMatCluster_.clear();
     }
 
-    double operator()(const SuperSite_t &s1, const SuperSite_t &s2, const Tau_t &tauIn)
+    double operator()(const Site_t &s1, const Site_t &s2, const Tau_t &tauIn)
     {
-        assert(NOrb_ >= 1);
         double tau = tauIn - EPS;
 
         double aps = 1.0;
@@ -149,7 +152,7 @@ class GreenCluster0Tau
             aps = -1.0;
         }
 
-        const size_t ll = ioModel_.FindIndepSuperSiteIndex(s1, s2, NOrb_);
+        const size_t ll = ioModel_.FindIndepSiteIndex(s1, s2);
         const double nt = std::abs(tau) / beta_ * static_cast<double>(NTau_);
         const size_t n0 = static_cast<size_t>(nt);
         const double greentau0 = aps * ((1.0 - (nt - n0)) * data_.at(ll).at(n0) + (nt - n0) * data_[ll].at(n0 + 1));
@@ -163,7 +166,6 @@ class GreenCluster0Tau
         gfMatCluster_ = gf.gfMatCluster_;
         NTau_ = gf.NTau_;
         beta_ = gf.beta_;
-        NOrb_ = gf.NOrb_;
         data_ = gf.data_;
         return *this;
     }

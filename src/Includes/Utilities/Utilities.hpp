@@ -77,6 +77,12 @@ std::string GetSpinName(const FermionSpin_t &spin)
 
 size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NOrb)
 {
+	// std::cout << "o1, o2 =  " << o1 << ", " << o2 << std::endl;
+	// std::cout << "NOrb =  " << NOrb << std::endl;
+
+	assert(o1 < NOrb);
+	assert(o2 < NOrb);
+
 	size_t indepOrbitalIndex = 0;
 	const std::pair<size_t, size_t> pairTarget = o1 < o2 ? std::make_pair(o1, o2) : std::make_pair(o2, o1);
 
@@ -93,8 +99,9 @@ size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NO
 		}
 	}
 
-	throw std::runtime_error("Miseria, GetIndepOrbitalIndex problem. Stupido !");
-	return 999;
+	assert(o1 == 0);
+	assert(o2 == 0);
+	return 0;
 }
 
 class Vertex
