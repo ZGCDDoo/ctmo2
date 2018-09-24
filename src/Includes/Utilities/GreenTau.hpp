@@ -100,7 +100,7 @@ class GreenCluster0Tau
             const size_t indepSuperSiteIndex = mpiUt::Rank() + ii * mpiUt::NWorkers();
             Vector_t g0Tau;
 
-            if (indepSiteIndex < ioModel_.GetNIndepSuperSites(NOrb_))
+            if (indepSuperSiteIndex < ioModel_.GetNIndepSuperSites(NOrb_))
             {
                 g0Tau = BuildOneGTau(indepSuperSiteIndex);
             }
