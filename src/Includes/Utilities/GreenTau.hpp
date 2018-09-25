@@ -53,6 +53,9 @@ class GreenCluster0Tau
     Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) //return g_i(tau)
     {
         Vector_t result(NTau_ + 1);
+        const std::pair<size_t, size_t> indices = ioModel_.GetIndices(indepSuperSiteIndex, NOrb_);
+        const size_t s1 = indices.first;
+        const size_t s2 = indices.second;
 
         for (size_t tt = 0; tt < NTau_ + 1; tt++)
         {
@@ -65,10 +68,6 @@ class GreenCluster0Tau
             {
                 tau -= EPS;
             }
-
-            const std::pair<size_t, size_t> indices = ioModel_.GetIndices(indepSuperSiteIndex, NOrb_);
-            const size_t s1 = indices.first;
-            const size_t s2 = indices.second;
 
             const SiteVectorCD_t greenMat = gfMatCluster_.data().tube(s1, s2);
             const double fm = gfMatCluster_.fm()(s1, s2).real();

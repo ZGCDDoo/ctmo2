@@ -163,7 +163,7 @@ class ABC_H0
         tLoc.save("tloc.arma", arma::arma_ascii);
 
         //First moment of hyb
-        ClusterMatrixCD_t hybFM(Nc, Nc);
+        ClusterMatrixCD_t hybFM(NS, NS);
         hybFM.zeros();
 
         const size_t Nkpts = tKTildeGrid.n_slices;

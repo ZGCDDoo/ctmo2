@@ -4,7 +4,7 @@
     "solver": "Int",
     "U": 5.0,
     "J_H": 0.0,
-    "U": 0.0,
+    "UPrime": 0.0,
     "tParameters": {
         "00": {
             "tIntra": 0.0,
