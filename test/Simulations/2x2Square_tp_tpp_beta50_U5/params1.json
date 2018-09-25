@@ -1,8 +1,21 @@
 {
-    "tPrime": 0.3,
+    "NOrb": 1,
     "modelType": "Square2x2",
     "solver": "Int",
     "U": 5.0,
+    "J_H": 0.0,
+    "U": 0.0,
+    "tParameters": {
+        "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.30,
+            "tx=-y": 0.30,
+            "t2x": -0.20,
+            "t2y": -0.20
+        }
+    },
     "EGreen": 60,
     "SEED": 25105,
     "mu": 2.5,
@@ -13,10 +26,8 @@
     "KMAX_UPD": 100,
     "CLEANUPDATE": 100,
     "HybFileUp": "hyb_Pat_R23",
-    "t": -1.0,
     "beta": 50.0,
     "NTAU": 5000,
-    "tPrimePrime": -0.20,
     "MEASURE_FILLING": true,
     "K": 1.0,
     "THERM_FROM_CONFIG": false,

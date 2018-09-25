@@ -2,6 +2,7 @@
     "NOrb": 1,
     "U": 5.0,
     "J_H": 0.0,
+    "UPrime": 0.0,
     "EGreen": 60,
     "SEED": 25105,
     "PROBFLIP": 0.25,

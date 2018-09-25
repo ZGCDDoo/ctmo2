@@ -206,6 +206,11 @@ class ABC_MarkovChain
         assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
         assert(2 * dataCT_->vertices_.size() == dataCT_->vertices_.NUp() + dataCT_->vertices_.NDown());
         assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
+        assert(dataCT_->vertices_.NUp() == nfdata_.FVup_.n_elem);
+        assert(dataCT_->vertices_.NUp() == nfdata_.Nup_.n_rows());
+
+        assert(dataCT_->vertices_.NDown() == nfdata_.FVdown_.n_elem);
+        assert(dataCT_->vertices_.NDown() == nfdata_.Ndown_.n_rows());
     }
 
     void InsertVertex()
@@ -239,8 +244,8 @@ class ABC_MarkovChain
         assert(vertexPartUp.spin() == FermionSpin_t::Up);
         assert(vertexPartDown.spin() == FermionSpin_t::Down);
 
-        const double sUp = fauxup - GetGreenTau0(vertexPartUp, vertexPartUp) * fauxupM1;
-        const double sDown = fauxdown - GetGreenTau0(vertexPartDown, vertexPartDown) * fauxdownM1;
+        const double sUp = -fauxup + GetGreenTau0(vertexPartUp, vertexPartUp) * fauxupM1;
+        const double sDown = -fauxdown + GetGreenTau0(vertexPartDown, vertexPartDown) * fauxdownM1;
 
         if (dataCT_->vertices_.size())
         {
@@ -258,14 +263,14 @@ class ABC_MarkovChain
             //Probably put this in a method
             for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
             {
-                newLastRowUp_(iUp) = -GetGreenTau0(vertexPartUp, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
-                newLastColUp_(iUp) = -GetGreenTau0(dataCT_->vertices_.atUp(iUp), vertexPartUp) * fauxupM1;
+                newLastRowUp_(iUp) = GetGreenTau0(vertexPartUp, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
+                newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), vertexPartUp) * fauxupM1;
             }
 
             for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
             {
-                newLastRowDown_(iDown) = -GetGreenTau0(vertexPartDown, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
-                newLastColDown_(iDown) = -GetGreenTau0(dataCT_->vertices_.atDown(iDown), vertexPartDown) * fauxdownM1;
+                newLastRowDown_(iDown) = GetGreenTau0(vertexPartDown, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
+                newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), vertexPartDown) * fauxdownM1;
             }
 
             SiteVector_t NQUp(kkoldUp); //NQ = N*Q
@@ -330,10 +335,10 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         const double faux = FAux(x.spin(), vertex.aux());
         const double fauxM1 = faux - 1.0;
-        const double s00 = faux - GetGreenTau0(x, x) * fauxM1;
-        const double s01 = -GetGreenTau0(x, y);
-        const double s10 = -GetGreenTau0(y, x);
-        const double s11 = faux - GetGreenTau0(y, y) * fauxM1;
+        const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
+        const double s01 = GetGreenTau0(x, y);
+        const double s10 = GetGreenTau0(y, x);
+        const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
 
         if (dataCT_->vertices_.size())
         {
@@ -412,8 +417,7 @@ class ABC_MarkovChain
         // // std::cout << "After insertvertex" << std::endl;
     }
 
-    void
-    RemoveVertex()
+    void RemoveVertex()
     {
         AssertSizes();
         updStats_["Removes"][0]++;
@@ -478,7 +482,6 @@ class ABC_MarkovChain
 
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        assert(false);
         AssertSizes();
         const Vertex vertex = dataCT_->vertices_.at(pp);
         const VertexPart x = vertex.vStart();
@@ -534,11 +537,11 @@ class ABC_MarkovChain
             for (size_t jUp = 0; jUp < kkdown; jUp++)
             {
 
-                nfdata_.Nup_(iUp, jUp) = -GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
+                nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
 
                 if (iUp == jUp)
                 {
-                    nfdata_.Nup_(iUp, iUp) += nfdata_.FVup_(iUp);
+                    nfdata_.Nup_(iUp, iUp) -= nfdata_.FVup_(iUp);
                 }
             }
         }
@@ -548,11 +551,11 @@ class ABC_MarkovChain
             for (size_t jDown = 0; jDown < kkdown; jDown++)
             {
 
-                nfdata_.Ndown_(iDown, jDown) = -GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
+                nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
 
                 if (iDown == jDown)
                 {
-                    nfdata_.Ndown_(iDown, iDown) += nfdata_.FVdown_(iDown);
+                    nfdata_.Ndown_(iDown, iDown) -= nfdata_.FVdown_(iDown);
                 }
             }
         }
@@ -581,8 +584,8 @@ class ABC_MarkovChain
     void Measure()
     {
         AssertSizes();
-        const SiteVector_t FVupM1 = -(nfdata_.FVup_ - 1.0);
-        const SiteVector_t FVdownM1 = -(nfdata_.FVdown_ - 1.0);
+        const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
+        const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
         DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
         DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
         obs_.Measure();

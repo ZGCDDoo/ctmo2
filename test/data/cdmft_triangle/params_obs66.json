@@ -3,6 +3,7 @@
     "n": 0.99,
     "tPrime": -0.4,
     "U": 6.25,
+    "UPrime": 0.0,
     "EGreen": 15,
     "SEED": 25105,
     "PROBFLIP": 0.25,
