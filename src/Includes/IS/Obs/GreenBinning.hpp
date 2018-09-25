@@ -25,7 +25,7 @@ class GreenBinning
                                                               NOrb_(jj["NOrb"].get<size_t>())
     {
 
-        const size_t LL = ioModel_.indepSites().size();
+        const size_t LL = ioModel_.GetNIndepSuperSites(NOrb_);
         M0Bins_.resize(LL);
         M1Bins_.resize(LL);
         M2Bins_.resize(LL);
@@ -53,9 +53,9 @@ class GreenBinning
             {
                 for (size_t p2 = 0; p2 < N; p2++)
                 {
-                    const size_t s1 = dataCT_->vertices_.atUp(p1).site();
-                    const size_t s2 = dataCT_->vertices_.atUp(p2).site();
-                    const size_t ll = ioModel_.FindIndepSiteIndex(s1, s2);
+                    const SuperSite_t s1 = dataCT_->vertices_.atUp(p1).superSite();
+                    const SuperSite_t s2 = dataCT_->vertices_.atUp(p2).superSite();
+                    const size_t ll = ioModel_.FindIndepSuperSiteIndex(s1, s2, NOrb_);
                     double temp = static_cast<double>(dataCT_->sign_) * Mmat(p1, p2);
 
                     double tau = dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau();
@@ -97,7 +97,7 @@ class GreenBinning
             const cd_t fact = std::exp(iomega_n * dTau);
             const double lambda = 2.0 * std::sin(omega_n * dTau / 2.0) / (dTau * omega_n * (1.0 - omega_n * omega_n * dTau * dTau / 24.0) * NMeas);
 
-            for (size_t ll = 0; ll < ioModel_.indepSites().size(); ll++)
+            for (size_t ll = 0; ll < ioModel_.GetNIndepSuperSites(NOrb_); ll++)
             {
                 cd_t temp_matsubara = 0.0;
 

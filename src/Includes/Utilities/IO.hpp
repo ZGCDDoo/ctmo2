@@ -317,12 +317,20 @@ class Base_IOModel
         T2_t fullMatrix(Nc, Nc);
         fullMatrix.zeros();
 
-        for (size_t ii = 0; ii < Nc; ii++)
+        for (Orbital_t o1 = 0; o1 < NOrb; o1++)
         {
-            for (size_t jj = 0; jj < Nc; jj++)
+            for (Orbital_t o2 = o1; o2 < NOrb; o2++)
             {
-                const size_t index = FindIndepSiteIndex(ii, jj);
-                fullMatrix(ii, jj) = indepElements(index);
+                for (size_t ii = 0; ii < Nc; ii++)
+                {
+                    for (size_t jj = ii; jj < Nc; jj++)
+                    {
+
+                        const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
+                        fullMatrix(ii + o1 * Nc, jj + o2 * Nc) = indepElements(indexIndepSuperSite);
+                        fullMatrix(jj + o2 * Nc, ii + o1 * Nc) = fullMatrix(ii + o1 * Nc, jj + o2 * Nc); //symmetrize
+                    }
+                }
             }
         }
 
