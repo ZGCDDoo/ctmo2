@@ -395,6 +395,7 @@ class ABC_MarkovChain
                 FVspin(kkoldspin + 1) = faux;
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
+                std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
         else
@@ -489,7 +490,7 @@ class ABC_MarkovChain
             nfdata_.FVdown_.resize(kkDownm1);
 
             dataCT_->vertices_.RemoveVertex(pp);
-            //AssertSizes();
+            AssertSizes();
         }
         //std::cout << "End RemoveVertexDiffSpin " << std::endl;
     }
@@ -530,6 +531,7 @@ class ABC_MarkovChain
             FVspin.resize(kkSpinm1);
 
             dataCT_->vertices_.RemoveVertex(pp);
+            std::cout << "RemoveVertexSameSpin accepted " << std::endl;
         }
 
         AssertSizes();

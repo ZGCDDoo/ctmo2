@@ -26,6 +26,7 @@ class GreenBinning
     {
 
         const size_t LL = ioModel_.GetNIndepSuperSites(NOrb_);
+        std::cout << " ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
         M0Bins_.resize(LL);
         M1Bins_.resize(LL);
         M2Bins_.resize(LL);
@@ -85,10 +86,12 @@ class GreenBinning
         mpiUt::Print("Start of GreenBinning.FinalizeGreenBinning()");
 
         const double dTau = dataCT_->beta_ / N_BIN_TAU;
-        SiteVectorCD_t indep_M_matsubara_sampled(ioModel_.indepSites().size());
+        SiteVectorCD_t indep_M_matsubara_sampled(ioModel_.GetNIndepSuperSites(NOrb_));
         const ClusterCubeCD_t green0CubeMatsubara = spin_ == FermionSpin_t::Up ? modelPtr_->greenCluster0MatUp().data() : modelPtr_->greenCluster0MatDown().data();
-        ClusterCubeCD_t greenCube(ioModel_.Nc, ioModel_.Nc, NMat_);
+        ClusterCubeCD_t greenCube(NOrb_ * ioModel_.Nc, NOrb_ * ioModel_.Nc, NMat_);
         greenCube.zeros();
+
+        std::cout << "ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
 
         for (size_t n = 0; n < NMat_; n++)
         {
@@ -99,9 +102,11 @@ class GreenBinning
 
             for (size_t ll = 0; ll < ioModel_.GetNIndepSuperSites(NOrb_); ll++)
             {
+                std::cout << "Here 1 " << std::endl;
                 cd_t temp_matsubara = 0.0;
 
-                cd_t exp_factor = std::exp(iomega_n * dTau / 2.0) / (static_cast<double>(ioModel_.nOfAssociatedSites().at(ll))); //watch out important factor!
+                const size_t llSite = ll % ioModel_.indepSites().size();                                                             // ll / ioModel_.indepSites().size();
+                cd_t exp_factor = std::exp(iomega_n * dTau / 2.0) / (static_cast<double>(ioModel_.nOfAssociatedSites().at(llSite))); //watch out important factor!
                 for (size_t ii = 0; ii < N_BIN_TAU; ii++)
                 {
                     cd_t coeff = lambda * exp_factor;
@@ -115,11 +120,12 @@ class GreenBinning
                 }
                 indep_M_matsubara_sampled(ll) = temp_matsubara;
             }
-
+            std::cout << "Here 2 " << std::endl;
             const ClusterMatrixCD_t dummy1 = ioModel_.IndepToFull(indep_M_matsubara_sampled, NOrb_);
             const ClusterMatrixCD_t green0 = green0CubeMatsubara.slice(n);
 
             greenCube.slice(n) = green0 - green0 * dummy1 * green0 / (dataCT_->beta_ * signMeas);
+            std::cout << "Here 3 " << std::endl;
         }
 
         greenCube_ = greenCube; //in case it is needed later on

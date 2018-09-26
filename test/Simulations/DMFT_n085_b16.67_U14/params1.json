@@ -12,6 +12,8 @@
     "THERMALIZATION_TIME": 5,
     "THERM_FROM_CONFIG": false,
     "U": 14.0,
+    "J_H": 0.0,
+    "UPrime": 0.0,
     "UPDATESMEAS": 50,
     "KMAX_UPD": 100,
     "beta": 16.67,
@@ -32,6 +34,24 @@
     },
     "tParameters": {
         "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "01": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "11": {
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,

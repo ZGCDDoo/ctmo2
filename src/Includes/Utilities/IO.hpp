@@ -350,7 +350,7 @@ class Base_IOModel
     T2_t IndepToFull(const T1_t &indepElements, const size_t &NOrb) //in practice T1_t will be a Sitevector_t or SitevectorCD_t
     {
         assert(indepElements.n_elem == GetNOrbIndep(NOrb) * indepSites_.size());
-        T2_t fullMatrix(Nc, Nc);
+        T2_t fullMatrix(NOrb * Nc, NOrb * Nc);
         fullMatrix.zeros();
 
         for (Orbital_t o1 = 0; o1 < NOrb; o1++)
