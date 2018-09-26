@@ -124,26 +124,26 @@ class Observables
                 // Start: This should be in PostProcess.cpp ?
                 //Start of observables that are easier and ok to do once all has been saved (for exemples, depends only on final green function)
                 //Get KinecticEnergy
-#ifndef DCA
-                if (mpiUt::Rank() == mpiUt::master)
-                {
-                        std::ifstream fin("Obs.json");
-                        Json results;
-                        fin >> results;
-                        fin.close();
+                // #ifndef DCA
+                //                 if (mpiUt::Rank() == mpiUt::master)
+                //                 {
+                //                         std::ifstream fin("Obs.json");
+                //                         Json results;
+                //                         fin >> results;
+                //                         fin.close();
 
-                        std::cout << "Start Calculating Kinetic Energy " << std::endl;
-                        KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModel_.ReadGreenDat("greenUp.dat", NOrb_));
-                        results["KEnergy"] = {kEnergy.GetKineticEnergy(), 0.0};
-                        std::cout << "End Calculating Kinetic Energy " << std::endl;
+                //                         std::cout << "Start Calculating Kinetic Energy " << std::endl;
+                //                         KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModel_.ReadGreenDat("greenUp.dat", NOrb_));
+                //                         results["KEnergy"] = {kEnergy.GetKineticEnergy(), 0.0};
+                //                         std::cout << "End Calculating Kinetic Energy " << std::endl;
 
-                        std::ofstream fout("Obs.json");
-                        fout << std::setw(4) << results << std::endl;
-                        fout.close();
-                }
+                //                         std::ofstream fout("Obs.json");
+                //                         fout << std::setw(4) << results << std::endl;
+                //                         fout.close();
+                //                 }
 
-                //End: This should be in PostProcess.cpp ?
-#endif
+                //                 //End: This should be in PostProcess.cpp ?
+                // #endif
                 //ioModel_.SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
                 mpiUt::Print("End of Observables.Save()");
                 return;

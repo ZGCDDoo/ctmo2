@@ -115,89 +115,8 @@ class ABC_MarkovChain
     void DoStep()
     {
 
-        // if (urng_() < PROBFLIP)
-        // {
-        //     FlipAux();
-        // }
-        // else
-        // {
         urng_() < PROBINSERT ? InsertVertex() : RemoveVertex();
-        // }
-
         updatesProposed_++;
-    }
-
-    void FlipAux()
-    {
-
-        // if (dataCT_->vertices_.size())
-        // {
-        //     updStats_["Flips"][0]++;
-        //     const size_t p = static_cast<size_t>(dataCT_->vertices_.size() * urng_());
-        //     Vertex vertex = dataCT_->vertices_.at(p);
-        //     vertex.FlipAux();
-        //     const AuxSpin_t auxTo = vertex.aux();
-        //     const AuxSpin_t auxFrom = dataCT_->vertices_.at(p).aux();
-
-        //     const double fauxup = nfdata_.FVup_(p);
-        //     const double fauxdown = nfdata_.FVdown_(p);
-        //     const double fauxupM1 = fauxup - 1.0;
-        //     const double fauxdownM1 = fauxdown - 1.0;
-        //     const double gammakup = gammaTrad(FermionSpin_t::Up, auxTo, auxFrom);
-        //     double gammakdown = gammaTrad(FermionSpin_t::Down, auxTo, auxFrom);
-
-        //     const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
-        //     const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
-
-        //     const double ratioAcc = ratioUp * ratioDown;
-
-        //     if (urng_() < std::abs(ratioAcc))
-        //     {
-        //         updStats_["Flips"][1]++;
-        //         if (ratioAcc < 0.0)
-        //         {
-        //             dataCT_->sign_ *= -1;
-        //         }
-
-        //         //AssertSizes();
-        //         const size_t kk = dataCT_->vertices_.size();
-        //         double lambdaUp = gammakup / ratioUp;
-        //         double lambdaDown = gammakdown / ratioDown;
-
-        //         SiteVector_t rowpUp;
-        //         SiteVector_t colpUp;
-        //         LinAlg::ExtractRow(p, rowpUp, nfdata_.Nup_);
-        //         LinAlg::ExtractCol(p, colpUp, nfdata_.Nup_);
-
-        //         SiteVector_t rowpDown;
-        //         SiteVector_t colpDown;
-        //         LinAlg::ExtractRow(p, rowpDown, nfdata_.Ndown_);
-        //         LinAlg::ExtractCol(p, colpDown, nfdata_.Ndown_);
-
-        //         for (size_t j = 0; j < kk; j++)
-        //         {
-        //             for (size_t i = 0; i < kk; i++)
-        //             {
-        //                 if (i != p)
-        //                 {
-        //                     nfdata_.Nup_(i, j) += (colpUp(i) * fauxup / fauxupM1) * lambdaUp * rowpUp(j);
-        //                     nfdata_.Ndown_(i, j) += (colpDown(i) * fauxdown / fauxdownM1) * lambdaDown * rowpDown(j);
-        //                 }
-        //                 else
-        //                 {
-        //                     nfdata_.Nup_(i, j) += (((colpUp(i) * fauxup - 1.0) / fauxupM1) - 1.0) * lambdaUp * rowpUp(j);
-        //                     nfdata_.Ndown_(i, j) += (((colpDown(i) * fauxdown - 1.0) / fauxdownM1) - 1.0) * lambdaDown * rowpDown(j);
-        //                 }
-        //             }
-        //         }
-
-        //         dataCT_->vertices_.FlipAux(p);
-        //         nfdata_.FVup_(p) = fauxdown;
-        //         nfdata_.FVdown_(p) = fauxup;
-
-        //         AssertSizes();
-        //     }
-        // }
     }
 
     void AssertSizes()
@@ -540,7 +459,7 @@ class ABC_MarkovChain
 
     void CleanUpdate()
     {
-        mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
+        // mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
         const size_t kk = dataCT_->vertices_.size();
         const size_t kkup = dataCT_->vertices_.NUp();
         const size_t kkdown = dataCT_->vertices_.NDown();

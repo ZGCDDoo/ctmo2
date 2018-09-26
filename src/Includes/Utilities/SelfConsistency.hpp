@@ -84,33 +84,33 @@ class SelfConsistency : public ABC_SelfConsistency
             selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc() - hybridization_.slice(nn);
         }
 
-        //1.) Patcher la self par HF de NGreen à NSelfCon
-        ClusterMatrix_t nUpMatrix;
-        assert(nUpMatrix.load("nUpMatrix.dat"));
-        ClusterMatrix_t nDownMatrix;
-        assert(nDownMatrix.load("nDownMatrix.dat"));
-        ClusterMatrixCD_t nMatrix(nUpMatrix + nDownMatrix, ClusterMatrix_t(NSS_, NSS_).zeros());
+        //         //1.) Patcher la self par HF de NGreen à NSelfCon
+        //         ClusterMatrix_t nUpMatrix;
+        //         assert(nUpMatrix.load("nUpMatrix.dat"));
+        //         ClusterMatrix_t nDownMatrix;
+        //         assert(nDownMatrix.load("nDownMatrix.dat"));
+        //         ClusterMatrixCD_t nMatrix(nUpMatrix + nDownMatrix, ClusterMatrix_t(NSS_, NSS_).zeros());
 
-        for (size_t nn = NGreen; nn < NSelfCon; nn++)
-        {
-            const cd_t iwn = cd_t(0.0, (2.0 * nn + 1.0) * M_PI / model_.beta());
-#ifndef AFM
-            selfEnergy_.slice(nn) = 0.5 * model_.U() * nMatrix + 1.0 / iwn * model_.U() * model_.U() * nMatrix / 2.0 * (II - nMatrix / 2.0);
-#else
-            if (spin_ == FermionSpin_t::Up)
-            {
-                selfEnergy_.slice(nn) = model_.U() * nDownMatrix + 1.0 / iwn * model_.U() * model_.U() * nDownMatrix * (II - nDownMatrix);
-            }
-            else if (spin_ == FermionSpin_t::Down)
-            {
-                selfEnergy_.slice(nn) = model_.U() * nUpMatrix + 1.0 / iwn * model_.U() * model_.U() * nUpMatrix * (II - nUpMatrix);
-            }
-            else
-            {
-                throw std::runtime_error("Ayaya, must be a spin man");
-            }
-#endif
-        }
+        //         for (size_t nn = NGreen; nn < NSelfCon; nn++)
+        //         {
+        //             const cd_t iwn = cd_t(0.0, (2.0 * nn + 1.0) * M_PI / model_.beta());
+        // #ifndef AFM
+        //             selfEnergy_.slice(nn) = 0.5 * model_.U() * nMatrix + 1.0 / iwn * model_.U() * model_.U() * nMatrix / 2.0 * (II - nMatrix / 2.0);
+        // #else
+        //             if (spin_ == FermionSpin_t::Up)
+        //             {
+        //                 selfEnergy_.slice(nn) = model_.U() * nDownMatrix + 1.0 / iwn * model_.U() * model_.U() * nDownMatrix * (II - nDownMatrix);
+        //             }
+        //             else if (spin_ == FermionSpin_t::Down)
+        //             {
+        //                 selfEnergy_.slice(nn) = model_.U() * nUpMatrix + 1.0 / iwn * model_.U() * model_.U() * nUpMatrix * (II - nUpMatrix);
+        //             }
+        //             else
+        //             {
+        //                 throw std::runtime_error("Ayaya, must be a spin man");
+        //             }
+        // #endif
+        //         }
 
         if (mpiUt::Rank() == mpiUt::master)
         {

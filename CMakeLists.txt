@@ -191,6 +191,7 @@ if (${TEST})
     #GreenTauTests
     HybFMAndTLocTests
     IntegratorTests
+    IOTests
     ModelTriangle2x2Tests
     UtilitiesTests
     SelfConsistencyTests

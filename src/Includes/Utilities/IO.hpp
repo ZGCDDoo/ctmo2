@@ -115,11 +115,6 @@ class Base_IOModel
             {
                 const size_t ll = FindIndepSiteIndex(ii, jj);
                 nOfAssociatedSites_.at(ll) = nOfAssociatedSites_.at(ll) + 1;
-
-                // if (indepSites_.at(ll).first == indepSites_[ll].second)
-                // {
-                //     nOfFillingSites_ += 1;
-                // }
             }
         }
     }
@@ -377,13 +372,17 @@ class Base_IOModel
     template <typename T1_t>
     ClusterMatrixCD_t FullCubeToIndep(const T1_t &greenCube) //T1_t = {ClusterCube_t or ClustercubeCD_t}
     {
-        ClusterMatrixCD_t indepTabular(greenCube.n_slices, indepSites_.size());
+        const size_t NOrb = greenCube.n_rows / Nc;
+        const size_t NIndepSuperSites = GetNIndepSuperSites(NOrb);
+        ClusterMatrixCD_t indepTabular(greenCube.n_slices, NIndepSuperSites);
         indepTabular.zeros();
 
-        for (size_t i = 0; i < indepSites_.size(); i++)
+        for (size_t i = 0; i < NIndepSuperSites; i++)
         {
-            const Site_t s1 = indepSites_.at(i).first;
-            const Site_t s2 = indepSites_.at(i).second;
+            const auto indices = GetIndices(i, NOrb);
+            const size_t s1 = indices.first;
+            const size_t s2 = indices.second;
+
             for (size_t n = 0; n < greenCube.n_slices; n++)
             {
                 indepTabular(n, i) = greenCube(s1, s2, n);
