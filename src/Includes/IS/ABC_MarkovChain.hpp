@@ -253,7 +253,7 @@ class ABC_MarkovChain
 
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        //std::cout << "Start InsertVertexSameSpin " << std::endl;
+        std::cout << "Start InsertVertexSameSpin " << std::endl;
 
         AssertSizes();
 
@@ -340,7 +340,7 @@ class ABC_MarkovChain
             }
             AssertSizes();
         }
-        //std::cout << "End InsertVertexSameSpin " << std::endl;
+        std::cout << "End InsertVertexSameSpin " << std::endl;
 
         // // std::cout << "After insertvertex" << std::endl;
     }
@@ -416,7 +416,7 @@ class ABC_MarkovChain
 
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        //std::cout << "Start RemoveVertexSameSpin " << std::endl;
+        std::cout << "Start RemoveVertexSameSpin " << std::endl;
 
         AssertSizes();
         const Vertex vertex = dataCT_->vertices_.at(pp);
@@ -454,7 +454,7 @@ class ABC_MarkovChain
         }
 
         AssertSizes();
-        //std::cout << "End RemoveVertexSameSpin " << std::endl;
+        std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
     void CleanUpdate()

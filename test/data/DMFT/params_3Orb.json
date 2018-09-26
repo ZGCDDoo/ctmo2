@@ -1,0 +1,92 @@
+{
+    "NOrb": 3,
+    "modelType": "SIAM_Square",
+    "solver": "Aux",
+    "CLEANUPDATE": 100,
+    "HybFileUp": "hyb_3Orb",
+    "K": 1.0,
+    "MEASUREMENT_TIME": 10.0,
+    "MEASURE_FILLING": true,
+    "EGreen": 200,
+    "NTAU": 5000,
+    "SEED": 1467031834,
+    "THERMALIZATION_TIME": 0.5,
+    "THERM_FROM_CONFIG": false,
+    "U": 14.0,
+    "J_H": 0.0,
+    "UPrime": 0.0,
+    "UPDATESMEAS": 50,
+    "KMAX_UPD": 100,
+    "beta": 16.67,
+    "delta": 0.01,
+    "mu": 2.31,
+    "t": -1.0,
+    "tPrime": 0.0,
+    "tPrimePrime": 0.0,
+    "WEIGHTSR": 0.0,
+    "WEIGHTSI": 0.0,
+    "ESelfCon": 200,
+    "N_T_INV": 5,
+    "UParameters": {
+        "00": {
+            "U": 14.0,
+            "J_H": 0.0
+        }
+    },
+    "tParameters": {
+        "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "01": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "02": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "11": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "12": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "22": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        }
+    }
+}

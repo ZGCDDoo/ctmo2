@@ -194,7 +194,7 @@ class VertexBuilder
 
     {
 
-        VertexType vertextype = (NOrb_ == 1) ? VertexType::HubbardIntra : static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
+        VertexType vertextype = VertexType::HubbardIntra; //(NOrb_ == 1) ? VertexType::HubbardIntra : static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
 
         if (vertextype == VertexType::HubbardIntra)
         {
