@@ -288,7 +288,12 @@ class VertexBuilder
             throw std::runtime_error("Ayaya, Miseria, vertextype problem. Stupido !");
         }
 
+#ifdef GREEN_STYLE
+        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_ * NOrb_));
+
+#else
         return (-U_xio1o2 * beta_ * static_cast<double>(Nc_ * NOrb_) / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
+#endif
     }
 
   private:

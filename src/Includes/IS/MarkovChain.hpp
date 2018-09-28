@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ABC_MarkovChain.hpp"
+#include "ABC_MarkovChain_GreenStyle.hpp"
 #include "../Utilities/VerticesSimple.hpp"
 
 namespace Markov
@@ -17,7 +17,18 @@ public:
 
   //Overriding
   double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
-  double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override { return (auxH_.FAux(spin, aux)); }
+
+#ifdef GREEN_STYLE
+  double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override
+  {
+    return (auxH_.auxValue(spin, aux));
+  }
+#else
+  double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override
+  {
+    return (auxH_.FAux(spin, aux));
+  }
+#endif
 
 private:
   Diagrammatic::AuxHelper auxH_;

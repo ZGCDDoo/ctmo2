@@ -179,7 +179,7 @@ class Base_IOModel
                 {
                     for (size_t ii = 0; ii < Nc; ii++)
                     {
-                        for (size_t jj = ii; jj < Nc; jj++)
+                        for (size_t jj = 0; jj < Nc; jj++)
                         {
                             // std::cout << "ii, jj, o1, o2 = " << ii << ", " << jj << ", " << o1 << ", " << o2 << ", " << std::endl;
                             // std::cout << "Here 1 " << std::endl;
@@ -196,7 +196,12 @@ class Base_IOModel
             cubetmp.slice(n) = tmp;
         }
 
-        std::cout << "End of ReadGreen" << std::endl;
+        std::cout << "End of ReadGreen, fname = " << filename << std::endl;
+
+        std::cout << "Last slice of readgreen = " << std::endl;
+        tmp.print();
+        std::cout << "\n\n\n";
+
         return cubetmp;
     }
 
@@ -247,7 +252,12 @@ class Base_IOModel
         {
             greenOut.save(fname + std::string(".arma"), arma::arma_ascii);
         }
-        return;
+
+        std::cout << "End of SaveCube, fname = " << fname << std::endl;
+
+        std::cout << "first slice of green = " << std::endl;
+        green.slice(0).print();
+        std::cout << "\n\n\n";
     }
 
 #ifdef DCA
@@ -354,7 +364,7 @@ class Base_IOModel
             {
                 for (size_t ii = 0; ii < Nc; ii++)
                 {
-                    for (size_t jj = ii; jj < Nc; jj++)
+                    for (size_t jj = 0; jj < Nc; jj++)
                     {
 
                         const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
