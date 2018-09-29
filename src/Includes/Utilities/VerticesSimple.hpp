@@ -2,6 +2,7 @@
 
 #include "Utilities.hpp"
 #include "../Models/UTensorSimple.hpp"
+#include <boost/math/special_functions/binomial.hpp>
 
 namespace Diagrammatic
 {
@@ -11,7 +12,7 @@ enum class VertexType
     HubbardIntra,     //Hubbard intraorbital
     HubbardInter,     // Hubbard interorbital, different spins (U')
     HubbardInterSpin, // Hubbard interorbital same spin (U'-J_H)
-    Phonon,
+    //Phonon,
     Invalid
 };
 
@@ -114,8 +115,8 @@ class Vertices
         AppendVertexPart(vertex.vStart());
         AppendVertexPart(vertex.vEnd());
         assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
-        assert(data_.size() == vPartDownVec_.size());
-        assert(data_.size() == vPartUpVec_.size());
+        // assert(data_.size() == vPartDownVec_.size());
+        // assert(data_.size() == vPartUpVec_.size());
     }
 
     void FlipAux(const size_t &p)
@@ -130,27 +131,40 @@ class Vertices
 
     void RemoveVertex(const size_t &pp)
     {
-        const size_t kkm1 = data_.size() - 1;
-        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-                                                                  //to be consistent with the updated Mup and dataCT_->Mdown_
-        data_.pop_back();
+        const VertexPart x = data_.at(pp).vStart();
+        const VertexPart y = data_.at(pp).vEnd();
+        const size_t xIndex = GetIndicesSpins(pp, x.spin());
+        const size_t yIndex = GetIndicesSpins(pp, y.spin());
 
-        //Will need to change this when testing for different spin interactions
-        std::iter_swap(vPartUpVec_.begin() + pp, vPartUpVec_.begin() + kkm1);     //swap the last vertex and the vertex pp in vertices.
-        std::iter_swap(vPartDownVec_.begin() + pp, vPartDownVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-        vPartUpVec_.pop_back();
-        vPartDownVec_.pop_back();
+        RemoveVertexPart(xIndex, x.spin());
+        RemoveVertexPart(yIndex, y.spin());
+    }
+
+    void RemoveVertexPart(const size_t &ppSpin, const FermionSpin_t &spin)
+    {
+        if (spin == FermionSpin_t::Up)
+        {
+            const size_t kkm1 = NUp() - 1;
+            std::iter_swap(vPartUpVec_.begin() + ppSpin, vPartUpVec_.begin() + kkm1);
+            vPartUpVec_.pop_back();
+        }
+        else
+        {
+            const size_t kkm1 = NDown() - 1;
+            std::iter_swap(vPartDownVec_.begin() + ppSpin, vPartDownVec_.begin() + kkm1);
+            vPartDownVec_.pop_back();
+        }
     }
 
     /*
     Get the index for vPartUpVec and vPartDownVec corresponding to a given vertex Index (will be the same for only different spin interactions) 
     */
-    std::pair<size_t, size_t> GetIndicesSpins(const size_t &pp) const
+    size_t GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
     {
         size_t indexVertexPartUp = 0;
         size_t indexVertexPartDown = 0;
 
-        for (size_t ii = 0; ii < pp; ii++)
+        for (size_t ii = 0; ii < pp + 1; ii++) //Not sure here ...
         {
             const VertexPart x = data_.at(ii).vStart();
             const VertexPart y = data_.at(ii).vEnd();
@@ -158,11 +172,17 @@ class Vertices
             y.spin() == FermionSpin_t::Up ? indexVertexPartUp++ : indexVertexPartDown++;
         }
 
-        return {indexVertexPartUp, indexVertexPartDown};
+        assert(indexVertexPartUp + indexVertexPartDown == 2 * (pp + 1));
+
+        return ((spin == FermionSpin_t::Up) ? indexVertexPartUp : indexVertexPartDown);
     }
 
     //Getters
-    size_t size() const { return data_.size(); };
+    size_t
+    size() const
+    {
+        return data_.size();
+    };
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
 
@@ -175,7 +195,7 @@ class Vertices
     std::vector<Vertex> data_;
     std::vector<VertexPart> vPartUpVec_;
     std::vector<VertexPart> vPartDownVec_;
-};
+}; // namespace Diagrammatic
 
 class VertexBuilder
 {
@@ -185,85 +205,60 @@ class VertexBuilder
                                                       delta_(jj["delta"].get<double>()),
                                                       beta_(jj["beta"].get<double>()),
                                                       Nc_(Nc),
-                                                      NOrb_(jj["NOrb"].get<size_t>())
+                                                      NOrb_(jj["NOrb"].get<size_t>()),
+                                                      factXi_(
+                                                          NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
+                                                      )
 
     {
     }
 
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
-
     {
+        const Tau_t tau = urng() * beta_;
+        const Site_t site = urng() * Nc_;
+        const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
-        VertexType vertextype = VertexType::HubbardIntra; //(NOrb_ == 1) ? VertexType::HubbardIntra : static_cast<VertexType>(static_cast<size_t>(urng() * N_VERTEX_TYPES));
+        Orbital_t o1 = urng() * NOrb_;
+        Orbital_t o2 = urng() * NOrb_;
+        FermionSpin_t spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        FermionSpin_t spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
 
-        if (vertextype == VertexType::HubbardIntra)
+        while ((o1 == o2) && (spin1 == spin2))
         {
-            return BuildHubbardIntra(urng);
+            o1 = urng() * NOrb_;
+            o2 = urng() * NOrb_;
+            spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+            spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
         }
-        else if (vertextype == VertexType::HubbardInter)
+
+        VertexType vertextype = VertexType::Invalid;
+
+        if ((o1 == o2) && spin1 != spin2)
         {
-            return BuildHubbardInter(urng);
+            vertextype = VertexType::HubbardIntra;
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
-        else if (vertextype == VertexType::HubbardInterSpin)
+        else if ((o1 != o2) && (spin1 != spin2))
         {
-            return BuildHubbardInterSpin(urng);
+            vertextype = VertexType::HubbardInter;
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
+        }
+        else if ((o1 != o2) && (spin1 == spin2))
+        {
+            vertextype = VertexType::HubbardInterSpin;
+            const VertexPart vStart(tau, site, spin1, o1);
+            const VertexPart vEnd(tau, site, spin2, o2);
+            return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else
         {
             throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
         }
-    }
-
-    Vertex BuildHubbardIntra(Utilities::UniformRngMt19937_t &urng)
-    {
-
-        VertexType vtype = VertexType::HubbardIntra;
-        const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
-        const Orbital_t orbital = urng() * NOrb_;
-        VertexPart vStart(tau, site, FermionSpin_t::Up, orbital);
-        VertexPart vEnd(tau, site, FermionSpin_t::Down, orbital);
-        AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype));
-    }
-
-    Vertex BuildHubbardInter(Utilities::UniformRngMt19937_t &urng)
-    {
-        VertexType vtype = VertexType::HubbardInter;
-        const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
-        const Orbital_t o1 = urng() * NOrb_;
-        Orbital_t tmp = urng() * NOrb_;
-        while (tmp == o1)
-        {
-            tmp = urng() * NOrb_;
-        }
-
-        const Orbital_t o2 = tmp;
-        VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
-        VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
-        AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype));
-    }
-
-    Vertex BuildHubbardInterSpin(Utilities::UniformRngMt19937_t &urng)
-    {
-        VertexType vtype = VertexType::HubbardInter;
-        const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
-        const Orbital_t o1 = urng() * NOrb_;
-        Orbital_t tmp = urng() * NOrb_;
-        while (tmp == o1)
-        {
-            tmp = urng() * NOrb_;
-        }
-
-        const Orbital_t o2 = tmp;
-        const FermionSpin_t spin = urng() < 0.5 ? FermionSpin_t::Up : FermionSpin_t::Down;
-        VertexPart vStart(tau, site, spin, o1);
-        VertexPart vEnd(tau, site, spin, o2);
-        AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
-        return Vertex(vtype, vStart, vEnd, aux, GetKxio1o2(vtype));
     }
 
     double GetKxio1o2(const VertexType &vtype)
@@ -289,10 +284,10 @@ class VertexBuilder
         }
 
 #ifdef GREEN_STYLE
-        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_ * NOrb_));
+        return (-U_xio1o2 * beta_ * Nc_ * factXi_);
 
 #else
-        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_ * NOrb_) / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
+        return (-U_xio1o2 * beta_ * Nc_ * factXi_ / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
 #endif
     }
 
@@ -302,6 +297,7 @@ class VertexBuilder
     const double beta_;
     const size_t Nc_;
     const size_t NOrb_;
+    const double factXi_;
 };
 
 class AuxHelper

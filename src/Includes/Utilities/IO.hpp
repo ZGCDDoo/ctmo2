@@ -131,6 +131,8 @@ class Base_IOModel
         ClusterMatrix_t fileMat;
         ClusterMatrixCD_t tmp(Nc, Nc);
         fileMat.load(filename);
+        assert(!fileMat.has_nan());
+        assert(!fileMat.has_inf());
         assert(fileMat.n_cols == 2 * Nc + 1);
         fileMat.shed_col(0); // we dont want the matsubara frequencies
 
@@ -164,6 +166,8 @@ class Base_IOModel
         ClusterMatrix_t fileMat;
         ClusterMatrixCD_t tmp(NN, NN);
         fileMat.load(filename);
+        assert(!fileMat.has_nan());
+        assert(!fileMat.has_inf());
 
         // std::cout << "GetNIndepSuperSites() = " << NOrbIndep * 2 * NSitesIndep + 1 << std::endl;
         assert(fileMat.n_cols == NOrbIndep * 2 * NSitesIndep + 1);
@@ -208,6 +212,8 @@ class Base_IOModel
     void SaveCube(const std::string &fname, const ClusterCubeCD_t &green, const double &beta,
                   const size_t &NOrb, const size_t &precision = 10, const bool &saveArma = false)
     {
+        assert(!green.has_nan());
+        assert(!green.has_inf());
         const size_t NMat = green.n_slices;
         const size_t NOrbIndep = GetNOrbIndep(NOrb);
         const size_t NSitesIndep = this->indepSites_.size();

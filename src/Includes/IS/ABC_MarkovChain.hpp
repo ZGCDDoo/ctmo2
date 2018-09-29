@@ -124,7 +124,7 @@ class ABC_MarkovChain
         const size_t kk = dataCT_->vertices_.size();
         assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
         assert(2 * dataCT_->vertices_.size() == dataCT_->vertices_.NUp() + dataCT_->vertices_.NDown());
-        assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
+        // assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
         assert(dataCT_->vertices_.NUp() == nfdata_.FVup_.n_elem);
         assert(dataCT_->vertices_.NUp() == nfdata_.Nup_.n_rows());
 
@@ -375,9 +375,8 @@ class ABC_MarkovChain
         //std::cout << "Start RemoveVertexDiffSpin " << std::endl;
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const auto ppSpins = dataCT_->vertices_.GetIndicesSpins(pp);
-        const size_t ppUp = ppSpins.first;
-        const size_t ppDown = ppSpins.second;
+        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
+        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
 
         //In theory we should find the proper index for each spin
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
@@ -397,8 +396,6 @@ class ABC_MarkovChain
             const size_t kkUpm1 = kkUp - 1;
             const size_t kkDown = dataCT_->vertices_.NDown();
             const size_t kkDownm1 = kkDown - 1;
-            assert(pp == ppSpins.first);
-            assert(pp == ppSpins.second);
 
             LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
             LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
@@ -419,17 +416,19 @@ class ABC_MarkovChain
         std::cout << "Start RemoveVertexSameSpin " << std::endl;
 
         AssertSizes();
+        assert(Nspin.n_rows() >= 2);
+        assert(FVspin.n_elem >= 2);
+
         const Vertex vertex = dataCT_->vertices_.at(pp);
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        const auto ppPair = dataCT_->vertices_.GetIndicesSpins(pp);
-        const size_t ppSpin = (x.spin() == FermionSpin_t::Up) ? ppPair.first : ppPair.second;
+        const size_t ppSpin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
 
         const size_t kk = dataCT_->vertices_.size();
         const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
-        const size_t kkSpinm1 = kkSpin - 1;
+        const size_t kkSpinm2 = kkSpin - 2;
 
         const ClusterMatrix_t STildeInverse = {{Nspin(ppSpin, ppSpin), Nspin(ppSpin, ppSpin + 1)}, {Nspin(ppSpin + 1, ppSpin), Nspin(ppSpin + 1, ppSpin + 1)}};
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
@@ -447,7 +446,7 @@ class ABC_MarkovChain
 
             FVspin.swap_rows(ppSpin, kkSpin - 2);
             FVspin.swap_rows(ppSpin + 1, kkSpin - 1);
-            FVspin.resize(kkSpinm1);
+            FVspin.resize(kkSpinm2);
 
             dataCT_->vertices_.RemoveVertex(pp);
             std::cout << "RemoveVertexSameSpin accepted " << std::endl;
