@@ -46,20 +46,20 @@ class GreenBinning
     void MeasureGreenBinning(const Matrix<double> &Mmat)
     {
 
-        const size_t N = dataCT_->vertices_.size();
+        const size_t kkSpin = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
         const double DeltaInv = N_BIN_TAU / dataCT_->beta_;
-        if (N)
+        if (kkSpin)
         {
-            for (size_t p1 = 0; p1 < N; p1++)
+            for (size_t p1 = 0; p1 < kkSpin; p1++)
             {
-                for (size_t p2 = 0; p2 < N; p2++)
+                for (size_t p2 = 0; p2 < kkSpin; p2++)
                 {
-                    const SuperSite_t s1 = dataCT_->vertices_.atUp(p1).superSite();
-                    const SuperSite_t s2 = dataCT_->vertices_.atUp(p2).superSite();
+                    const SuperSite_t s1 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).superSite() : dataCT_->vertices_.atDown(p1).superSite();
+                    const SuperSite_t s2 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p2).superSite() : dataCT_->vertices_.atDown(p2).superSite();
                     const size_t ll = ioModel_.FindIndepSuperSiteIndex(s1, s2, NOrb_);
                     double temp = static_cast<double>(dataCT_->sign_) * Mmat(p1, p2);
 
-                    double tau = dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau();
+                    double tau = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau() : dataCT_->vertices_.atDown(p1).tau() - dataCT_->vertices_.atDown(p2).tau();
                     if (tau < 0.0)
                     {
                         temp *= -1.0;

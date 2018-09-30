@@ -138,6 +138,10 @@ class Vertices
 
         RemoveVertexPart(xIndex, x.spin());
         RemoveVertexPart(yIndex, y.spin());
+
+        const size_t kkm1 = data_.size() - 1;
+        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1);
+        data_.pop_back();
     }
 
     void RemoveVertexPart(const size_t &ppSpin, const FermionSpin_t &spin)
@@ -164,7 +168,7 @@ class Vertices
         size_t indexVertexPartUp = 0;
         size_t indexVertexPartDown = 0;
 
-        for (size_t ii = 0; ii < pp + 1; ii++) //Not sure here ...
+        for (size_t ii = 0; ii < pp; ii++) //Not sure here ...
         {
             const VertexPart x = data_.at(ii).vStart();
             const VertexPart y = data_.at(ii).vEnd();
@@ -172,7 +176,7 @@ class Vertices
             y.spin() == FermionSpin_t::Up ? indexVertexPartUp++ : indexVertexPartDown++;
         }
 
-        assert(indexVertexPartUp + indexVertexPartDown == 2 * (pp + 1));
+        assert(indexVertexPartUp + indexVertexPartDown == 2 * (pp));
 
         return ((spin == FermionSpin_t::Up) ? indexVertexPartUp : indexVertexPartDown);
     }

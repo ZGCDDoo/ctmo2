@@ -13,7 +13,7 @@
     "THERMALIZATION_TIME": 0.05,
     "THERM_FROM_CONFIG": false,
     "U": 14.0,
-    "J_H": 0.0,
+    "J_H": 3.0,
     "UPrime": 0.0,
     "UPDATESMEAS": 50,
     "KMAX_UPD": 100,

@@ -134,7 +134,7 @@ class ABC_MarkovChain
 
     void InsertVertex()
     {
-        //std::cout << "Start InsertVertex " << std::endl;
+        // std::cout << "Start InsertVertex " << std::endl;
         AssertSizes();
         updStats_["Inserts"][0]++;
         const Vertex vertex = vertexBuilder_.BuildVertex(urng_);
@@ -150,12 +150,12 @@ class ABC_MarkovChain
             InsertVertexDiffSpin(vertex);
         }
 
-        //std::cout << "End InsertVertex " << std::endl;
+        // std::cout << "End InsertVertex " << std::endl;
     }
 
     void InsertVertexDiffSpin(const Vertex &vertex)
     {
-        //std::cout << "Start InsertVertexDiffSpin " << std::endl;
+        // std::cout << "Start InsertVertexDiffSpin " << std::endl;
 
         const double fauxup = FAux(FermionSpin_t::Up, vertex.aux());
         const double fauxdown = FAux(FermionSpin_t::Down, vertex.aux());
@@ -248,17 +248,19 @@ class ABC_MarkovChain
                 dataCT_->vertices_.AppendVertex(vertex);
             }
         }
-        //std::cout << "End InsertVertexDiffSpin " << std::endl;
+        // std::cout << "End InsertVertexDiffSpin " << std::endl;
     }
 
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        std::cout << "Start InsertVertexSameSpin " << std::endl;
-
+        // std::cout << "Start InsertVertexSameSpin " << std::endl;
+        return;
         AssertSizes();
 
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
+        assert(x.spin() == y.spin());
+
         const double faux = FAux(x.spin(), vertex.aux());
         const double fauxM1 = faux - 1.0;
         const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
@@ -283,6 +285,8 @@ class ABC_MarkovChain
                 const double fauxIm1 = FVspin(i) - 1.0; // Faux_i - 1.0
                 Q_(i, 0) = GetGreenTau0(vPartI, x) * fauxM1;
                 Q_(i, 1) = GetGreenTau0(vPartI, y) * fauxM1;
+
+                assert(vPartI.spin() == x.spin());
 
                 R_(0, i) = GetGreenTau0(x, vPartI) * fauxIm1;
                 R_(1, i) = GetGreenTau0(y, vPartI) * fauxIm1;
@@ -314,7 +318,7 @@ class ABC_MarkovChain
                 FVspin(kkoldspin + 1) = faux;
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
-                std::cout << "InsertVertexSameSpin accepted " << std::endl;
+                // std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
         else
@@ -336,18 +340,18 @@ class ABC_MarkovChain
                 FVspin(0) = faux;
                 FVspin(1) = faux;
 
-                //         dataCT_->vertices_.push_back(vertex);
+                dataCT_->vertices_.AppendVertex(vertex);
             }
             AssertSizes();
         }
-        std::cout << "End InsertVertexSameSpin " << std::endl;
+        // std::cout << "End InsertVertexSameSpin " << std::endl;
 
-        // // std::cout << "After insertvertex" << std::endl;
+        // std::cout << "After insertvertex" << std::endl;
     }
 
     void RemoveVertex()
     {
-        //std::cout << "Start RemoveVertex " << std::endl;
+        // std::cout << "Start RemoveVertex " << std::endl;
 
         AssertSizes();
         updStats_["Removes"][0]++;
@@ -367,20 +371,23 @@ class ABC_MarkovChain
                 RemoveVertexDiffSpin(pp);
             }
         }
-        //std::cout << "End RemoveVertex " << std::endl;
+        // std::cout << "End RemoveVertex " << std::endl;
     }
 
     void RemoveVertexDiffSpin(const size_t &pp)
     {
-        //std::cout << "Start RemoveVertexDiffSpin " << std::endl;
+        // std::cout << "Start RemoveVertexDiffSpin " << std::endl;
+        AssertSizes();
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
         const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
+        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
+        // std::cout << "here 1" << std::endl;
+        // std::cout << "vertices.size(), NUp, NDown, pp , ppUp, ppDown = " << dataCT_->vertices_.size() << ", " << dataCT_->vertices_.NUp() << ", " << dataCT_->vertices_.NDown() << ", " << pp << ", " << ppUp << ", " << ppDown << std::endl;
 
         //In theory we should find the proper index for each spin
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
-
+        // std::cout << "here 2" << std::endl;
         if (urng_() < std::abs(ratioAcc))
         {
             //AssertSizes();
@@ -396,25 +403,31 @@ class ABC_MarkovChain
             const size_t kkUpm1 = kkUp - 1;
             const size_t kkDown = dataCT_->vertices_.NDown();
             const size_t kkDownm1 = kkDown - 1;
+            // std::cout << "here 3" << std::endl;
 
             LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
             LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
+
+            // std::cout << "here 4" << std::endl;
 
             nfdata_.FVup_.swap_rows(ppUp, kkUpm1);
             nfdata_.FVdown_.swap_rows(ppDown, kkDownm1);
             nfdata_.FVup_.resize(kkUpm1);
             nfdata_.FVdown_.resize(kkDownm1);
 
+            // std::cout << "here 5" << std::endl;
+
             dataCT_->vertices_.RemoveVertex(pp);
             AssertSizes();
+            // std::cout << "here 6" << std::endl;
         }
-        //std::cout << "End RemoveVertexDiffSpin " << std::endl;
+        // std::cout << "End RemoveVertexDiffSpin " << std::endl;
     }
 
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        std::cout << "Start RemoveVertexSameSpin " << std::endl;
-
+        // std::cout << "Start RemoveVertexSameSpin " << std::endl;
+        return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
         assert(FVspin.n_elem >= 2);
@@ -449,16 +462,16 @@ class ABC_MarkovChain
             FVspin.resize(kkSpinm2);
 
             dataCT_->vertices_.RemoveVertex(pp);
-            std::cout << "RemoveVertexSameSpin accepted " << std::endl;
+            // std::cout << "RemoveVertexSameSpin accepted " << std::endl;
         }
 
         AssertSizes();
-        std::cout << "End RemoveVertexSameSpin " << std::endl;
+        // std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
     void CleanUpdate()
     {
-        // mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
+        mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
         const size_t kk = dataCT_->vertices_.size();
         const size_t kkup = dataCT_->vertices_.NUp();
         const size_t kkdown = dataCT_->vertices_.NDown();

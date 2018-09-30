@@ -29,9 +29,7 @@ class Observables
                                       rng_(jj["SEED"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
                                       urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
                                       greenBinningUp_(modelPtr_, dataCT_, jj, FermionSpin_t::Up),
-#ifdef AFM
                                       greenBinningDown_(modelPtr_, dataCT_, jj, FermionSpin_t::Down),
-#endif
                                       fillingAndDocc_(dataCT_, urngPtr_, jj["N_T_INV"].get<size_t>()),
                                       signMeas_(0.0),
                                       expOrder_(0.0),
@@ -51,23 +49,18 @@ class Observables
         void Measure()
         {
 
-                // mpiUt::Print("start of Measure");
+                mpiUt::Print("start of Measure");
 
                 NMeas_++;
                 signMeas_ += static_cast<double>(dataCT_->sign_);
                 expOrder_ += static_cast<double>(dataCT_->vertices_.size()) * static_cast<double>(dataCT_->sign_);
 
-                fillingAndDocc_.MeasureFillingAndDocc();
+                // fillingAndDocc_.MeasureFillingAndDocc();
 
-#ifndef AFM
-                Maveraged_ = 0.5 * (*(dataCT_->MupPtr_) + *(dataCT_->MdownPtr_));
-                greenBinningUp_.MeasureGreenBinning(Maveraged_);
-#else
                 greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
                 greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
-#endif
 
-                // mpiUt::Print("End of Measure");
+                mpiUt::Print("End of Measure");
         }
 
         void Save()
@@ -88,17 +81,10 @@ class Observables
                 obsScal["k"] = fact * expOrder_;
 
                 ClusterMatrixCD_t greenMatsubaraUp = ioModel_.FullCubeToIndep(greenBinningUp_.FinalizeGreenBinning(signMeas_, NMeas_));
-#ifdef AFM
                 ClusterMatrixCD_t greenMatsubaraDown = ioModel_.FullCubeToIndep(greenBinningDown_.FinalizeGreenBinning(signMeas_, NMeas_));
 
-#endif
-
                 //Gather and stats of all the results for all cores
-#ifndef AFM
-                Result::ISResult isResult(obsScal, greenMatsubaraUp, greenMatsubaraUp, fillingAndDocc_.fillingUp(), fillingAndDocc_.fillingDown());
-#else
                 Result::ISResult isResult(obsScal, greenMatsubaraUp, greenMatsubaraDown, fillingAndDocc_.fillingUp(), fillingAndDocc_.fillingDown());
-#endif
                 std::vector<Result::ISResult> isResultVec;
 #ifdef HAVEMPI
 
@@ -157,9 +143,7 @@ class Observables
         std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr_;
 
         GreenBinning<TIOModel, TModel> greenBinningUp_;
-#ifdef AFM
         GreenBinning<TIOModel, TModel> greenBinningDown_;
-#endif
         FillingAndDocc<TIOModel, TModel> fillingAndDocc_;
 
         Matrix_t Maveraged_;

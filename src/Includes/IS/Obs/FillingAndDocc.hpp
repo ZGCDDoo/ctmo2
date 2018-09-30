@@ -97,7 +97,7 @@ class FillingAndDocc
 
         const double eps = 1e-12;
 
-        assert(KKUp == KKDown);
+        // assert(KKUp == KKDown);
         assert(2 * KK == KKUp + KKDown);
         SiteVector_t vec1Up(KKUp);
         SiteVector_t vec2Up(KKUp);
