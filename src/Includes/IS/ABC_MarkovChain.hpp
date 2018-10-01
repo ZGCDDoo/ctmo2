@@ -53,7 +53,8 @@ class ABC_MarkovChain
                                                                   jj,
                                                                   *modelPtr_)),
                                                           obs_(dataCT_, jj),
-                                                          vertexBuilder_(jj, TModel::Nc)
+                                                          vertexBuilder_(jj, TModel::Nc),
+                                                          updsamespin_(0)
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -254,7 +255,7 @@ class ABC_MarkovChain
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start InsertVertexSameSpin " << std::endl;
-        return;
+        // return;
         AssertSizes();
 
         const VertexPart x = vertex.vStart();
@@ -318,6 +319,7 @@ class ABC_MarkovChain
                 FVspin(kkoldspin + 1) = faux;
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
+                updsamespin_++;
                 // std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
@@ -472,48 +474,50 @@ class ABC_MarkovChain
     void CleanUpdate()
     {
         mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
-        const size_t kk = dataCT_->vertices_.size();
+        AssertSizes();
+        std::cout << "updsamespin = " << updsamespin_ << std::endl;
+
         const size_t kkup = dataCT_->vertices_.NUp();
         const size_t kkdown = dataCT_->vertices_.NDown();
 
-        if (kk == 0)
+        if (kkup != 0)
         {
-            return;
-        }
 
-        AssertSizes();
-        for (size_t iUp = 0; iUp < kkup; iUp++)
-        {
-            for (size_t jUp = 0; jUp < kkdown; jUp++)
+            for (size_t iUp = 0; iUp < kkup; iUp++)
             {
-
-                nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
-
-                if (iUp == jUp)
+                for (size_t jUp = 0; jUp < kkup; jUp++)
                 {
-                    nfdata_.Nup_(iUp, iUp) -= nfdata_.FVup_(iUp);
+
+                    nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
+
+                    if (iUp == jUp)
+                    {
+                        nfdata_.Nup_(iUp, iUp) -= nfdata_.FVup_(iUp);
+                    }
                 }
             }
+            nfdata_.Nup_.Inverse();
         }
 
-        for (size_t iDown = 0; iDown < kkdown; iDown++)
+        if (kkdown != 0)
         {
-            for (size_t jDown = 0; jDown < kkdown; jDown++)
+            for (size_t iDown = 0; iDown < kkdown; iDown++)
             {
-
-                nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
-
-                if (iDown == jDown)
+                for (size_t jDown = 0; jDown < kkdown; jDown++)
                 {
-                    nfdata_.Ndown_(iDown, iDown) -= nfdata_.FVdown_(iDown);
+
+                    nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
+
+                    if (iDown == jDown)
+                    {
+                        nfdata_.Ndown_(iDown, iDown) -= nfdata_.FVdown_(iDown);
+                    }
                 }
             }
+            nfdata_.Ndown_.Inverse();
         }
 
-        nfdata_.Nup_.Inverse();
-        nfdata_.Ndown_.Inverse();
-
-        //std::cout << "End cleaning " << std::endl;
+        std::cout << "End cleaning " << std::endl;
     }
 
     double GetGreenTau0(const VertexPart &x, const VertexPart &y) const
@@ -602,6 +606,7 @@ class ABC_MarkovChain
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
 
     size_t updatesProposed_;
+    size_t updsamespin_;
 }; // namespace Markov
 
 template <typename TIOModel, typename TModel>
