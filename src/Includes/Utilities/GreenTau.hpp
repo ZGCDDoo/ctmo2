@@ -112,10 +112,10 @@ class GreenCluster0Tau
 
         //There will be empty vectors, important not to count them here.
         size_t jj = 0;
-        for (size_t ll = 0; ll < dataVec.size() && jj < ioModel_.indepSites().size(); ll++)
+        for (size_t ll = 0; ll < dataVec.size() && jj < ioModel_.GetNIndepSuperSites(NOrb_); ll++)
         {
 
-            for (size_t kk = 0; kk < dataVec.at(ll).size() && jj < ioModel_.indepSites().size(); kk++)
+            for (size_t kk = 0; kk < dataVec.at(ll).size() && jj < ioModel_.GetNIndepSuperSites(NOrb_); kk++)
             {
                 data_.at(jj) = dataVec.at(ll).at(kk);
                 jj++;

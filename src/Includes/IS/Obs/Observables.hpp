@@ -49,7 +49,7 @@ class Observables
         void Measure()
         {
 
-                mpiUt::Print("start of Measure");
+                // mpiUt::Print("start of Measure");
 
                 NMeas_++;
                 signMeas_ += static_cast<double>(dataCT_->sign_);
@@ -60,7 +60,7 @@ class Observables
                 greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
                 greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
 
-                mpiUt::Print("End of Measure");
+                // mpiUt::Print("End of Measure");
         }
 
         void Save()
