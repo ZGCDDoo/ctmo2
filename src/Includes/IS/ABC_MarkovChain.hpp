@@ -254,8 +254,8 @@ class ABC_MarkovChain
 
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        // std::cout << "Start InsertVertexSameSpin " << std::endl;
-        return;
+        std::cout << "Start InsertVertexSameSpin " << std::endl;
+        // return;
         AssertSizes();
 
         const VertexPart x = vertex.vStart();
@@ -320,7 +320,7 @@ class ABC_MarkovChain
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
                 updsamespin_++;
-                // std::cout << "InsertVertexSameSpin accepted " << std::endl;
+                std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
         else
@@ -346,7 +346,7 @@ class ABC_MarkovChain
             }
             AssertSizes();
         }
-        // std::cout << "End InsertVertexSameSpin " << std::endl;
+        std::cout << "End InsertVertexSameSpin " << std::endl;
 
         // std::cout << "After insertvertex" << std::endl;
     }
@@ -435,7 +435,7 @@ class ABC_MarkovChain
 
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        // std::cout << "Start RemoveVertexSameSpin " << std::endl;
+        std::cout << "Start RemoveVertexSameSpin " << std::endl;
         // return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
@@ -466,17 +466,18 @@ class ABC_MarkovChain
 
             LinAlg::BlockDowngrade(Nspin, ppSpin, 2);
 
-            assert(kkSpin - 1 == ppSin);
+            //assert(kkSpin - 1 == ppSpin);
+            std::cout << "kkspin - 1 , ppspin = " << kkSpin - 1 << ", " << ppSpin << std::endl;
             FVspin.swap_rows(ppSpin, kkSpin - 2);
             FVspin.swap_rows(ppSpin + 1, kkSpin - 1);
             FVspin.resize(kkSpinm2);
 
             dataCT_->vertices_.RemoveVertex(pp);
-            // std::cout << "RemoveVertexSameSpin accepted " << std::endl;
+            std::cout << "RemoveVertexSameSpin accepted " << std::endl;
         }
 
         AssertSizes();
-        // std::cout << "End RemoveVertexSameSpin " << std::endl;
+        std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
     void PrepareToRemove(const size_t &pp)
@@ -505,7 +506,7 @@ class ABC_MarkovChain
         }
         else
         {
-            assert(false);
+            // assert(false);
             assert(x.spin() == y.spin());
             const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
             const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
