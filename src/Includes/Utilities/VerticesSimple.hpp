@@ -181,12 +181,26 @@ class Vertices
         return ((spin == FermionSpin_t::Up) ? indexVertexPartUp : indexVertexPartDown);
     }
 
-    //Getters
-    size_t
-    size() const
+    void Swap(const size_t &ii, const size_t &jj)
     {
-        return data_.size();
-    };
+
+        std::iter_swap(data_.begin() + ii, data_.begin() + jj);
+    }
+
+    void SwapSpin(const size_t &ii, const size_t &jj, const FermionSpin_t &spin)
+    {
+        if (spin == FermionSpin_t::Up)
+        {
+            std::iter_swap(vPartUpVec_.begin() + ii, vPartUpVec_.begin() + jj);
+        }
+        else
+        {
+            std::iter_swap(vPartDownVec_.begin() + ii, vPartDownVec_.begin() + jj);
+        }
+    }
+
+    //Getters
+    size_t size() const { return data_.size(); };
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
 
