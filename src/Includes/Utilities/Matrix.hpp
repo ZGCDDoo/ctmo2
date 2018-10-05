@@ -194,15 +194,17 @@ class Matrix
         mat_.swap_rows(c1, c2);
     }
 
-    void InsertAndShed(const size_t &pp)
+    void SwapToEnd(const size_t &pp)
     {
         //Insert the row and col at index pp to the end of the matrix
-        const SiteRow_t rowpp = mat_.row(pp);
-        const SiteVector_t colpp = mat_.col(pp);
-        mat_.shed_row(pp);
-        mat_.shed_col(pp);
-        mat_.insert_rows(n_rows_, rowpp);
-        mat_.insert_cols(n_cols_, colpp);
+        for (size_t ii = pp; ii < n_rows() - 1; ii++)
+        {
+            mat_.swap_cols(ii, ii + 1);
+        }
+        for (size_t ii = pp; ii < n_rows() - 1; ii++)
+        {
+            mat_.swap_rows(ii, ii + 1);
+        }
     }
 
     void Zeros()

@@ -414,8 +414,8 @@ class ABC_MarkovChain
 
             // std::cout << "here 3" << std::endl;
             // PrepareToRemove(pp);
-            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, kkUpm1);
-            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, kkDownm1);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
 
             nfdata_.FVup_.shed_row(ppUp);
             nfdata_.FVdown_.shed_row(ppDown);
@@ -543,9 +543,11 @@ class ABC_MarkovChain
         if (x.spin() != y.spin())
         {
 
-            nfdata_.Nup_.InsertAndShed(ppUp);
-            nfdata_.Ndown_.InsertAndShed(ppDown);
-
+            if (nfdata_.Nup_.n_rows())
+            {
+                nfdata_.Nup_.SwapToEnd(ppUp);
+                nfdata_.Ndown_.SwapToEnd(ppDown);
+            }
             // nfdata_.FVup_.resize(kkUp + 1);
             // nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
             // nfdata_.FVup_.shed_row(ppUp);
@@ -557,31 +559,31 @@ class ABC_MarkovChain
         else
         {
             assert(false);
-            assert(x.spin() == y.spin());
-            if (x.spin() == FermionSpin_t::Up)
-            {
-                nfdata_.Nup_.InsertAndShed(ppUp);
-                nfdata_.Nup_.InsertAndShed(ppUp + 1);
+            // assert(x.spin() == y.spin());
+            // if (x.spin() == FermionSpin_t::Up)
+            // {
+            //     nfdata_.Nup_.InsertAndShed(ppUp);
+            //     nfdata_.Nup_.InsertAndShed(ppUp + 1);
 
-                nfdata_.FVup_.resize(kkUp + 2);
-                nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
-                nfdata_.FVup_(kkUp + 1) = nfdata_.FVup_(ppUp + 1);
+            //     nfdata_.FVup_.resize(kkUp + 2);
+            //     nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
+            //     nfdata_.FVup_(kkUp + 1) = nfdata_.FVup_(ppUp + 1);
 
-                nfdata_.FVup_.shed_row(ppUp);
-                nfdata_.FVup_.shed_row(ppUp);
-            }
-            else
-            {
-                nfdata_.Ndown_.InsertAndShed(ppDown);
-                nfdata_.Ndown_.InsertAndShed(ppDown + 1);
+            //     nfdata_.FVup_.shed_row(ppUp);
+            //     nfdata_.FVup_.shed_row(ppUp);
+            // }
+            // else
+            // {
+            //     nfdata_.Ndown_.InsertAndShed(ppDown);
+            //     nfdata_.Ndown_.InsertAndShed(ppDown + 1);
 
-                nfdata_.FVdown_.resize(kkDown + 2);
-                nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
-                nfdata_.FVdown_(kkDown + 1) = nfdata_.FVdown_(ppDown + 1);
+            //     nfdata_.FVdown_.resize(kkDown + 2);
+            //     nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
+            //     nfdata_.FVdown_(kkDown + 1) = nfdata_.FVdown_(ppDown + 1);
 
-                nfdata_.FVdown_.shed_row(ppDown);
-                nfdata_.FVdown_.shed_row(ppDown);
-            }
+            //     nfdata_.FVdown_.shed_row(ppDown);
+            //     nfdata_.FVdown_.shed_row(ppDown);
+            // }
         }
     }
 
