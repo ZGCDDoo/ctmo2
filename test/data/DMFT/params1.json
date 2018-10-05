@@ -1,7 +1,7 @@
 {
     "NOrb": 2,
     "modelType": "SIAM_Square",
-    "solver": "Aux",
+    "solver": "Int",
     "CLEANUPDATE": 100,
     "HybFileUp": "../test/data/DMFT/hyb_2Orb",
     "K": 1.0,

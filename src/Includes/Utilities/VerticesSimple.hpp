@@ -139,24 +139,18 @@ class Vertices
         RemoveVertexPart(xIndex, x.spin());
         RemoveVertexPart(yIndex, y.spin());
 
-        const size_t kkm1 = data_.size() - 1;
-        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1);
-        data_.pop_back();
+        data_.erase(data_.begin() + pp);
     }
 
     void RemoveVertexPart(const size_t &ppSpin, const FermionSpin_t &spin)
     {
         if (spin == FermionSpin_t::Up)
         {
-            const size_t kkm1 = NUp() - 1;
-            std::iter_swap(vPartUpVec_.begin() + ppSpin, vPartUpVec_.begin() + kkm1);
-            vPartUpVec_.pop_back();
+            vPartUpVec_.erase(vPartUpVec_.begin() + ppSpin);
         }
         else
         {
-            const size_t kkm1 = NDown() - 1;
-            std::iter_swap(vPartDownVec_.begin() + ppSpin, vPartDownVec_.begin() + kkm1);
-            vPartDownVec_.pop_back();
+            vPartDownVec_.erase(vPartDownVec_.begin() + ppSpin);
         }
     }
 
