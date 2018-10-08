@@ -193,6 +193,15 @@ class Vertices
         }
     }
 
+    // vois Save(const std::string& filename)
+    // {
+    //     for(size_t ii=0;ii<data_.size(); ii++)
+    //     {
+    //         std::cout << "o1, o2, spin1, spin2, tau1, tau2 = " <<
+    //     }
+
+    // }
+
     //Getters
     size_t size() const { return data_.size(); };
     size_t NUp() const { return vPartUpVec_.size(); };
@@ -219,7 +228,7 @@ class VertexBuilder
                                                       Nc_(Nc),
                                                       NOrb_(jj["NOrb"].get<size_t>()),
                                                       factXi_(
-                                                          NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
+                                                          NOrb_ //* NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
                                                       )
 
     {
@@ -251,13 +260,17 @@ class VertexBuilder
             vertextype = VertexType::HubbardIntra;
             const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
             const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            // std::cout << "GetKxio1o2(HubbardIntra) = " << GetKxio1o2(vertextype) << std::endl;
+
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else if ((o1 != o2) && (spin1 != spin2))
         {
+            // std::cout << "Here !" << std::endl;
             vertextype = VertexType::HubbardInter;
             const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
             const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            // std::cout << "GetKxio1o2(HubbardInter) = " << GetKxio1o2(vertextype) << std::endl;
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else if ((o1 != o2) && (spin1 == spin2))
