@@ -83,7 +83,11 @@ class Observables
                 ClusterMatrixCD_t greenMatsubaraUp = ioModel_.FullCubeToIndep(greenBinningUp_.FinalizeGreenBinning(signMeas_, NMeas_));
                 ClusterMatrixCD_t greenMatsubaraDown = ioModel_.FullCubeToIndep(greenBinningDown_.FinalizeGreenBinning(signMeas_, NMeas_));
 
-                //Gather and stats of all the results for all cores
+//Gather and stats of all the results for all cores
+#ifndef AFM
+                greenMatsubaraUp = 0.5 * (greenMatsubaraUp + greenMatsubaraDown);
+                greenMatsubaraDown = greenMatsubaraUp;
+#endif
                 Result::ISResult isResult(obsScal, greenMatsubaraUp, greenMatsubaraDown, fillingAndDocc_.fillingUp(), fillingAndDocc_.fillingDown());
                 std::vector<Result::ISResult> isResultVec;
 #ifdef HAVEMPI
