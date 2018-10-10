@@ -55,7 +55,7 @@ class Observables
                 signMeas_ += static_cast<double>(dataCT_->sign_);
                 expOrder_ += static_cast<double>(dataCT_->vertices_.size()) * static_cast<double>(dataCT_->sign_);
 
-                // fillingAndDocc_.MeasureFillingAndDocc();
+                fillingAndDocc_.MeasureFillingAndDocc();
 
                 greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
                 greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
@@ -136,7 +136,6 @@ class Observables
                 // #endif
                 //ioModel_.SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
                 mpiUt::Print("End of Observables.Save()");
-                return;
         }
 
       private:

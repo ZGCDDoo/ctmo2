@@ -20,7 +20,7 @@ class FillingAndDocc
                                                                                                            urngPtr_(urngPtr),
                                                                                                            N_T_INV_(N_T_INV)
     {
-        const size_t LL = ioModel_.GetNIndepSuperSites(dataCT_->NOrb());
+        const size_t LL = dataCT_->NOrb_ * ioModel_.fillingSites().size();
 
         fillingUpCurrent_.resize(LL, 0.0);
         fillingDownCurrent_.resize(LL, 0.0);
@@ -43,38 +43,51 @@ class FillingAndDocc
     {
         double fillingUpTotalCurrent = 0.0;
 
-        for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+        size_t index = 0;
+        for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
         {
+            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            {
 
-            const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
-            fillingUpTotalCurrent += factFilling * fillingUpCurrent_[kk];
+                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
+                fillingUpTotalCurrent += factFilling * fillingUpCurrent_[index];
+                index++;
+            }
         }
+
         return fillingUpTotalCurrent;
-    };
+    }
 
     double fillingDownTotalCurrent()
     {
         double fillingDownTotalCurrent = 0.0;
+        size_t index = 0;
 
-        for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+        for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
         {
+            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            {
 
-            const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
-            fillingDownTotalCurrent += factFilling * fillingDownCurrent_[kk];
+                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
+                fillingDownTotalCurrent += factFilling * fillingDownCurrent_[index];
+                index++;
+            }
         }
         return fillingDownTotalCurrent;
-    };
+    }
 
     double doccTotalCurrent()
     {
         double doccTotalCurrent = 0.0;
+        size_t index = 0;
+        for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
+            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            {
 
-        for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
-        {
-
-            const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
-            doccTotalCurrent += factFilling * doccCurrent_[kk];
-        }
+                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
+                doccTotalCurrent += factFilling * doccCurrent_[index];
+                index++;
+            }
         return doccTotalCurrent;
     };
 
@@ -107,32 +120,33 @@ class FillingAndDocc
         const double sign = static_cast<double>(dataCT_->sign_);
         const size_t fillingSize = ioModel_.fillingSites().size();
 
-        for (size_t oIndex = 0; oIndex < ioModel_.GetNOrbIndep(dataCT_->NOrb()); oIndex++)
+        for (size_t oIndex = 0; oIndex < dataCT_->NOrb_; oIndex++)
         {
             for (Site_t ii = 0; ii < fillingSize; ii++)
             {
+                const size_t index = oIndex * fillingSize + ii;
+
                 const Site_t s1 = ioModel_.fillingSites()[ii];
-                const SuperSite_t superSite1{s1, 0};
+                const SuperSite_t superSite1{s1, oIndex};
 
                 for (size_t nsamples = 0; nsamples < N_T_INV_; nsamples++)
                 {
                     const double tauRng = (*urngPtr_)() * dataCT_->beta_;
                     const Site_t siteRng = ioModel_.FindSitesRng(s1, s1, (*urngPtr_)()).first;
-                    const SuperSite_t superSiteRng{siteRng, 0};
+                    const SuperSite_t superSiteRng{siteRng, oIndex};
 
                     for (size_t iUp = 0; iUp < KKUp; iUp++)
                     {
-                        const Site_t ss = dataCT_->vertices_.atUp(iUp).site();
-                        const SuperSite_t superSite{ss, 0};
+                        const SuperSite_t superSite = dataCT_->vertices_.atUp(iUp).superSite();
                         const Tau_t tt = dataCT_->vertices_.atUp(iUp).tau();
 
                         vec1Up(iUp) = dataCT_->green0CachedUp_(superSiteRng, superSite, tauRng - tt);
                         vec2Up(iUp) = dataCT_->green0CachedUp_(superSite, superSiteRng, tt - tauRng);
                     }
+
                     for (size_t iDown = 0; iDown < KKDown; iDown++)
                     {
-                        const Site_t ss = dataCT_->vertices_.atDown(iDown).site();
-                        const SuperSite_t superSite{ss, 0};
+                        const SuperSite_t superSite = dataCT_->vertices_.atDown(iDown).superSite();
                         const Tau_t tt = dataCT_->vertices_.atDown(iDown).tau();
 #ifdef AFM
                         vec1Down(iDown) = dataCT_->green0CachedDown_(superSiteRng, superSite, tauRng - tt);
@@ -162,23 +176,23 @@ class FillingAndDocc
                     const double nUptmp = green00Up - dotup;
                     const double nDowntmp = green00Down - dotdown;
 
-                    fillingUpCurrent_[ii] += sign * nUptmp;
-                    fillingDownCurrent_[ii] += sign * nDowntmp;
-                    doccCurrent_[ii] += sign * (nUptmp * nDowntmp);
+                    fillingUpCurrent_[index] += sign * nUptmp;
+                    fillingDownCurrent_[index] += sign * nDowntmp;
+                    doccCurrent_[index] += sign * (nUptmp * nDowntmp);
 
                     const double ndiff = nUptmp - nDowntmp;
-                    SzCurrent_[ii] += sign * ndiff;
+                    SzCurrent_[index] += sign * ndiff;
                 }
 
-                fillingUpCurrent_[ii] /= static_cast<double>(N_T_INV_);
-                fillingDownCurrent_[ii] /= static_cast<double>(N_T_INV_);
-                doccCurrent_[ii] /= static_cast<double>(N_T_INV_);
-                SzCurrent_[ii] /= static_cast<double>(N_T_INV_);
+                fillingUpCurrent_[index] /= static_cast<double>(N_T_INV_);
+                fillingDownCurrent_[index] /= static_cast<double>(N_T_INV_);
+                doccCurrent_[index] /= static_cast<double>(N_T_INV_);
+                SzCurrent_[index] /= static_cast<double>(N_T_INV_);
 
-                fillingUp_.at(ii) += fillingUpCurrent_[ii];
-                fillingDown_[ii] += fillingDownCurrent_[ii];
-                docc_[ii] += doccCurrent_[ii];
-                Sz_[ii] += SzCurrent_[ii];
+                fillingUp_.at(index) += fillingUpCurrent_[index];
+                fillingDown_[index] += fillingDownCurrent_[index];
+                docc_[index] += doccCurrent_[index];
+                Sz_[index] += SzCurrent_[index];
             }
         }
 
@@ -194,27 +208,32 @@ class FillingAndDocc
         double SzTotal = 0.0;
         std::string nName;
 
-        for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+        for (size_t oIndex = 0; oIndex < dataCT_->NOrb_; oIndex++)
         {
-            fillingUp_.at(kk) /= fact;
-            fillingDown_.at(kk) /= fact;
+            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            {
+                const size_t index = oIndex * ioModel_.fillingSites().size() + kk;
 
-            nName = "n" + std::to_string(ioModel_.fillingSites().at(kk));
-            obsmap_[nName + "Up"] = fillingUp_.at(kk);
-            obsmap_[nName + "Down"] = fillingDown_.at(kk);
+                fillingUp_.at(index) /= fact;
+                fillingDown_.at(index) /= fact;
 
-            docc_.at(kk) /= fact;
-            nName = "docc" + std::to_string(ioModel_.fillingSites().at(kk));
-            obsmap_[nName] = docc_.at(kk);
+                nName = "n" + std::to_string(ioModel_.fillingSites().at(kk)) + "_" + std::to_string(oIndex);
+                obsmap_[nName + "Up"] = fillingUp_.at(index);
+                obsmap_[nName + "Down"] = fillingDown_.at(index);
 
-            Sz_.at(kk) /= fact;
-            nName = "Sz" + std::to_string(ioModel_.fillingSites().at(kk));
-            obsmap_[nName] = Sz_.at(kk);
+                docc_.at(index) /= fact;
+                nName = "docc" + std::to_string(ioModel_.fillingSites().at(kk)) + "_" + std::to_string(oIndex);
+                obsmap_[nName] = docc_.at(index);
 
-            const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk))) / static_cast<double>(ioModel_.Nc);
-            fillingTotal += factFilling * (fillingUp_.at(kk) + fillingDown_.at(kk));
-            doccTotal += factFilling * docc_.at(kk);
-            SzTotal += factFilling * Sz_.at(kk);
+                Sz_.at(index) /= fact;
+                nName = "Sz" + std::to_string(ioModel_.fillingSites().at(kk)) + "_" + std::to_string(oIndex);
+                obsmap_[nName] = Sz_.at(index);
+
+                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk))) / static_cast<double>(ioModel_.Nc);
+                fillingTotal += factFilling * (fillingUp_.at(index) + fillingDown_.at(index));
+                doccTotal += factFilling * docc_.at(index);
+                SzTotal += factFilling * Sz_.at(index);
+            }
         }
 
         obsmap_["n"] = fillingTotal;

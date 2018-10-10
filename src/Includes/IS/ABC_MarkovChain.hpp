@@ -157,8 +157,8 @@ class ABC_MarkovChain
     void InsertVertexDiffSpin(const Vertex &vertex)
     {
         // std::cout << "Start InsertVertexDiffSpin " << std::endl;
-        const auto x = vertex.vStart();
-        const auto y = vertex.vEnd();
+        // const auto x = vertex.vStart();
+        // const auto y = vertex.vEnd();
 
         const double fauxup = FAux(FermionSpin_t::Up, vertex.aux());
         const double fauxdown = FAux(FermionSpin_t::Down, vertex.aux());
@@ -263,7 +263,10 @@ class ABC_MarkovChain
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start InsertVertexSameSpin " << std::endl;
-        return;
+        // return;
+        // std::cout << "\n\n";
+        // Nspin.Print();
+        // std::cout << "\n\n";
         AssertSizes();
 
         const VertexPart x = vertex.vStart();
@@ -277,9 +280,10 @@ class ABC_MarkovChain
         const double s10 = GetGreenTau0(y, x);
         const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
 
-        if (dataCT_->vertices_.size())
+        if (Nspin.n_rows() && updsamespin_ < 20)
         {
             AssertSizes();
+            assert(Nspin.n_rows());
             const size_t kkold = dataCT_->vertices_.size();
             const size_t kknew = kkold + 1;
             const size_t kkoldspin = Nspin.n_rows();
@@ -308,8 +312,14 @@ class ABC_MarkovChain
 
             //     // Matrix_t RNQ(2, 2); //R*NQ
             //     //     // Matrix_t RNQ(2, 2); //R*NQ
+
             Matrix_t sTilde = Matrix_t({{s00, s01}, {s10, s11}}) - LinAlg::DotRank2(R_, Nspin, Q_);
             sTilde.Inverse();
+
+            // std::cout << "\n\n";
+            // sTilde.Print();
+            // std::cout << "\n\n";
+
             const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / kknew * 1.0 / sTilde.Determinant();
             AssertSizes();
             if (urng_() < std::abs(ratioAcc))
@@ -412,10 +422,10 @@ class ABC_MarkovChain
 
             //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
 
-            const size_t kkUp = dataCT_->vertices_.NUp();
-            const size_t kkUpm1 = kkUp - 1;
-            const size_t kkDown = dataCT_->vertices_.NDown();
-            const size_t kkDownm1 = kkDown - 1;
+            // const size_t kkUp = dataCT_->vertices_.NUp();
+            // const size_t kkUpm1 = kkUp - 1;
+            // const size_t kkDown = dataCT_->vertices_.NDown();
+            // const size_t kkDownm1 = kkDown - 1;
             // assert(ppUp == kkUpm1);
             // assert(ppDown == kkDownm1);
 
@@ -442,7 +452,7 @@ class ABC_MarkovChain
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start RemoveVertexSameSpin " << std::endl;
-        return;
+        // return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
         assert(FVspin.n_elem >= 2);
@@ -455,8 +465,8 @@ class ABC_MarkovChain
         const size_t ppSpin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
 
         const size_t kk = dataCT_->vertices_.size();
-        const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
-        const size_t kkSpinm2 = kkSpin - 2;
+        // const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
+        // const size_t kkSpinm2 = kkSpin - 2;
 
         const ClusterMatrix_t STildeInverse = {{Nspin(ppSpin, ppSpin), Nspin(ppSpin, ppSpin + 1)}, {Nspin(ppSpin + 1, ppSpin), Nspin(ppSpin + 1, ppSpin + 1)}};
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
@@ -544,8 +554,8 @@ class ABC_MarkovChain
         // assert(false);
         const auto x = vertex.vStart();
         const auto y = vertex.vEnd();
-        const size_t kkUp = nfdata_.Nup_.n_rows();
-        const size_t kkDown = nfdata_.Ndown_.n_rows();
+        // const size_t kkUp = nfdata_.Nup_.n_rows();
+        // const size_t kkDown = nfdata_.Ndown_.n_rows();
         const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
         const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
 
@@ -572,7 +582,7 @@ class ABC_MarkovChain
             {
                 if (nfdata_.Nup_.n_rows())
                 {
-                    nfdata_.Nup_.SwapToEnd(ppUp + 1);
+                    nfdata_.Nup_.SwapToEnd(ppUp);
                     nfdata_.Nup_.SwapToEnd(ppUp);
                 }
             }
@@ -580,7 +590,7 @@ class ABC_MarkovChain
             {
                 if (nfdata_.Ndown_.n_rows())
                 {
-                    nfdata_.Ndown_.SwapToEnd(ppDown + 1);
+                    nfdata_.Ndown_.SwapToEnd(ppDown);
                     nfdata_.Ndown_.SwapToEnd(ppDown);
                 }
             }

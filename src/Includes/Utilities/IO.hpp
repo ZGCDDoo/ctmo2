@@ -99,7 +99,7 @@ class Base_IOModel
         const size_t orbitalIndex = Utilities::GetIndepOrbitalIndex(s1.second, s2.second, NOrb);
         // std::cout << "orbitalIndex = " << orbitalIndex << std::endl;
         // std::cout << "siteIndex = " << siteIndex << std::endl;
-        const size_t value = (siteIndex + orbitalIndex * NSitesIndep);
+        // const size_t value = (siteIndex + orbitalIndex * NSitesIndep);
         // std::cout << "value = " << value << std::endl;
         return (siteIndex + orbitalIndex * NSitesIndep);
     }

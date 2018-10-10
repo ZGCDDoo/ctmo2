@@ -23,11 +23,11 @@ class VertexPart
 {
   public:
     VertexPart(const Tau_t &tau, const Site_t &site, const FermionSpin_t spin,
-               const size_t orbital) : tau_(tau),
-                                       site_(site),
-                                       spin_(spin),
-                                       orbital_(orbital),
-                                       superSite_{site, orbital} {}
+               const size_t orbital, const AuxSpin_t &aux) : tau_(tau),
+                                                             site_(site),
+                                                             spin_(spin),
+                                                             orbital_(orbital),
+                                                             superSite_{site, orbital}, aux_(aux) {}
 
     VertexPart &operator=(const VertexPart &vpart) = default;
 
@@ -37,6 +37,7 @@ class VertexPart
     FermionSpin_t spin() const { return spin_; };
     Orbital_t orbital() const { return orbital_; };
     SuperSite_t superSite() const { return superSite_; };
+    AuxSpin_t aux() const { return aux_; };
 
   private:
     Tau_t tau_;
@@ -44,6 +45,7 @@ class VertexPart
     FermionSpin_t spin_;
     Orbital_t orbital_;
     SuperSite_t superSite_;
+    AuxSpin_t aux_;
 };
 
 class Vertex
@@ -228,7 +230,7 @@ class VertexBuilder
                                                       Nc_(Nc),
                                                       NOrb_(jj["NOrb"].get<size_t>()),
                                                       factXi_(
-                                                          NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
+                                                          NOrb_ * NOrb_ // * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
                                                       )
 
     {
@@ -242,15 +244,15 @@ class VertexBuilder
 
         Orbital_t o1 = urng() * NOrb_;
         Orbital_t o2 = urng() * NOrb_;
-        FermionSpin_t spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-        FermionSpin_t spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        FermionSpin_t spin1 = FermionSpin_t::Up;   //(urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        FermionSpin_t spin2 = FermionSpin_t::Down; //(urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
 
         while ((o1 == o2) && (spin1 == spin2))
         {
             o1 = urng() * NOrb_;
             o2 = urng() * NOrb_;
-            spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-            spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+            //spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+            //spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
         }
 
         VertexType vertextype = VertexType::Invalid;
@@ -258,8 +260,8 @@ class VertexBuilder
         if ((o1 == o2) && spin1 != spin2)
         {
             vertextype = VertexType::HubbardIntra;
-            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
-            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1, aux);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2, aux);
             // std::cout << "GetKxio1o2(HubbardIntra) = " << GetKxio1o2(vertextype) << std::endl;
 
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
@@ -268,16 +270,16 @@ class VertexBuilder
         {
             // std::cout << "Here !" << std::endl;
             vertextype = VertexType::HubbardInter;
-            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
-            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1, aux);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2, aux);
             // std::cout << "GetKxio1o2(HubbardInter) = " << GetKxio1o2(vertextype) << std::endl;
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else if ((o1 != o2) && (spin1 == spin2))
         {
             vertextype = VertexType::HubbardInterSpin;
-            const VertexPart vStart(tau, site, spin1, o1);
-            const VertexPart vEnd(tau, site, spin2, o2);
+            const VertexPart vStart(tau, site, spin1, o1, aux);
+            const VertexPart vEnd(tau, site, spin2, o2, aux);
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else
