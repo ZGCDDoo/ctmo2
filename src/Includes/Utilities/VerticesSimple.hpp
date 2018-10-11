@@ -234,7 +234,8 @@ class VertexBuilder
                                                       NOrb_(jj["NOrb"].get<size_t>()),
                                                       factXi_(
                                                           NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
-                                                      )
+                                                          ),
+                                                      isOrbitalDiagonal_(jj["IsOrbitalDiagonal"].get<bool>())
 
     {
     }
@@ -302,11 +303,11 @@ class VertexBuilder
         }
         else if (vtype == VertexType::HubbardInter)
         {
-            U_xio1o2 = Utensor.UPrime();
+            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : Utensor.UPrime();
         }
         else if (vtype == VertexType::HubbardInterSpin)
         {
-            U_xio1o2 = (Utensor.UPrime() - Utensor.JH());
+            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : (Utensor.UPrime() - Utensor.JH());
         }
         else
         {
@@ -328,6 +329,7 @@ class VertexBuilder
     const size_t Nc_;
     const size_t NOrb_;
     const double factXi_;
+    const bool isOrbitalDiagonal_;
 };
 
 class AuxHelper

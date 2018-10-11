@@ -11,9 +11,9 @@ class UTensor
 public:
   UTensor(const Json &jjSim) : NOrb_(jjSim["NOrb"].get<size_t>()),
                                U_(jjSim["U"].get<double>()),
-                               JH_(jjSim["J_H"].get<double>()),
-                               UPrime_(jjSim["UPrime"].get<double>()), //U_ - 2 * JH_),
-                               auxMu_(jjSim["mu"].get<double>() - U_ / 2.0 - NOrb_ * (2.0 * UPrime_ - JH_) / 2.0)
+                               JH_(jjSim["IsOrbitalDiagonal"].get<bool>() ? 0.0 : jjSim["J_H"].get<double>()),
+                               UPrime_(jjSim["IsOrbitalDiagonal"].get<bool>() ? 0.0 : jjSim["UPrime"].get<double>()), //U_ - 2 * JH_),
+                               auxMu_(jjSim["mu"].get<double>() - U_ / 2.0 - NOrb_ * UPrime_ / 2.0 - (jjSim["IsOrbitalDiagonal"].get<bool>() ? 0.0 : NOrb_ * (UPrime_ - JH_) / 2.0))
 
   {
   }
@@ -22,10 +22,22 @@ public:
   {
   }
 
-  double auxMu() const { return auxMu_; };
-  double U() const { return U_; };
-  double JH() const { return JH_; };
-  double UPrime() const { return UPrime_; };
+  double auxMu() const
+  {
+    return auxMu_;
+  };
+  double U() const
+  {
+    return U_;
+  };
+  double JH() const
+  {
+    return JH_;
+  };
+  double UPrime() const
+  {
+    return UPrime_;
+  };
 
 protected:
   const size_t NOrb_;
