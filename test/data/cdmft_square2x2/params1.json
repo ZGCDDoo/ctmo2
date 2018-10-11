@@ -1,8 +1,8 @@
 {
-    "NOrb": 1,
+    "NOrb": 2,
     "U": 5.0,
     "J_H": 1.0,
-    "UPrime": 0.0,
+    "UPrime": 3.0,
     "EGreen": 60,
     "SEED": 25105,
     "PROBFLIP": 0.25,
@@ -13,9 +13,27 @@
     "UPDATESMEAS": 300,
     "KMAX_UPD": 100,
     "CLEANUPDATE": 100,
-    "HybFileUp": "../test/data/cdmft_square2x2/hyb_Pat_R23",
+    "HybFileUp": "../test/data/cdmft_square2x2/hyb_2Orb",
     "tParameters": {
         "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.30,
+            "tx=-y": 0.30,
+            "t2x": -0.20,
+            "t2y": -0.20
+        },
+        "01": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "11": {
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,

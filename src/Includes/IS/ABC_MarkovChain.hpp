@@ -123,6 +123,7 @@ class ABC_MarkovChain
     void AssertSizes()
     {
         const size_t kk = dataCT_->vertices_.size();
+        // std::cout << "kk, Nup_.n_rows, Ndown_.n_rows = " << kk << ", " << nfdata_.Nup_.n_rows() << ", " << nfdata_.Ndown_.n_rows() << std::endl;
         assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
         assert(2 * dataCT_->vertices_.size() == dataCT_->vertices_.NUp() + dataCT_->vertices_.NDown());
         // assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
@@ -169,6 +170,7 @@ class ABC_MarkovChain
         const VertexPart vertexPartDown = vertex.vEnd();
         assert(vertexPartUp.spin() == FermionSpin_t::Up);
         assert(vertexPartDown.spin() == FermionSpin_t::Down);
+        assert(std::abs(vertexPartUp.tau() - vertexPartDown.tau()) < 1e-10);
 
         const double sUp = -fauxup + GetGreenTau0(vertexPartUp, vertexPartUp) * fauxupM1;
         const double sDown = -fauxdown + GetGreenTau0(vertexPartDown, vertexPartDown) * fauxdownM1;
@@ -280,7 +282,7 @@ class ABC_MarkovChain
         const double s10 = GetGreenTau0(y, x);
         const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
 
-        if (Nspin.n_rows() && updsamespin_ < 20)
+        if (Nspin.n_rows())
         {
             AssertSizes();
             assert(Nspin.n_rows());
@@ -382,6 +384,7 @@ class ABC_MarkovChain
             const Vertex vertex = dataCT_->vertices_.at(pp);
             const VertexPart x = vertex.vStart();
             const VertexPart y = vertex.vEnd();
+            assert(std::abs(x.tau() - y.tau()) < 1e-10);
 
             if (x.spin() == y.spin())
             {
@@ -399,12 +402,17 @@ class ABC_MarkovChain
 
     void RemoveVertexDiffSpin(const size_t &pp)
     {
-        // std::cout << "Start RemoveVertexDiffSpin " << std::endl;
+        std::cout << "Start RemoveVertexDiffSpin " << std::endl;
         AssertSizes();
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
         const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
         const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
+        const auto x = dataCT_->vertices_.atUp(ppUp);
+        const auto y = dataCT_->vertices_.atDown(ppDown);
+        assert(std::abs(x.tau() - y.tau()) < 1e-10);
+        // assert(x.superSite() == y.superSite());
+
         // std::cout << "here 1" << std::endl;
         // std::cout << "vertices.size(), NUp, NDown, pp , ppUp, ppDown = " << dataCT_->vertices_.size() << ", " << dataCT_->vertices_.NUp() << ", " << dataCT_->vertices_.NDown() << ", " << pp << ", " << ppUp << ", " << ppDown << std::endl;
 
@@ -446,12 +454,12 @@ class ABC_MarkovChain
             AssertSizes();
             // std::cout << "here 6" << std::endl;
         }
-        // std::cout << "End RemoveVertexDiffSpin " << std::endl;
+        std::cout << "End RemoveVertexDiffSpin " << std::endl;
     }
 
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        // std::cout << "Start RemoveVertexSameSpin " << std::endl;
+        std::cout << "Start RemoveVertexSameSpin " << std::endl;
         // return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
@@ -461,6 +469,10 @@ class ABC_MarkovChain
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
+
+        assert(std::abs(x.tau() - y.tau()) < 1e-10);
+        assert(x.orbital() != y.orbital());
+        assert(x.site() == y.site());
 
         const size_t ppSpin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
 
@@ -494,7 +506,7 @@ class ABC_MarkovChain
         }
 
         AssertSizes();
-        // std::cout << "End RemoveVertexSameSpin " << std::endl;
+        std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
     // void PrepareToRemove(const size_t &pp)
@@ -564,6 +576,7 @@ class ABC_MarkovChain
 
             if (nfdata_.Nup_.n_rows())
             {
+                std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
                 nfdata_.Nup_.SwapToEnd(ppUp);
                 nfdata_.Ndown_.SwapToEnd(ppDown);
             }
@@ -582,16 +595,20 @@ class ABC_MarkovChain
             {
                 if (nfdata_.Nup_.n_rows())
                 {
-                    nfdata_.Nup_.SwapToEnd(ppUp);
-                    nfdata_.Nup_.SwapToEnd(ppUp);
+                    // assert(ppUp < nfdata_.Nup_.n_rows());
+                    nfdata_.Nup_.SwapToEnd(ppUp - 1);
+                    nfdata_.Nup_.SwapToEnd(ppUp - 1);
                 }
             }
             else
             {
                 if (nfdata_.Ndown_.n_rows())
                 {
-                    nfdata_.Ndown_.SwapToEnd(ppDown);
-                    nfdata_.Ndown_.SwapToEnd(ppDown);
+                    std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
+                    // assert(ppDown < nfdata_.Ndown_.n_rows());
+
+                    nfdata_.Ndown_.SwapToEnd(ppDown - 1);
+                    nfdata_.Ndown_.SwapToEnd(ppDown - 1);
                 }
             }
         }
@@ -682,6 +699,7 @@ class ABC_MarkovChain
 
         obs_.Save();
         // mpiUt::SaveConfig(dataCT_->vertices_);
+        std::cout << "updsamespin = " << updsamespin_ << std::endl;
         SaveUpd("upd.meas");
     }
 

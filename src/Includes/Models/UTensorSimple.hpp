@@ -12,8 +12,8 @@ public:
   UTensor(const Json &jjSim) : NOrb_(jjSim["NOrb"].get<size_t>()),
                                U_(jjSim["U"].get<double>()),
                                JH_(jjSim["J_H"].get<double>()),
-                               UPrime_(jjSim["UPrime"].get<double>()),                              //U_ - 2 * JH_),
-                               auxMu_(jjSim["mu"].get<double>() - U_ / 2.0 - NOrb_ * UPrime_ / 2.0) //(NOrb_ == 1 ? 0.0 : NOrb_ * (2.0 * UPrime_ - JH_) / 2.0))
+                               UPrime_(jjSim["UPrime"].get<double>()), //U_ - 2 * JH_),
+                               auxMu_(jjSim["mu"].get<double>() - U_ / 2.0 - NOrb_ * (2.0 * UPrime_ - JH_) / 2.0)
 
   {
   }

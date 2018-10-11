@@ -22,12 +22,13 @@ const size_t INVALID = 999;
 class VertexPart
 {
   public:
-    VertexPart(const Tau_t &tau, const Site_t &site, const FermionSpin_t spin,
-               const size_t orbital) : tau_(tau),
-                                       site_(site),
-                                       spin_(spin),
-                                       orbital_(orbital),
-                                       superSite_{site, orbital} {}
+    VertexPart(const Tau_t &tau, const Site_t &site, const FermionSpin_t &spin,
+               const size_t &orbital, const AuxSpin_t &aux) : tau_(tau),
+                                                              site_(site),
+                                                              spin_(spin),
+                                                              orbital_(orbital),
+                                                              superSite_{site, orbital},
+                                                              aux_(aux) {}
 
     VertexPart &operator=(const VertexPart &vpart) = default;
 
@@ -37,6 +38,7 @@ class VertexPart
     FermionSpin_t spin() const { return spin_; };
     Orbital_t orbital() const { return orbital_; };
     SuperSite_t superSite() const { return superSite_; };
+    AuxSpin_t aux() const { return aux_; };
 
   private:
     Tau_t tau_;
@@ -44,6 +46,7 @@ class VertexPart
     FermionSpin_t spin_;
     Orbital_t orbital_;
     SuperSite_t superSite_;
+    AuxSpin_t aux_;
 };
 
 class Vertex
@@ -136,6 +139,7 @@ class Vertices
         const size_t xIndex = GetIndicesSpins(pp, x.spin());
         const size_t yIndex = GetIndicesSpins(pp, y.spin());
 
+        // std::cout << "xIndex, yIndex = " << xIndex << ", " << yIndex << std::endl;
         RemoveVertexPart(xIndex, x.spin());
         RemoveVertexPart(yIndex, y.spin());
 
@@ -170,6 +174,7 @@ class Vertices
             y.spin() == FermionSpin_t::Up ? indexVertexPartUp++ : indexVertexPartDown++;
         }
 
+        std::cout << "indexVertexPartUp, indexVertexPartDown, pp = " << indexVertexPartUp << ", " << indexVertexPartDown << ", " << pp << std::endl;
         assert(indexVertexPartUp + indexVertexPartDown == 2 * (pp));
 
         return ((spin == FermionSpin_t::Up) ? indexVertexPartUp : indexVertexPartDown);
@@ -258,8 +263,8 @@ class VertexBuilder
         if ((o1 == o2) && spin1 != spin2)
         {
             vertextype = VertexType::HubbardIntra;
-            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
-            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1, aux);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2, aux);
             // std::cout << "GetKxio1o2(HubbardIntra) = " << GetKxio1o2(vertextype) << std::endl;
 
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
@@ -268,16 +273,16 @@ class VertexBuilder
         {
             // std::cout << "Here !" << std::endl;
             vertextype = VertexType::HubbardInter;
-            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1);
-            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2);
+            const VertexPart vStart(tau, site, FermionSpin_t::Up, o1, aux);
+            const VertexPart vEnd(tau, site, FermionSpin_t::Down, o2, aux);
             // std::cout << "GetKxio1o2(HubbardInter) = " << GetKxio1o2(vertextype) << std::endl;
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else if ((o1 != o2) && (spin1 == spin2))
         {
             vertextype = VertexType::HubbardInterSpin;
-            const VertexPart vStart(tau, site, spin1, o1);
-            const VertexPart vEnd(tau, site, spin2, o2);
+            const VertexPart vStart(tau, site, spin1, o1, aux);
+            const VertexPart vEnd(tau, site, spin2, o2, aux);
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else
@@ -301,7 +306,7 @@ class VertexBuilder
         }
         else if (vtype == VertexType::HubbardInterSpin)
         {
-            U_xio1o2 = Utensor.JH();
+            U_xio1o2 = (Utensor.UPrime() - Utensor.JH());
         }
         else
         {
