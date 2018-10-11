@@ -173,11 +173,6 @@ class ABC_MarkovChain
         const double faux = FAux(x.spin(), x.aux());
         const double fauxM1 = faux - 1.0;
 
-        const size_t kkoldUp = nfdata_.Nup_.n_rows();
-        const size_t kknewUp = kkoldUp + 1;
-        const size_t kkoldDown = nfdata_.Ndown_.n_rows();
-        const size_t kknewDown = kkoldDown + 1;
-
         if (x.spin() == FermionSpin_t::Up)
         {
             upddata_.sTildeUpI_ = -faux + GetGreenTau0(x, x) * fauxM1;
@@ -297,7 +292,7 @@ class ABC_MarkovChain
     InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start InsertVertexSameSpin " << std::endl;
-        // return;
+        return;
         // std::cout << "\n\n";
         // Nspin.Print();
         // std::cout << "\n\n";
@@ -434,12 +429,12 @@ class ABC_MarkovChain
 
     void RemoveVertexDiffSpin(const size_t &pp)
     {
-        std::cout << "Start RemoveVertexDiffSpin " << std::endl;
+        // std::cout << "Start RemoveVertexDiffSpin " << std::endl;
         AssertSizes();
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
+        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up).at(0);
+        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down).at(0);
         const auto x = dataCT_->vertices_.atUp(ppUp);
         const auto y = dataCT_->vertices_.atDown(ppDown);
         assert(std::abs(x.tau() - y.tau()) < 1e-10);
@@ -462,10 +457,10 @@ class ABC_MarkovChain
 
             //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
 
-            // const size_t kkUp = dataCT_->vertices_.NUp();
-            // const size_t kkUpm1 = kkUp - 1;
-            // const size_t kkDown = dataCT_->vertices_.NDown();
-            // const size_t kkDownm1 = kkDown - 1;
+            const size_t kkUp = dataCT_->vertices_.NUp();
+            const size_t kkUpm1 = kkUp - 1;
+            const size_t kkDown = dataCT_->vertices_.NDown();
+            const size_t kkDownm1 = kkDown - 1;
             // assert(ppUp == kkUpm1);
             // assert(ppDown == kkDownm1);
 
@@ -474,25 +469,21 @@ class ABC_MarkovChain
             LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
             LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
 
-            nfdata_.FVup_.shed_row(ppUp);
-            nfdata_.FVdown_.shed_row(ppDown);
-
-            AfterRemove(pp);
-            // std::cout << "here 4" << std::endl;
-
-            // std::cout << "here 5" << std::endl;
+            nfdata_.FVup_.swap_rows(ppUp, kkUpm1);
+            nfdata_.FVdown_.swap_rows(ppDown, kkDownm1);
+            nfdata_.FVup_.resize(kkUpm1);
+            nfdata_.FVdown_.resize(kkDownm1);
 
             dataCT_->vertices_.RemoveVertex(pp);
             AssertSizes();
-            // std::cout << "here 6" << std::endl;
         }
-        std::cout << "End RemoveVertexDiffSpin " << std::endl;
+        // std::cout << "End RemoveVertexDiffSpin " << std::endl;
     }
 
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
-        std::cout << "Start RemoveVertexSameSpin " << std::endl;
-        // return;
+        // std::cout << "Start RemoveVertexSameSpin " << std::endl;
+        return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
         assert(FVspin.n_elem >= 2);
@@ -506,13 +497,14 @@ class ABC_MarkovChain
         assert(x.orbital() != y.orbital());
         assert(x.site() == y.site());
 
-        const size_t ppSpin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
-
+        const auto indicesPP = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
+        const size_t pp1Spin = indicesPP.at(0);
+        const size_t pp2Spin = indicesPP.at(1);
         const size_t kk = dataCT_->vertices_.size();
-        // const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
+        const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
         // const size_t kkSpinm2 = kkSpin - 2;
 
-        const ClusterMatrix_t STildeInverse = {{Nspin(ppSpin, ppSpin), Nspin(ppSpin, ppSpin + 1)}, {Nspin(ppSpin + 1, ppSpin), Nspin(ppSpin + 1, ppSpin + 1)}};
+        const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)}, {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
 
         if (urng_() < std::abs(ratioAcc))
@@ -524,14 +516,18 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            LinAlg::BlockDowngrade(Nspin, ppSpin, 2);
+            Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+            Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+
+            LinAlg::BlockRankTwoDowngrade(Nspin);
 
             // assert(kkSpin - 2 == ppSpin);
             // std::cout << "kkspin - 1 , ppspin = " << kkSpin - 1 << ", " << ppSpin << std::endl;
-            FVspin.shed_row(ppSpin);
-            FVspin.shed_row(ppSpin);
+            FVspin.swap_rows(pp1Spin, kkSpin - 2);
+            FVspin.swap_rows(pp2Spin, kkSpin - 1);
+            FVspin.resize(kkSpin - 2);
 
-            AfterRemove(pp);
+            // AfterRemove(pp);
 
             dataCT_->vertices_.RemoveVertex(pp);
             // std::cout << "RemoveVertexSameSpin accepted " << std::endl;
@@ -590,59 +586,59 @@ class ABC_MarkovChain
     //     }
     // }
 
-    void AfterRemove(const size_t &pp)
-    {
+    // void AfterRemove(const size_t &pp)
+    // {
 
-        //Swap back to original position the vertex that had changed position, only pertains to nfdata_
-        const Vertex vertex = dataCT_->vertices_.at(pp);
-        // assert(false);
-        const auto x = vertex.vStart();
-        const auto y = vertex.vEnd();
-        // const size_t kkUp = nfdata_.Nup_.n_rows();
-        // const size_t kkDown = nfdata_.Ndown_.n_rows();
-        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
+    //     //Swap back to original position the vertex that had changed position, only pertains to nfdata_
+    //     const Vertex vertex = dataCT_->vertices_.at(pp);
+    //     // assert(false);
+    //     const auto x = vertex.vStart();
+    //     const auto y = vertex.vEnd();
+    //     // const size_t kkUp = nfdata_.Nup_.n_rows();
+    //     // const size_t kkDown = nfdata_.Ndown_.n_rows();
+    //     const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
+    //     const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
 
-        if (x.spin() != y.spin())
-        {
+    //     if (x.spin() != y.spin())
+    //     {
 
-            if (nfdata_.Nup_.n_rows())
-            {
-                std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
-                nfdata_.Nup_.SwapToEnd(ppUp);
-                nfdata_.Ndown_.SwapToEnd(ppDown);
-            }
-            // nfdata_.FVup_.resize(kkUp + 1);
-            // nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
-            // nfdata_.FVup_.shed_row(ppUp);
+    //         if (nfdata_.Nup_.n_rows())
+    //         {
+    //             std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
+    //             nfdata_.Nup_.SwapToEnd(ppUp);
+    //             nfdata_.Ndown_.SwapToEnd(ppDown);
+    //         }
+    //         // nfdata_.FVup_.resize(kkUp + 1);
+    //         // nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
+    //         // nfdata_.FVup_.shed_row(ppUp);
 
-            // nfdata_.FVdown_.resize(kkDown + 1);
-            // nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
-            // nfdata_.FVdown_.shed_row(ppDown);
-        }
-        else
-        {
-            assert(x.spin() == y.spin());
-            if (x.spin() == FermionSpin_t::Up)
-            {
-                if (nfdata_.Nup_.n_rows())
-                {
-                    nfdata_.Nup_.SwapToEnd(ppUp);
-                    nfdata_.Nup_.SwapToEnd(ppUp);
-                }
-            }
-            else
-            {
-                if (nfdata_.Ndown_.n_rows())
-                {
-                    std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
+    //         // nfdata_.FVdown_.resize(kkDown + 1);
+    //         // nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
+    //         // nfdata_.FVdown_.shed_row(ppDown);
+    //     }
+    //     else
+    //     {
+    //         assert(x.spin() == y.spin());
+    //         if (x.spin() == FermionSpin_t::Up)
+    //         {
+    //             if (nfdata_.Nup_.n_rows())
+    //             {
+    //                 nfdata_.Nup_.SwapToEnd(ppUp);
+    //                 nfdata_.Nup_.SwapToEnd(ppUp);
+    //             }
+    //         }
+    //         else
+    //         {
+    //             if (nfdata_.Ndown_.n_rows())
+    //             {
+    //                 std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
 
-                    nfdata_.Ndown_.SwapToEnd(ppDown);
-                    nfdata_.Ndown_.SwapToEnd(ppDown);
-                }
-            }
-        }
-    }
+    //                 nfdata_.Ndown_.SwapToEnd(ppDown);
+    //                 nfdata_.Ndown_.SwapToEnd(ppDown);
+    //             }
+    //         }
+    //     }
+    // }
 
     void CleanUpdate()
     {

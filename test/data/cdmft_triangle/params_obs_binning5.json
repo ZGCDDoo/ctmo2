@@ -27,5 +27,6 @@
     "WEIGHTSR": 0.0,
     "WEIGHTSI": 0.0,
     "ESelfCon": 200,
-    "N_T_INV": 5
+    "N_T_INV": 5,
+    "IsOrbitalDiagonl": true
 }

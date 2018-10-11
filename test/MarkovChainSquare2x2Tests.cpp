@@ -9,7 +9,7 @@ using Model_t = Models::ModelSquare2x2;
 using IOModel_t = IO::IOSquare2x2;
 using Markov_t = Markov::MarkovChain<IOModel_t, Model_t>;
 
-const double DELTA = 1e-12;
+const double DELTA = 1e-11;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
 
 Markov_t BuildMarkovChain()

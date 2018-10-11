@@ -399,6 +399,47 @@ void BlockDowngrade(Matrix_t &m1, const size_t &pp, const size_t &nn)
     }
 }
 
+void BlockRankTwoDowngrade(Matrix_t &m1)
+{
+
+    //pp = row and col number to start remove, is supposed here that it is the last two rows and columns.
+    //nn = number of rows and col to remove = 2
+    // const unsigned int inc = 1;
+    const unsigned int nn = 2;
+    const unsigned int kk = m1.n_rows();
+    assert(kk >= nn);
+    const unsigned int kkmnn = kk - nn;
+    // const unsigned int ld_m1 = m1.mem_n_rows();
+
+    if (kkmnn == 0)
+    {
+        m1.Clear();
+    }
+    else
+    {
+
+        Matrix_t B; //right-upper block of m1, size = kkmnn x nn
+        Matrix_t C; //left-lower block of m1, size = nn x kkmnn
+        Matrix_t D; //lower-right block of m1, size = nn x nn
+        B = GetSubMat(0, kkmnn, kkmnn, kk, m1);
+        C = GetSubMat(kkmnn, 0, kk, kkmnn, m1);
+        D = GetSubMat(kkmnn, kkmnn, kk, kk, m1);
+
+        // std::cout << "B.n_rows = " << B.n_rows() << std::endl;
+        D.Inverse();
+        // std::cout << " D.n_rows() = " << D.n_rows() << std::endl;
+        // std::cout << " kkmnn = " << kkmnn << std::endl;
+
+        Matrix_t DInverseC(nn, kkmnn);
+        DInverseC.Zeros();
+
+        DGEMM(1.0, 0.0, D, C, DInverseC);
+
+        m1.Resize(kkmnn, kkmnn);
+        DGEMM(-1.0, 1.0, B, DInverseC, m1);
+    }
+}
+
 //double-diagonal matrix-general matrix multiplication
 //B = diag*A
 void DDMGMM(const SiteVector_t &diag, const Matrix_t &A, Matrix_t &B)

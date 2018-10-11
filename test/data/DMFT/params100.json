@@ -24,5 +24,6 @@
     "PRECISE": true,
     "THERM_FROM_CONFIG": false,
     "ESelfCon": 200,
-    "N_T_INV": 5
+    "N_T_INV": 5,
+    "IsOrbitalDiagonal": true
 }

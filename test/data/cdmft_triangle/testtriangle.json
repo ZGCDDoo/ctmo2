@@ -34,5 +34,6 @@
     "THERM_FROM_CONFIG": false,
     "WEIGHTSR": 0.0,
     "WEIGHTSI": 0.0,
-    "N_T_INV": 5
+    "N_T_INV": 5,
+    "IsOrbitalDiagonal": true
 }
