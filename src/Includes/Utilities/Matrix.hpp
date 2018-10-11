@@ -197,6 +197,8 @@ class Matrix
     void SwapToEnd(const size_t &pp)
     {
         //Insert the row and col at index pp to the end of the matrix
+        AssertSizes(pp, pp);
+
         for (size_t ii = pp; ii < n_rows() - 1; ii++)
         {
             mat_.swap_cols(ii, ii + 1);

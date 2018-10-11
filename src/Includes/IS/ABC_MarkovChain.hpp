@@ -32,6 +32,18 @@ struct NFData
     Matrix_t dummy_;
 };
 
+struct UpdData
+{
+
+    UpdData() : NQUp_(), NQDown_(), newLastRowUp_(), newLastRowDown_(){};
+    SiteVector_t NQUp_;
+    SiteVector_t NQDown_;
+    SiteVector_t newLastRowUp_;
+    SiteVector_t newLastRowDown_;
+    double sTildeUpI_;
+    double sTildeDownI_;
+};
+
 template <typename TIOModel, typename TModel>
 class ABC_MarkovChain
 {
@@ -48,6 +60,7 @@ class ABC_MarkovChain
                                                           rng_(seed),
                                                           urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
                                                           nfdata_(),
+                                                          upddata_(),
                                                           dataCT_(
                                                               new Obs::ISDataCT<TIOModel, TModel>(
                                                                   jj,
@@ -155,114 +168,133 @@ class ABC_MarkovChain
         // std::cout << "End InsertVertex " << std::endl;
     }
 
+    void CalculateUpdDataInsertDiffSpin(const VertexPart &x)
+    {
+        const double faux = FAux(x.spin(), x.aux());
+        const double fauxM1 = faux - 1.0;
+
+        const size_t kkoldUp = nfdata_.Nup_.n_rows();
+        const size_t kknewUp = kkoldUp + 1;
+        const size_t kkoldDown = nfdata_.Ndown_.n_rows();
+        const size_t kknewDown = kkoldDown + 1;
+
+        if (x.spin() == FermionSpin_t::Up)
+        {
+            upddata_.sTildeUpI_ = -faux + GetGreenTau0(x, x) * fauxM1;
+
+            if (nfdata_.Nup_.n_rows())
+            {
+                const size_t kkoldUp = dataCT_->vertices_.NUp();
+                upddata_.newLastRowUp_.set_size(kkoldUp);
+                SiteVector_t newLastColUp_(kkoldUp);
+                upddata_.NQUp_.set_size(kkoldUp);
+
+                for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
+                {
+                    upddata_.newLastRowUp_(iUp) = GetGreenTau0(x, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
+                    newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), x) * fauxM1;
+                }
+                MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, upddata_.NQUp_);
+                upddata_.sTildeUpI_ -= LinAlg::DotVectors(upddata_.newLastRowUp_, upddata_.NQUp_);
+            }
+        }
+        else
+        {
+            upddata_.sTildeDownI_ = -faux + GetGreenTau0(x, x) * fauxM1;
+
+            if (nfdata_.Ndown_.n_rows())
+            {
+                const size_t kkoldDown = dataCT_->vertices_.NDown();
+                upddata_.newLastRowDown_.set_size(kkoldDown);
+                SiteVector_t newLastColDown_(kkoldDown);
+                upddata_.NQDown_.set_size(kkoldDown);
+
+                for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
+                {
+                    upddata_.newLastRowDown_(iDown) = GetGreenTau0(x, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
+                    newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), x) * fauxM1;
+                }
+
+                MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, upddata_.NQDown_);
+                upddata_.sTildeDownI_ -= LinAlg::DotVectors(upddata_.newLastRowDown_, upddata_.NQDown_);
+            }
+        }
+    }
+
     void InsertVertexDiffSpin(const Vertex &vertex)
     {
         // std::cout << "Start InsertVertexDiffSpin " << std::endl;
         // const auto x = vertex.vStart();
         // const auto y = vertex.vEnd();
-
-        const double fauxup = FAux(FermionSpin_t::Up, vertex.aux());
-        const double fauxdown = FAux(FermionSpin_t::Down, vertex.aux());
-        const double fauxupM1 = fauxup - 1.0;
-        const double fauxdownM1 = fauxdown - 1.0;
+        AssertSizes();
 
         const VertexPart vertexPartUp = vertex.vStart();
         const VertexPart vertexPartDown = vertex.vEnd();
+        const size_t kkoldUp = nfdata_.Nup_.n_rows();
+        const size_t kknewUp = kkoldUp + 1;
+        const size_t kkoldDown = nfdata_.Ndown_.n_rows();
+        const size_t kknewDown = kkoldDown + 1;
+        const double fauxup = FAux(vertexPartUp.spin(), vertexPartUp.aux());
+        const double fauxdown = FAux(vertexPartDown.spin(), vertexPartDown.aux());
+
         assert(vertexPartUp.spin() == FermionSpin_t::Up);
         assert(vertexPartDown.spin() == FermionSpin_t::Down);
         assert(std::abs(vertexPartUp.tau() - vertexPartDown.tau()) < 1e-10);
 
-        const double sUp = -fauxup + GetGreenTau0(vertexPartUp, vertexPartUp) * fauxupM1;
-        const double sDown = -fauxdown + GetGreenTau0(vertexPartDown, vertexPartDown) * fauxdownM1;
+        CalculateUpdDataInsertDiffSpin(vertexPartUp);
+        CalculateUpdDataInsertDiffSpin(vertexPartDown);
 
-        if (dataCT_->vertices_.size())
+        const double ratio = upddata_.sTildeUpI_ * upddata_.sTildeDownI_;
+        const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
+
+        if (urng_() < std::abs(ratioAcc))
         {
             AssertSizes();
-            const size_t kkoldUp = dataCT_->vertices_.NUp();
-            const size_t kknewUp = kkoldUp + 1;
-            const size_t kkoldDown = dataCT_->vertices_.NDown();
-            const size_t kknewDown = kkoldDown + 1;
 
-            SiteVector_t newLastColUp_(kkoldUp);
-            SiteVector_t newLastRowUp_(kkoldUp);
-            SiteVector_t newLastColDown_(kkoldDown);
-            SiteVector_t newLastRowDown_(kkoldDown);
-
-            //Probably put this in a method
-            for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
+            updStats_["Inserts"][1]++;
+            if (ratioAcc < .0)
             {
-                newLastRowUp_(iUp) = GetGreenTau0(vertexPartUp, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
-                newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), vertexPartUp) * fauxupM1;
+                dataCT_->sign_ *= -1;
             }
 
-            for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
+            if (nfdata_.Nup_.n_rows())
             {
-                newLastRowDown_(iDown) = GetGreenTau0(vertexPartDown, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
-                newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), vertexPartDown) * fauxdownM1;
-            }
-
-            SiteVector_t NQUp(kkoldUp); //NQ = N*Q
-            SiteVector_t NQDown(kkoldDown);
-            MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, NQUp);
-            MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, NQDown);
-            const double sTildeUpI = sUp - LinAlg::DotVectors(newLastRowUp_, NQUp);
-            const double sTildeDownI = sDown - LinAlg::DotVectors(newLastRowDown_, NQDown);
-
-            const double ratio = sTildeUpI * sTildeDownI;
-            const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
-            // std::cout << "ratioAcc " << ratioAcc << std::endl;
-
-            if (urng_() < std::abs(ratioAcc))
-            {
-                updStats_["Inserts"][1]++;
-                if (ratioAcc < .0)
-                {
-                    dataCT_->sign_ *= -1;
-                }
-
-                LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, NQUp, newLastRowUp_, 1.0 / sTildeUpI);
-                LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, NQDown, newLastRowDown_, 1.0 / sTildeDownI);
+                LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, upddata_.NQUp_, upddata_.newLastRowUp_, 1.0 / upddata_.sTildeUpI_);
                 nfdata_.FVup_.resize(kknewUp);
-                nfdata_.FVdown_.resize(kknewDown);
                 nfdata_.FVup_(kkoldUp) = fauxup;
-                nfdata_.FVdown_(kkoldDown) = fauxdown;
-                dataCT_->vertices_.AppendVertex(vertex);
-                AssertSizes();
-                // if (x.orbital() != y.orbital())
-                // {
-                //     // std::cout << "diff orbital and spin accepted " << std::endl;
-                // }
             }
-        }
-        else
-        {
-            AssertSizes();
-            const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() * sUp * sDown;
-
-            if (urng_() < std::abs(ratioAcc))
+            else
             {
-                if (ratioAcc < 0.0)
-                {
-                    dataCT_->sign_ *= -1;
-                }
-
                 nfdata_.Nup_ = Matrix_t(1, 1);
-                nfdata_.Ndown_ = Matrix_t(1, 1);
-                nfdata_.Nup_(0, 0) = 1.0 / sUp;
-                nfdata_.Ndown_(0, 0) = 1.0 / sDown;
-
+                nfdata_.Nup_(0, 0) = 1.0 / upddata_.sTildeUpI_;
                 nfdata_.FVup_ = SiteVector_t(1);
-                nfdata_.FVdown_ = SiteVector_t(1);
                 nfdata_.FVup_(0) = fauxup;
-                nfdata_.FVdown_(0) = fauxdown;
-
-                dataCT_->vertices_.AppendVertex(vertex);
             }
+
+            if (nfdata_.Ndown_.n_rows())
+            {
+                LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, upddata_.NQDown_, upddata_.newLastRowDown_, 1.0 / upddata_.sTildeDownI_);
+                nfdata_.FVdown_.resize(kknewDown);
+                nfdata_.FVdown_(kkoldDown) = fauxdown;
+            }
+            else
+            {
+                nfdata_.Ndown_ = Matrix_t(1, 1);
+                nfdata_.Ndown_(0, 0) = 1.0 / upddata_.sTildeDownI_;
+
+                nfdata_.FVdown_ = SiteVector_t(1);
+                nfdata_.FVdown_(0) = fauxdown;
+            }
+
+            dataCT_->vertices_.AppendVertex(vertex);
+            AssertSizes();
         }
+
         // std::cout << "End InsertVertexDiffSpin " << std::endl;
     }
 
-    void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
+    void
+    InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start InsertVertexSameSpin " << std::endl;
         // return;
@@ -595,9 +627,8 @@ class ABC_MarkovChain
             {
                 if (nfdata_.Nup_.n_rows())
                 {
-                    // assert(ppUp < nfdata_.Nup_.n_rows());
-                    nfdata_.Nup_.SwapToEnd(ppUp - 1);
-                    nfdata_.Nup_.SwapToEnd(ppUp - 1);
+                    nfdata_.Nup_.SwapToEnd(ppUp);
+                    nfdata_.Nup_.SwapToEnd(ppUp);
                 }
             }
             else
@@ -605,10 +636,9 @@ class ABC_MarkovChain
                 if (nfdata_.Ndown_.n_rows())
                 {
                     std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
-                    // assert(ppDown < nfdata_.Ndown_.n_rows());
 
-                    nfdata_.Ndown_.SwapToEnd(ppDown - 1);
-                    nfdata_.Ndown_.SwapToEnd(ppDown - 1);
+                    nfdata_.Ndown_.SwapToEnd(ppDown);
+                    nfdata_.Ndown_.SwapToEnd(ppDown);
                 }
             }
         }
@@ -747,6 +777,7 @@ class ABC_MarkovChain
     Utilities::EngineTypeMt19937_t rng_;
     Utilities::UniformRngMt19937_t urng_;
     NFData nfdata_;
+    UpdData upddata_;
     std::shared_ptr<Obs::ISDataCT<TIOModel, TModel>> dataCT_;
     Obs::Observables<TIOModel, TModel> obs_;
     Diagrammatic::VertexBuilder vertexBuilder_;
