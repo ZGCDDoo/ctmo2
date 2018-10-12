@@ -516,15 +516,15 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
             Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+            Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
 
             LinAlg::BlockRankTwoDowngrade(Nspin);
 
             // assert(kkSpin - 2 == ppSpin);
             // std::cout << "kkspin - 1 , ppspin = " << kkSpin - 1 << ", " << ppSpin << std::endl;
-            FVspin.swap_rows(pp1Spin, kkSpin - 2);
             FVspin.swap_rows(pp2Spin, kkSpin - 1);
+            FVspin.swap_rows(pp1Spin, kkSpin - 2);
             FVspin.resize(kkSpin - 2);
 
             // AfterRemove(pp);

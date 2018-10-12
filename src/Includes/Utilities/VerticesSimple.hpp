@@ -125,13 +125,18 @@ class Vertices
     void Print() const
     {
 
-        // std::cout << "Start Print " << std::endl;
+        std::cout << "Start Print " << std::endl;
 
-        // for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
-        // {
-        //     std::cout << "indexPartUpVec_.at(ii), indexPartDownVec__.at(ii)  = " << indexPartUpVec_.at(ii) << ", " << indexPartDownVec_.at(ii) << std::endl;
-        // }
-        // std::cout << "End Print " << std::endl;
+        for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
+        {
+            std::cout << "indexPartUpVec_.at(ii)  = " << indexPartUpVec_.at(ii) << std::endl;
+        }
+
+        for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
+        {
+            std::cout << "indexPartDownVec__.at(ii)  = " << indexPartDownVec_.at(ii) << std::endl;
+        }
+        std::cout << "End Print " << std::endl;
     }
 
     void FlipAux(const size_t &p)
@@ -185,8 +190,8 @@ class Vertices
 
     void CorrectIndices(const size_t &pp)
     {
-        // std::cout << "In Correct INdices " << std::endl;
-        // std::cout << "pp = " << pp << std::endl;
+        std::cout << "In Correct INdices " << std::endl;
+        std::cout << "pp = " << pp << std::endl;
         Print();
         for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
         {
@@ -209,7 +214,7 @@ class Vertices
                 indexPartDownVec_.at(ii) = indexPartDownVec_.at(ii) - 1;
             }
         }
-        // std::cout << "In Correct INdices " << std::endl;
+        std::cout << "End Correct INdices " << std::endl;
     }
 
     void RemoveVertexPart(const size_t &ppSpin, const FermionSpin_t &spin)
@@ -235,17 +240,22 @@ class Vertices
 
     void RemoveTwoVertexParts(const std::vector<size_t> &indicesToRemove, const FermionSpin_t &spin)
     {
-        assert(false);
+        // assert(false);
+        std::cout << "In removeTwoVertexParts " << std::endl;
+        std::cout << "indicesToRemove = " << indicesToRemove.at(0) << ", " << indicesToRemove.at(1) << std::endl;
         assert(indicesToRemove.size() == 2);
         const size_t kkUpm1 = vPartUpVec_.size() - 1;
         const size_t kkDownm1 = vPartDownVec_.size() - 1;
 
+        std::cout << "before remove " << std::endl;
+        Print();
+
         if (spin == FermionSpin_t::Up)
         {
-            std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
             std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
-            std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
+            std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
             std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
+            std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
 
             vPartUpVec_.pop_back();
             vPartUpVec_.pop_back();
@@ -254,16 +264,20 @@ class Vertices
         }
         else
         {
-            std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
             std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
-            std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
+            std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
             std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
+            std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
 
             vPartDownVec_.pop_back();
             vPartDownVec_.pop_back();
             indexPartDownVec_.pop_back();
             indexPartDownVec_.pop_back();
         }
+        std::cout << "After remove " << std::endl;
+
+        Print();
+        std::cout << "End removeTwoVertexParts " << std::endl;
     }
 
     /*
@@ -430,7 +444,18 @@ class VertexBuilder
         }
         else if (vtype == VertexType::HubbardInterSpin)
         {
-            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : (Utensor.UPrime() - Utensor.JH());
+            if (isOrbitalDiagonal_)
+            {
+                U_xio1o2 = 0.0;
+            }
+            else if (std::abs(Utensor.JH()) < 1e-10)
+            {
+                U_xio1o2 = 0.0;
+            }
+            else
+            {
+                U_xio1o2 = (Utensor.UPrime() - Utensor.JH());
+            }
         }
         else
         {
