@@ -327,6 +327,12 @@ class Matrix
         return arma::det(mat_);
     }
 
+    bool HasInfOrNan()
+    {
+        mat_.resize(n_rows_, n_cols_);
+        return (mat_.has_nan() || mat_.has_inf());
+    }
+
   private:
     size_t n_rows_; //the real size of the matrix
     size_t n_cols_;

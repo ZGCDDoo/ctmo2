@@ -145,6 +145,10 @@ class ABC_MarkovChain
 
         assert(dataCT_->vertices_.NDown() == nfdata_.FVdown_.n_elem);
         assert(dataCT_->vertices_.NDown() == nfdata_.Ndown_.n_rows());
+
+        // assert(!nfdata_.Nup_.HasInfOrNan());
+
+        // assert(!nfdata_.Ndown_.HasInfOrNan());
     }
 
     void InsertVertex()
@@ -309,7 +313,7 @@ class ABC_MarkovChain
         const double s10 = GetGreenTau0(y, x);
         const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
 
-        if (Nspin.n_rows())
+        if (Nspin.n_rows() && updsamespin_ < 20)
         {
             AssertSizes();
             assert(Nspin.n_rows());
@@ -371,6 +375,7 @@ class ABC_MarkovChain
         }
         else
         {
+            return;
             AssertSizes();
             Matrix_t sTilde = Matrix_t({{s00, s01}, {s10, s11}});
             sTilde.Inverse();
@@ -430,6 +435,7 @@ class ABC_MarkovChain
     void RemoveVertexDiffSpin(const size_t &pp)
     {
         // std::cout << "Start RemoveVertexDiffSpin " << std::endl;
+        // return;
         AssertSizes();
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
@@ -483,7 +489,7 @@ class ABC_MarkovChain
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start RemoveVertexSameSpin " << std::endl;
-        // return;
+        return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
         assert(FVspin.n_elem >= 2);
@@ -534,7 +540,7 @@ class ABC_MarkovChain
         }
 
         AssertSizes();
-        std::cout << "End RemoveVertexSameSpin " << std::endl;
+        // std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
     // void PrepareToRemove(const size_t &pp)

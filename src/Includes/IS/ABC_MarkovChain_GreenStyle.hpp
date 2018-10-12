@@ -384,7 +384,7 @@ class ABC_MarkovChain
 
             LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
             LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
-            AfterRemove(pp);
+            // AfterRemove(pp);
 
             dataCT_->vertices_.RemoveVertex(pp);
             AssertSizes();
@@ -423,8 +423,8 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            LinAlg::BlockDowngrade(Nspin, ppSpin, 2);
-            AfterRemove(pp);
+            LinAlg::BlockRankTwoDowngrade(Nspin);
+            // AfterRemove(pp);
             dataCT_->vertices_.RemoveVertex(pp);
             // std::cout << "RemoveVertexSameSpin accepted " << std::endl;
         }
@@ -433,56 +433,56 @@ class ABC_MarkovChain
         // std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
-    void AfterRemove(const size_t &pp)
-    {
+    // void AfterRemove(const size_t &pp)
+    // {
 
-        //Swap back to original position the vertex that had changed position, only pertains to nfdata_
-        const Vertex vertex = dataCT_->vertices_.at(pp);
-        // assert(false);
-        const auto x = vertex.vStart();
-        const auto y = vertex.vEnd();
-        const size_t kkUp = nfdata_.Nup_.n_rows();
-        const size_t kkDown = nfdata_.Ndown_.n_rows();
-        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
+    //     //Swap back to original position the vertex that had changed position, only pertains to nfdata_
+    //     const Vertex vertex = dataCT_->vertices_.at(pp);
+    //     // assert(false);
+    //     const auto x = vertex.vStart();
+    //     const auto y = vertex.vEnd();
+    //     const size_t kkUp = nfdata_.Nup_.n_rows();
+    //     const size_t kkDown = nfdata_.Ndown_.n_rows();
+    //     const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
+    //     const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
 
-        if (x.spin() != y.spin())
-        {
+    //     if (x.spin() != y.spin())
+    //     {
 
-            if (nfdata_.Nup_.n_rows())
-            {
-                nfdata_.Nup_.SwapToEnd(ppUp);
-                nfdata_.Ndown_.SwapToEnd(ppDown);
-            }
-            // nfdata_.FVup_.resize(kkUp + 1);
-            // nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
-            // nfdata_.FVup_.shed_row(ppUp);
+    //         if (nfdata_.Nup_.n_rows())
+    //         {
+    //             nfdata_.Nup_.SwapToEnd(ppUp);
+    //             nfdata_.Ndown_.SwapToEnd(ppDown);
+    //         }
+    //         // nfdata_.FVup_.resize(kkUp + 1);
+    //         // nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
+    //         // nfdata_.FVup_.shed_row(ppUp);
 
-            // nfdata_.FVdown_.resize(kkDown + 1);
-            // nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
-            // nfdata_.FVdown_.shed_row(ppDown);
-        }
-        else
-        {
-            assert(x.spin() == y.spin());
-            if (x.spin() == FermionSpin_t::Up)
-            {
-                if (nfdata_.Nup_.n_rows())
-                {
-                    nfdata_.Nup_.SwapToEnd(ppUp);
-                    nfdata_.Nup_.SwapToEnd(ppUp);
-                }
-            }
-            else
-            {
-                if (nfdata_.Ndown_.n_rows())
-                {
-                    nfdata_.Ndown_.SwapToEnd(ppDown);
-                    nfdata_.Ndown_.SwapToEnd(ppDown);
-                }
-            }
-        }
-    }
+    //         // nfdata_.FVdown_.resize(kkDown + 1);
+    //         // nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
+    //         // nfdata_.FVdown_.shed_row(ppDown);
+    //     }
+    //     else
+    //     {
+    //         assert(x.spin() == y.spin());
+    //         if (x.spin() == FermionSpin_t::Up)
+    //         {
+    //             if (nfdata_.Nup_.n_rows())
+    //             {
+    //                 nfdata_.Nup_.SwapToEnd(ppUp);
+    //                 nfdata_.Nup_.SwapToEnd(ppUp);
+    //             }
+    //         }
+    //         else
+    //         {
+    //             if (nfdata_.Ndown_.n_rows())
+    //             {
+    //                 nfdata_.Ndown_.SwapToEnd(ppDown);
+    //                 nfdata_.Ndown_.SwapToEnd(ppDown);
+    //             }
+    //         }
+    //     }
+    // }
 
     void CleanUpdate()
     {
