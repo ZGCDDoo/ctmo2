@@ -110,33 +110,37 @@ class Vertices
 {
 
   public:
-    Vertices(){};
+    Vertices() : id_(0){};
 
     void AppendVertex(const Vertex &vertex)
     {
         data_.push_back(vertex);
+        verticesIdsVec_.push_back(id_);
         AppendVertexPart(vertex.vStart());
         AppendVertexPart(vertex.vEnd());
         assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
         assert(indexPartUpVec_.size() == vPartUpVec_.size());
         assert(indexPartDownVec_.size() == vPartDownVec_.size());
+        assert(data_.size() == verticesIdsVec_.size());
+        //Update the id number once all the vertices parts have been inserted
+        id_++;
     }
 
     void Print() const
     {
 
-        std::cout << "Start Print " << std::endl;
+        // std::cout << "Start Print " << std::endl;
 
-        for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
-        {
-            std::cout << "indexPartUpVec_.at(ii)  = " << indexPartUpVec_.at(ii) << std::endl;
-        }
+        // for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
+        // {
+        //     std::cout << "indexPartUpVec_.at(ii)  = " << indexPartUpVec_.at(ii) << std::endl;
+        // }
 
-        for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
-        {
-            std::cout << "indexPartDownVec__.at(ii)  = " << indexPartDownVec_.at(ii) << std::endl;
-        }
-        std::cout << "End Print " << std::endl;
+        // for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
+        // {
+        //     std::cout << "indexPartDownVec__.at(ii)  = " << indexPartDownVec_.at(ii) << std::endl;
+        // }
+        // std::cout << "End Print " << std::endl;
     }
 
     void FlipAux(const size_t &p)
@@ -146,16 +150,15 @@ class Vertices
 
     void AppendVertexPart(const VertexPart &vPart)
     {
-        const size_t vertexPartIndex = data_.size() - 1;
         if (vPart.spin() == FermionSpin_t::Up)
         {
             vPartUpVec_.push_back(vPart);
-            indexPartUpVec_.push_back(vertexPartIndex);
+            indexPartUpVec_.push_back(id_);
         }
         else
         {
             vPartDownVec_.push_back(vPart);
-            indexPartDownVec_.push_back(vertexPartIndex);
+            indexPartDownVec_.push_back(id_);
         }
     }
 
@@ -181,41 +184,43 @@ class Vertices
             RemoveTwoVertexParts(xIndex, x.spin());
         }
 
-        CorrectIndices(pp);
+        // CorrectIndices(pp);
 
         const size_t kkm1 = data_.size() - 1;
         std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
         data_.pop_back();
+        std::iter_swap(verticesIdsVec_.begin() + pp, verticesIdsVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+        verticesIdsVec_.pop_back();
     }
 
-    void CorrectIndices(const size_t &pp)
-    {
-        std::cout << "In Correct INdices " << std::endl;
-        std::cout << "pp = " << pp << std::endl;
-        Print();
-        for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
-        {
-            assert(indexPartUpVec_.at(ii) != pp); //this index should have been removed previously
+    // void CorrectIndices(const size_t &pp)
+    // {
+    //     std::cout << "In Correct INdices " << std::endl;
+    //     std::cout << "pp = " << pp << std::endl;
+    //     Print();
+    //     for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
+    //     {
+    //         assert(indexPartUpVec_.at(ii) != pp); //this index should have been removed previously
 
-            if (indexPartUpVec_.at(ii) > pp)
-            {
-                assert(indexPartUpVec_.at(ii)); //should not be zero !
-                indexPartUpVec_.at(ii) = indexPartUpVec_.at(ii) - 1;
-            }
-        }
+    //         if (indexPartUpVec_.at(ii) > pp)
+    //         {
+    //             assert(indexPartUpVec_.at(ii)); //should not be zero !
+    //             indexPartUpVec_.at(ii) = indexPartUpVec_.at(ii) - 1;
+    //         }
+    //     }
 
-        for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
-        {
-            assert(indexPartDownVec_.at(ii) != pp); //this index should have been removed previously
+    //     for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
+    //     {
+    //         assert(indexPartDownVec_.at(ii) != pp); //this index should have been removed previously
 
-            if (indexPartDownVec_.at(ii) > pp)
-            {
-                assert(indexPartDownVec_.at(ii)); //should not be zero !
-                indexPartDownVec_.at(ii) = indexPartDownVec_.at(ii) - 1;
-            }
-        }
-        std::cout << "End Correct INdices " << std::endl;
-    }
+    //         if (indexPartDownVec_.at(ii) > pp)
+    //         {
+    //             assert(indexPartDownVec_.at(ii)); //should not be zero !
+    //             indexPartDownVec_.at(ii) = indexPartDownVec_.at(ii) - 1;
+    //         }
+    //     }
+    //     std::cout << "End Correct INdices " << std::endl;
+    // }
 
     void RemoveVertexPart(const size_t &ppSpin, const FermionSpin_t &spin)
     {
@@ -241,13 +246,13 @@ class Vertices
     void RemoveTwoVertexParts(const std::vector<size_t> &indicesToRemove, const FermionSpin_t &spin)
     {
         // assert(false);
-        std::cout << "In removeTwoVertexParts " << std::endl;
-        std::cout << "indicesToRemove = " << indicesToRemove.at(0) << ", " << indicesToRemove.at(1) << std::endl;
+        // std::cout << "In removeTwoVertexParts " << std::endl;
+        // std::cout << "indicesToRemove = " << indicesToRemove.at(0) << ", " << indicesToRemove.at(1) << std::endl;
         assert(indicesToRemove.size() == 2);
         const size_t kkUpm1 = vPartUpVec_.size() - 1;
         const size_t kkDownm1 = vPartDownVec_.size() - 1;
 
-        std::cout << "before remove " << std::endl;
+        // std::cout << "before remove " << std::endl;
         Print();
 
         if (spin == FermionSpin_t::Up)
@@ -274,10 +279,10 @@ class Vertices
             indexPartDownVec_.pop_back();
             indexPartDownVec_.pop_back();
         }
-        std::cout << "After remove " << std::endl;
+        // std::cout << "After remove " << std::endl;
 
-        Print();
-        std::cout << "End removeTwoVertexParts " << std::endl;
+        // Print();
+        // std::cout << "End removeTwoVertexParts " << std::endl;
     }
 
     /*
@@ -285,6 +290,7 @@ class Vertices
     */
     std::vector<size_t> GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
     {
+        const size_t vertexId = verticesIdsVec_.at(pp);
         const VertexPart x = data_.at(pp).vStart();
         const VertexPart y = data_.at(pp).vEnd();
         Print();
@@ -293,7 +299,7 @@ class Vertices
         {
             for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
             {
-                if (pp == indexPartUpVec_.at(ii))
+                if (vertexId == indexPartUpVec_.at(ii))
                 {
                     indices.push_back(ii);
                 }
@@ -303,7 +309,7 @@ class Vertices
         {
             for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
             {
-                if (pp == indexPartDownVec_.at(ii))
+                if (vertexId == indexPartDownVec_.at(ii))
                 {
                     indices.push_back(ii);
                 }
@@ -356,7 +362,9 @@ class Vertices
     std::vector<VertexPart> vPartUpVec_;
     std::vector<VertexPart> vPartDownVec_;
     std::vector<size_t> indexPartUpVec_;
-    std::vector<size_t> indexPartDownVec_;
+    std::vector<size_t> indexPartDownVec_; // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the id of indexPartDownVec_.at(0)
+    std::vector<size_t> verticesIdsVec_;   // Each vertex has a unqique id
+    size_t id_;
 
 }; // namespace Diagrammatic
 
