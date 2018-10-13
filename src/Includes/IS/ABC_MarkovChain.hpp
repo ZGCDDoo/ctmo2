@@ -320,7 +320,7 @@ class ABC_MarkovChain
         const double s10 = GetGreenTau0(y, x);
         const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
 
-        if (Nspin.n_rows() && updsamespin_ < 20)
+        if (Nspin.n_rows())
         {
             AssertSizes();
             assert(Nspin.n_rows());
@@ -382,7 +382,7 @@ class ABC_MarkovChain
         }
         else
         {
-            return;
+            // return;
             AssertSizes();
             Matrix_t sTilde = Matrix_t({{s00, s01}, {s10, s11}});
             sTilde.Inverse();
@@ -496,7 +496,7 @@ class ABC_MarkovChain
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start RemoveVertexSameSpin " << std::endl;
-        return;
+        // return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
         assert(FVspin.n_elem >= 2);

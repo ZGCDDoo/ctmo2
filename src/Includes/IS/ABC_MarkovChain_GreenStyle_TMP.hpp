@@ -360,7 +360,7 @@ class ABC_MarkovChain
         }
         else
         {
-            return;
+            // return;
             AssertSizes();
             Matrix_t sTilde = Matrix_t({{s00, s01}, {s10, s11}});
             sTilde.Inverse();
@@ -581,10 +581,9 @@ class ABC_MarkovChain
     void Measure()
     {
         AssertSizes();
-        const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
-        const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
-        DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
-        DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
+
+        *(dataCT_->MupPtr_) = nfdata_.Nup_;
+        *(dataCT_->MdownPtr_) = nfdata_.Ndown_;
         obs_.Measure();
     }
 
