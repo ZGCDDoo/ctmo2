@@ -117,13 +117,18 @@ class Vertices
         data_.push_back(vertex);
         verticesIdsVec_.push_back(id_);
         AppendVertexPart(vertex.vStart());
+
+        //VertexParts differ by one for their id
+        id_++;
         AppendVertexPart(vertex.vEnd());
+
         assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
         assert(indexPartUpVec_.size() == vPartUpVec_.size());
         assert(indexPartDownVec_.size() == vPartDownVec_.size());
         assert(data_.size() == verticesIdsVec_.size());
+
         //Update the id number once all the vertices parts have been inserted
-        id_++;
+        id_ += 3;
     }
 
     void Print() const
@@ -181,6 +186,7 @@ class Vertices
         else
         {
             assert(xIndex == yIndex);
+            assert(xIndex.size() == 2);
             RemoveTwoVertexParts(xIndex, x.spin());
         }
 
@@ -257,6 +263,7 @@ class Vertices
 
         if (spin == FermionSpin_t::Up)
         {
+            assert(indexPartUpVec_.at(indicesToRemove.at(0)) == indexPartUpVec_.at(indicesToRemove.at(1)));
             std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
             std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
             std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
@@ -269,6 +276,7 @@ class Vertices
         }
         else
         {
+            assert(indexPartDownVec_.at(indicesToRemove.at(0)) == indexPartDownVec_.at(indicesToRemove.at(1)));
             std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
             std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
             std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
@@ -299,7 +307,7 @@ class Vertices
         {
             for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
             {
-                if (vertexId == indexPartUpVec_.at(ii))
+                if (vertexId == indexPartUpVec_.at(ii) || vertexId + 1 == indexPartUpVec_.at(ii))
                 {
                     indices.push_back(ii);
                 }
@@ -309,7 +317,7 @@ class Vertices
         {
             for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
             {
-                if (vertexId == indexPartDownVec_.at(ii))
+                if (vertexId == indexPartDownVec_.at(ii) || vertexId + 1 == indexPartDownVec_.at(ii))
                 {
                     indices.push_back(ii);
                 }
@@ -331,10 +339,12 @@ class Vertices
         if (spin == FermionSpin_t::Up)
         {
             std::iter_swap(vPartUpVec_.begin() + ii, vPartUpVec_.begin() + jj);
+            std::iter_swap(indexPartUpVec_.begin() + ii, indexPartUpVec_.begin() + jj);
         }
         else
         {
             std::iter_swap(vPartDownVec_.begin() + ii, vPartDownVec_.begin() + jj);
+            std::iter_swap(indexPartDownVec_.begin() + ii, indexPartDownVec_.begin() + jj);
         }
     }
 

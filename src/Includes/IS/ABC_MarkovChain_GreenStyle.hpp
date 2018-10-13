@@ -258,7 +258,6 @@ class ABC_MarkovChain
         if (dataCT_->vertices_.size())
         {
             AssertSizes();
-            updsamespin_++;
 
             const size_t kkold = dataCT_->vertices_.size();
             const size_t kknew = kkold + 1;
@@ -294,6 +293,8 @@ class ABC_MarkovChain
             AssertSizes();
             if (urng_() < std::abs(ratioAcc))
             {
+                updsamespin_++;
+
                 updStats_["Inserts"][1]++;
                 if (ratioAcc < .0)
                 {
@@ -360,8 +361,8 @@ class ABC_MarkovChain
         // std::cout << "Start RemoveVertexDiffSpin " << std::endl;
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
+        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up).at(0);
+        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down).at(0);
 
         //In theory we should find the proper index for each spin
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
@@ -404,14 +405,15 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        const size_t ppSpin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
+        const size_t pp1Spin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin()).at(0);
+        const size_t pp2Spin = dataCT_->vertices_.GetIndicesSpins(pp, x.spin()).at(1);
 
         const size_t kk = dataCT_->vertices_.size();
         const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
         const size_t kkSpinm2 = kkSpin - 2;
 
-        const ClusterMatrix_t STildeInverse = {{Nspin(ppSpin, ppSpin), Nspin(ppSpin, ppSpin + 1)}, {Nspin(ppSpin + 1, ppSpin), Nspin(ppSpin + 1, ppSpin + 1)}};
-        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
+        const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)}, {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
+        const double ratioAcc = -PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
 
         if (urng_() < std::abs(ratioAcc))
         {
@@ -423,6 +425,8 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
+            Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+            Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
             LinAlg::BlockRankTwoDowngrade(Nspin);
             // AfterRemove(pp);
             dataCT_->vertices_.RemoveVertex(pp);

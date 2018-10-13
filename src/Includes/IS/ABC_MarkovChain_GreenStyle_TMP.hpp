@@ -1,4 +1,6 @@
 #pragma once
+#define GREEN_STYLE
+
 #include <valarray>
 
 #include "../Utilities/Utilities.hpp"
@@ -140,10 +142,8 @@ class ABC_MarkovChain
         assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
         assert(2 * dataCT_->vertices_.size() == dataCT_->vertices_.NUp() + dataCT_->vertices_.NDown());
         // assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
-        assert(dataCT_->vertices_.NUp() == nfdata_.FVup_.n_elem);
         assert(dataCT_->vertices_.NUp() == nfdata_.Nup_.n_rows());
 
-        assert(dataCT_->vertices_.NDown() == nfdata_.FVdown_.n_elem);
         assert(dataCT_->vertices_.NDown() == nfdata_.Ndown_.n_rows());
 
         // assert(!nfdata_.Nup_.HasInfOrNan());
@@ -175,11 +175,10 @@ class ABC_MarkovChain
     void CalculateUpdDataInsertDiffSpin(const VertexPart &x)
     {
         const double faux = FAux(x.spin(), x.aux());
-        const double fauxM1 = faux - 1.0;
 
         if (x.spin() == FermionSpin_t::Up)
         {
-            upddata_.sTildeUpI_ = -faux + GetGreenTau0(x, x) * fauxM1;
+            upddata_.sTildeUpI_ = -faux + GetGreenTau0(x, x);
 
             if (nfdata_.Nup_.n_rows())
             {
@@ -190,8 +189,8 @@ class ABC_MarkovChain
 
                 for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
                 {
-                    upddata_.newLastRowUp_(iUp) = GetGreenTau0(x, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
-                    newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), x) * fauxM1;
+                    upddata_.newLastRowUp_(iUp) = GetGreenTau0(x, dataCT_->vertices_.atUp(iUp));
+                    newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), x);
                 }
                 MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, upddata_.NQUp_);
                 upddata_.sTildeUpI_ -= LinAlg::DotVectors(upddata_.newLastRowUp_, upddata_.NQUp_);
@@ -199,7 +198,7 @@ class ABC_MarkovChain
         }
         else
         {
-            upddata_.sTildeDownI_ = -faux + GetGreenTau0(x, x) * fauxM1;
+            upddata_.sTildeDownI_ = -faux + GetGreenTau0(x, x);
 
             if (nfdata_.Ndown_.n_rows())
             {
@@ -210,8 +209,8 @@ class ABC_MarkovChain
 
                 for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
                 {
-                    upddata_.newLastRowDown_(iDown) = GetGreenTau0(x, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
-                    newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), x) * fauxM1;
+                    upddata_.newLastRowDown_(iDown) = GetGreenTau0(x, dataCT_->vertices_.atDown(iDown));
+                    newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), x);
                 }
 
                 MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, upddata_.NQDown_);
@@ -259,41 +258,25 @@ class ABC_MarkovChain
             if (nfdata_.Nup_.n_rows())
             {
                 LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, upddata_.NQUp_, upddata_.newLastRowUp_, 1.0 / upddata_.sTildeUpI_);
-                nfdata_.FVup_.resize(kknewUp);
-                nfdata_.FVup_(kkoldUp) = fauxup;
             }
             else
             {
                 nfdata_.Nup_ = Matrix_t(1, 1);
                 nfdata_.Nup_(0, 0) = 1.0 / upddata_.sTildeUpI_;
-                nfdata_.FVup_ = SiteVector_t(1);
-                nfdata_.FVup_(0) = fauxup;
             }
 
             if (nfdata_.Ndown_.n_rows())
             {
                 LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, upddata_.NQDown_, upddata_.newLastRowDown_, 1.0 / upddata_.sTildeDownI_);
-                nfdata_.FVdown_.resize(kknewDown);
-                nfdata_.FVdown_(kkoldDown) = fauxdown;
             }
             else
             {
                 nfdata_.Ndown_ = Matrix_t(1, 1);
                 nfdata_.Ndown_(0, 0) = 1.0 / upddata_.sTildeDownI_;
-
-                nfdata_.FVdown_ = SiteVector_t(1);
-                nfdata_.FVdown_(0) = fauxdown;
             }
 
             dataCT_->vertices_.AppendVertex(vertex);
             AssertSizes();
-
-            // if (nfdata_.Nup_.n_rows() > 10)
-            // {
-            //     dataCT_->vertices_.SwapSpin(2, 7, FermionSpin_t::Up);
-            //     nfdata_.Nup_.SwapRowsAndCols(2, 7);
-            //     nfdata_.FVup_.swap_rows(2, 7);
-            // }
         }
 
         // std::cout << "End InsertVertexDiffSpin " << std::endl;
@@ -314,13 +297,12 @@ class ABC_MarkovChain
         assert(x.spin() == y.spin());
 
         const double faux = FAux(x.spin(), vertex.aux());
-        const double fauxM1 = faux - 1.0;
-        const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
+        const double s00 = -faux + GetGreenTau0(x, x);
         const double s01 = GetGreenTau0(x, y);
         const double s10 = GetGreenTau0(y, x);
-        const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
+        const double s11 = -faux + GetGreenTau0(y, y);
 
-        if (Nspin.n_rows() && updsamespin_ < 20)
+        if (Nspin.n_rows())
         {
             AssertSizes();
             assert(Nspin.n_rows());
@@ -335,14 +317,13 @@ class ABC_MarkovChain
             {
 
                 const VertexPart vPartI = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(i) : dataCT_->vertices_.atDown(i);
-                const double fauxIm1 = FVspin(i) - 1.0; // Faux_i - 1.0
-                Q_(i, 0) = GetGreenTau0(vPartI, x) * fauxM1;
-                Q_(i, 1) = GetGreenTau0(vPartI, y) * fauxM1;
+                Q_(i, 0) = GetGreenTau0(vPartI, x);
+                Q_(i, 1) = GetGreenTau0(vPartI, y);
 
                 assert(vPartI.spin() == x.spin());
 
-                R_(0, i) = GetGreenTau0(x, vPartI) * fauxIm1;
-                R_(1, i) = GetGreenTau0(y, vPartI) * fauxIm1;
+                R_(0, i) = GetGreenTau0(x, vPartI);
+                R_(1, i) = GetGreenTau0(y, vPartI);
             }
             //     // std::cout << "In INsertvertex After loop " << std::endl;
 
@@ -371,9 +352,6 @@ class ABC_MarkovChain
                 }
 
                 LinAlg::BlockRankTwoUpgrade(Nspin, Q_, R_, sTilde);
-                FVspin.resize(kkoldspin + 2);
-                FVspin(kkoldspin) = faux;
-                FVspin(kkoldspin + 1) = faux;
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
                 updsamespin_++;
@@ -395,10 +373,6 @@ class ABC_MarkovChain
                 }
 
                 Nspin = sTilde;
-
-                FVspin = SiteVector_t(2);
-                FVspin(0) = faux;
-                FVspin(1) = faux;
 
                 dataCT_->vertices_.AppendVertex(vertex);
             }
@@ -457,7 +431,7 @@ class ABC_MarkovChain
         // std::cout << "vertices.size(), NUp, NDown, pp , ppUp, ppDown = " << dataCT_->vertices_.size() << ", " << dataCT_->vertices_.NUp() << ", " << dataCT_->vertices_.NDown() << ", " << pp << ", " << ppUp << ", " << ppDown << std::endl;
 
         //In theory we should find the proper index for each spin
-        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
+        const double ratioAcc = 0.5; //PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
         // std::cout << "here 2" << std::endl;
         if (urng_() < std::abs(ratioAcc))
         {
@@ -482,11 +456,6 @@ class ABC_MarkovChain
             LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
             LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
 
-            nfdata_.FVup_.swap_rows(ppUp, kkUpm1);
-            nfdata_.FVdown_.swap_rows(ppDown, kkDownm1);
-            nfdata_.FVup_.resize(kkUpm1);
-            nfdata_.FVdown_.resize(kkDownm1);
-
             dataCT_->vertices_.RemoveVertex(pp);
             AssertSizes();
         }
@@ -496,11 +465,9 @@ class ABC_MarkovChain
     void RemoveVertexSameSpin(const size_t &pp, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         // std::cout << "Start RemoveVertexSameSpin " << std::endl;
-        return;
         AssertSizes();
         assert(Nspin.n_rows() >= 2);
-        assert(FVspin.n_elem >= 2);
-
+        // return;
         const Vertex vertex = dataCT_->vertices_.at(pp);
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
@@ -518,7 +485,7 @@ class ABC_MarkovChain
         // const size_t kkSpinm2 = kkSpin - 2;
 
         const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)}, {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
-        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
+        const double ratioAcc = 0.5; //PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
 
         if (urng_() < std::abs(ratioAcc))
         {
@@ -536,9 +503,6 @@ class ABC_MarkovChain
 
             // assert(kkSpin - 2 == ppSpin);
             // std::cout << "kkspin - 1 , ppspin = " << kkSpin - 1 << ", " << ppSpin << std::endl;
-            FVspin.swap_rows(pp2Spin, kkSpin - 1);
-            FVspin.swap_rows(pp1Spin, kkSpin - 2);
-            FVspin.resize(kkSpin - 2);
 
             // AfterRemove(pp);
 
@@ -550,160 +514,51 @@ class ABC_MarkovChain
         // std::cout << "End RemoveVertexSameSpin " << std::endl;
     }
 
-    // void PrepareToRemove(const size_t &pp)
-    // {
-    //     const Vertex vertex = dataCT_->vertices_.at(pp);
-    //     const auto x = vertex.vStart();
-    //     const auto y = vertex.vEnd();
-    //     const size_t kkUpm1 = nfdata_.Nup_.n_rows() - 1;
-    //     const size_t kkDownm1 = nfdata_.Ndown_.n_rows() - 1;
-    //     const size_t kkm1 = dataCT_->vertices_.size() - 1;
-
-    //     if (x.spin() != y.spin())
-    //     {
-    //         return;
-    //         const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-    //         const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
-
-    //         nfdata_.Nup_.SwapRowsAndCols(ppUp, kkUpm1);
-    //         nfdata_.Ndown_.SwapRowsAndCols(ppDown, kkDownm1);
-
-    //         nfdata_.FVup_.swap_rows(ppUp, kkUpm1);
-    //         nfdata_.FVdown_.swap_rows(ppDown, kkDownm1);
-    //     }
-    //     else
-    //     {
-    //         return;
-    //         // assert(false);
-    //         assert(x.spin() == y.spin());
-    //         const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-    //         const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
-
-    //         if (x.spin() == FermionSpin_t::Up)
-    //         {
-    //             //Swap the first vertex part to the before last position
-    //             //Swap the first vertex part to the before last position
-
-    //             nfdata_.Nup_.SwapRowsAndCols(ppUp, kkUpm1 - 1);
-    //             nfdata_.Nup_.SwapRowsAndCols(ppUp + 1, kkUpm1);
-    //             nfdata_.FVup_.swap_rows(ppUp, kkUpm1 - 1);
-    //             nfdata_.FVup_.swap_rows(ppUp + 1, kkUpm1);
-    //         }
-    //         else
-    //         {
-    //             nfdata_.Ndown_.SwapRowsAndCols(ppDown, kkDownm1 - 1);
-    //             nfdata_.Ndown_.SwapRowsAndCols(ppDown + 1, kkDownm1);
-    //             nfdata_.FVdown_.swap_rows(ppDown, kkDownm1 - 1);
-    //             nfdata_.FVdown_.swap_rows(ppDown + 1, kkDownm1);
-    //         }
-    //     }
-    // }
-
-    // void AfterRemove(const size_t &pp)
-    // {
-
-    //     //Swap back to original position the vertex that had changed position, only pertains to nfdata_
-    //     const Vertex vertex = dataCT_->vertices_.at(pp);
-    //     // assert(false);
-    //     const auto x = vertex.vStart();
-    //     const auto y = vertex.vEnd();
-    //     // const size_t kkUp = nfdata_.Nup_.n_rows();
-    //     // const size_t kkDown = nfdata_.Ndown_.n_rows();
-    //     const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up);
-    //     const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down);
-
-    //     if (x.spin() != y.spin())
-    //     {
-
-    //         if (nfdata_.Nup_.n_rows())
-    //         {
-    //             std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
-    //             nfdata_.Nup_.SwapToEnd(ppUp);
-    //             nfdata_.Ndown_.SwapToEnd(ppDown);
-    //         }
-    //         // nfdata_.FVup_.resize(kkUp + 1);
-    //         // nfdata_.FVup_(kkUp) = nfdata_.FVup_(ppUp);
-    //         // nfdata_.FVup_.shed_row(ppUp);
-
-    //         // nfdata_.FVdown_.resize(kkDown + 1);
-    //         // nfdata_.FVdown_(kkDown) = nfdata_.FVdown_(ppDown);
-    //         // nfdata_.FVdown_.shed_row(ppDown);
-    //     }
-    //     else
-    //     {
-    //         assert(x.spin() == y.spin());
-    //         if (x.spin() == FermionSpin_t::Up)
-    //         {
-    //             if (nfdata_.Nup_.n_rows())
-    //             {
-    //                 nfdata_.Nup_.SwapToEnd(ppUp);
-    //                 nfdata_.Nup_.SwapToEnd(ppUp);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             if (nfdata_.Ndown_.n_rows())
-    //             {
-    //                 std::cout << "ppDown, nfdata_.Ndown_.n_rows() = " << ppDown << ", " << nfdata_.Ndown_.n_rows() << std::endl;
-
-    //                 nfdata_.Ndown_.SwapToEnd(ppDown);
-    //                 nfdata_.Ndown_.SwapToEnd(ppDown);
-    //             }
-    //         }
-    //     }
-    // }
-
     void CleanUpdate()
     {
-        // mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
-        AssertSizes();
-        // std::cout << "updsamespin = " << updsamespin_ << std::endl;
-        // for (size_t ii = 0; ii < dataCT_->vertices_.size(); ii++)
-        // {
-        //     std::cout << dataCT_->vertices_.at(ii).vStart().orbital() << ", " << dataCT_->vertices_.at(ii).vEnd().orbital() << std::endl;
-        // }
-
+        mpiUt::Print("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
+        std::cout << "updsamespin = " << updsamespin_ << std::endl;
+        const size_t kk = dataCT_->vertices_.size();
         const size_t kkup = dataCT_->vertices_.NUp();
         const size_t kkdown = dataCT_->vertices_.NDown();
 
-        if (kkup != 0)
+        if (kk == 0)
         {
-
-            for (size_t iUp = 0; iUp < kkup; iUp++)
-            {
-                for (size_t jUp = 0; jUp < kkup; jUp++)
-                {
-
-                    nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
-
-                    if (iUp == jUp)
-                    {
-                        nfdata_.Nup_(iUp, iUp) -= nfdata_.FVup_(iUp);
-                    }
-                }
-            }
-            nfdata_.Nup_.Inverse();
+            return;
         }
 
-        if (kkdown != 0)
+        AssertSizes();
+        for (size_t iUp = 0; iUp < kkup; iUp++)
         {
-            for (size_t iDown = 0; iDown < kkdown; iDown++)
+            for (size_t jUp = 0; jUp < kkup; jUp++)
             {
-                for (size_t jDown = 0; jDown < kkdown; jDown++)
+
+                nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp));
+                if (iUp == jUp)
                 {
-
-                    nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
-
-                    if (iDown == jDown)
-                    {
-                        nfdata_.Ndown_(iDown, iDown) -= nfdata_.FVdown_(iDown);
-                    }
+                    nfdata_.Nup_(iUp, iUp) -= FAux(FermionSpin_t::Up, dataCT_->vertices_.atUp(iUp).aux());
                 }
             }
-            nfdata_.Ndown_.Inverse();
         }
 
-        // std::cout << "End cleaning " << std::endl;
+        for (size_t iDown = 0; iDown < kkdown; iDown++)
+        {
+            for (size_t jDown = 0; jDown < kkdown; jDown++)
+            {
+
+                nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown));
+
+                if (iDown == jDown)
+                {
+                    nfdata_.Ndown_(iDown, iDown) -= FAux(FermionSpin_t::Down, dataCT_->vertices_.atDown(iDown).aux());
+                }
+            }
+        }
+
+        nfdata_.Nup_.Inverse();
+        nfdata_.Ndown_.Inverse();
+
+        std::cout << "End cleaning " << std::endl;
     }
 
     double GetGreenTau0(const VertexPart &x, const VertexPart &y) const
@@ -735,10 +590,10 @@ class ABC_MarkovChain
 
     void SaveMeas()
     {
+        std::cout << "updsamespin = " << updsamespin_ << std::endl;
 
         obs_.Save();
         // mpiUt::SaveConfig(dataCT_->vertices_);
-        std::cout << "updsamespin = " << updsamespin_ << std::endl;
         SaveUpd("upd.meas");
     }
 
