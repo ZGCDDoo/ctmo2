@@ -64,6 +64,12 @@ TEST(Vertices2DTest, InitVertices)
         vertices.AppendVertex(v1);
     }
 
+    std::cout << "verticesKeys = " << std::endl;
+    for (const auto &key : vertices.verticesKeysVec())
+    {
+        std::cout << key << std::endl;
+    }
+
     vertices.Print();
 
     //This is a Same spin vertex
@@ -94,6 +100,28 @@ TEST(Vertices2DTest, InitVertices)
     // ASSERT()
     vertices.RemoveVertex(0);
     vertices.Print();
+
+    const auto indices = vertices.GetIndicesSpins(4, FermionSpin_t::Down);
+    ASSERT_EQ(indices.at(0), 4);
+    ASSERT_EQ(indices.at(1), 5);
+
+    vertices.RemoveVertex(4);
+    vertices.Print();
+
+    std::cout << "verticesKeys = " << std::endl;
+    for (const auto &key : vertices.verticesKeysVec())
+    {
+        std::cout << key << std::endl;
+    }
+
+    const auto x7Up = vertices.atUp(6);
+    const auto y7Down = vertices.atDown(4);
+    const auto V7 = vertices.at(7);
+
+    assert(x7Up == V7.vStart());
+    assert(y7Down == V7.vEnd());
+    ASSERT_EQ(x7Up.spin(), FermionSpin_t::Up);
+    ASSERT_EQ(y7Down.spin(), FermionSpin_t::Down);
 }
 
 int main(int argc, char **argv)

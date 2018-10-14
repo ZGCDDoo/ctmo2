@@ -125,7 +125,7 @@ class Vertices
         verticesKeysVec_.push_back(key_);
         AppendVertexPart(vertex.vStart());
 
-        //VertexParts differ by one for their id
+        //VertexParts differ by one for their key
         key_++;
         AppendVertexPart(vertex.vEnd());
 
@@ -213,6 +213,7 @@ class Vertices
         data_.pop_back();
         std::iter_swap(verticesKeysVec_.begin() + pp, verticesKeysVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
         verticesKeysVec_.pop_back();
+
         AssertSizes();
     }
 
@@ -269,7 +270,6 @@ class Vertices
 
     void RemoveTwoVertexParts(const std::vector<size_t> &indicesToRemove, const FermionSpin_t &spin)
     {
-        AssertSizes();
 
         // assert(false);
         // std::cout << "In removeTwoVertexParts " << std::endl;
@@ -401,7 +401,6 @@ class Vertices
     size_t size() const { return data_.size(); };
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
-    std::vector<size_t> verticesKeysVec() const { return verticesKeysVec_; }; // Each vertex has a unqique key identifying it
 
     Vertex at(const size_t &i) const { return data_.at(i); };
 
@@ -440,7 +439,7 @@ class VertexBuilder
                                                       Nc_(Nc),
                                                       NOrb_(jj["NOrb"].get<size_t>()),
                                                       factXi_(
-                                                          NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
+                                                          NOrb_ * NOrb_ //* 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
                                                           ),
                                                       isOrbitalDiagonal_(jj["IsOrbitalDiagonal"].get<bool>())
 
@@ -455,16 +454,16 @@ class VertexBuilder
 
         Orbital_t o1 = urng() * NOrb_;
         Orbital_t o2 = urng() * NOrb_;
-        FermionSpin_t spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-        FermionSpin_t spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        FermionSpin_t spin1 = FermionSpin_t::Up;   //(urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        FermionSpin_t spin2 = FermionSpin_t::Down; //(urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
 
-        while ((o1 == o2) && (spin1 == spin2))
-        {
-            o1 = urng() * NOrb_;
-            o2 = urng() * NOrb_;
-            spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-            spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-        }
+        // while ((o1 == o2) && (spin1 == spin2))
+        // {
+        //     o1 = urng() * NOrb_;
+        //     o2 = urng() * NOrb_;
+        //     spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        //     spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+        // }
 
         VertexType vertextype = VertexType::Invalid;
 
@@ -491,6 +490,7 @@ class VertexBuilder
             vertextype = VertexType::HubbardInterSpin;
             const VertexPart vStart(tau, site, spin1, o1, aux);
             const VertexPart vEnd(tau, site, spin2, o2, aux);
+            throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
             return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else
