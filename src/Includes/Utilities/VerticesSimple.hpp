@@ -40,6 +40,11 @@ class VertexPart
     SuperSite_t superSite() const { return superSite_; };
     AuxSpin_t aux() const { return aux_; };
 
+    bool operator==(const VertexPart &x) const
+    {
+        return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) && (x.superSite() == superSite_) && (x.aux() == aux_));
+    }
+
   private:
     Tau_t tau_;
     Site_t site_;
@@ -131,8 +136,8 @@ class Vertices
 
     void AssertSizes()
     {
-        std::cout << "data_.size(), vPartUpVec_.size(), vPartDownVec_.size() = "
-                  << data_.size() << ", " << vPartUpVec_.size() << ", " << vPartDownVec_.size() << std::endl;
+        // std::cout << "data_.size(), vPartUpVec_.size(), vPartDownVec_.size() = "
+        //   << data_.size() << ", " << vPartUpVec_.size() << ", " << vPartDownVec_.size() << std::endl;
         assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
         assert(indexPartUpVec_.size() == vPartUpVec_.size());
         assert(indexPartDownVec_.size() == vPartDownVec_.size());
@@ -268,14 +273,14 @@ class Vertices
         AssertSizes();
 
         // assert(false);
-        std::cout << "In removeTwoVertexParts " << std::endl;
-        std::cout << "indicesToRemove = " << indicesToRemove.at(0) << ", " << indicesToRemove.at(1) << std::endl;
+        // std::cout << "In removeTwoVertexParts " << std::endl;
+        // std::cout << "indicesToRemove = " << indicesToRemove.at(0) << ", " << indicesToRemove.at(1) << std::endl;
         assert(indicesToRemove.size() == 2);
         const size_t kkUpm1 = vPartUpVec_.size() - 1;
         const size_t kkDownm1 = vPartDownVec_.size() - 1;
 
         // std::cout << "before remove " << std::endl;
-        Print();
+        //Print();
 
         if (spin == FermionSpin_t::Up)
         {
@@ -309,7 +314,7 @@ class Vertices
         // std::cout << "After remove " << std::endl;
 
         // Print();
-        std::cout << "End removeTwoVertexParts " << std::endl;
+        // std::cout << "End removeTwoVertexParts " << std::endl;
     }
 
     /*
@@ -320,7 +325,7 @@ class Vertices
         const size_t vertexKey = verticesKeysVec_.at(pp);
         const VertexPart x = data_.at(pp).vStart();
         const VertexPart y = data_.at(pp).vEnd();
-        Print();
+        //Print();
         std::vector<size_t> indices;
         if (spin == FermionSpin_t::Up)
         {
@@ -402,6 +407,17 @@ class Vertices
 
     VertexPart atUp(const size_t &i) { return vPartUpVec_.at(i); };
     VertexPart atDown(const size_t &i) { return vPartDownVec_.at(i); };
+
+    void Clear()
+    {
+        data_.clear();
+        vPartUpVec_.clear();
+        vPartDownVec_.clear();
+        indexPartUpVec_.clear();
+        indexPartDownVec_.clear();
+        verticesKeysVec_.clear();
+        key_ = 0;
+    }
 
   private:
     std::vector<Vertex> data_;

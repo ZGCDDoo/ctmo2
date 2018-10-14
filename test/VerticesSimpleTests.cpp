@@ -43,14 +43,57 @@ TEST(Vertices2DTest, InitVertices)
     fin >> jj;
     fin.close();
 
-    Utilities::EngineTypeMt19937_t rng_(jj["SEED"].get<size_t>());
+    Utilities::EngineTypeMt19937_t rng_(1 + jj["SEED"].get<size_t>());
     Utilities::UniformRngMt19937_t urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0));
 
     Diagrammatic::Vertices vertices;
     Diagrammatic::VertexBuilder vertexBuilder(jj, Nc);
 
-    const auto v1 = vertexBuilder.BuildVertex(urng_);
-    vertices.AppendVertex(v1);
+    //Try Inserting a shit load of vertices
+    for (size_t ii = 0; ii < 1000000; ii++)
+    {
+        const auto v1 = vertexBuilder.BuildVertex(urng_);
+        vertices.AppendVertex(v1);
+    }
+
+    vertices.Clear();
+
+    for (size_t ii = 0; ii < 10; ii++)
+    {
+        const auto v1 = vertexBuilder.BuildVertex(urng_);
+        vertices.AppendVertex(v1);
+    }
+
+    vertices.Print();
+
+    //This is a Same spin vertex
+    const auto x5Up = vertices.atUp(4);
+    const auto y5Down = vertices.atDown(6);
+    const auto V5 = vertices.at(5);
+
+    ASSERT_DOUBLE_EQ(x5Up.tau(), y5Down.tau());
+    ASSERT_EQ(x5Up.orbital(), y5Down.orbital());
+    ASSERT_EQ(x5Up.site(), y5Down.site());
+
+    assert(x5Up == V5.vStart());
+    assert(y5Down == V5.vEnd());
+
+    ASSERT_EQ(x5Up.spin(), FermionSpin_t::Up);
+    ASSERT_EQ(y5Down.spin(), FermionSpin_t::Down);
+
+    //This is a Diff spin vertex
+    const auto x4Down = vertices.atDown(4);
+    const auto y4Down = vertices.atDown(5);
+    const auto V4 = vertices.at(4);
+
+    assert(x4Down == V4.vStart());
+    assert(y4Down == V4.vEnd());
+    ASSERT_EQ(x4Down.spin(), FermionSpin_t::Down);
+    ASSERT_EQ(y4Down.spin(), FermionSpin_t::Down);
+
+    // ASSERT()
+    vertices.RemoveVertex(0);
+    vertices.Print();
 }
 
 int main(int argc, char **argv)
