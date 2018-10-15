@@ -451,6 +451,20 @@ class Vertices
 
     // }
 
+    void SaveConfig(const std::string &fname)
+    {
+        std::ofstream fout(fname);
+        for (size_t ii = 0; ii < size(); ii++)
+        {
+            const auto x = data_.at(ii).vStart();
+            const auto y = data_.at(ii).vEnd();
+            assert(x.tau() == y.tau());
+            assert(x.aux() == y.aux());
+
+            fout << static_cast<int>(x.aux()) << " " << x.site() << " " << x.tau() << " " << static_cast<int>(x.spin()) << " " << static_cast<int>(y.spin()) << " " << x.orbital() << " " << y.orbital() << " " << std::endl;
+        }
+    }
+
     //Getters
     size_t size() const { return data_.size(); };
     size_t NUp() const { return vPartUpVec_.size(); };

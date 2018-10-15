@@ -758,9 +758,12 @@ class ABC_MarkovChain
     {
 
         obs_.Save();
-        // mpiUt::SaveConfig(dataCT_->vertices_);
         std::cout << "updsamespin = " << updsamespin_ << std::endl;
         SaveUpd("upd.meas");
+        if (mpiUt::Rank() == mpiUt::master)
+        {
+            dataCT_->vertices_.SaveConfig("Config.dat");
+        }
     }
 
     void SaveTherm()
