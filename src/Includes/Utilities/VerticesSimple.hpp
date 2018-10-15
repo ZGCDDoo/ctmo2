@@ -199,6 +199,10 @@ class Vertices
                 assert(y == vPartUpVec_.at(xIndex.at(1)));
                 assert(xIndex == yIndex);
             }
+            else
+            {
+                assert(y == vPartDownVec_.at(yIndex.at(0)));
+            }
         }
         else
         {
@@ -207,6 +211,10 @@ class Vertices
             {
                 assert(y == vPartDownVec_.at(yIndex.at(1)));
                 assert(xIndex == yIndex);
+            }
+            else
+            {
+                assert(y == vPartUpVec_.at(yIndex.at(0)));
             }
         }
 

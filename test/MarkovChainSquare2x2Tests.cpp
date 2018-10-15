@@ -46,7 +46,7 @@ TEST(MarkovChainSquare2x2Tests, DoStep)
     }
 
     mc.CleanUpdate();
-    for (size_t ii = 0; ii < 10000; ii++)
+    for (size_t ii = 0; ii < 1000; ii++)
     {
         mc.DoStep();
     }
@@ -65,6 +65,13 @@ TEST(MarkovChainSquare2x2Tests, DoStep)
         for (size_t j = 0; j < tmpUp.n_rows(); j++)
         {
             ASSERT_NEAR(tmpUp(i, j), mc.Nup()(i, j), DELTA);
+        }
+    }
+
+    for (size_t i = 0; i < tmpDown.n_rows(); i++)
+    {
+        for (size_t j = 0; j < tmpDown.n_rows(); j++)
+        {
             ASSERT_NEAR(tmpDown(i, j), mc.Ndown()(i, j), DELTA);
         }
     }
