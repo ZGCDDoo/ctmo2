@@ -140,6 +140,9 @@ class ABC_MarkovChain
         assert(nfdata_.Nup_.n_rows() + nfdata_.Ndown_.n_rows() == 2 * kk);
         assert(2 * dataCT_->vertices_.size() == dataCT_->vertices_.NUp() + dataCT_->vertices_.NDown());
         // assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
+        // std::cout << "dataCT_->vertices_.NUp(), nfdata_.FVup_.n_elem = " << dataCT_->vertices_.NUp() << ", " << nfdata_.FVup_.n_elem << std::endl;
+        // std::cout << "dataCT_->vertices_.NDown(), nfdata_.FVdown_.n_elem = " << dataCT_->vertices_.NDown() << ", " << nfdata_.FVdown_.n_elem << std::endl;
+
         assert(dataCT_->vertices_.NUp() == nfdata_.FVup_.n_elem);
         assert(dataCT_->vertices_.NUp() == nfdata_.Nup_.n_rows());
 
@@ -498,6 +501,7 @@ class ABC_MarkovChain
         // std::cout << "Start RemoveVertexSameSpin " << std::endl;
         // return;
         AssertSizes();
+        // std::cout << "Here 1 " << std::endl;
         assert(Nspin.n_rows() >= 2);
         assert(FVspin.n_elem >= 2);
 
@@ -519,6 +523,7 @@ class ABC_MarkovChain
 
         const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)}, {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
+        // std::cout << "Here 2 " << std::endl;
 
         if (urng_() < std::abs(ratioAcc))
         {
@@ -529,21 +534,37 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
-            Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+            if (pp1Spin == kkSpin - 1)
+            {
+                Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+                Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+
+                FVspin.swap_rows(pp1Spin, kkSpin - 2);
+                FVspin.swap_rows(pp2Spin, kkSpin - 1);
+                // std::cout << "FVspin.size() = " << FVspin.n_elem << std::endl;
+                FVspin.resize(kkSpin - 2);
+                // std::cout << "FVspin.size() = " << FVspin.n_elem << std::endl;
+            }
+            else
+            {
+                Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+                Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+
+                FVspin.swap_rows(pp2Spin, kkSpin - 1);
+                FVspin.swap_rows(pp1Spin, kkSpin - 2);
+                FVspin.resize(kkSpin - 2);
+            }
 
             LinAlg::BlockRankTwoDowngrade(Nspin);
 
-            // assert(kkSpin - 2 == ppSpin);
+            assert(Nspin.n_rows() == FVspin.n_elem);
             // std::cout << "kkspin - 1 , ppspin = " << kkSpin - 1 << ", " << ppSpin << std::endl;
-            FVspin.swap_rows(pp2Spin, kkSpin - 1);
-            FVspin.swap_rows(pp1Spin, kkSpin - 2);
-            FVspin.resize(kkSpin - 2);
 
             // AfterRemove(pp);
 
             dataCT_->vertices_.RemoveVertex(pp);
             // std::cout << "RemoveVertexSameSpin accepted " << std::endl;
+            // std::cout << "Here 3 " << std::endl;
         }
 
         AssertSizes();

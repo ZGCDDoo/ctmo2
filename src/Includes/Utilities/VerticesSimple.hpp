@@ -191,6 +191,25 @@ class Vertices
         const std::vector<size_t> yIndex = GetIndicesSpins(pp, y.spin());
 
         // std::cout << "xIndex, yIndex = " << xIndex.at(0) << ", " << yIndex.at(0) << std::endl;
+        if (x.spin() == FermionSpin_t::Up)
+        {
+            assert(x == vPartUpVec_.at(xIndex.at(0)));
+            if (y.spin() == FermionSpin_t::Up)
+            {
+                assert(y == vPartUpVec_.at(xIndex.at(1)));
+                assert(xIndex == yIndex);
+            }
+        }
+        else
+        {
+            assert(x == vPartDownVec_.at(xIndex.at(0)));
+            if (y.spin() == FermionSpin_t::Down)
+            {
+                assert(y == vPartDownVec_.at(yIndex.at(1)));
+                assert(xIndex == yIndex);
+            }
+        }
+
         if (x.spin() != y.spin())
         {
             assert(xIndex.size() == 1);
@@ -283,14 +302,25 @@ class Vertices
 
         if (spin == FermionSpin_t::Up)
         {
-            // std::cout << "indexPartUpVec_.at(indicesToRemove.at(0)), indexPartUpVec_.at(indicesToRemove.at(1)) = "
-            //           << indexPartUpVec_.at(indicesToRemove.at(0)) << ", " << indexPartUpVec_.at(indicesToRemove.at(1)) << std::endl;
 
             assert(indexPartUpVec_.at(indicesToRemove.at(0)) + 1 == indexPartUpVec_.at(indicesToRemove.at(1)));
-            std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
-            std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
-            std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
-            std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
+
+            if (indicesToRemove.at(0) == kkUpm1)
+            {
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
+
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
+            }
+            else
+            {
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
+
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
+            }
 
             vPartUpVec_.pop_back();
             vPartUpVec_.pop_back();
@@ -300,16 +330,32 @@ class Vertices
         else
         {
             assert(indexPartDownVec_.at(indicesToRemove.at(0)) + 1 == indexPartDownVec_.at(indicesToRemove.at(1)));
-            std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
-            std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
-            std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
-            std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
+
+            if (indicesToRemove.at(0) == kkDownm1)
+            {
+
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
+
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
+            }
+            else
+            {
+
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
+
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
+            }
 
             vPartDownVec_.pop_back();
             vPartDownVec_.pop_back();
             indexPartDownVec_.pop_back();
             indexPartDownVec_.pop_back();
         }
+
         // std::cout << "After remove " << std::endl;
 
         // Print();

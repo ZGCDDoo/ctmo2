@@ -425,8 +425,17 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
-            Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+            if (pp1Spin == kkSpin - 1)
+            {
+                Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+                Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+            }
+            else
+            {
+                Nspin.SwapRowsAndCols(pp2Spin, kkSpin - 1);
+                Nspin.SwapRowsAndCols(pp1Spin, kkSpin - 2);
+            }
+
             LinAlg::BlockRankTwoDowngrade(Nspin);
             // AfterRemove(pp);
             dataCT_->vertices_.RemoveVertex(pp);
