@@ -44,7 +44,7 @@ TEST(MonteCarloTest, DoStep)
 
     std::cout << "After Remove " << std::endl;
     size_t ii = 0;
-    for (ii = 0; ii < 1000; ii++)
+    for (ii = 0; ii < 15000; ii++)
     {
         mc.DoStep();
     }

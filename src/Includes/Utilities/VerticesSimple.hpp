@@ -288,6 +288,7 @@ class Vertices
     void RemoveTwoVertexParts(const std::vector<size_t> &indicesToRemove, const FermionSpin_t &spin)
     {
         AssertSizes();
+        // assert(false);
 
         // assert(false);
         // std::cout << "In removeTwoVertexParts " << std::endl;
@@ -306,11 +307,25 @@ class Vertices
 
             if (indicesToRemove.at(0) == kkUpm1)
             {
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
+
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1 - 1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1 - 1);
+            }
+            else if (indicesToRemove.at(0) == kkUpm1 - 1)
+            {
 
                 std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
                 std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
+            }
+            else if (indicesToRemove.at(1) == kkUpm1)
+            {
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
+            }
+            else if (indicesToRemove.at(1) == kkUpm1 - 1)
+            {
+                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1);
+                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1);
             }
             else
             {
@@ -333,15 +348,27 @@ class Vertices
             if (indicesToRemove.at(0) == kkDownm1)
             {
 
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1 - 1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1 - 1);
+            }
+            else if (indicesToRemove.at(0) == kkDownm1 - 1)
+            {
 
                 std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
                 std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
             }
+            else if (indicesToRemove.at(1) == kkDownm1)
+            {
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
+            }
+            else if (indicesToRemove.at(1) == kkDownm1 - 1)
+            {
+                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1);
+                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1);
+            }
             else
             {
-
                 std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
                 std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
 
@@ -364,7 +391,8 @@ class Vertices
     /*
     Get the index for vPartUpVec and vPartDownVec corresponding to a given vertex Index (will be the same for only different spin interactions) 
     */
-    std::vector<size_t> GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
+    std::vector<size_t>
+    GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
     {
         const size_t vertexKey = verticesKeysVec_.at(pp);
         const VertexPart x = data_.at(pp).vStart();
