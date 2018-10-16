@@ -33,7 +33,6 @@ template <typename TIOModel, typename TModel>
 class GreenTauMesure;
 // end of Obs befriend
 
-using Vertex = Utilities::Vertex;
 using namespace LinAlg;
 
 template <typename TIOModel, typename TModel>

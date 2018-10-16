@@ -156,18 +156,6 @@ TEST(UtilitiesTest, DGEMM)
     }
 }
 
-TEST(UtilitiesTest, Vertex)
-{
-
-    Utilities::Vertex vertex(1.1, 2, AuxSpin_t::Up);
-    ASSERT_DOUBLE_EQ(vertex.tau(), 1.1);
-    ASSERT_EQ(vertex.site(), 2);
-    ASSERT_EQ(vertex.aux(), AuxSpin_t::Up);
-
-    vertex.FlipAux();
-    ASSERT_EQ(vertex.aux(), AuxSpin_t::Down);
-}
-
 TEST(UtilitiesTest, TriangularSolve)
 {
 

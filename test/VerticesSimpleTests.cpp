@@ -155,6 +155,37 @@ TEST(Vertices2DTest, InitVertices2)
     vertices.Clear();
 }
 
+TEST(Vertices2DTest, TestBuildVertex)
+{
+    std::ifstream fin(FNAME);
+    Json jj;
+    fin >> jj;
+    fin.close();
+
+    Utilities::EngineTypeMt19937_t rng_(1 + jj["SEED"].get<size_t>());
+    Utilities::UniformRngMt19937_t urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0));
+
+    Diagrammatic::Vertices vertices;
+    Diagrammatic::VertexBuilder vertexBuilder(jj, Nc);
+
+    //Try Inserting a shit load of vertices
+    for (size_t ii = 0; ii < 200; ii++)
+    {
+        const auto v1 = vertexBuilder.BuildVertex(urng_);
+        vertices.AppendVertex(v1);
+    }
+
+    for (size_t ii = 0; ii < 9000000; ii++)
+    {
+        const auto v1 = vertexBuilder.BuildVertex(urng_);
+        vertices.AppendVertex(v1);
+        vertices.RemoveVertex(urng_() * vertices.size());
+        // std::cout << "ii = " << ii << std::endl;
+    }
+
+    vertices.Clear();
+}
+
 int main(int argc, char **argv)
 {
     TestTools::RemoveFilesForTests();

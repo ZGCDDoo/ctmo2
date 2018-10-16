@@ -68,16 +68,7 @@ class Vertex
     {
     }
 
-    const Vertex &operator=(const Vertex &vertex)
-    {
-        if (this == &vertex)
-            return *this; //évite les boucles infinies
-        vStart_ = vertex.vStart_;
-        vEnd_ = vertex.vEnd_;
-        aux_ = vertex.aux_;
-
-        return *this;
-    }
+    Vertex &operator=(const Vertex &vertex) = default;
 
     // Getters
     AuxSpin_t aux() const { return aux_; };
@@ -536,7 +527,7 @@ class VertexBuilder
 
         VertexType vertextype = VertexType::Invalid;
 
-        if ((o1 == o2) && spin1 != spin2)
+        if ((o1 == o2) && (spin1 != spin2))
         {
             vertextype = VertexType::HubbardIntra;
             const VertexPart vStart(tau, site, FermionSpin_t::Up, o1, aux);
