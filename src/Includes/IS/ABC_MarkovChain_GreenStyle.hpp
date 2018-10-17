@@ -69,7 +69,7 @@ class ABC_MarkovChain
         updStats_["Flips"] = zeroPair;
         updatesProposed_ = 0;
 
-        mpiUt::Print("MarkovChain Created \n");
+        mpiUt::Print("MarkovChain GreenStyle Created \n");
     }
 
     virtual ~ABC_MarkovChain() = 0;
@@ -296,6 +296,8 @@ class ABC_MarkovChain
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
+        assert(std::abs(x.tau() - y.tau()) < 1e-10);
+        assert(x.orbital() != y.orbital());
 
         const double faux = FAux(x.spin(), vertex.aux());
         const double s00 = -faux + GetGreenTau0(x, x);
@@ -356,7 +358,7 @@ class ABC_MarkovChain
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
                 updsamespin_++;
-                // std::cout << "InsertVertexSameSpin accepted " << std::endl;
+                std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
         else
@@ -507,6 +509,7 @@ class ABC_MarkovChain
             LinAlg::BlockRankTwoDowngrade(Nspin);
 
             assert(Nspin.n_rows() == FVspin.n_elem);
+            std::cout << "remove same accepted " << std::endl;
         }
 
         AssertSizes();

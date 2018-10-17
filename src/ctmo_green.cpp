@@ -1,3 +1,4 @@
+#define GREEN_STYLE
 
 #include "Includes/IS/MonteCarloBuilder.hpp"
 #include "Includes/Utilities/SelfConsistencyBuilder.hpp"
