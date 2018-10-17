@@ -203,7 +203,7 @@ if (${TEST})
     ObservablesTests
     VerticesTests
     UTensorSimpleTests
-    VerticesSimpleTests
+    #VerticesSimpleTests
     )
 
     set(TESTS_DIR ${PROJECT_SOURCE_DIR}/test)

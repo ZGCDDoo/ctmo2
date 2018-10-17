@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Utilities.hpp"
+#include "../Utilities/LinAlg.hpp"
+
 #include "../Models/UTensorSimple.hpp"
 #include <boost/math/special_functions/binomial.hpp>
 
 namespace Diagrammatic
 {
+typedef LinAlg::Matrix_t Matrix_t;
 
 enum class VertexType
 {
@@ -14,6 +17,17 @@ enum class VertexType
     HubbardInterSpin, // Hubbard interorbital same spin (U'-J_H)
     //Phonon,
     Invalid
+};
+
+struct NFData
+{
+
+    NFData() : FVup_(), FVdown_(), Nup_(), Ndown_(), dummy_(){};
+    SiteVector_t FVup_;
+    SiteVector_t FVdown_;
+    Matrix_t Nup_;
+    Matrix_t Ndown_;
+    Matrix_t dummy_;
 };
 
 const size_t N_VERTEX_TYPES = 3; //for now, we dont do Phonon
@@ -116,8 +130,13 @@ class Vertices
         verticesKeysVec_.push_back(key_);
         AppendVertexPart(vertex.vStart());
 
-        //VertexParts differ by one for their id
-        key_++;
+        //VertexParts differ by one for their id if spins are the same
+        if (vertex.vStart().spin() == vertex.vEnd().spin())
+        {
+            key_++;
+            // assert(false);
+        }
+
         AppendVertexPart(vertex.vEnd());
 
         //Update the id number once all the vertices parts have been inserted
@@ -172,247 +191,116 @@ class Vertices
         }
     }
 
-    void RemoveVertex(const size_t &pp)
+    void PrepareToRemove(NFData &nfdata, const size_t &pp)
     {
-        AssertSizes();
-
+        // std::cout << "Start PrepareToRemove " << std::endl;
+        const size_t key = verticesKeysVec_.at(pp);
         const VertexPart x = data_.at(pp).vStart();
         const VertexPart y = data_.at(pp).vEnd();
-        const std::vector<size_t> xIndex = GetIndicesSpins(pp, x.spin());
-        const std::vector<size_t> yIndex = GetIndicesSpins(pp, y.spin());
+        const size_t kkUpm1 = NUp() - 1;
+        const size_t kkDownm1 = NDown() - 1;
 
-        // std::cout << "xIndex, yIndex = " << xIndex.at(0) << ", " << yIndex.at(0) << std::endl;
-        if (x.spin() == FermionSpin_t::Up)
-        {
-            assert(x == vPartUpVec_.at(xIndex.at(0)));
-            if (y.spin() == FermionSpin_t::Up)
-            {
-                assert(y == vPartUpVec_.at(xIndex.at(1)));
-                assert(xIndex == yIndex);
-            }
-            else
-            {
-                assert(y == vPartDownVec_.at(yIndex.at(0)));
-            }
-        }
-        else
-        {
-            assert(x == vPartDownVec_.at(xIndex.at(0)));
-            if (y.spin() == FermionSpin_t::Down)
-            {
-                assert(y == vPartDownVec_.at(yIndex.at(1)));
-                assert(xIndex == yIndex);
-            }
-            else
-            {
-                assert(y == vPartUpVec_.at(yIndex.at(0)));
-            }
-        }
+        assert(nfdata.Nup_.n_rows() == NUp());
+        assert(nfdata.FVup_.n_rows == NUp());
+
+        assert(nfdata.Ndown_.n_rows() == NDown());
+        assert(nfdata.FVdown_.n_rows == NDown());
 
         if (x.spin() != y.spin())
         {
-            assert(xIndex.size() == 1);
-            assert(yIndex.size() == 1);
+            assert(x.spin() == FermionSpin_t::Up);
+            assert(y.spin() == FermionSpin_t::Down);
 
-            RemoveVertexPart(xIndex.at(0), x.spin());
-            RemoveVertexPart(yIndex.at(0), y.spin());
+            const size_t ppUp = GetkeyIndex(key, x.spin());
+            std::iter_swap(vPartUpVec_.begin() + ppUp, vPartUpVec_.begin() + kkUpm1);
+            std::iter_swap(indexPartUpVec_.begin() + ppUp, indexPartUpVec_.begin() + kkUpm1);
+            vPartUpVec_.pop_back();
+            indexPartUpVec_.pop_back();
+
+            nfdata.Nup_.SwapRowsAndCols(ppUp, kkUpm1);
+            nfdata.FVup_.swap_rows(ppUp, kkUpm1);
+
+            const size_t ppDown = GetkeyIndex(key, y.spin());
+            std::iter_swap(vPartDownVec_.begin() + ppDown, vPartDownVec_.begin() + kkDownm1);
+            std::iter_swap(indexPartDownVec_.begin() + ppDown, indexPartDownVec_.begin() + kkDownm1);
+            vPartDownVec_.pop_back();
+            indexPartDownVec_.pop_back();
+
+            nfdata.Ndown_.SwapRowsAndCols(ppDown, kkDownm1);
+            nfdata.FVdown_.swap_rows(ppDown, kkDownm1);
+        }
+        else if (x.spin() == FermionSpin_t::Up)
+        {
+            assert(y.spin() == FermionSpin_t::Up);
+
+            //swap the last vertex part to the end
+            const size_t ppUpp1 = GetkeyIndex(key + 1, x.spin());
+            std::iter_swap(vPartUpVec_.begin() + ppUpp1, vPartUpVec_.begin() + kkUpm1);
+            std::iter_swap(indexPartUpVec_.begin() + ppUpp1, indexPartUpVec_.begin() + kkUpm1);
+
+            nfdata.Nup_.SwapRowsAndCols(ppUpp1, kkUpm1);
+            nfdata.FVup_.swap_rows(ppUpp1, kkUpm1);
+
+            //swap the before last vertex part to the last before end
+            const size_t ppUp = GetkeyIndex(key, x.spin());
+            std::iter_swap(vPartUpVec_.begin() + ppUp, vPartUpVec_.begin() + kkUpm1 - 1);
+            std::iter_swap(indexPartUpVec_.begin() + ppUp, indexPartUpVec_.begin() + kkUpm1 - 1);
+
+            nfdata.Nup_.SwapRowsAndCols(ppUp, kkUpm1 - 1);
+            nfdata.FVup_.swap_rows(ppUp, kkUpm1 - 1);
+
+            vPartUpVec_.pop_back();
+            indexPartUpVec_.pop_back();
+            vPartUpVec_.pop_back();
+            indexPartUpVec_.pop_back();
         }
         else
         {
-            assert(xIndex == yIndex);
-            assert(xIndex.size() == 2);
-            RemoveTwoVertexParts(xIndex, x.spin());
+            assert(x.spin() == FermionSpin_t::Down);
+            assert(y.spin() == FermionSpin_t::Down);
+
+            const size_t ppDownp1 = GetkeyIndex(key + 1, y.spin());
+            std::iter_swap(vPartDownVec_.begin() + ppDownp1, vPartDownVec_.begin() + kkDownm1);
+            std::iter_swap(indexPartDownVec_.begin() + ppDownp1, indexPartDownVec_.begin() + kkDownm1);
+
+            nfdata.Ndown_.SwapRowsAndCols(ppDownp1, kkDownm1);
+            nfdata.FVdown_.swap_rows(ppDownp1, kkDownm1);
+
+            const size_t ppDown = GetkeyIndex(key, y.spin());
+            std::iter_swap(vPartDownVec_.begin() + ppDown, vPartDownVec_.begin() + kkDownm1 - 1);
+            std::iter_swap(indexPartDownVec_.begin() + ppDown, indexPartDownVec_.begin() + kkDownm1 - 1);
+
+            nfdata.Ndown_.SwapRowsAndCols(ppDown, kkDownm1 - 1);
+            nfdata.FVdown_.swap_rows(ppDown, kkDownm1 - 1);
+
+            vPartDownVec_.pop_back();
+            indexPartDownVec_.pop_back();
+            vPartDownVec_.pop_back();
+            indexPartDownVec_.pop_back();
         }
 
-        // CorrectIndices(pp);
-
-        const size_t kkm1 = data_.size() - 1;
-        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-        data_.pop_back();
+        const size_t kkm1 = size() - 1;
+        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1);                       //swap the last vertex and the vertex pp in vertices.
         std::iter_swap(verticesKeysVec_.begin() + pp, verticesKeysVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+        data_.pop_back();
         verticesKeysVec_.pop_back();
+
         AssertSizes();
+
+        // std::cout << "After PrepareToRemove " << std::endl;
+
+        //Now, we are ready to pop-back
     }
 
-    // void CorrectIndices(const size_t &pp)
-    // {
-    //     std::cout << "In Correct INdices " << std::endl;
-    //     std::cout << "pp = " << pp << std::endl;
-    //     Print();
-    //     for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
-    //     {
-    //         assert(indexPartUpVec_.at(ii) != pp); //this index should have been removed previously
-
-    //         if (indexPartUpVec_.at(ii) > pp)
-    //         {
-    //             assert(indexPartUpVec_.at(ii)); //should not be zero !
-    //             indexPartUpVec_.at(ii) = indexPartUpVec_.at(ii) - 1;
-    //         }
-    //     }
-
-    //     for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
-    //     {
-    //         assert(indexPartDownVec_.at(ii) != pp); //this index should have been removed previously
-
-    //         if (indexPartDownVec_.at(ii) > pp)
-    //         {
-    //             assert(indexPartDownVec_.at(ii)); //should not be zero !
-    //             indexPartDownVec_.at(ii) = indexPartDownVec_.at(ii) - 1;
-    //         }
-    //     }
-    //     std::cout << "End Correct INdices " << std::endl;
-    // }
-
-    void RemoveVertexPart(const size_t &ppSpin, const FermionSpin_t &spin)
+    size_t GetkeyIndex(const size_t &key, const FermionSpin_t &spin) const
     {
-
-        const size_t kkUpm1 = vPartUpVec_.size() - 1;
-        const size_t kkDownm1 = vPartDownVec_.size() - 1;
-
-        if (spin == FermionSpin_t::Up)
-        {
-            std::iter_swap(vPartUpVec_.begin() + ppSpin, vPartUpVec_.begin() + kkUpm1);
-            std::iter_swap(indexPartUpVec_.begin() + ppSpin, indexPartUpVec_.begin() + kkUpm1);
-            vPartUpVec_.pop_back();
-            indexPartUpVec_.pop_back();
-        }
-        else
-        {
-            std::iter_swap(vPartDownVec_.begin() + ppSpin, vPartDownVec_.begin() + kkDownm1);
-            std::iter_swap(indexPartDownVec_.begin() + ppSpin, indexPartDownVec_.begin() + kkDownm1);
-            vPartDownVec_.pop_back();
-            indexPartDownVec_.pop_back();
-        }
-    }
-
-    void RemoveTwoVertexParts(const std::vector<size_t> &indicesToRemove, const FermionSpin_t &spin)
-    {
-        AssertSizes();
-        // assert(false);
-
-        // assert(false);
-        // std::cout << "In removeTwoVertexParts " << std::endl;
-        // std::cout << "indicesToRemove = " << indicesToRemove.at(0) << ", " << indicesToRemove.at(1) << std::endl;
-        assert(indicesToRemove.size() == 2);
-        const size_t kkUpm1 = vPartUpVec_.size() - 1;
-        const size_t kkDownm1 = vPartDownVec_.size() - 1;
-
-        // std::cout << "before remove " << std::endl;
-        //Print();
-
-        if (spin == FermionSpin_t::Up)
-        {
-
-            assert(indexPartUpVec_.at(indicesToRemove.at(0)) + 1 == indexPartUpVec_.at(indicesToRemove.at(1)));
-
-            if (indicesToRemove.at(0) == kkUpm1)
-            {
-
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1 - 1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1 - 1);
-            }
-            else if (indicesToRemove.at(0) == kkUpm1 - 1)
-            {
-
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
-            }
-            else if (indicesToRemove.at(1) == kkUpm1)
-            {
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
-            }
-            else if (indicesToRemove.at(1) == kkUpm1 - 1)
-            {
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1);
-            }
-            else
-            {
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(1), vPartUpVec_.begin() + kkUpm1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(1), indexPartUpVec_.begin() + kkUpm1);
-
-                std::iter_swap(vPartUpVec_.begin() + indicesToRemove.at(0), vPartUpVec_.begin() + kkUpm1 - 1);
-                std::iter_swap(indexPartUpVec_.begin() + indicesToRemove.at(0), indexPartUpVec_.begin() + kkUpm1 - 1);
-            }
-
-            vPartUpVec_.pop_back();
-            vPartUpVec_.pop_back();
-            indexPartUpVec_.pop_back();
-            indexPartUpVec_.pop_back();
-        }
-        else
-        {
-            assert(indexPartDownVec_.at(indicesToRemove.at(0)) + 1 == indexPartDownVec_.at(indicesToRemove.at(1)));
-
-            if (indicesToRemove.at(0) == kkDownm1)
-            {
-
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1 - 1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1 - 1);
-            }
-            else if (indicesToRemove.at(0) == kkDownm1 - 1)
-            {
-
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
-            }
-            else if (indicesToRemove.at(1) == kkDownm1)
-            {
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
-            }
-            else if (indicesToRemove.at(1) == kkDownm1 - 1)
-            {
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1);
-            }
-            else
-            {
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(1), vPartDownVec_.begin() + kkDownm1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(1), indexPartDownVec_.begin() + kkDownm1);
-
-                std::iter_swap(vPartDownVec_.begin() + indicesToRemove.at(0), vPartDownVec_.begin() + kkDownm1 - 1);
-                std::iter_swap(indexPartDownVec_.begin() + indicesToRemove.at(0), indexPartDownVec_.begin() + kkDownm1 - 1);
-            }
-
-            vPartDownVec_.pop_back();
-            vPartDownVec_.pop_back();
-            indexPartDownVec_.pop_back();
-            indexPartDownVec_.pop_back();
-        }
-
-        // std::cout << "After remove " << std::endl;
-
-        // Print();
-        // std::cout << "End removeTwoVertexParts " << std::endl;
-    }
-
-    /*
-    Get the index for vPartUpVec and vPartDownVec corresponding to a given vertex Index (will be the same for only different spin interactions) 
-    */
-    std::vector<size_t>
-    GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
-    {
-        const size_t vertexKey = verticesKeysVec_.at(pp);
-        const VertexPart x = data_.at(pp).vStart();
-        const VertexPart y = data_.at(pp).vEnd();
-        //Print();
         std::vector<size_t> indices;
         if (spin == FermionSpin_t::Up)
         {
             //Find in order the vertexParts corresponding to the same vertex
             for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
             {
-                if (vertexKey == indexPartUpVec_.at(ii))
-                {
-                    indices.push_back(ii);
-                }
-            }
-
-            for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
-            {
-                if (vertexKey + 1 == indexPartUpVec_.at(ii))
+                if (key == indexPartUpVec_.at(ii))
                 {
                     indices.push_back(ii);
                 }
@@ -422,53 +310,33 @@ class Vertices
         {
             for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
             {
-                if (vertexKey == indexPartDownVec_.at(ii))
-                {
-                    indices.push_back(ii);
-                }
-            }
-
-            for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
-            {
-                if (vertexKey + 1 == indexPartDownVec_.at(ii))
+                if (key == indexPartDownVec_.at(ii))
                 {
                     indices.push_back(ii);
                 }
             }
         }
+        // std::cout << "indices.size() = " << indices.size() << std::endl;
+        assert(indices.size() == 1);
+        return (indices.at(0));
+    }
 
-        x.spin() != y.spin() ? assert(indices.size() == 1) : assert(indices.size() == 2);
+    std::vector<size_t> GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
+    {
+        const size_t vertexKey = verticesKeysVec_.at(pp);
+        const VertexPart x = data_.at(pp).vStart();
+        const VertexPart y = data_.at(pp).vEnd();
+        std::vector<size_t> indices;
+
+        indices.push_back(GetkeyIndex(vertexKey, spin));
+
+        if (x.spin() == y.spin())
+        {
+            indices.push_back(GetkeyIndex(vertexKey + 1, spin));
+        }
+
         return indices;
     }
-
-    void Swap(const size_t &ii, const size_t &jj)
-    {
-
-        std::iter_swap(data_.begin() + ii, data_.begin() + jj);
-    }
-
-    void SwapSpin(const size_t &ii, const size_t &jj, const FermionSpin_t &spin)
-    {
-        if (spin == FermionSpin_t::Up)
-        {
-            std::iter_swap(vPartUpVec_.begin() + ii, vPartUpVec_.begin() + jj);
-            std::iter_swap(indexPartUpVec_.begin() + ii, indexPartUpVec_.begin() + jj);
-        }
-        else
-        {
-            std::iter_swap(vPartDownVec_.begin() + ii, vPartDownVec_.begin() + jj);
-            std::iter_swap(indexPartDownVec_.begin() + ii, indexPartDownVec_.begin() + jj);
-        }
-    }
-
-    // vois Save(const std::string& filename)
-    // {
-    //     for(size_t ii=0;ii<data_.size(); ii++)
-    //     {
-    //         std::cout << "o1, o2, spin1, spin2, tau1, tau2 = " <<
-    //     }
-
-    // }
 
     void SaveConfig(const std::string &fname)
     {
@@ -517,11 +385,50 @@ class Vertices
 
 }; // namespace Diagrammatic
 
+class AuxHelper
+{
+  public:
+    explicit AuxHelper(const double &delta) : delta_(delta){}; //in futur, alpha tensor in constructor
+
+    double auxValue(const FermionSpin_t &spin, const AuxSpin_t &aux) const
+    {
+        if (spin == FermionSpin_t::Up)
+        {
+            return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_);
+        }
+        else
+        {
+            return ((aux == AuxSpin_t::Down) ? 1.0 + delta_ : -delta_);
+        }
+    }
+
+    double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) const
+    {
+        if (aux == AuxSpin_t::Zero)
+        {
+            return 1.0;
+        }
+        return (auxValue(spin, aux) / (auxValue(spin, aux) - 1.0));
+    };
+
+    double gamma(const FermionSpin_t &spin, const AuxSpin_t &auxI, const AuxSpin_t &auxJ) const //little gamma
+    {
+        const double fsJ = FAux(spin, auxJ);
+        return ((FAux(spin, auxI) - fsJ) / fsJ);
+    }
+
+    double delta() const { return delta_; };
+
+  private:
+    const double delta_;
+};
+
 class VertexBuilder
 {
   public:
     //must hold the alphas, the values of the U, U' and (U-J_H)
     VertexBuilder(const Json &jj, const size_t &Nc) : Utensor(jj),
+                                                      auxHelper_(jj["delta"].get<double>()),
                                                       delta_(jj["delta"].get<double>()),
                                                       beta_(jj["beta"].get<double>()),
                                                       Nc_(Nc),
@@ -578,7 +485,9 @@ class VertexBuilder
             vertextype = VertexType::HubbardInterSpin;
             const VertexPart vStart(tau, site, spin1, o1, aux);
             const VertexPart vEnd(tau, site, spin2, o2, aux);
-            return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
+            const double tmp = (auxHelper_.FAux(spin1, aux) - 1.0);
+            const double v_xi = ((Utensor.UPrime() - Utensor.JH()) * beta_ * Nc_ * factXi_) / (tmp * tmp);
+            return Vertex(vertextype, vStart, vEnd, aux, v_xi); //GetKxio1o2(vertextype)); // GetKxio1o2(vertextype)); //v_xi); //GetKxio1o2(vertextype));
         }
         else
         {
@@ -629,50 +538,13 @@ class VertexBuilder
 
   private:
     const Models::UTensor Utensor; // the interaction tensor in xi=vertextype and orbital1 and orbital2 indices
+    const AuxHelper auxHelper_;
     const double delta_;
     const double beta_;
     const size_t Nc_;
     const size_t NOrb_;
     const double factXi_;
     const bool isOrbitalDiagonal_;
-};
-
-class AuxHelper
-{
-  public:
-    explicit AuxHelper(const double &delta) : delta_(delta){}; //in futur, alpha tensor in constructor
-
-    double auxValue(const FermionSpin_t &spin, const AuxSpin_t &aux) const
-    {
-        if (spin == FermionSpin_t::Up)
-        {
-            return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_);
-        }
-        else
-        {
-            return ((aux == AuxSpin_t::Down) ? 1.0 + delta_ : -delta_);
-        }
-    }
-
-    double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) const
-    {
-        if (aux == AuxSpin_t::Zero)
-        {
-            return 1.0;
-        }
-        return (auxValue(spin, aux) / (auxValue(spin, aux) - 1.0));
-    };
-
-    double gamma(const FermionSpin_t &spin, const AuxSpin_t &auxI, const AuxSpin_t &auxJ) const //little gamma
-    {
-        const double fsJ = FAux(spin, auxJ);
-        return ((FAux(spin, auxI) - fsJ) / fsJ);
-    }
-
-    double delta() const { return delta_; };
-
-  private:
-    const double delta_;
 };
 
 } // namespace Diagrammatic
