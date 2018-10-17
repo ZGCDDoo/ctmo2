@@ -1,7 +1,16 @@
 #pragma once
 
+#ifdef GREEN_STYLE
+
+#include "ABC_MarkovChain_GreenStyle.hpp"
+#include "../Utilities/VerticesSimple_GreenStyle.hpp"
+
+#else
+
 #include "ABC_MarkovChain.hpp"
 #include "../Utilities/VerticesSimple.hpp"
+
+#endif
 
 namespace Markov
 {

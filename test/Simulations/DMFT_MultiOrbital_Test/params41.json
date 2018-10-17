@@ -3,6 +3,7 @@
     "EGreen": 200,
     "ESelfCon": 200,
     "HybFileUp": "hybUp41",
+    "IsOrbitalDiagonal": false,
     "J_H": 0.0,
     "K": 1.0,
     "KMAX_UPD": 100,

@@ -3,7 +3,12 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "../Utilities/Matrix.hpp"
+
+#ifdef GREEN_STYLE
+#include "../Utilities/VerticesSimple_GreenStyle.hpp"
+#else
 #include "../Utilities/VerticesSimple.hpp"
+#endif
 
 namespace Markov
 {

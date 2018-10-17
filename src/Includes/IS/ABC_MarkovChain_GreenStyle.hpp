@@ -1,4 +1,7 @@
 #pragma once
+
+#define GREEN_STYLE
+
 #include <valarray>
 
 #include "../Utilities/Utilities.hpp"
@@ -353,7 +356,7 @@ class ABC_MarkovChain
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
                 updsamespin_++;
-                std::cout << "InsertVertexSameSpin accepted " << std::endl;
+                // std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
         else
@@ -466,7 +469,7 @@ class ABC_MarkovChain
         AssertSizes();
         // std::cout << "Here 1 " << std::endl;
         assert(Nspin.n_rows() >= 2);
-        assert(FVspin.n_elem >= 2);
+        // assert(FVspin.n_elem >= 2);
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
         const VertexPart x = vertex.vStart();
