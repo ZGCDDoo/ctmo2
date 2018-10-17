@@ -485,9 +485,9 @@ class VertexBuilder
             vertextype = VertexType::HubbardInterSpin;
             const VertexPart vStart(tau, site, spin1, o1, aux);
             const VertexPart vEnd(tau, site, spin2, o2, aux);
-            const double tmp = (auxHelper_.FAux(spin1, aux) - 1.0);
-            const double v_xi = ((Utensor.UPrime() - Utensor.JH()) * beta_ * Nc_ * factXi_) / (tmp * tmp);
-            return Vertex(vertextype, vStart, vEnd, aux, v_xi); //GetKxio1o2(vertextype)); // GetKxio1o2(vertextype)); //v_xi); //GetKxio1o2(vertextype));
+            // const double tmp = (auxHelper_.FAux(spin1, aux) - 1.0);
+            // const double v_xi = ((Utensor.UPrime() - Utensor.JH()) * beta_ * Nc_ * factXi_) / (tmp * tmp);
+            return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
         }
         else
         {

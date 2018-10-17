@@ -21,11 +21,11 @@ public:
     }
     else if (std::abs(JH_) < 1e-10)
     {
-      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_) * UPrime_ / 2.0;
+      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0;
     }
     else
     {
-      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_) * UPrime_ / 2.0 - static_cast<double>(NOrb_) * (UPrime_ - JH_) / 2.0;
+      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0 - static_cast<double>(NOrb_ - 1) * (UPrime_ - JH_) / 2.0;
     }
   }
 
