@@ -34,7 +34,8 @@ class Observables
                                       signMeas_(0.0),
                                       expOrder_(0.0),
                                       NMeas_(0),
-                                      NOrb_(jj["NOrb"].get<size_t>())
+                                      NOrb_(jj["NOrb"].get<size_t>()),
+                                      averageOrbitals_(jj["AverageOrbitals"].get<bool>())
         {
 
                 mpiUt::Print("In Obs constructor ");
@@ -80,14 +81,25 @@ class Observables
                 const double fact = 1.0 / (NMeas_ * signMeas_);
                 obsScal["k"] = fact * expOrder_;
 
-                ClusterMatrixCD_t greenMatsubaraUp = ioModel_.FullCubeToIndep(greenBinningUp_.FinalizeGreenBinning(signMeas_, NMeas_));
-                ClusterMatrixCD_t greenMatsubaraDown = ioModel_.FullCubeToIndep(greenBinningDown_.FinalizeGreenBinning(signMeas_, NMeas_));
+                ClusterCubeCD_t greenCubeMatUp = greenBinningUp_.FinalizeGreenBinning(signMeas_, NMeas_);
+                ClusterCubeCD_t greenCubeMatDown = greenBinningDown_.FinalizeGreenBinning(signMeas_, NMeas_);
+
+                //Average the green Functions if orbitals have the same parameters
+                if (averageOrbitals_)
+                {
+                        greenCubeMatUp = ioModel_.AverageOrbitals(greenCubeMatUp);
+                        greenCubeMatDown = ioModel_.AverageOrbitals(greenCubeMatDown);
+                }
+
+                ClusterMatrixCD_t greenMatsubaraUp = ioModel_.FullCubeToIndep(greenCubeMatUp);
+                ClusterMatrixCD_t greenMatsubaraDown = ioModel_.FullCubeToIndep(greenCubeMatDown);
 
 //Gather and stats of all the results for all cores
 #ifndef AFM
                 greenMatsubaraUp = 0.5 * (greenMatsubaraUp + greenMatsubaraDown);
                 greenMatsubaraDown = greenMatsubaraUp;
 #endif
+
                 Result::ISResult isResult(obsScal, greenMatsubaraUp, greenMatsubaraDown, fillingAndDocc_.fillingUp(), fillingAndDocc_.fillingDown());
                 std::vector<Result::ISResult> isResultVec;
 #ifdef HAVEMPI
@@ -158,6 +170,7 @@ class Observables
         size_t NMeas_;
 
         const size_t NOrb_;
+        const bool averageOrbitals_;
 };
 
 } // namespace Obs

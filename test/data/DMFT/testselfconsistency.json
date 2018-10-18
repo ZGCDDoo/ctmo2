@@ -26,5 +26,6 @@
     "WEIGHTSR": 0.0,
     "WEIGHTSI": 0.0,
     "N_T_INV": 5,
-    "IsOrbitalDiagonal": false
+    "IsOrbitalDiagonal": false,
+    "AverageOrbitals": false
 }

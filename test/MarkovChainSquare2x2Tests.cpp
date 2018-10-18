@@ -9,7 +9,7 @@ using Model_t = Models::ModelSquare2x2;
 using IOModel_t = IO::IOSquare2x2;
 using Markov_t = Markov::MarkovChain<IOModel_t, Model_t>;
 
-const double DELTA = 1e-11;
+const double DELTA = 1e-10;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
 
 Markov_t BuildMarkovChain()
@@ -46,7 +46,7 @@ TEST(MarkovChainSquare2x2Tests, DoStep)
     }
 
     mc.CleanUpdate();
-    for (size_t ii = 0; ii < 1000; ii++)
+    for (size_t ii = 0; ii < 10000; ii++)
     {
         mc.DoStep();
     }

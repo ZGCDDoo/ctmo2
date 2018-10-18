@@ -32,7 +32,7 @@ TEST(UTensorSimple, Init)
 
     UTensor ut2(jj);
 
-    ASSERT_NEAR(ut2.auxMu(), 1.8941850792671628 - 1.5 - 3.21, DELTA);
+    ASSERT_NEAR(ut2.auxMu(), 1.8941850792671628 - 1.5 - (2.0 - 1.0) * 3.21 / 2.0, DELTA);
     ASSERT_DOUBLE_EQ(ut2.U(), 3.0);
     ASSERT_DOUBLE_EQ(ut2.JH(), 0.0);
     ASSERT_DOUBLE_EQ(ut2.UPrime(), 3.21);
@@ -45,7 +45,7 @@ TEST(UTensorSimple, Init)
 
     UTensor ut3(jj);
 
-    ASSERT_NEAR(ut3.auxMu(), -4.695814920732837, DELTA);
+    ASSERT_NEAR(ut3.auxMu(), -2.150814920732837, DELTA);
     ASSERT_DOUBLE_EQ(ut3.U(), 3.0);
     ASSERT_DOUBLE_EQ(ut3.JH(), 1.33);
     ASSERT_DOUBLE_EQ(ut3.UPrime(), 3.21);

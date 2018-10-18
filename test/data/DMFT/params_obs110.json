@@ -1,5 +1,6 @@
 {
     "NOrb": 1,
+    "AverageOrbitals": false,
     "UPrime": 0.0,
     "SEED": 53201,
     "PROBFLIP": 0.25,

@@ -436,6 +436,35 @@ class Base_IOModel
         }
     }
 
+    ClusterCubeCD_t AverageOrbitals(const ClusterCubeCD_t green) const
+    {
+        //For now only averages the diagonal blocks.
+        const size_t n_rows = green.n_rows;
+        const size_t n_cols = green.n_cols;
+        const size_t n_slices = green.n_slices;
+        assert(n_rows == n_cols);
+        const size_t NOrb = green.n_rows / Nc;
+
+        ClusterCubeCD_t result(n_rows, n_cols, n_slices);
+        result.zeros();
+
+        using arma::span;
+        const size_t Ncm1 = Nc - 1;
+
+        for (size_t oo = 0; oo < NOrb; oo++)
+        {
+            result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1)) += green.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1));
+        }
+        result /= static_cast<double>(NOrb);
+
+        for (size_t oo = 1; oo < NOrb; oo++)
+        {
+            result.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1)) = result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1));
+        }
+
+        return result;
+    }
+
     std::pair<size_t, size_t> FindSitesRng(const size_t &s1, const size_t &s2, const double &rngDouble)
     {
         const size_t indepSiteIndex = FindIndepSiteIndex(s1, s2);

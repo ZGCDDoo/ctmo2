@@ -1,6 +1,7 @@
 {
     "NOrb": 1,
     "SEED": 100002,
+    "AverageOrbitals": false,
     "PROBFLIP": 0.25,
     "beta": 10.0,
     "EGreen": 1000,

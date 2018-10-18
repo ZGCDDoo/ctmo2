@@ -1,5 +1,6 @@
 {
     "NOrb": 3,
+    "AverageOrbitals": false,
     "modelType": "SIAM_Square",
     "solver": "Aux",
     "CLEANUPDATE": 100,

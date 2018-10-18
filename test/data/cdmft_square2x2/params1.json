@@ -1,5 +1,6 @@
 {
     "NOrb": 2,
+    "AverageOrbitals": false,
     "U": 4.0,
     "J_H": 1.0,
     "UPrime": 3.0,

@@ -62,5 +62,6 @@
             "t2y": 0.0
         }
     },
-    "IsOrbitalDiagonal": false
+    "IsOrbitalDiagonal": false,
+    "AverageOrbitals": false
 }
