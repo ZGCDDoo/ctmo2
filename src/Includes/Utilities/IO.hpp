@@ -56,9 +56,9 @@ class Base_IOModel
             equivalentSites_.at(ii).push_back(pairii);
         }
 
-        for (Site_t s1 = 0; s1 < Nc; s1++)
+        for (Site_t s1 = 0; s1 < Nc; ++s1)
         {
-            for (Site_t s2 = 0; s2 < Nc; s2++)
+            for (Site_t s2 = 0; s2 < Nc; ++s2)
             {
 
                 const std::pair<Site_t, Site_t> pairSites = GreenSites_.at(s1).at(s2);
@@ -109,9 +109,9 @@ class Base_IOModel
         nOfAssociatedSites_.resize(indepSites_.size());
         // nOfFillingSites_ = 0;
 
-        for (size_t ii = 0; ii < Nc; ii++)
+        for (size_t ii = 0; ii < Nc; ++ii)
         {
-            for (size_t jj = 0; jj < Nc; jj++)
+            for (size_t jj = 0; jj < Nc; ++jj)
             {
                 const size_t ll = FindIndepSiteIndex(ii, jj);
                 nOfAssociatedSites_.at(ll) = nOfAssociatedSites_.at(ll) + 1;
@@ -139,10 +139,10 @@ class Base_IOModel
         ClusterCubeCD_t cubetmp(Nc, Nc, fileMat.n_rows);
         cubetmp.zeros();
 
-        for (size_t n = 0; n < cubetmp.n_slices; n++)
+        for (size_t n = 0; n < cubetmp.n_slices; ++n)
         {
             tmp.zeros();
-            for (size_t KIndex = 0; KIndex < Nc; KIndex++)
+            for (size_t KIndex = 0; KIndex < Nc; ++KIndex)
             {
                 tmp(KIndex, KIndex) = cd_t(fileMat(n, 2 * KIndex), fileMat(n, 2 * KIndex + 1));
             }
@@ -175,15 +175,15 @@ class Base_IOModel
 
         ClusterCubeCD_t cubetmp(NN, NN, fileMat.n_rows);
 
-        for (size_t n = 0; n < cubetmp.n_slices; n++)
+        for (size_t n = 0; n < cubetmp.n_slices; ++n)
         {
-            for (Orbital_t o1 = 0; o1 < NOrb; o1++)
+            for (Orbital_t o1 = 0; o1 < NOrb; ++o1)
             {
-                for (Orbital_t o2 = o1; o2 < NOrb; o2++)
+                for (Orbital_t o2 = o1; o2 < NOrb; ++o2)
                 {
-                    for (size_t ii = 0; ii < Nc; ii++)
+                    for (size_t ii = 0; ii < Nc; ++ii)
                     {
-                        for (size_t jj = 0; jj < Nc; jj++)
+                        for (size_t jj = 0; jj < Nc; ++jj)
                         {
                             // std::cout << "ii, jj, o1, o2 = " << ii << ", " << jj << ", " << o1 << ", " << o2 << ", " << std::endl;
                             // std::cout << "Here 1 " << std::endl;
@@ -230,11 +230,11 @@ class Base_IOModel
             const double iwn = (2.0 * nn + 1.0) * M_PI / beta;
             fout << iwn << " ";
 
-            for (Orbital_t o1 = 0; o1 < NOrb; o1++)
+            for (Orbital_t o1 = 0; o1 < NOrb; ++o1)
             {
-                for (Orbital_t o2 = o1; o2 < NOrb; o2++)
+                for (Orbital_t o2 = o1; o2 < NOrb; ++o2)
                 {
-                    for (Site_t ii = 0; ii < NSitesIndep; ii++)
+                    for (Site_t ii = 0; ii < NSitesIndep; ++ii)
                     {
                         const Site_t r1 = this->indepSites_.at(ii).first;
                         const Site_t r2 = this->indepSites_.at(ii).second;
@@ -274,12 +274,12 @@ class Base_IOModel
 
         std::ofstream fout;
         fout.open(fname + std::string(".dat"), std::ios::out);
-        for (size_t nn = 0; nn < green.n_slices; nn++)
+        for (size_t nn = 0; nn < green.n_slices; ++nn)
         {
             const double iwn = (2.0 * nn + 1.0) * M_PI / beta;
             fout << iwn << " ";
 
-            for (Site_t ii = 0; ii < Nc; ii++)
+            for (Site_t ii = 0; ii < Nc; ++ii)
             {
 
                 fout << std::setprecision(precision) << green(ii, ii, nn).real()
@@ -298,19 +298,20 @@ class Base_IOModel
     //get the number of indep orbitals
     static size_t GetNOrbIndep(const size_t &NOrb)
     {
-        size_t NOrbIndep = 0;
-        for (Orbital_t o1 = 0; o1 < NOrb; o1++)
-        {
-            for (Orbital_t o2 = o1; o2 < NOrb; o2++)
-            {
-                NOrbIndep++;
-            }
-        }
+        // size_t NOrbIndep = 0;
+        // for (Orbital_t o1 = 0; o1 < NOrb; ++o1)
+        // {
+        //     for (Orbital_t o2 = o1; o2 < NOrb; ++o2)
+        //     {
+        //         NOrbIndep++;
+        //     }
+        // }
 
         //The number of indep orbitals should be equal to the number of elements in a triangular matrix, i.e:
-        assert(NOrbIndep == NOrb * (NOrb + 1) / 2);
-        return NOrbIndep;
-    };
+        // assert(NOrbIndep == NOrb * (NOrb + 1) / 2);
+        // return NOrbIndep;
+        return (NOrb * (NOrb + 1) / 2);
+    }
 
     std::pair<size_t, size_t> GetIndices(const size_t &indepSuperSiteIndex, const size_t &NOrb) const
     {
@@ -327,25 +328,25 @@ class Base_IOModel
         // const size_t o2 = (indepOrbitalIndex + 1) % (NOrb+1);
 
         const std::pair<Site_t, Site_t> sites = indepSites_.at(indepSiteIndex);
-        std::cout << "indepSuperSiteIndex " << indepSuperSiteIndex << std::endl;
-        std::cout << "NOrbIndep =  " << GetNOrbIndep(NOrb) << std::endl;
+        // std::cout << "indepSuperSiteIndex " << indepSuperSiteIndex << std::endl;
+        // std::cout << "NOrbIndep =  " << GetNOrbIndep(NOrb) << std::endl;
 
-        std::cout << "sites , o1, o2 = " << sites.first << ", " << sites.second << ", " << o1 << ", " << o2 << std::endl;
+        // std::cout << "sites , o1, o2 = " << sites.first << ", " << sites.second << ", " << o1 << ", " << o2 << std::endl;
         return {sites.first + o1 * Nc, sites.second + o2 * Nc};
     }
 
     std::pair<size_t, size_t> GetIndicesOrbital(const size_t &indepOrbitalIndex, const size_t &NOrb) const
     {
         size_t tmp = 0;
-        for (size_t o1 = 0; o1 < NOrb; o1++)
+        for (size_t o1 = 0; o1 < NOrb; ++o1)
         {
-            for (size_t o2 = o1; o2 < NOrb; o2++)
+            for (size_t o2 = o1; o2 < NOrb; ++o2)
             {
                 if (tmp == indepOrbitalIndex)
                 {
                     return {o1, o2};
                 }
-                tmp++;
+                ++tmp;
             }
         }
 
@@ -364,13 +365,13 @@ class Base_IOModel
         T2_t fullMatrix(NOrb * Nc, NOrb * Nc);
         fullMatrix.zeros();
 
-        for (Orbital_t o1 = 0; o1 < NOrb; o1++)
+        for (Orbital_t o1 = 0; o1 < NOrb; ++o1)
         {
-            for (Orbital_t o2 = o1; o2 < NOrb; o2++)
+            for (Orbital_t o2 = o1; o2 < NOrb; ++o2)
             {
-                for (size_t ii = 0; ii < Nc; ii++)
+                for (size_t ii = 0; ii < Nc; ++ii)
                 {
-                    for (size_t jj = 0; jj < Nc; jj++)
+                    for (size_t jj = 0; jj < Nc; ++jj)
                     {
 
                         const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
@@ -393,13 +394,13 @@ class Base_IOModel
         ClusterMatrixCD_t indepTabular(greenCube.n_slices, NIndepSuperSites);
         indepTabular.zeros();
 
-        for (size_t i = 0; i < NIndepSuperSites; i++)
+        for (size_t i = 0; i < NIndepSuperSites; ++i)
         {
             const auto indices = GetIndices(i, NOrb);
             const size_t s1 = indices.first;
             const size_t s2 = indices.second;
 
-            for (size_t n = 0; n < greenCube.n_slices; n++)
+            for (size_t n = 0; n < greenCube.n_slices; ++n)
             {
                 indepTabular(n, i) = greenCube(s1, s2, n);
             }
@@ -413,7 +414,7 @@ class Base_IOModel
         size_t sum = 0.0;
         assert(fillingSites_.size() == fillingSitesIndex_.size());
 
-        for (size_t ii = 0; ii < fillingSitesIndex_.size(); ii++)
+        for (size_t ii = 0; ii < fillingSitesIndex_.size(); ++ii)
         {
             sum += nOfAssociatedSites_.at(fillingSitesIndex_.at(ii));
         }
@@ -424,10 +425,10 @@ class Base_IOModel
 
         //make sure equivalentSites_ is ok
         assert(equivalentSites_.size() == indepSites_.size());
-        for (size_t ii = 0; ii < equivalentSites_.size(); ii++)
+        for (size_t ii = 0; ii < equivalentSites_.size(); ++ii)
         {
             std::pair<size_t, size_t> pairii = equivalentSites_.at(ii).at(0);
-            for (size_t jj = 0; jj < equivalentSites_.at(ii).size(); jj++)
+            for (size_t jj = 0; jj < equivalentSites_.at(ii).size(); ++jj)
             {
                 const size_t s1 = equivalentSites_.at(ii).at(jj).first;
                 const size_t s2 = equivalentSites_.at(ii).at(jj).second;
@@ -451,13 +452,13 @@ class Base_IOModel
         using arma::span;
         const size_t Ncm1 = Nc - 1;
 
-        for (size_t oo = 0; oo < NOrb; oo++)
+        for (size_t oo = 0; oo < NOrb; ++oo)
         {
             result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1)) += green.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1));
         }
         result /= static_cast<double>(NOrb);
 
-        for (size_t oo = 1; oo < NOrb; oo++)
+        for (size_t oo = 1; oo < NOrb; ++oo)
         {
             result.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1)) = result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1));
         }

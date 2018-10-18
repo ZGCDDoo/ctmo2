@@ -5,11 +5,6 @@
 #include "TestTools.hpp"
 
 const double DELTA = 1e-7;
-const double DELTA_SMALL = 1e-11;
-const double delta = 0.01;
-const double U = 3.0;
-const double Beta = 10.0;
-const double mu = 1.8941850792671628;
 const size_t Nc = 4;
 const std::string fname = "../test/data/cdmft_triangle/testtriangle.json";
 

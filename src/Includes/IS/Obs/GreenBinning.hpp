@@ -32,7 +32,7 @@ class GreenBinning
         M2Bins_.resize(LL);
         M3Bins_.resize(LL);
 
-        for (size_t ii = 0; ii < M0Bins_.size(); ii++)
+        for (size_t ii = 0; ii < M0Bins_.size(); ++ii)
         {
             M0Bins_.at(ii).resize(N_BIN_TAU, 0.0);
             M1Bins_.at(ii).resize(N_BIN_TAU, 0.0);
@@ -50,9 +50,9 @@ class GreenBinning
         const double DeltaInv = N_BIN_TAU / dataCT_->beta_;
         if (kkSpin)
         {
-            for (size_t p1 = 0; p1 < kkSpin; p1++)
+            for (size_t p1 = 0; p1 < kkSpin; ++p1)
             {
-                for (size_t p2 = 0; p2 < kkSpin; p2++)
+                for (size_t p2 = 0; p2 < kkSpin; ++p2)
                 {
                     const SuperSite_t s1 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).superSite() : dataCT_->vertices_.atDown(p1).superSite();
                     const SuperSite_t s2 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p2).superSite() : dataCT_->vertices_.atDown(p2).superSite();
@@ -93,14 +93,14 @@ class GreenBinning
 
         // std::cout << "ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
 
-        for (size_t n = 0; n < NMat_; n++)
+        for (size_t n = 0; n < NMat_; ++n)
         {
             const double omega_n = M_PI * (2.0 * n + 1.0) / dataCT_->beta_;
             const cd_t iomega_n(0.0, omega_n);
             const cd_t fact = std::exp(iomega_n * dTau);
             const double lambda = 2.0 * std::sin(omega_n * dTau / 2.0) / (dTau * omega_n * (1.0 - omega_n * omega_n * dTau * dTau / 24.0) * NMeas);
 
-            for (size_t ll = 0; ll < ioModel_.GetNIndepSuperSites(NOrb_); ll++)
+            for (size_t ll = 0; ll < ioModel_.GetNIndepSuperSites(NOrb_); ++ll)
             {
                 // std::cout << "Here 1 " << std::endl;
                 cd_t temp_matsubara = 0.0;

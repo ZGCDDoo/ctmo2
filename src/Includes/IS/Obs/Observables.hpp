@@ -52,7 +52,7 @@ class Observables
 
                 // mpiUt::Print("start of Measure");
 
-                NMeas_++;
+                ++NMeas_;
                 signMeas_ += static_cast<double>(dataCT_->sign_);
                 expOrder_ += static_cast<double>(dataCT_->vertices_.size()) * static_cast<double>(dataCT_->sign_);
 

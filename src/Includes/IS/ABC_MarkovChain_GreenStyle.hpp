@@ -501,8 +501,7 @@ class ABC_MarkovChain
         const size_t pp2Spin = indicesPP.at(1);
         const size_t kk = dataCT_->vertices_.size();
         const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
-        const size_t kkSpinm1 = kkSpin - 1;
-        // const size_t kkSpinm2 = kkSpin - 2;
+        const size_t kkSpinm2 = kkSpin - 2;
 
         const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)}, {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
@@ -519,7 +518,7 @@ class ABC_MarkovChain
 
             dataCT_->vertices_.PrepareToRemove(nfdata_, pp); //vertices are already poped back
 
-            FVspin.resize(kkSpin - 2);
+            FVspin.resize(kkSpinm2);
             LinAlg::BlockRankTwoDowngrade(Nspin);
 
             assert(Nspin.n_rows() == FVspin.n_elem);

@@ -62,13 +62,13 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 #-------------------------------------------------------------------------------------------------------------
 
 
-set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer") 
+set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer -O3") 
 if(${MPI_BUILD})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVEMPI")
     set(TEST OFF)
 endif()
 if(${MPI_BUILD} AND ${HOME})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ") #-Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(TEST OFF)
 endif()
 

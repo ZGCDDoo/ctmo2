@@ -4,6 +4,7 @@
     "ESelfCon": 200,
     "HybFileUp": "hybUp12",
     "IsOrbitalDiagonal": true,
+    "AverageOrbitals": true,
     "J_H": 0.0,
     "K": 1.0,
     "KMAX_UPD": 100,

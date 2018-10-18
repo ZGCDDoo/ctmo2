@@ -39,7 +39,6 @@ TEST(IOModelTests, IndepToFullAndBack)
 TEST(IOModelTests, ReadAndWrite)
 {
     IOModel_t ioModel;
-    const size_t NSS = ioModel.Nc * NOrb;
     const ClusterCubeCD_t greenCube = ioModel.ReadGreenDat(FNAME, 5);
     ioModel.SaveCube("tmp_test", greenCube, 10.0, NOrb, 15);
     const ClusterCubeCD_t readGreenCube = ioModel.ReadGreenDat("tmp_test.dat", 5);

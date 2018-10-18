@@ -493,7 +493,6 @@ TEST(UtilitiesTest, BlockRankTwoDownGrade)
     const size_t kk = 40;
     const size_t pp1 = 11;
     const size_t pp2 = 30;
-    const size_t nn = 2;
     ClusterMatrix_t a1(kk, kk);
     a1.randu();
 
