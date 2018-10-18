@@ -99,10 +99,14 @@ TEST(Vertices2DTest, InitVertices)
 
     // Remove vertex 0
     const size_t vertexKey0 = vertices.GetKey(0);
+    assert(vertexKey0 == 0);
     const auto x0 = vertices.at(0).vStart();
     const auto y0 = vertices.at(0).vEnd();
     const size_t pp0Up = vertices.GetKeyIndex(vertexKey0, x0.spin());
+    assert(pp0Up == 0);
     const size_t pp0Down = vertices.GetKeyIndex(vertexKey0, y0.spin());
+    assert(pp0Down == 0);
+
     const size_t kkUp = vertices.NUp();
     const size_t kkUpm1 = kkUp - 1;
     const size_t kkDown = vertices.NDown();
@@ -114,21 +118,37 @@ TEST(Vertices2DTest, InitVertices)
     vertices.PopBackVertexPart(x0.spin());
     vertices.PopBackVertexPart(y0.spin());
     vertices.RemoveVertex(0);
+
+    std::cout << "After remove 0 \n"
+              << std::endl;
     vertices.Print();
+    std::cout << "verticesKeys = " << std::endl;
+    for (const auto &key : vertices.verticesKeysVec())
+    {
+        std::cout << key << std::endl;
+    }
 
-    const size_t vertexKey4 = vertices.GetKey(3);
-    const auto x4 = vertices.at(3).vStart();
-    const auto y4 = vertices.at(3).vEnd();
+    const size_t vertexKey4New = vertices.GetKey(4);
+    assert(vertexKey4New == 12);
 
-    const size_t i1 = vertices.GetKeyIndex(vertexKey4 + 1, x4.spin());
-    vertices.SwapVertexPart(i1, vertices.NUp() - 1, x4.spin());
+    const auto x4New = vertices.at(4).vStart();
+    const auto y4New = vertices.at(4).vEnd();
+    assert(x4New.spin() == y4New.spin());
+    const size_t i2 = vertices.GetKeyIndex(vertexKey4New + 1, x4New.spin());
+    assert(i2 == 5);
+    vertices.SwapVertexPart(i2, vertices.NDown() - 1, x4New.spin());
 
-    const size_t i2 = vertices.GetKeyIndex(vertexKey4, y4.spin());
-    vertices.SwapVertexPart(i2, vertices.NUp() - 2, y4.spin());
+    const size_t i1 = vertices.GetKeyIndex(vertexKey4New, y4New.spin());
+    assert(i1 == 4);
+    vertices.SwapVertexPart(i1, vertices.NDown() - 2, y4New.spin());
 
-    vertices.PopBackVertexPart(x4.spin());
-    vertices.PopBackVertexPart(y4.spin());
+    vertices.PopBackVertexPart(x4New.spin());
+    vertices.PopBackVertexPart(y4New.spin());
     vertices.RemoveVertex(4);
+
+    std::cout << "After remove 4 \n"
+              << std::endl;
+
     vertices.Print();
 
     std::cout << "verticesKeys = " << std::endl;
