@@ -308,10 +308,14 @@ class ABC_MarkovChain
 
         const double faux = FAux(x.spin(), vertex.aux());
         const double fauxM1 = faux - 1.0;
+        const FermionSpin_t spinBar = (x.spin() == FermionSpin_t::Up) ? FermionSpin_t::Down : FermionSpin_t::Up;
+        const double fauxBar = FAux(spinBar, vertex.aux());
+        const double fauxM1Bar = fauxBar - 1.0;
+
         const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
         const double s01 = GetGreenTau0(x, y);
         const double s10 = GetGreenTau0(y, x);
-        const double s11 = -faux + GetGreenTau0(y, y) * fauxM1;
+        const double s11 = -fauxBar + GetGreenTau0(y, y) * fauxM1Bar;
 
         if (Nspin.n_rows())
         {
@@ -330,7 +334,7 @@ class ABC_MarkovChain
                 const VertexPart vPartI = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(i) : dataCT_->vertices_.atDown(i);
                 const double fauxIm1 = FVspin(i) - 1.0; // Faux_i - 1.0
                 Q_(i, 0) = GetGreenTau0(vPartI, x) * fauxM1;
-                Q_(i, 1) = GetGreenTau0(vPartI, y) * fauxM1;
+                Q_(i, 1) = GetGreenTau0(vPartI, y) * fauxM1Bar;
 
                 assert(vPartI.spin() == x.spin());
 
@@ -366,7 +370,7 @@ class ABC_MarkovChain
                 LinAlg::BlockRankTwoUpgrade(Nspin, Q_, R_, sTilde);
                 FVspin.resize(kkoldspin + 2);
                 FVspin(kkoldspin) = faux;
-                FVspin(kkoldspin + 1) = faux;
+                FVspin(kkoldspin + 1) = fauxBar;
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
                 updsamespin_++;
@@ -391,7 +395,7 @@ class ABC_MarkovChain
 
                 FVspin = SiteVector_t(2);
                 FVspin(0) = faux;
-                FVspin(1) = faux;
+                FVspin(1) = fauxBar;
 
                 dataCT_->vertices_.AppendVertex(vertex);
             }

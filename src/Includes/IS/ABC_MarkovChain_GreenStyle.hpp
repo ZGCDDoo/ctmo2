@@ -137,13 +137,11 @@ class ABC_MarkovChain
         // std::cout << "dataCT_->vertices_.NUp(), nfdata_.FVup_.n_elem = " << dataCT_->vertices_.NUp() << ", " << nfdata_.FVup_.n_elem << std::endl;
         // std::cout << "dataCT_->vertices_.NDown(), nfdata_.FVdown_.n_elem = " << dataCT_->vertices_.NDown() << ", " << nfdata_.FVdown_.n_elem << std::endl;
 
+        assert(dataCT_->vertices_.NUp() == nfdata_.FVup_.n_elem);
         assert(dataCT_->vertices_.NUp() == nfdata_.Nup_.n_rows());
 
+        assert(dataCT_->vertices_.NDown() == nfdata_.FVdown_.n_elem);
         assert(dataCT_->vertices_.NDown() == nfdata_.Ndown_.n_rows());
-
-        // assert(!nfdata_.Nup_.HasInfOrNan());
-
-        // assert(!nfdata_.Ndown_.HasInfOrNan());
     }
 
     void InsertVertex()
@@ -253,21 +251,29 @@ class ABC_MarkovChain
             if (nfdata_.Nup_.n_rows())
             {
                 LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, upddata_.NQUp_, upddata_.newLastRowUp_, 1.0 / upddata_.sTildeUpI_);
+                nfdata_.FVup_.resize(kknewUp);
+                nfdata_.FVup_(kkoldUp) = fauxup;
             }
             else
             {
                 nfdata_.Nup_ = Matrix_t(1, 1);
                 nfdata_.Nup_(0, 0) = 1.0 / upddata_.sTildeUpI_;
+                nfdata_.FVup_ = SiteVector_t(1);
+                nfdata_.FVup_(0) = fauxup;
             }
 
             if (nfdata_.Ndown_.n_rows())
             {
                 LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, upddata_.NQDown_, upddata_.newLastRowDown_, 1.0 / upddata_.sTildeDownI_);
+                nfdata_.FVdown_.resize(kknewDown);
+                nfdata_.FVdown_(kkoldDown) = fauxdown;
             }
             else
             {
                 nfdata_.Ndown_ = Matrix_t(1, 1);
                 nfdata_.Ndown_(0, 0) = 1.0 / upddata_.sTildeDownI_;
+                nfdata_.FVdown_ = SiteVector_t(1);
+                nfdata_.FVdown_(0) = fauxdown;
             }
 
             dataCT_->vertices_.AppendVertex(vertex);
@@ -300,10 +306,13 @@ class ABC_MarkovChain
         assert(x.orbital() != y.orbital());
 
         const double faux = FAux(x.spin(), vertex.aux());
+        const double faux_bar = 1.0 - faux;
         const double s00 = -faux + GetGreenTau0(x, x);
         const double s01 = GetGreenTau0(x, y);
         const double s10 = GetGreenTau0(y, x);
-        const double s11 = -faux + GetGreenTau0(y, y);
+        const double s11 = -faux_bar + GetGreenTau0(y, y);
+
+        // const double s11 = -faux + GetGreenTau0(y, y);
 
         if (Nspin.n_rows())
         {
@@ -355,10 +364,12 @@ class ABC_MarkovChain
                 }
 
                 LinAlg::BlockRankTwoUpgrade(Nspin, Q_, R_, sTilde);
+                FVspin.resize(kkoldspin + 2);
+                FVspin(kkoldspin) = faux;
+                FVspin(kkoldspin + 1) = faux_bar;
                 dataCT_->vertices_.AppendVertex(vertex);
                 AssertSizes();
                 updsamespin_++;
-                std::cout << "InsertVertexSameSpin accepted " << std::endl;
             }
         }
         else
@@ -376,6 +387,9 @@ class ABC_MarkovChain
                 }
 
                 Nspin = sTilde;
+                FVspin = SiteVector_t(2);
+                FVspin(0) = faux;
+                FVspin(1) = faux_bar;
 
                 dataCT_->vertices_.AppendVertex(vertex);
             }
@@ -509,7 +523,7 @@ class ABC_MarkovChain
             LinAlg::BlockRankTwoDowngrade(Nspin);
 
             assert(Nspin.n_rows() == FVspin.n_elem);
-            std::cout << "remove same accepted " << std::endl;
+            // std::cout << "remove same accepted " << std::endl;
         }
 
         AssertSizes();
@@ -541,7 +555,7 @@ class ABC_MarkovChain
 
                     if (iUp == jUp)
                     {
-                        nfdata_.Nup_(iUp, iUp) -= FAux(FermionSpin_t::Up, dataCT_->vertices_.atUp(iUp).aux());
+                        nfdata_.Nup_(iUp, iUp) -= nfdata_.FVup_(iUp);
                     }
                 }
             }
@@ -559,7 +573,7 @@ class ABC_MarkovChain
 
                     if (iDown == jDown)
                     {
-                        nfdata_.Ndown_(iDown, iDown) -= FAux(FermionSpin_t::Down, dataCT_->vertices_.atDown(iDown).aux());
+                        nfdata_.Ndown_(iDown, iDown) -= nfdata_.FVdown_(iDown);
                     }
                 }
             }

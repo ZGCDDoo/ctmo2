@@ -201,10 +201,10 @@ class Vertices
         const size_t kkDownm1 = NDown() - 1;
 
         assert(nfdata.Nup_.n_rows() == NUp());
-        // assert(nfdata.FVup_.n_rows == NUp());
+        assert(nfdata.FVup_.n_rows == NUp());
 
         assert(nfdata.Ndown_.n_rows() == NDown());
-        // assert(nfdata.FVdown_.n_rows == NDown());
+        assert(nfdata.FVdown_.n_rows == NDown());
 
         if (x.spin() != y.spin())
         {
@@ -218,7 +218,7 @@ class Vertices
             indexPartUpVec_.pop_back();
 
             nfdata.Nup_.SwapRowsAndCols(ppUp, kkUpm1);
-            // nfdata.FVup_.swap_rows(ppUp, kkUpm1);
+            nfdata.FVup_.swap_rows(ppUp, kkUpm1);
 
             const size_t ppDown = GetkeyIndex(key, y.spin());
             std::iter_swap(vPartDownVec_.begin() + ppDown, vPartDownVec_.begin() + kkDownm1);
@@ -227,7 +227,7 @@ class Vertices
             indexPartDownVec_.pop_back();
 
             nfdata.Ndown_.SwapRowsAndCols(ppDown, kkDownm1);
-            // nfdata.FVdown_.swap_rows(ppDown, kkDownm1);
+            nfdata.FVdown_.swap_rows(ppDown, kkDownm1);
         }
         else if (x.spin() == FermionSpin_t::Up)
         {
@@ -239,7 +239,7 @@ class Vertices
             std::iter_swap(indexPartUpVec_.begin() + ppUpp1, indexPartUpVec_.begin() + kkUpm1);
 
             nfdata.Nup_.SwapRowsAndCols(ppUpp1, kkUpm1);
-            // nfdata.FVup_.swap_rows(ppUpp1, kkUpm1);
+            nfdata.FVup_.swap_rows(ppUpp1, kkUpm1);
 
             //swap the before last vertex part to the last before end
             const size_t ppUp = GetkeyIndex(key, x.spin());
@@ -247,7 +247,7 @@ class Vertices
             std::iter_swap(indexPartUpVec_.begin() + ppUp, indexPartUpVec_.begin() + kkUpm1 - 1);
 
             nfdata.Nup_.SwapRowsAndCols(ppUp, kkUpm1 - 1);
-            // nfdata.FVup_.swap_rows(ppUp, kkUpm1 - 1);
+            nfdata.FVup_.swap_rows(ppUp, kkUpm1 - 1);
 
             vPartUpVec_.pop_back();
             indexPartUpVec_.pop_back();
@@ -264,14 +264,14 @@ class Vertices
             std::iter_swap(indexPartDownVec_.begin() + ppDownp1, indexPartDownVec_.begin() + kkDownm1);
 
             nfdata.Ndown_.SwapRowsAndCols(ppDownp1, kkDownm1);
-            // nfdata.FVdown_.swap_rows(ppDownp1, kkDownm1);
+            nfdata.FVdown_.swap_rows(ppDownp1, kkDownm1);
 
             const size_t ppDown = GetkeyIndex(key, y.spin());
             std::iter_swap(vPartDownVec_.begin() + ppDown, vPartDownVec_.begin() + kkDownm1 - 1);
             std::iter_swap(indexPartDownVec_.begin() + ppDown, indexPartDownVec_.begin() + kkDownm1 - 1);
 
             nfdata.Ndown_.SwapRowsAndCols(ppDown, kkDownm1 - 1);
-            // nfdata.FVdown_.swap_rows(ppDown, kkDownm1 - 1);
+            nfdata.FVdown_.swap_rows(ppDown, kkDownm1 - 1);
 
             vPartDownVec_.pop_back();
             indexPartDownVec_.pop_back();
