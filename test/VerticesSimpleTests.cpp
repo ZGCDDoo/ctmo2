@@ -97,14 +97,37 @@ TEST(Vertices2DTest, InitVertices)
     ASSERT_EQ(x4Down.spin(), FermionSpin_t::Down);
     ASSERT_EQ(y4Down.spin(), FermionSpin_t::Down);
 
-    // ASSERT()
+    // Remove vertex 0
+    const size_t vertexKey0 = vertices.GetKey(0);
+    const auto x0 = vertices.at(0).vStart();
+    const auto y0 = vertices.at(0).vEnd();
+    const size_t pp0Up = vertices.GetKeyIndex(vertexKey0, x0.spin());
+    const size_t pp0Down = vertices.GetKeyIndex(vertexKey0, y0.spin());
+    const size_t kkUp = vertices.NUp();
+    const size_t kkUpm1 = kkUp - 1;
+    const size_t kkDown = vertices.NDown();
+    const size_t kkDownm1 = kkDown - 1;
+    assert(x0.spin() == FermionSpin_t::Up);
+    assert(y0.spin() == FermionSpin_t::Down);
+    vertices.SwapVertexPart(pp0Up, kkUpm1, x0.spin());
+    vertices.SwapVertexPart(pp0Down, kkDownm1, y0.spin());
+    vertices.PopBackVertexPart(x0.spin());
+    vertices.PopBackVertexPart(y0.spin());
     vertices.RemoveVertex(0);
     vertices.Print();
 
-    const auto indices = vertices.GetIndicesSpins(4, FermionSpin_t::Down);
-    ASSERT_EQ(indices.at(0), 4);
-    ASSERT_EQ(indices.at(1), 5);
+    const size_t vertexKey4 = vertices.GetKey(3);
+    const auto x4 = vertices.at(3).vStart();
+    const auto y4 = vertices.at(3).vEnd();
 
+    const size_t i1 = vertices.GetKeyIndex(vertexKey4 + 1, x4.spin());
+    vertices.SwapVertexPart(i1, vertices.NUp() - 1, x4.spin());
+
+    const size_t i2 = vertices.GetKeyIndex(vertexKey4, y4.spin());
+    vertices.SwapVertexPart(i2, vertices.NUp() - 2, y4.spin());
+
+    vertices.PopBackVertexPart(x4.spin());
+    vertices.PopBackVertexPart(y4.spin());
     vertices.RemoveVertex(4);
     vertices.Print();
 
@@ -122,37 +145,6 @@ TEST(Vertices2DTest, InitVertices)
     assert(y7Down == V7.vEnd());
     ASSERT_EQ(x7Up.spin(), FermionSpin_t::Up);
     ASSERT_EQ(y7Down.spin(), FermionSpin_t::Down);
-}
-
-TEST(Vertices2DTest, InitVertices2)
-{
-    std::ifstream fin(FNAME);
-    Json jj;
-    fin >> jj;
-    fin.close();
-
-    Utilities::EngineTypeMt19937_t rng_(1 + jj["SEED"].get<size_t>());
-    Utilities::UniformRngMt19937_t urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0));
-
-    Diagrammatic::Vertices vertices;
-    Diagrammatic::VertexBuilder vertexBuilder(jj, Nc);
-
-    //Try Inserting a shit load of vertices
-    for (size_t ii = 0; ii < 200; ii++)
-    {
-        const auto v1 = vertexBuilder.BuildVertex(urng_);
-        vertices.AppendVertex(v1);
-    }
-
-    for (size_t ii = 0; ii < 9000000; ii++)
-    {
-        const auto v1 = vertexBuilder.BuildVertex(urng_);
-        vertices.AppendVertex(v1);
-        vertices.RemoveVertex(urng_() * vertices.size());
-        // std::cout << "ii = " << ii << std::endl;
-    }
-
-    vertices.Clear();
 }
 
 TEST(Vertices2DTest, TestBuildVertex)
@@ -179,8 +171,50 @@ TEST(Vertices2DTest, TestBuildVertex)
     {
         const auto v1 = vertexBuilder.BuildVertex(urng_);
         vertices.AppendVertex(v1);
-        vertices.RemoveVertex(urng_() * vertices.size());
-        // std::cout << "ii = " << ii << std::endl;
+
+        const size_t pp = urng_() * vertices.size();
+        const size_t vertexKey = vertices.GetKey(pp);
+        const auto x = vertices.at(pp).vStart();
+        const auto y = vertices.at(pp).vEnd();
+
+        if (x.spin() != y.spin())
+        {
+            assert(std::abs(x.tau() - y.tau()) < 1e-10);
+            const size_t ppUp = vertices.GetKeyIndex(vertexKey, x.spin());
+            const size_t ppDown = vertices.GetKeyIndex(vertexKey, y.spin());
+            const size_t kkUp = vertices.NUp();
+            const size_t kkUpm1 = kkUp - 1;
+            const size_t kkDown = vertices.NDown();
+            const size_t kkDownm1 = kkDown - 1;
+            assert(x.spin() == FermionSpin_t::Up);
+            vertices.SwapVertexPart(ppUp, kkUpm1, x.spin());
+            vertices.SwapVertexPart(ppDown, kkDownm1, y.spin());
+            vertices.RemoveVertex(pp);
+            vertices.PopBackVertexPart(x.spin());
+            vertices.PopBackVertexPart(y.spin());
+        }
+        else
+        {
+            assert(x.spin() == y.spin());
+
+            assert(std::abs(x.tau() - y.tau()) < 1e-10);
+            assert(x.orbital() != y.orbital());
+            assert(x.site() == y.site());
+
+            const size_t pp2Spin = vertices.GetKeyIndex(vertexKey + 1, y.spin());
+            const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? vertices.NUp() : vertices.NDown();
+            const size_t kkSpinm1 = kkSpin - 1;
+            const size_t kkSpinm2 = kkSpin - 2;
+
+            vertices.SwapVertexPart(pp2Spin, kkSpinm1, x.spin());
+
+            const size_t pp1SpinNew = vertices.GetKeyIndex(vertexKey, y.spin());
+            vertices.SwapVertexPart(pp1SpinNew, kkSpinm2, y.spin());
+
+            vertices.RemoveVertex(pp);
+            vertices.PopBackVertexPart(x.spin());
+            vertices.PopBackVertexPart(y.spin());
+        }
     }
 
     vertices.Clear();

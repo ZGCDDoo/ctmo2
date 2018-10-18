@@ -118,7 +118,6 @@ endif ()
 ################################
 set(EXECECUTABLES
     ctmo
-    ctmo_green
     #cttg_sub
     #cttg_afm
     #cttg_sub_afm
@@ -190,7 +189,7 @@ if (${TEST})
     GreenBinningTests
     GreenMatTests
     #GreenTauTests
-    #HybFMAndTLocTests
+    HybFMAndTLocTests
     IntegratorTests
     IOTests
     ModelTriangle2x2Tests
@@ -204,7 +203,7 @@ if (${TEST})
     ObservablesTests
     VerticesTests
     UTensorSimpleTests
-    #VerticesSimpleTests
+    VerticesSimpleTests
     )
 
     set(TESTS_DIR ${PROJECT_SOURCE_DIR}/test)

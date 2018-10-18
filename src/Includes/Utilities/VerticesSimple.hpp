@@ -19,17 +19,6 @@ enum class VertexType
     Invalid
 };
 
-struct NFData
-{
-
-    NFData() : FVup_(), FVdown_(), Nup_(), Ndown_(), dummy_(){};
-    SiteVector_t FVup_;
-    SiteVector_t FVdown_;
-    Matrix_t Nup_;
-    Matrix_t Ndown_;
-    Matrix_t dummy_;
-};
-
 const size_t N_VERTEX_TYPES = 3; //for now, we dont do Phonon
 const size_t INVALID = 999;
 
@@ -144,7 +133,7 @@ class Vertices
         AssertSizes();
     }
 
-    void AssertSizes()
+    void AssertSizes() const
     {
         // std::cout << "data_.size(), vPartUpVec_.size(), vPartDownVec_.size() = "
         //   << data_.size() << ", " << vPartUpVec_.size() << ", " << vPartDownVec_.size() << std::endl;
@@ -191,108 +180,7 @@ class Vertices
         }
     }
 
-    void PrepareToRemove(NFData &nfdata, const size_t &pp)
-    {
-        // std::cout << "Start PrepareToRemove " << std::endl;
-        const size_t key = verticesKeysVec_.at(pp);
-        const VertexPart x = data_.at(pp).vStart();
-        const VertexPart y = data_.at(pp).vEnd();
-        const size_t kkUpm1 = NUp() - 1;
-        const size_t kkDownm1 = NDown() - 1;
-
-        assert(nfdata.Nup_.n_rows() == NUp());
-        assert(nfdata.FVup_.n_rows == NUp());
-
-        assert(nfdata.Ndown_.n_rows() == NDown());
-        assert(nfdata.FVdown_.n_rows == NDown());
-
-        if (x.spin() != y.spin())
-        {
-            assert(x.spin() == FermionSpin_t::Up);
-            assert(y.spin() == FermionSpin_t::Down);
-
-            const size_t ppUp = GetkeyIndex(key, x.spin());
-            std::iter_swap(vPartUpVec_.begin() + ppUp, vPartUpVec_.begin() + kkUpm1);
-            std::iter_swap(indexPartUpVec_.begin() + ppUp, indexPartUpVec_.begin() + kkUpm1);
-            vPartUpVec_.pop_back();
-            indexPartUpVec_.pop_back();
-
-            nfdata.Nup_.SwapRowsAndCols(ppUp, kkUpm1);
-            nfdata.FVup_.swap_rows(ppUp, kkUpm1);
-
-            const size_t ppDown = GetkeyIndex(key, y.spin());
-            std::iter_swap(vPartDownVec_.begin() + ppDown, vPartDownVec_.begin() + kkDownm1);
-            std::iter_swap(indexPartDownVec_.begin() + ppDown, indexPartDownVec_.begin() + kkDownm1);
-            vPartDownVec_.pop_back();
-            indexPartDownVec_.pop_back();
-
-            nfdata.Ndown_.SwapRowsAndCols(ppDown, kkDownm1);
-            nfdata.FVdown_.swap_rows(ppDown, kkDownm1);
-        }
-        else if (x.spin() == FermionSpin_t::Up)
-        {
-            assert(y.spin() == FermionSpin_t::Up);
-
-            //swap the last vertex part to the end
-            const size_t ppUpp1 = GetkeyIndex(key + 1, x.spin());
-            std::iter_swap(vPartUpVec_.begin() + ppUpp1, vPartUpVec_.begin() + kkUpm1);
-            std::iter_swap(indexPartUpVec_.begin() + ppUpp1, indexPartUpVec_.begin() + kkUpm1);
-
-            nfdata.Nup_.SwapRowsAndCols(ppUpp1, kkUpm1);
-            nfdata.FVup_.swap_rows(ppUpp1, kkUpm1);
-
-            //swap the before last vertex part to the last before end
-            const size_t ppUp = GetkeyIndex(key, x.spin());
-            std::iter_swap(vPartUpVec_.begin() + ppUp, vPartUpVec_.begin() + kkUpm1 - 1);
-            std::iter_swap(indexPartUpVec_.begin() + ppUp, indexPartUpVec_.begin() + kkUpm1 - 1);
-
-            nfdata.Nup_.SwapRowsAndCols(ppUp, kkUpm1 - 1);
-            nfdata.FVup_.swap_rows(ppUp, kkUpm1 - 1);
-
-            vPartUpVec_.pop_back();
-            indexPartUpVec_.pop_back();
-            vPartUpVec_.pop_back();
-            indexPartUpVec_.pop_back();
-        }
-        else
-        {
-            assert(x.spin() == FermionSpin_t::Down);
-            assert(y.spin() == FermionSpin_t::Down);
-
-            const size_t ppDownp1 = GetkeyIndex(key + 1, y.spin());
-            std::iter_swap(vPartDownVec_.begin() + ppDownp1, vPartDownVec_.begin() + kkDownm1);
-            std::iter_swap(indexPartDownVec_.begin() + ppDownp1, indexPartDownVec_.begin() + kkDownm1);
-
-            nfdata.Ndown_.SwapRowsAndCols(ppDownp1, kkDownm1);
-            nfdata.FVdown_.swap_rows(ppDownp1, kkDownm1);
-
-            const size_t ppDown = GetkeyIndex(key, y.spin());
-            std::iter_swap(vPartDownVec_.begin() + ppDown, vPartDownVec_.begin() + kkDownm1 - 1);
-            std::iter_swap(indexPartDownVec_.begin() + ppDown, indexPartDownVec_.begin() + kkDownm1 - 1);
-
-            nfdata.Ndown_.SwapRowsAndCols(ppDown, kkDownm1 - 1);
-            nfdata.FVdown_.swap_rows(ppDown, kkDownm1 - 1);
-
-            vPartDownVec_.pop_back();
-            indexPartDownVec_.pop_back();
-            vPartDownVec_.pop_back();
-            indexPartDownVec_.pop_back();
-        }
-
-        const size_t kkm1 = size() - 1;
-        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1);                       //swap the last vertex and the vertex pp in vertices.
-        std::iter_swap(verticesKeysVec_.begin() + pp, verticesKeysVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
-        data_.pop_back();
-        verticesKeysVec_.pop_back();
-
-        AssertSizes();
-
-        // std::cout << "After PrepareToRemove " << std::endl;
-
-        //Now, we are ready to pop-back
-    }
-
-    size_t GetkeyIndex(const size_t &key, const FermionSpin_t &spin) const
+    size_t GetKeyIndex(const size_t &key, const FermionSpin_t &spin) const
     {
         std::vector<size_t> indices;
         if (spin == FermionSpin_t::Up)
@@ -321,6 +209,13 @@ class Vertices
         return (indices.at(0));
     }
 
+    size_t GetKey(const size_t &pp) const
+    {
+        AssertSizes();
+
+        return verticesKeysVec_.at(pp);
+    }
+
     std::vector<size_t> GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
     {
         const size_t vertexKey = verticesKeysVec_.at(pp);
@@ -328,11 +223,11 @@ class Vertices
         const VertexPart y = data_.at(pp).vEnd();
         std::vector<size_t> indices;
 
-        indices.push_back(GetkeyIndex(vertexKey, spin));
+        indices.push_back(GetKeyIndex(vertexKey, spin));
 
         if (x.spin() == y.spin())
         {
-            indices.push_back(GetkeyIndex(vertexKey + 1, spin));
+            indices.push_back(GetKeyIndex(vertexKey + 1, spin));
         }
 
         return indices;
@@ -352,8 +247,50 @@ class Vertices
         }
     }
 
+    void RemoveVertex(const size_t &pp)
+    {
+        const size_t kkm1 = size() - 1;
+        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1);                       //swap the last vertex and the vertex pp in vertices.
+        std::iter_swap(verticesKeysVec_.begin() + pp, verticesKeysVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+        data_.pop_back();
+        verticesKeysVec_.pop_back();
+    }
+
+    void PopBackVertexPart(const FermionSpin_t &spin)
+    {
+        if (spin == FermionSpin_t::Up)
+        {
+            vPartUpVec_.pop_back();
+            indexPartUpVec_.pop_back();
+        }
+        else
+        {
+            vPartDownVec_.pop_back();
+            indexPartDownVec_.pop_back();
+        }
+    }
+
+    void SwapVertexPart(const size_t &pp1, const size_t &pp2, const FermionSpin_t &spin)
+    {
+
+        if (spin == FermionSpin_t::Up)
+        {
+            std::iter_swap(vPartUpVec_.begin() + pp1, vPartUpVec_.begin() + pp2);
+            std::iter_swap(indexPartUpVec_.begin() + pp1, indexPartUpVec_.begin() + pp2);
+        }
+        else
+        {
+
+            std::iter_swap(vPartDownVec_.begin() + pp1, vPartDownVec_.begin() + pp2);
+            std::iter_swap(indexPartDownVec_.begin() + pp1, indexPartDownVec_.begin() + pp2);
+        }
+    }
+
     //Getters
-    size_t size() const { return data_.size(); };
+    size_t size() const
+    {
+        return data_.size();
+    };
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
     std::vector<size_t> verticesKeysVec() const { return verticesKeysVec_; }; // Each vertex has a unqique key identifying it

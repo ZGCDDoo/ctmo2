@@ -19,7 +19,6 @@ using Fourier::MatToTau;
 using Fourier::MatToTauCluster;
 using Vertex = Diagrammatic::Vertex;
 using VertexPart = Diagrammatic::VertexPart;
-using NFData = Diagrammatic::NFData;
 
 typedef LinAlg::Matrix_t Matrix_t;
 
@@ -33,6 +32,17 @@ struct UpdData
     SiteVector_t newLastRowDown_;
     double sTildeUpI_;
     double sTildeDownI_;
+};
+
+struct NFData
+{
+
+    NFData() : FVup_(), FVdown_(), Nup_(), Ndown_(), dummy_(){};
+    SiteVector_t FVup_;
+    SiteVector_t FVdown_;
+    Matrix_t Nup_;
+    Matrix_t Ndown_;
+    Matrix_t dummy_;
 };
 
 template <typename TIOModel, typename TModel>
@@ -444,11 +454,15 @@ class ABC_MarkovChain
         AssertSizes();
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const size_t ppUp = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Up).at(0);
-        const size_t ppDown = dataCT_->vertices_.GetIndicesSpins(pp, FermionSpin_t::Down).at(0);
+        const size_t vertexKey = dataCT_->vertices_.GetKey(pp);
+        const size_t ppUp = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Up);
+        const size_t ppDown = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Down);
         const auto x = dataCT_->vertices_.atUp(ppUp);
         const auto y = dataCT_->vertices_.atDown(ppDown);
         assert(std::abs(x.tau() - y.tau()) < 1e-10);
+        assert(x.spin() == FermionSpin_t::Up);
+        assert(y.spin() == FermionSpin_t::Down);
+
         // assert(x.superSite() == y.superSite());
 
         // std::cout << "here 1" << std::endl;
@@ -472,12 +486,19 @@ class ABC_MarkovChain
             const size_t kkUpm1 = kkUp - 1;
             const size_t kkDown = dataCT_->vertices_.NDown();
             const size_t kkDownm1 = kkDown - 1;
-            dataCT_->vertices_.PrepareToRemove(nfdata_, pp); //vertices are already poped back
+            dataCT_->vertices_.SwapVertexPart(ppUp, kkUpm1, x.spin());
+            dataCT_->vertices_.SwapVertexPart(ppDown, kkDownm1, y.spin());
 
-            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, kkUpm1);
-            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, kkDownm1);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Nup_, ppUp);
+            LinAlg::BlockRankOneDowngrade(nfdata_.Ndown_, ppDown);
+            nfdata_.FVup_.swap_rows(ppUp, kkUpm1);
+            nfdata_.FVdown_.swap_rows(ppDown, kkDownm1);
             nfdata_.FVup_.resize(kkUpm1);
             nfdata_.FVdown_.resize(kkDownm1);
+
+            dataCT_->vertices_.RemoveVertex(pp);
+            dataCT_->vertices_.PopBackVertexPart(x.spin());
+            dataCT_->vertices_.PopBackVertexPart(y.spin());
 
             AssertSizes();
         }
@@ -494,6 +515,7 @@ class ABC_MarkovChain
         assert(FVspin.n_elem >= 2);
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
+        const size_t vertexKey = dataCT_->vertices_.GetKey(pp);
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
@@ -502,13 +524,12 @@ class ABC_MarkovChain
         assert(x.orbital() != y.orbital());
         assert(x.site() == y.site());
 
-        const auto indicesPP = dataCT_->vertices_.GetIndicesSpins(pp, x.spin());
-        const size_t pp1Spin = indicesPP.at(0);
-        const size_t pp2Spin = indicesPP.at(1);
+        const size_t pp1Spin = dataCT_->vertices_.GetKeyIndex(vertexKey, x.spin());
+        const size_t pp2Spin = dataCT_->vertices_.GetKeyIndex(vertexKey + 1, y.spin());
         const size_t kk = dataCT_->vertices_.size();
         const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
-        // const size_t kkSpinm1 = kkSpin - 1;
-        // const size_t kkSpinm2 = kkSpin - 2;
+        const size_t kkSpinm1 = kkSpin - 1;
+        const size_t kkSpinm2 = kkSpin - 2;
 
         const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)}, {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
@@ -523,10 +544,22 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            dataCT_->vertices_.PrepareToRemove(nfdata_, pp); //vertices are already poped back
+            dataCT_->vertices_.SwapVertexPart(pp2Spin, kkSpinm1, x.spin());
+            FVspin.swap_rows(pp2Spin, kkSpinm1);
+            Nspin.SwapRowsAndCols(pp2Spin, kkSpinm1);
 
-            FVspin.resize(kkSpin - 2);
+            const size_t pp1SpinNew = dataCT_->vertices_.GetKeyIndex(vertexKey, y.spin());
+            dataCT_->vertices_.SwapVertexPart(pp1SpinNew, kkSpinm2, y.spin());
+            FVspin.swap_rows(pp1SpinNew, kkSpinm2);
+            Nspin.SwapRowsAndCols(pp1SpinNew, kkSpinm2);
+
             LinAlg::BlockRankTwoDowngrade(Nspin);
+
+            FVspin.resize(kkSpinm2);
+
+            dataCT_->vertices_.RemoveVertex(pp);
+            dataCT_->vertices_.PopBackVertexPart(x.spin());
+            dataCT_->vertices_.PopBackVertexPart(y.spin());
 
             assert(Nspin.n_rows() == FVspin.n_elem);
         }
