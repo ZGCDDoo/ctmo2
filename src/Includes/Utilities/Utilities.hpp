@@ -30,6 +30,7 @@ using Sign_t = int;
 using Site_t = size_t;
 using Tau_t = double;
 using Orbital_t = size_t;
+using UInt64_t = unsigned long long int;
 
 using SuperSite_t = std::pair<size_t, size_t>; //site, then orbital number
 

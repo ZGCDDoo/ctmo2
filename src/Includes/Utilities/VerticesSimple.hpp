@@ -180,7 +180,7 @@ class Vertices
         }
     }
 
-    size_t GetKeyIndex(const size_t &key, const FermionSpin_t &spin) const
+    size_t GetKeyIndex(const UInt64_t &key, const FermionSpin_t &spin) const
     {
         std::vector<size_t> indices;
         if (spin == FermionSpin_t::Up)
@@ -209,7 +209,7 @@ class Vertices
         return (indices.at(0));
     }
 
-    size_t GetKey(const size_t &pp) const
+    UInt64_t GetKey(const size_t &pp) const
     {
         AssertSizes();
 
@@ -218,7 +218,7 @@ class Vertices
 
     std::vector<size_t> GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
     {
-        const size_t vertexKey = verticesKeysVec_.at(pp);
+        const UInt64_t vertexKey = verticesKeysVec_.at(pp);
         const VertexPart x = data_.at(pp).vStart();
         const VertexPart y = data_.at(pp).vEnd();
         std::vector<size_t> indices;
@@ -293,7 +293,7 @@ class Vertices
     };
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
-    std::vector<size_t> verticesKeysVec() const { return verticesKeysVec_; }; // Each vertex has a unqique key identifying it
+    std::vector<UInt64_t> verticesKeysVec() const { return verticesKeysVec_; }; // Each vertex has a unqique key identifying it
 
     Vertex at(const size_t &i) const { return data_.at(i); };
 
@@ -316,9 +316,9 @@ class Vertices
     std::vector<VertexPart> vPartUpVec_;
     std::vector<VertexPart> vPartDownVec_;
     std::vector<size_t> indexPartUpVec_;
-    std::vector<size_t> indexPartDownVec_; // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the id of indexPartDownVec_.at(0)
-    std::vector<size_t> verticesKeysVec_;  // Each vertex has a unqique key identifying it
-    size_t key_;
+    std::vector<size_t> indexPartDownVec_;  // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the id of indexPartDownVec_.at(0)
+    std::vector<UInt64_t> verticesKeysVec_; // Each vertex has a unqique key identifying it
+    UInt64_t key_;
 
 }; // namespace Diagrammatic
 

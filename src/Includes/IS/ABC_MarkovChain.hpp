@@ -448,7 +448,7 @@ class ABC_MarkovChain
         AssertSizes();
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const size_t vertexKey = dataCT_->vertices_.GetKey(pp);
+        const UInt64_t vertexKey = dataCT_->vertices_.GetKey(pp);
         const size_t ppUp = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Up);
         const size_t ppDown = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Down);
         const auto x = dataCT_->vertices_.atUp(ppUp);
@@ -509,7 +509,7 @@ class ABC_MarkovChain
         assert(FVspin.n_elem >= 2);
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const size_t vertexKey = dataCT_->vertices_.GetKey(pp);
+        const UInt64_t vertexKey = dataCT_->vertices_.GetKey(pp);
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
