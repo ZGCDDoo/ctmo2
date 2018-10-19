@@ -275,20 +275,17 @@ void BlockRankOneUpgrade(Matrix_t &mk, const SiteVector_t &mkQ, const SiteVector
 }
 
 // Upgrade the matrix if the last matrix element of the inverse is known (STilde)
-void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &Q, const Matrix_t &R, const Matrix_t &STilde)
+void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &mkQ, const Matrix_t &R, const Matrix_t &STilde)
 {
-
+    //mkQ is the matrix given by the multiplication of mk and Q
     const unsigned int k = mk.n_cols();
     const unsigned int kp2 = k + 2;
     const double one = 1.0;
     const double zero = 0.0;
 
-    Matrix_t mkQ(mk.n_rows(), Q.n_cols());
-    mkQ.Zeros();
     Matrix_t Rmk(R.n_rows(), mk.n_cols());
     Rmk.Zeros();
 
-    DGEMM(one, zero, mk, Q, mkQ);
     DGEMM(one, zero, R, mk, Rmk);
 
     Matrix_t QTilde(mkQ.n_rows(), STilde.n_cols());
@@ -322,8 +319,6 @@ void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &Q, const Matrix_t &R, con
     mk(k, k + 1) = STilde(0, 1);
     mk(k + 1, k) = STilde(1, 0);
     mk(k + 1, k + 1) = STilde(1, 1);
-
-    return;
 }
 
 //pp row and col to remove

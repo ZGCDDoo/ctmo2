@@ -331,7 +331,9 @@ TEST(UtilitiesTest, BlockRankTwoUpgrade)
     STilde(1, 0) = m2Good(k + 1, k);
     STilde(1, 1) = m2Good(k + 1, k + 1);
 
-    BlockRankTwoUpgrade(m1Matrix, Q, R, STilde);
+    Matrix_t NQ(k, 2);
+    DGEMM(1.0, 0.0, m1Matrix, Q, NQ);
+    BlockRankTwoUpgrade(m1Matrix, NQ, R, STilde);
 
     // //Now m1Matrix shoukld contain the inverse of a2.
 

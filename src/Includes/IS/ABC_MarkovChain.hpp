@@ -351,21 +351,15 @@ class ABC_MarkovChain
                 R_(0, i) = GetGreenTau0(x, vPartI) * fauxIm1;
                 R_(1, i) = GetGreenTau0(y, vPartI) * fauxIm1;
             }
-            //     // std::cout << "In INsertvertex After loop " << std::endl;
 
-            //     //Watch out, we are calculating two times the matrix NQ, once here and once in ranktwoupgrade. In a next version, only calculate here, not in ranktwoupgrade.
-            //     // Matrix_t NQ(2 * kkold, 2); //NQ = N*Q
-            //     // MatrixVectorMult(nfdata_.N_, Q_, 1.0, NQUp);
+            Matrix_t NQ_(kkoldspin, 2); //NQ = N*Q
+            NQ_.Zeros();
+            DGEMM(1.0, 0.0, Nspin, Q_, NQ_);
 
-            //     // Matrix_t RNQ(2, 2); //R*NQ
-            //     //     // Matrix_t RNQ(2, 2); //R*NQ
-
-            Matrix_t sTilde = Matrix_t({{s00, s01}, {s10, s11}}) - LinAlg::DotRank2(R_, Nspin, Q_);
+            Matrix_t sTilde(2, 2);
+            DGEMM(-1.0, 0.0, R_, NQ_, sTilde);
+            sTilde += Matrix_t({{s00, s01}, {s10, s11}});
             sTilde.Inverse();
-
-            // std::cout << "\n\n";
-            // sTilde.Print();
-            // std::cout << "\n\n";
 
             const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / kknew * 1.0 / sTilde.Determinant();
             AssertSizes();
@@ -377,7 +371,7 @@ class ABC_MarkovChain
                     dataCT_->sign_ *= -1;
                 }
 
-                LinAlg::BlockRankTwoUpgrade(Nspin, Q_, R_, sTilde);
+                LinAlg::BlockRankTwoUpgrade(Nspin, NQ_, R_, sTilde);
                 FVspin.resize(kkoldspin + 2);
                 FVspin(kkoldspin) = faux;
                 FVspin(kkoldspin + 1) = fauxBar;
