@@ -1,0 +1,58 @@
+{
+    "AverageOrbitals": true,
+    "CLEANUPDATE": 100,
+    "EGreen": 100,
+    "ESelfCon": 200,
+    "HybFileUp": "hybUp112",
+    "IsOrbitalDiagonal": false,
+    "J_H": 0.75,
+    "K": 1.0,
+    "KMAX_UPD": 100,
+    "MEASUREMENT_TIME": 30,
+    "MEASURE_FILLING": true,
+    "NOrb": 2,
+    "NTAU": 5000,
+    "N_T_INV": 5,
+    "SEED": 679359358,
+    "THERMALIZATION_TIME": 2.0,
+    "THERM_FROM_CONFIG": false,
+    "U": 4.5,
+    "UPDATESMEAS": 200,
+    "UPrime": 3.0,
+    "WEIGHTSI": 0.0,
+    "WEIGHTSR": 0.0,
+    "beta": 6.666666666667,
+    "delta": 0.01,
+    "modelType": "Square2x2",
+    "mu": 4.875,
+    "solver": "Int",
+    "tParameters": {
+        "00": {
+            "t2x": 0.0,
+            "t2y": 0.0,
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "tx=-y": 0.0,
+            "tx=y": 0.0,
+            "ty": -1.0
+        },
+        "01": {
+            "t2x": 0.0,
+            "t2y": 0.0,
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "tx=-y": 0.0,
+            "tx=y": 0.0,
+            "ty": 0.0
+        },
+        "11": {
+            "t2x": 0.0,
+            "t2y": 0.0,
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "tx=-y": 0.0,
+            "tx=y": 0.0,
+            "ty": -1.0
+        }
+    }
+}

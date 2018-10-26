@@ -1,6 +1,9 @@
 {
     "modelType": "SIAM_Square",
-    "solver": "Aux",
+    "solver": "Int",
+    "NOrb": 1,
+    "IsOrbitalDiagonal": true,
+    "AverageOrbitals": true,
     "CLEANUPDATE": 100,
     "HybFileUp": "hybUp_moy_CD",
     "K": 1.0,
@@ -9,7 +12,7 @@
     "EGreen": 200,
     "NTAU": 5000,
     "SEED": 1467031834,
-    "THERMALIZATION_TIME": 5,
+    "THERMALIZATION_TIME": 0.5,
     "THERM_FROM_CONFIG": false,
     "U": 14.0,
     "J_H": 0.0,
@@ -34,24 +37,6 @@
     },
     "tParameters": {
         "00": {
-            "tIntra": 0.0,
-            "tx": -1.0,
-            "ty": -1.0,
-            "tx=y": 0.0,
-            "tx=-y": 0.0,
-            "t2x": 0.0,
-            "t2y": 0.0
-        },
-        "01": {
-            "tIntra": 0.0,
-            "tx": 0.0,
-            "ty": 0.0,
-            "tx=y": 0.0,
-            "tx=-y": 0.0,
-            "t2x": 0.0,
-            "t2y": 0.0
-        },
-        "11": {
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,

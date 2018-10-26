@@ -1,5 +1,7 @@
 {
     "NOrb": 1,
+    "IsOrbitalDiagonal": true,
+    "AverageOrbitals": true,
     "modelType": "Square2x2",
     "solver": "Int",
     "U": 5.0,
