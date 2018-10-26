@@ -101,16 +101,14 @@ class IOResult
         //greenUp.print();
         //greenDown.print();
         const size_t PRECISION_OUT = 10;
+
         SaveTabular("greenUp", greenUp, beta, PRECISION_OUT, false);
-#ifdef AFM
+
         SaveTabular("greenDown", greenDown, beta, PRECISION_OUT, false);
-#endif
 
         //Average the obsScale_
         SaveFillingMatrixs(fillingResultUp, fillingResultDown);
         StatsJsons(isResultVec);
-
-        return;
     }
 
     static void StatsJsons(const std::vector<Result::ISResult> &isResultVec)
@@ -155,8 +153,6 @@ class IOResult
         std::ofstream fout("Obs.json");
         fout << std::setw(4) << jjResult << std::endl;
         fout.close();
-
-        return;
     }
 
     static void SaveTabular(const std::string &fname, const ClusterMatrixCD_t &greenTab, const double &beta,
@@ -188,7 +184,6 @@ class IOResult
         {
             assert(greenTab.save(fname + std::string(".arma"), arma::arma_ascii));
         }
-        return;
     }
 
     static void SaveFillingMatrixs(std::valarray<double> fillingResultUp, std::valarray<double> fillingResultDown)

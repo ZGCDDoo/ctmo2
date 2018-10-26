@@ -1,15 +1,17 @@
 {
+    "NOrb": 3,
+    "AverageOrbitals": false,
     "modelType": "SIAM_Square",
     "solver": "Aux",
     "CLEANUPDATE": 100,
-    "HybFileUp": "hybUp_moy_CD",
+    "HybFileUp": "hyb_3Orb",
     "K": 1.0,
-    "MEASUREMENT_TIME": 10,
+    "MEASUREMENT_TIME": 10.0,
     "MEASURE_FILLING": true,
     "EGreen": 200,
     "NTAU": 5000,
     "SEED": 1467031834,
-    "THERMALIZATION_TIME": 5,
+    "THERMALIZATION_TIME": 0.5,
     "THERM_FROM_CONFIG": false,
     "U": 14.0,
     "J_H": 0.0,
@@ -51,6 +53,15 @@
             "t2x": 0.0,
             "t2y": 0.0
         },
+        "02": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
         "11": {
             "tIntra": 0.0,
             "tx": -1.0,
@@ -59,6 +70,25 @@
             "tx=-y": 0.0,
             "t2x": 0.0,
             "t2y": 0.0
+        },
+        "12": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "22": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
         }
-    }
+    },
+    "IsOrbitalDiagonal": false
 }

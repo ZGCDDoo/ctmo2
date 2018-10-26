@@ -48,11 +48,12 @@ class HybridizationMat
     void PatchHF(const size_t &NN, const double &beta)
     {
         const size_t nrows = data_.n_rows;
+        const size_t NNBefore = n_slices();
         data_.resize(nrows, nrows, NN);
 
-        for (size_t nn = n_slices(); nn < NN; nn++)
+        for (size_t nn = NNBefore; nn < NN; nn++)
         {
-            cd_t iwn = cd_t(0.0, (2.0 * nn + 1.0) * M_PI / beta);
+            const cd_t iwn(0.0, (2.0 * nn + 1.0) * M_PI / beta);
             data_.slice(nn) = fm_ / iwn;
         }
     }
@@ -107,7 +108,7 @@ class GreenCluster0Mat
 
         for (size_t nn = 0; nn < ll; nn++)
         {
-            const cd_t zz = cd_t(mu_, (2.0 * nn + 1.0) * M_PI / beta_);
+            const cd_t zz(mu_, (2.0 * nn + 1.0) * M_PI / beta_);
             const ClusterMatrixCD_t tmp = zz * EYE - tLoc_ - hyb_.slice(nn);
             data_.slice(nn) = tmp.i();
         }
@@ -161,6 +162,7 @@ class GreenCluster0Mat
     ClusterMatrixCD_t sm() const { return sm_; };
     ClusterMatrixCD_t tm() const { return tm_; };
     SiteVectorCD_t tube(const size_t &s1, const size_t s2) const { return data_.tube(s1, s2); };
+
     double beta() const { return beta_; };
     size_t n_rows() const { return data_.n_rows; };
     size_t n_cols() const { return data_.n_cols; };

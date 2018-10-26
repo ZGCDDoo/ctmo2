@@ -30,6 +30,7 @@ using Sign_t = int;
 using Site_t = size_t;
 using Tau_t = double;
 using Orbital_t = size_t;
+using UInt64_t = unsigned long long int;
 
 using SuperSite_t = std::pair<size_t, size_t>; //site, then orbital number
 
@@ -77,6 +78,12 @@ std::string GetSpinName(const FermionSpin_t &spin)
 
 size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NOrb)
 {
+	// std::cout << "o1, o2 =  " << o1 << ", " << o2 << std::endl;
+	// std::cout << "NOrb =  " << NOrb << std::endl;
+
+	assert(o1 < NOrb);
+	assert(o2 < NOrb);
+
 	size_t indepOrbitalIndex = 0;
 	const std::pair<size_t, size_t> pairTarget = o1 < o2 ? std::make_pair(o1, o2) : std::make_pair(o2, o1);
 
@@ -93,60 +100,9 @@ size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NO
 		}
 	}
 
-	throw std::runtime_error("Miseria, GetIndepOrbitalIndex problem. Stupido !");
-	return 999;
+	assert(o1 == 0);
+	assert(o2 == 0);
+	return 0;
 }
-
-class Vertex
-{
-
-  public:
-	Vertex(){};
-	Vertex(const Tau_t &tau, const Site_t &site, const AuxSpin_t &aux) : tau_(tau),
-																		 site_(site),
-																		 aux_(aux) {}
-
-	const Vertex &operator=(const Vertex &vertex)
-	{
-		if (this == &vertex)
-			return *this; //évite les boucles infinies
-		tau_ = vertex.tau_;
-		site_ = vertex.site_;
-		aux_ = vertex.aux_;
-
-		return *this;
-	}
-
-	// Getters
-	Tau_t tau() const { return tau_; };
-	Site_t site() const { return site_; };
-	AuxSpin_t aux() const { return aux_; };
-
-	//Setters
-	void SetAux(AuxSpin_t aux)
-	{
-		aux_ = aux;
-	}
-
-	void FlipAux() { aux_ == AuxSpin_t::Up ? aux_ = AuxSpin_t::Down : aux_ = AuxSpin_t::Up; };
-
-	double Ising()
-	{
-		if (aux_ == AuxSpin_t::Zero)
-		{
-			return 0.0;
-		}
-		return (aux_ == AuxSpin_t::Up ? 1.0 : -1.0);
-	};
-
-  private:
-	Tau_t tau_;
-	Site_t site_;
-	AuxSpin_t aux_;
-};
-
-class VertexBuilder
-{
-};
 
 } // namespace Utilities

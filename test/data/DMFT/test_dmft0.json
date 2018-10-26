@@ -1,5 +1,6 @@
 {
     "NOrb": 1,
+    "UPrime": 0.0,
     "tParameters": {
         "00": {
             "tIntra": 0.0,
@@ -27,6 +28,7 @@
     "MEASUREMENT_TIME": 3,
     "CLEANUPDATE": 5,
     "U": 3.0,
+    "J_H": 0.0,
     "mu": 1.10,
     "delta": 0.01,
     "n": 0.5,
@@ -40,5 +42,7 @@
     "ESelfCon": 200,
     "WEIGHTSR": 0.0,
     "WEIGHTSI": 0.0,
-    "N_T_INV": 5
+    "N_T_INV": 5,
+    "IsOrbitalDiagonal": true,
+    "AverageOrbitals": false
 }

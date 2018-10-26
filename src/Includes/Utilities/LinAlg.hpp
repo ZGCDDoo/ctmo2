@@ -275,20 +275,17 @@ void BlockRankOneUpgrade(Matrix_t &mk, const SiteVector_t &mkQ, const SiteVector
 }
 
 // Upgrade the matrix if the last matrix element of the inverse is known (STilde)
-void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &Q, const Matrix_t &R, const Matrix_t &STilde)
+void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &mkQ, const Matrix_t &R, const Matrix_t &STilde)
 {
-
+    //mkQ is the matrix given by the multiplication of mk and Q
     const unsigned int k = mk.n_cols();
     const unsigned int kp2 = k + 2;
     const double one = 1.0;
     const double zero = 0.0;
 
-    Matrix_t mkQ(mk.n_rows(), Q.n_cols());
-    mkQ.Zeros();
     Matrix_t Rmk(R.n_rows(), mk.n_cols());
     Rmk.Zeros();
 
-    DGEMM(one, zero, mk, Q, mkQ);
     DGEMM(one, zero, R, mk, Rmk);
 
     Matrix_t QTilde(mkQ.n_rows(), STilde.n_cols());
@@ -322,8 +319,6 @@ void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &Q, const Matrix_t &R, con
     mk(k, k + 1) = STilde(0, 1);
     mk(k + 1, k) = STilde(1, 0);
     mk(k + 1, k + 1) = STilde(1, 1);
-
-    return;
 }
 
 //pp row and col to remove
@@ -384,10 +379,51 @@ void BlockDowngrade(Matrix_t &m1, const size_t &pp, const size_t &nn)
         C = GetSubMat(kkmnn, 0, kk, kkmnn, m1);
         D = GetSubMat(kkmnn, kkmnn, kk, kk, m1);
 
-        std::cout << "B.n_rows = " << B.n_rows() << std::endl;
+        // std::cout << "B.n_rows = " << B.n_rows() << std::endl;
         D.Inverse();
-        std::cout << " D.n_rows() = " << D.n_rows() << std::endl;
-        std::cout << " kkmnn = " << kkmnn << std::endl;
+        // std::cout << " D.n_rows() = " << D.n_rows() << std::endl;
+        // std::cout << " kkmnn = " << kkmnn << std::endl;
+
+        Matrix_t DInverseC(nn, kkmnn);
+        DInverseC.Zeros();
+
+        DGEMM(1.0, 0.0, D, C, DInverseC);
+
+        m1.Resize(kkmnn, kkmnn);
+        DGEMM(-1.0, 1.0, B, DInverseC, m1);
+    }
+}
+
+void BlockRankTwoDowngrade(Matrix_t &m1)
+{
+
+    //pp = row and col number to start remove, is supposed here that it is the last two rows and columns.
+    //nn = number of rows and col to remove = 2
+    // const unsigned int inc = 1;
+    const unsigned int nn = 2;
+    const unsigned int kk = m1.n_rows();
+    assert(kk >= nn);
+    const unsigned int kkmnn = kk - nn;
+    // const unsigned int ld_m1 = m1.mem_n_rows();
+
+    if (kkmnn == 0)
+    {
+        m1.Clear();
+    }
+    else
+    {
+
+        Matrix_t B; //right-upper block of m1, size = kkmnn x nn
+        Matrix_t C; //left-lower block of m1, size = nn x kkmnn
+        Matrix_t D; //lower-right block of m1, size = nn x nn
+        B = GetSubMat(0, kkmnn, kkmnn, kk, m1);
+        C = GetSubMat(kkmnn, 0, kk, kkmnn, m1);
+        D = GetSubMat(kkmnn, kkmnn, kk, kk, m1);
+
+        // std::cout << "B.n_rows = " << B.n_rows() << std::endl;
+        D.Inverse();
+        // std::cout << " D.n_rows() = " << D.n_rows() << std::endl;
+        // std::cout << " kkmnn = " << kkmnn << std::endl;
 
         Matrix_t DInverseC(nn, kkmnn);
         DInverseC.Zeros();

@@ -3,7 +3,12 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "../Utilities/Matrix.hpp"
-#include "../Utilities/Vertices.hpp"
+
+#ifdef GREEN_STYLE
+#include "../Utilities/VerticesSimple_GreenStyle.hpp"
+#else
+#include "../Utilities/VerticesSimple.hpp"
+#endif
 
 namespace Markov
 {
@@ -33,7 +38,6 @@ template <typename TIOModel, typename TModel>
 class GreenTauMesure;
 // end of Obs befriend
 
-using Vertex = Utilities::Vertex;
 using namespace LinAlg;
 
 template <typename TIOModel, typename TModel>

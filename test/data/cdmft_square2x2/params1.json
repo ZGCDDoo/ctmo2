@@ -1,6 +1,9 @@
 {
-    "NOrb": 1,
-    "U": 5.0,
+    "NOrb": 2,
+    "AverageOrbitals": false,
+    "U": 4.0,
+    "J_H": 1.0,
+    "UPrime": 3.0,
     "EGreen": 60,
     "SEED": 25105,
     "PROBFLIP": 0.25,
@@ -11,9 +14,27 @@
     "UPDATESMEAS": 300,
     "KMAX_UPD": 100,
     "CLEANUPDATE": 100,
-    "HybFileUp": "../test/data/cdmft_square2x2/hyb_Pat_R23",
+    "HybFileUp": "../test/data/cdmft_square2x2/hyb_2Orb",
     "tParameters": {
         "00": {
+            "tIntra": 0.0,
+            "tx": -1.0,
+            "ty": -1.0,
+            "tx=y": 0.30,
+            "tx=-y": 0.30,
+            "t2x": -0.20,
+            "t2y": -0.20
+        },
+        "01": {
+            "tIntra": 0.0,
+            "tx": 0.0,
+            "ty": 0.0,
+            "tx=y": 0.0,
+            "tx=-y": 0.0,
+            "t2x": 0.0,
+            "t2y": 0.0
+        },
+        "11": {
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,
@@ -29,7 +50,7 @@
             "J_H": 0.0
         }
     },
-    "beta": 50.0,
+    "beta": 5.0,
     "NTAU": 5000,
     "MEASURE_FILLING": true,
     "K": 1.0,
@@ -38,5 +59,6 @@
     "WEIGHTSR": 0.0,
     "WEIGHTSI": 0.0,
     "ESelfCon": 200,
-    "N_T_INV": 5
+    "N_T_INV": 5,
+    "IsOrbitalDiagonal": false
 }

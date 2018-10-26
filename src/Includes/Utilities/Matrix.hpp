@@ -81,8 +81,8 @@ class Matrix
 
     void AssertSizes(const size_t &i, const size_t &j) const
     {
-        assert(i <= n_rows_);
-        assert(j <= n_cols_);
+        assert(i < n_rows_);
+        assert(j < n_cols_);
     }
 
     inline T &operator()(const size_t &i, const size_t &j)
@@ -192,6 +192,21 @@ class Matrix
         //Change this to use dswap_ of blas, not a priority
         mat_.swap_cols(c1, c2);
         mat_.swap_rows(c1, c2);
+    }
+
+    void SwapToEnd(const size_t &pp)
+    {
+        //Insert the row and col at index pp to the end of the matrix
+        AssertSizes(pp, pp);
+
+        for (size_t ii = pp; ii < n_rows() - 1; ii++)
+        {
+            mat_.swap_cols(ii, ii + 1);
+        }
+        for (size_t ii = pp; ii < n_rows() - 1; ii++)
+        {
+            mat_.swap_rows(ii, ii + 1);
+        }
     }
 
     void Zeros()
@@ -306,6 +321,18 @@ class Matrix
 
     void Inverse();
 
+    T Determinant()
+    {
+        mat_.resize(n_rows_, n_cols_);
+        return arma::det(mat_);
+    }
+
+    bool HasInfOrNan()
+    {
+        mat_.resize(n_rows_, n_cols_);
+        return (mat_.has_nan() || mat_.has_inf());
+    }
+
   private:
     size_t n_rows_; //the real size of the matrix
     size_t n_cols_;
@@ -361,7 +388,7 @@ template <>
 void Matrix<double>::CopyVectorInCol(arma::Col<double> &col, const size_t &p)
 {
     assert(col.n_elem == n_rows_);
-    assert(p <= n_cols_);
+    assert(p < n_cols_);
 
     const unsigned int inc = 1;
     const unsigned int k = n_rows_;
@@ -373,7 +400,7 @@ template <>
 void Matrix<double>::CopyVectorInRow(arma::Col<double> &row, const size_t &p)
 {
     assert(row.n_elem == n_cols_);
-    assert(p <= n_rows_);
+    assert(p < n_rows_);
 
     const unsigned int inc = 1;
     const unsigned int k = n_cols_;

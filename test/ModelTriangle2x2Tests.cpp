@@ -5,11 +5,6 @@
 #include "TestTools.hpp"
 
 const double DELTA = 1e-7;
-const double DELTA_SMALL = 1e-11;
-const double delta = 0.01;
-const double U = 3.0;
-const double Beta = 10.0;
-const double mu = 1.8941850792671628;
 const size_t Nc = 4;
 const std::string fname = "../test/data/cdmft_triangle/testtriangle.json";
 
@@ -24,9 +19,6 @@ TEST(ModelTriangle2DTest, Init)
     fin.close();
     Model_t modelTriangle(jj);
 
-    ASSERT_NEAR(modelTriangle.U(), U, DELTA_SMALL);
-    ASSERT_NEAR(modelTriangle.mu(), mu, DELTA_SMALL);
-    ASSERT_NEAR(modelTriangle.auxMu(), mu - U / 2.0, DELTA_SMALL);
 }
 
 //Test that the model gives the correct thing for a simulation done by CT-Hyb patrick for the parameters given in testtriangle.json

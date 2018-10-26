@@ -1,5 +1,7 @@
 {
     "NOrb": 1,
+    "AverageOrbitals": false,
+    "UPrime": 0.0,
     "SEED": 53201,
     "PROBFLIP": 0.25,
     "beta": 10.2,
@@ -26,5 +28,6 @@
     "WEIGHTSR": 0.0,
     "WEIGHTSI": 0.0,
     "ESelfCon": 200,
-    "N_T_INV": 5
+    "N_T_INV": 5,
+    "IsOrbitalDiagonal": true
 }

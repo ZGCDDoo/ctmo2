@@ -156,18 +156,6 @@ TEST(UtilitiesTest, DGEMM)
     }
 }
 
-TEST(UtilitiesTest, Vertex)
-{
-
-    Utilities::Vertex vertex(1.1, 2, AuxSpin_t::Up);
-    ASSERT_DOUBLE_EQ(vertex.tau(), 1.1);
-    ASSERT_EQ(vertex.site(), 2);
-    ASSERT_EQ(vertex.aux(), AuxSpin_t::Up);
-
-    vertex.FlipAux();
-    ASSERT_EQ(vertex.aux(), AuxSpin_t::Down);
-}
-
 TEST(UtilitiesTest, TriangularSolve)
 {
 
@@ -343,7 +331,9 @@ TEST(UtilitiesTest, BlockRankTwoUpgrade)
     STilde(1, 0) = m2Good(k + 1, k);
     STilde(1, 1) = m2Good(k + 1, k + 1);
 
-    BlockRankTwoUpgrade(m1Matrix, Q, R, STilde);
+    Matrix_t NQ(k, 2);
+    DGEMM(1.0, 0.0, m1Matrix, Q, NQ);
+    BlockRankTwoUpgrade(m1Matrix, NQ, R, STilde);
 
     // //Now m1Matrix shoukld contain the inverse of a2.
 
@@ -469,8 +459,7 @@ TEST(UtilitiesTest, BlockRankDownGrade)
     a1.randu();
 
     ClusterMatrix_t m1 = a1.i();
-    //a2 is obtained from a1 by removing vertex 2 = col and row 2
-    // and vertex 11 (counting from 0)
+
     ClusterMatrix_t a2 = a1;
     a2.swap_rows(kk - 1, 3);
     a2.swap_cols(kk - 1, 3);
@@ -501,6 +490,48 @@ TEST(UtilitiesTest, BlockRankDownGrade)
     }
 }
 
+TEST(UtilitiesTest, BlockRankTwoDownGrade)
+{
+    const size_t kk = 40;
+    const size_t pp1 = 11;
+    const size_t pp2 = 30;
+    ClusterMatrix_t a1(kk, kk);
+    a1.randu();
+
+    ClusterMatrix_t m1 = a1.i();
+
+    ClusterMatrix_t a2 = a1;
+    a2.swap_rows(kk - 1, pp2);
+    a2.swap_cols(kk - 1, pp2);
+    a2.swap_rows(kk - 2, pp1);
+    a2.swap_cols(kk - 2, pp1);
+    a2.shed_row(kk - 1);
+    a2.shed_col(kk - 1);
+    a2.shed_row(kk - 2);
+    a2.shed_col(kk - 2);
+
+    ClusterMatrix_t m2Good = a2.i();
+
+    Matrix_t m1Matrix(m1);
+    m1Matrix.SwapRowsAndCols(kk - 2, pp1);
+    m1Matrix.SwapRowsAndCols(kk - 1, pp2);
+
+    BlockRankTwoDowngrade(m1Matrix);
+
+    //std::cout << "m2Good " << std::endl;
+    //m2Good.print();
+    //std::cout << "m2Test " << std::endl;
+    //m1Matrix.Print();
+    for (size_t i = 0; i < m1Matrix.n_rows(); i++)
+    {
+        for (size_t j = 0; j < m1Matrix.n_rows(); j++)
+        {
+            // std::cout << "i, j " << i << ", " << j << std::endl;
+            ASSERT_NEAR(m2Good(i, j), m1Matrix(i, j), DELTA);
+        }
+    }
+}
+
 TEST(UtilitiesTest, BlockRankDownGradeVers2)
 {
     const size_t kk = 40;
@@ -510,8 +541,7 @@ TEST(UtilitiesTest, BlockRankDownGradeVers2)
     a1.randu();
 
     ClusterMatrix_t m1 = a1.i();
-    //a2 is obtained from a1 by removing vertex 2 = col and row 2
-    // and vertex 11 (counting from 0)
+
     ClusterMatrix_t a2 = a1;
     a2.swap_rows(kk - 1, pp + 1);
     a2.swap_cols(kk - 1, pp + 1);

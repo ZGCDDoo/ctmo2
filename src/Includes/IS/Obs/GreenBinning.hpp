@@ -9,7 +9,7 @@ namespace Markov
 {
 namespace Obs
 {
-const size_t N_BIN_TAU = 50000;
+const size_t N_BIN_TAU = 100000;
 
 template <typename TIOModel, typename TModel>
 class GreenBinning
@@ -25,13 +25,14 @@ class GreenBinning
                                                               NOrb_(jj["NOrb"].get<size_t>())
     {
 
-        const size_t LL = ioModel_.indepSites().size();
+        const size_t LL = ioModel_.GetNIndepSuperSites(NOrb_);
+        // std::cout << " ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
         M0Bins_.resize(LL);
         M1Bins_.resize(LL);
         M2Bins_.resize(LL);
         M3Bins_.resize(LL);
 
-        for (size_t ii = 0; ii < M0Bins_.size(); ii++)
+        for (size_t ii = 0; ii < M0Bins_.size(); ++ii)
         {
             M0Bins_.at(ii).resize(N_BIN_TAU, 0.0);
             M1Bins_.at(ii).resize(N_BIN_TAU, 0.0);
@@ -45,20 +46,20 @@ class GreenBinning
     void MeasureGreenBinning(const Matrix<double> &Mmat)
     {
 
-        const size_t N = dataCT_->vertices_.size();
+        const size_t kkSpin = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
         const double DeltaInv = N_BIN_TAU / dataCT_->beta_;
-        if (N)
+        if (kkSpin)
         {
-            for (size_t p1 = 0; p1 < N; p1++)
+            for (size_t p1 = 0; p1 < kkSpin; ++p1)
             {
-                for (size_t p2 = 0; p2 < N; p2++)
+                for (size_t p2 = 0; p2 < kkSpin; ++p2)
                 {
-                    const size_t s1 = dataCT_->vertices_.atUp(p1).site();
-                    const size_t s2 = dataCT_->vertices_.atUp(p2).site();
-                    const size_t ll = ioModel_.FindIndepSiteIndex(s1, s2);
+                    const SuperSite_t s1 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).superSite() : dataCT_->vertices_.atDown(p1).superSite();
+                    const SuperSite_t s2 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p2).superSite() : dataCT_->vertices_.atDown(p2).superSite();
+                    const size_t ll = ioModel_.FindIndepSuperSiteIndex(s1, s2, NOrb_);
                     double temp = static_cast<double>(dataCT_->sign_) * Mmat(p1, p2);
 
-                    double tau = dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau();
+                    double tau = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau() : dataCT_->vertices_.atDown(p1).tau() - dataCT_->vertices_.atDown(p2).tau();
                     if (tau < 0.0)
                     {
                         temp *= -1.0;
@@ -85,23 +86,27 @@ class GreenBinning
         mpiUt::Print("Start of GreenBinning.FinalizeGreenBinning()");
 
         const double dTau = dataCT_->beta_ / N_BIN_TAU;
-        SiteVectorCD_t indep_M_matsubara_sampled(ioModel_.indepSites().size());
+        SiteVectorCD_t indep_M_matsubara_sampled(ioModel_.GetNIndepSuperSites(NOrb_));
         const ClusterCubeCD_t green0CubeMatsubara = spin_ == FermionSpin_t::Up ? modelPtr_->greenCluster0MatUp().data() : modelPtr_->greenCluster0MatDown().data();
-        ClusterCubeCD_t greenCube(ioModel_.Nc, ioModel_.Nc, NMat_);
+        ClusterCubeCD_t greenCube(NOrb_ * ioModel_.Nc, NOrb_ * ioModel_.Nc, NMat_);
         greenCube.zeros();
 
-        for (size_t n = 0; n < NMat_; n++)
+        // std::cout << "ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
+
+        for (size_t n = 0; n < NMat_; ++n)
         {
             const double omega_n = M_PI * (2.0 * n + 1.0) / dataCT_->beta_;
             const cd_t iomega_n(0.0, omega_n);
             const cd_t fact = std::exp(iomega_n * dTau);
             const double lambda = 2.0 * std::sin(omega_n * dTau / 2.0) / (dTau * omega_n * (1.0 - omega_n * omega_n * dTau * dTau / 24.0) * NMeas);
 
-            for (size_t ll = 0; ll < ioModel_.indepSites().size(); ll++)
+            for (size_t ll = 0; ll < ioModel_.GetNIndepSuperSites(NOrb_); ++ll)
             {
+                // std::cout << "Here 1 " << std::endl;
                 cd_t temp_matsubara = 0.0;
 
-                cd_t exp_factor = std::exp(iomega_n * dTau / 2.0) / (static_cast<double>(ioModel_.nOfAssociatedSites().at(ll))); //watch out important factor!
+                const size_t llSite = ll % ioModel_.indepSites().size();                                                             // ll / ioModel_.indepSites().size();
+                cd_t exp_factor = std::exp(iomega_n * dTau / 2.0) / (static_cast<double>(ioModel_.nOfAssociatedSites().at(llSite))); //watch out important factor!
                 for (size_t ii = 0; ii < N_BIN_TAU; ii++)
                 {
                     cd_t coeff = lambda * exp_factor;
@@ -115,11 +120,12 @@ class GreenBinning
                 }
                 indep_M_matsubara_sampled(ll) = temp_matsubara;
             }
-
+            // std::cout << "Here 2 " << std::endl;
             const ClusterMatrixCD_t dummy1 = ioModel_.IndepToFull(indep_M_matsubara_sampled, NOrb_);
             const ClusterMatrixCD_t green0 = green0CubeMatsubara.slice(n);
 
             greenCube.slice(n) = green0 - green0 * dummy1 * green0 / (dataCT_->beta_ * signMeas);
+            // std::cout << "Here 3 " << std::endl;
         }
 
         greenCube_ = greenCube; //in case it is needed later on

@@ -1,19 +1,20 @@
 {
+    "NOrb": 2,
     "modelType": "SIAM_Square",
-    "solver": "Aux",
+    "solver": "Int",
     "CLEANUPDATE": 100,
-    "HybFileUp": "hybUp_moy_CD",
+    "HybFileUp": "../test/data/DMFT/hyb_2Orb",
     "K": 1.0,
-    "MEASUREMENT_TIME": 10,
+    "MEASUREMENT_TIME": 0.010,
     "MEASURE_FILLING": true,
     "EGreen": 200,
     "NTAU": 5000,
     "SEED": 1467031834,
-    "THERMALIZATION_TIME": 5,
+    "THERMALIZATION_TIME": 0.05,
     "THERM_FROM_CONFIG": false,
-    "U": 14.0,
-    "J_H": 0.0,
-    "UPrime": 0.0,
+    "U": 4.0,
+    "J_H": 1.0,
+    "UPrime": 3.0,
     "UPDATESMEAS": 50,
     "KMAX_UPD": 100,
     "beta": 16.67,
@@ -60,5 +61,7 @@
             "t2x": 0.0,
             "t2y": 0.0
         }
-    }
+    },
+    "IsOrbitalDiagonal": false,
+    "AverageOrbitals": false
 }

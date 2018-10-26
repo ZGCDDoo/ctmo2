@@ -5,9 +5,8 @@
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/GreenMat.hpp"
 #include "../Utilities/IO.hpp"
+#include "UTensorSimple.hpp"
 #include "HybFMAndTLoc.hpp"
-
-using Vertex = Utilities::Vertex;
 
 namespace Models
 {
@@ -24,13 +23,13 @@ class ABC_Model_2D
 
       public:
         static const size_t Nc;
+        const double MIN_EHYB = 300;
 
         ABC_Model_2D(const Json &jjSim) : ioModel_(),
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
                                           U_(jjSim["U"].get<double>()),
-                                          delta_(jjSim["delta"].get<double>()),
                                           beta_(jjSim["beta"].get<double>()),
                                           mu_(jjSim["mu"].get<double>()),
                                           NOrb_(jjSim["NOrb"].get<size_t>())
@@ -47,14 +46,13 @@ class ABC_Model_2D
 #endif
                 }
 
-//tLoc and hybFM should have been calculated by now.
-#ifdef DCA
-                assert(tLoc_.load("tloc_K.arma"));
-                assert(hybFM_.load("hybFM_K.arma"));
-#else
-                assert(tLoc_.load("tloc.arma"));
-                assert(hybFM_.load("hybFM.arma"));
-#endif
+                //tLoc and hybFM should have been calculated by now.
+
+                Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
+
+                assert(tLoc_.load(mapNames["tlocFile"]));
+                assert(hybFM_.load(mapNames["hybFMFile"]));
+
                 FinishConstructor(jjSim);
                 mpiUt::Print(" End of ABC_Model Constructor ");
         };
@@ -76,15 +74,15 @@ class ABC_Model_2D
                 const size_t NHyb = hybtmpUp.n_slices;
                 const double factNHyb = 3.0;
                 const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb),
-                                                        0.5 * (300.0 * beta_ / M_PI - 1.0));
-                hybtmpUp.resize(Nc, Nc, NHyb_HF);
+                                                        0.5 * (MIN_EHYB * beta_ / M_PI - 1.0));
+                hybtmpUp.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
 #ifdef AFM
-                hybtmpDown.resize(Nc, Nc, NHyb_HF);
+                hybtmpDown.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
 #endif
 
                 for (size_t nn = NHyb; nn < NHyb_HF; nn++)
                 {
-                        cd_t iwn(0.0, (2.0 * nn + 1.0) * M_PI / beta_);
+                        const cd_t iwn(0.0, (2.0 * nn + 1.0) * M_PI / beta_);
                         hybtmpUp.slice(nn) = hybFM_ / iwn;
 #ifdef AFM
                         hybtmpDown.slice(nn) = hybtmpUp.slice(nn);
@@ -97,7 +95,8 @@ class ABC_Model_2D
 #endif
 
                 //this is in fact greencluster tilde.
-                this->greenCluster0MatUp_ = GreenMat::GreenCluster0Mat(this->hybridizationMatUp_, this->tLoc_, this->auxMu(), this->beta_);
+                const UTensor ut(jjSim);
+                this->greenCluster0MatUp_ = GreenMat::GreenCluster0Mat(this->hybridizationMatUp_, this->tLoc_, ut.auxMu(), this->beta_);
 #ifdef DCA
                 greenCluster0MatUp_.FourierTransform(h0_.RSites(), h0_.KWaveVectors());
 #endif
@@ -110,7 +109,7 @@ class ABC_Model_2D
                 this->greenCluster0MatDown_ = greenCluster0MatUp_;
 #endif
 #ifdef AFM
-                this->greenCluster0MatDown_ = GreenMat::GreenCluster0Mat(this->hybridizationMatDown_, this->tLoc_, this->auxMu(), this->beta_);
+                this->greenCluster0MatDown_ = GreenMat::GreenCluster0Mat(this->hybridizationMatDown_, this->tLoc_, ut.auxMu(), this->beta_);
 #endif
         }
 
@@ -130,7 +129,6 @@ class ABC_Model_2D
         TIOModel const ioModel() const { return ioModel_; };
 
         double auxU() const { return U_ / 2.0; };
-        double auxMu() const { return mu_ - U_ / 2.0; };
 
       protected:
         TIOModel ioModel_;
@@ -144,7 +142,6 @@ class ABC_Model_2D
         ClusterMatrixCD_t tLoc_;
 
         const double U_;
-        const double delta_;
         const double beta_;
         const double mu_;
         const size_t NOrb_;
