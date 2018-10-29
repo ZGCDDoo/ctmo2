@@ -16,17 +16,17 @@ public:
   ~MarkovChain(){};
 
   //Overriding
-  double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
+  // double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
 
 #ifdef GREEN_STYLE
-  double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override
+  double FAux(const VertexPart &vp) override
   {
-    return (auxH_.auxValue(spin, aux));
+    return (auxH_.auxValue(vp.spin(), vp.aux()));
   }
 #else
-  double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) override
+  double FAux(const VertexPart &vp) override
   {
-    return (auxH_.FAux(spin, aux));
+    return (auxH_.FAux(vp));
   }
 #endif
 

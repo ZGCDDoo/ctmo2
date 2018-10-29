@@ -104,8 +104,8 @@ class ABC_MarkovChain
         return dataCT_->beta_;
     };
 
-    virtual double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &vauxFrom) = 0;
-    virtual double FAux(const FermionSpin_t &spin, const AuxSpin_t &aux) = 0;
+    // virtual double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) = 0;
+    virtual double FAux(const VertexPart &vPart) = 0;
 
     // void ThermalizeFromConfig()
     // {
@@ -178,7 +178,7 @@ class ABC_MarkovChain
 
     void CalculateUpdDataInsertDiffSpin(const VertexPart &x)
     {
-        const double faux = FAux(x.spin(), x.aux());
+        const double faux = FAux(x);
         const double fauxM1 = faux - 1.0;
 
         if (x.spin() == FermionSpin_t::Up)
@@ -237,12 +237,12 @@ class ABC_MarkovChain
         const size_t kknewUp = kkoldUp + 1;
         const size_t kkoldDown = nfdata_.Ndown_.n_rows();
         const size_t kknewDown = kkoldDown + 1;
-        const double fauxup = FAux(vertexPartUp.spin(), vertexPartUp.aux());
-        const double fauxdown = FAux(vertexPartDown.spin(), vertexPartDown.aux());
+        const double fauxup = FAux(vertexPartUp);
+        const double fauxdown = FAux(vertexPartDown);
 
-        assert(vertexPartUp.spin() == FermionSpin_t::Up);
-        assert(vertexPartDown.spin() == FermionSpin_t::Down);
-        assert(std::abs(vertexPartUp.tau() - vertexPartDown.tau()) < 1e-10);
+        // assert(vertexPartUp.spin() == FermionSpin_t::Up);
+        // assert(vertexPartDown.spin() == FermionSpin_t::Down);
+        // assert(std::abs(vertexPartUp.tau() - vertexPartDown.tau()) < 1e-10);
 
         CalculateUpdDataInsertDiffSpin(vertexPartUp);
         CalculateUpdDataInsertDiffSpin(vertexPartDown);
@@ -316,10 +316,9 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        const double faux = FAux(x.spin(), vertex.aux());
+        const double faux = FAux(x);
         const double fauxM1 = faux - 1.0;
-        const FermionSpin_t spinBar = (x.spin() == FermionSpin_t::Up) ? FermionSpin_t::Down : FermionSpin_t::Up;
-        const double fauxBar = FAux(spinBar, vertex.aux());
+        const double fauxBar = 1.0 - faux;
         const double fauxM1Bar = fauxBar - 1.0;
 
         const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
@@ -424,7 +423,7 @@ class ABC_MarkovChain
             const Vertex vertex = dataCT_->vertices_.at(pp);
             const VertexPart x = vertex.vStart();
             const VertexPart y = vertex.vEnd();
-            assert(std::abs(x.tau() - y.tau()) < 1e-10);
+            // assert(std::abs(x.tau() - y.tau()) < 1e-10);
 
             if (x.spin() == y.spin())
             {
@@ -453,7 +452,7 @@ class ABC_MarkovChain
         const size_t ppDown = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Down);
         const auto x = dataCT_->vertices_.atUp(ppUp);
         const auto y = dataCT_->vertices_.atDown(ppDown);
-        assert(std::abs(x.tau() - y.tau()) < 1e-10);
+        // assert(std::abs(x.tau() - y.tau()) < 1e-10);
         assert(x.spin() == FermionSpin_t::Up);
         assert(y.spin() == FermionSpin_t::Down);
 
@@ -514,7 +513,7 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        assert(std::abs(x.tau() - y.tau()) < 1e-10);
+        // assert(std::abs(x.tau() - y.tau()) < 1e-10);
         assert(x.orbital() != y.orbital());
         assert(x.site() == y.site());
 
