@@ -5,6 +5,8 @@
     "modelType": "Square2x2",
     "solver": "Int",
     "U": 5.0,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "J_H": 0.0,
     "UPrime": 0.0,
     "tParameters": {

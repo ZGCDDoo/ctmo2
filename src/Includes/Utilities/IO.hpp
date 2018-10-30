@@ -93,14 +93,8 @@ class Base_IOModel
     {
 
         const size_t NSitesIndep = indepSites_.size();
-        // const size_t NOrbIndep = GetNOrbIndep(NOrb);
-
         const size_t siteIndex = fullSiteToIndepSite_.at(s1.first * Nc + s2.first); //arranged by row major ordering here, one of the only places where this happens
         const size_t orbitalIndex = Utilities::GetIndepOrbitalIndex(s1.second, s2.second, NOrb);
-        // std::cout << "orbitalIndex = " << orbitalIndex << std::endl;
-        // std::cout << "siteIndex = " << siteIndex << std::endl;
-        // const size_t value = (siteIndex + orbitalIndex * NSitesIndep);
-        // std::cout << "value = " << value << std::endl;
         return (siteIndex + orbitalIndex * NSitesIndep);
     }
 
@@ -169,7 +163,6 @@ class Base_IOModel
         assert(!fileMat.has_nan());
         assert(!fileMat.has_inf());
 
-        // std::cout << "GetNIndepSuperSites() = " << NOrbIndep * 2 * NSitesIndep + 1 << std::endl;
         assert(fileMat.n_cols == NOrbIndep * 2 * NSitesIndep + 1);
         fileMat.shed_col(0); // we dont want the matsubara frequencies
 
@@ -185,13 +178,9 @@ class Base_IOModel
                     {
                         for (size_t jj = 0; jj < Nc; ++jj)
                         {
-                            // std::cout << "ii, jj, o1, o2 = " << ii << ", " << jj << ", " << o1 << ", " << o2 << ", " << std::endl;
-                            // std::cout << "Here 1 " << std::endl;
                             const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
-                            // std::cout << "indexIndepSuperSite = " << indexIndepSuperSite << std::endl;
                             tmp(ii + o1 * Nc, jj + o2 * Nc) = cd_t(fileMat(n, 2 * indexIndepSuperSite), fileMat(n, 2 * indexIndepSuperSite + 1));
                             tmp(jj + o2 * Nc, ii + o1 * Nc) = tmp(ii + o1 * Nc, jj + o2 * Nc); //symmetrize
-                            // std::cout << " Here 2" << std::endl;
                         }
                     }
                 }
@@ -199,12 +188,6 @@ class Base_IOModel
 
             cubetmp.slice(n) = tmp;
         }
-
-        std::cout << "End of ReadGreen, fname = " << filename << std::endl;
-
-        std::cout << "Last slice of readgreen = " << std::endl;
-        tmp.print();
-        std::cout << "\n\n\n";
 
         return cubetmp;
     }
@@ -219,7 +202,6 @@ class Base_IOModel
         const size_t NSitesIndep = this->indepSites_.size();
 
         assert(green.n_rows == green.n_cols);
-        std::cout << "green.n_rows , Nc , NOrb = " << green.n_rows << ", " << Nc << ", " << NOrb << std::endl;
         assert(green.n_rows == Nc * NOrb);
         ClusterMatrixCD_t greenOut(NMat, NOrbIndep * NSitesIndep);
 
@@ -258,12 +240,6 @@ class Base_IOModel
         {
             greenOut.save(fname + std::string(".arma"), arma::arma_ascii);
         }
-
-        std::cout << "End of SaveCube, fname = " << fname << std::endl;
-
-        std::cout << "first slice of green = " << std::endl;
-        green.slice(0).print();
-        std::cout << "\n\n\n";
     }
 
 #ifdef DCA
@@ -324,14 +300,7 @@ class Base_IOModel
         const size_t o1 = orbitalPair.first;
         const size_t o2 = orbitalPair.second;
 
-        // const size_t o1 = (indepOrbitalIndex + 1) / (NOrb + 1);
-        // const size_t o2 = (indepOrbitalIndex + 1) % (NOrb+1);
-
         const std::pair<Site_t, Site_t> sites = indepSites_.at(indepSiteIndex);
-        // std::cout << "indepSuperSiteIndex " << indepSuperSiteIndex << std::endl;
-        // std::cout << "NOrbIndep =  " << GetNOrbIndep(NOrb) << std::endl;
-
-        // std::cout << "sites , o1, o2 = " << sites.first << ", " << sites.second << ", " << o1 << ", " << o2 << std::endl;
         return {sites.first + o1 * Nc, sites.second + o2 * Nc};
     }
 

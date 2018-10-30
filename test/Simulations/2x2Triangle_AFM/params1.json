@@ -5,6 +5,8 @@
     "HybFileDown": "hybDown1",
     "HybFileUp": "hybUp1",
     "K": 1.0,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "KMAX_UPD": 100,
     "MEASUREMENT_TIME": 20,
     "MEASURE_FILLING": true,

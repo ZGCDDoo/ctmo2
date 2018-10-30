@@ -2,6 +2,8 @@
     "modelType": "SIAM_Square",
     "solver": "Int",
     "NOrb": 1,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "IsOrbitalDiagonal": true,
     "AverageOrbitals": true,
     "CLEANUPDATE": 100,

@@ -3,6 +3,8 @@
     "SEED": 100002,
     "AverageOrbitals": false,
     "PROBFLIP": 0.25,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.1,
     "beta": 10.0,
     "EGreen": 1000,
     "NTAU": 10000,

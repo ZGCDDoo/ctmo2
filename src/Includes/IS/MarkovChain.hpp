@@ -28,6 +28,11 @@ public:
   {
     return (auxH_.FAux(vp));
   }
+
+  double FAuxBar(const VertexPart &vp) override
+  {
+    return (auxH_.FAuxBar(vp));
+  }
 #endif
 
 private:

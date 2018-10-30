@@ -61,7 +61,6 @@ class ABC_H0
             {
 
                 const std::string o1o2Name = std::to_string(o1) + std::to_string(o2);
-                std::cout << "o1o2Name = " << o1o2Name << std::endl;
                 const Json &jj = tJson["tParameters"][o1o2Name];
 
                 tIntraOrbitalVec_.push_back(jj["tIntra"].get<double>());

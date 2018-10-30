@@ -2,6 +2,8 @@
     "NOrb": 2,
     "AverageOrbitals": false,
     "U": 4.0,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.1,
     "J_H": 1.0,
     "UPrime": 3.0,
     "EGreen": 60,

@@ -4,6 +4,8 @@
         "AverageOrbitals": true,
         "modelType": "Square2x2",
         "U": 7.0,
+        "w0Phonon": 0.1,
+        "gPhonon": 0.0,
         "EGreen": 60,
         "SEED": 25105,
         "mu": 3.5,

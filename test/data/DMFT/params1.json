@@ -13,6 +13,8 @@
     "THERMALIZATION_TIME": 0.05,
     "THERM_FROM_CONFIG": false,
     "U": 4.0,
+    "gPhonon": 0.1,
+    "w0Phonon": 0.1,
     "J_H": 1.0,
     "UPrime": 3.0,
     "UPDATESMEAS": 50,

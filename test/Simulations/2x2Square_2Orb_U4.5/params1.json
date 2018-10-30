@@ -7,6 +7,8 @@
     "IsOrbitalDiagonal": false,
     "J_H": 0.75,
     "K": 1.0,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "KMAX_UPD": 100,
     "MEASUREMENT_TIME": 30,
     "MEASURE_FILLING": true,

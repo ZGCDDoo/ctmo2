@@ -65,11 +65,10 @@ class Vertex
 
   public:
     Vertex(const VertexType &vtype, const VertexPart &vStart, const VertexPart &vEnd,
-           const AuxSpin_t &aux, const double &probProb) : vtype_(vtype),
-                                                           vStart_(vStart),
-                                                           vEnd_(vEnd),
-                                                           aux_(aux),
-                                                           probProb_(probProb)
+           const double &probProb) : vtype_(vtype),
+                                     vStart_(vStart),
+                                     vEnd_(vEnd),
+                                     probProb_(probProb)
 
     {
     }
@@ -77,34 +76,17 @@ class Vertex
     Vertex &operator=(const Vertex &vertex) = default;
 
     // Getters
-    // AuxSpin_t aux() const { return aux_; };
     VertexType vtype() const { return vtype_; };
     double probProb() const { return probProb_; };
     VertexPart vStart() const { return vStart_; };
     VertexPart vEnd() const { return vEnd_; };
 
     //Setters
-    void SetAux(AuxSpin_t aux)
-    {
-        aux_ = aux;
-    }
-
-    void FlipAux() { aux_ == AuxSpin_t::Up ? aux_ = AuxSpin_t::Down : aux_ = AuxSpin_t::Up; };
-
-    double Ising()
-    {
-        if (aux_ == AuxSpin_t::Zero)
-        {
-            return 0.0;
-        }
-        return (aux_ == AuxSpin_t::Up ? 1.0 : -1.0);
-    }
 
   private:
     VertexType vtype_;
     VertexPart vStart_;
     VertexPart vEnd_;
-    AuxSpin_t aux_;
     double probProb_;
 };
 
@@ -161,11 +143,6 @@ class Vertices
             std::cout << "indexPartDownVec__.at(ii)  = " << indexPartDownVec_.at(ii) << std::endl;
         }
         std::cout << "End Print " << std::endl;
-    }
-
-    void FlipAux(const size_t &p)
-    {
-        data_.at(p).FlipAux();
     }
 
     void AppendVertexPart(const VertexPart &vPart)
@@ -243,8 +220,8 @@ class Vertices
         {
             const auto x = data_.at(ii).vStart();
             const auto y = data_.at(ii).vEnd();
-            assert(x.tau() == y.tau());
-            assert(x.aux() == y.aux());
+            // assert(x.tau() == y.tau());
+            // assert(x.aux() == y.aux());
 
             fout << static_cast<int>(x.aux()) << " " << x.site() << " " << x.tau() << " " << static_cast<int>(x.spin()) << " " << static_cast<int>(y.spin()) << " " << x.orbital() << " " << y.orbital() << " " << std::endl;
         }
@@ -344,10 +321,7 @@ class AuxHelper
 
     double FAux(const VertexPart &vp) const
     {
-        // if (aux == AuxSpin_t::Zero)
-        // {
-        //     return 1.0;
-        // }
+
         if (vp.vtype() == VertexType::Phonon)
         {
             return ((1.0 + delta_) / delta_);
@@ -356,13 +330,21 @@ class AuxHelper
         {
             return (auxValue(vp.spin(), vp.aux()) / (auxValue(vp.spin(), vp.aux()) - 1.0));
         }
-    };
+    }
 
-    // double gamma(const FermionSpin_t &spin, const AuxSpin_t &auxI, const AuxSpin_t &auxJ) const //little gamma
-    // {
-    //     const double fsJ = FAux(spin, auxJ);
-    //     return ((FAux(spin, auxI) - fsJ) / fsJ);
-    // }
+    double FAuxBar(const VertexPart &vp) const
+    {
+        //return FAux_sigma(-s);
+        if (vp.vtype() == VertexType::Phonon)
+        {
+            return ((1.0 + delta_) / delta_);
+        }
+        else
+        {
+            const AuxSpin_t sBar = (vp.aux() == AuxSpin_t::Up) ? AuxSpin_t::Down : AuxSpin_t::Up;
+            return (auxValue(vp.spin(), sBar) / (auxValue(vp.spin(), sBar) - 1.0));
+        }
+    };
 
     double delta() const { return delta_; };
 
@@ -381,7 +363,7 @@ class VertexBuilder
                                                       Nc_(Nc),
                                                       NOrb_(jj["NOrb"].get<size_t>()),
                                                       factXi_(
-                                                          NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_ // Pauli principale and dont double count pairs
+                                                          2 * (NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_) // Pauli principale and dont double count pairs, x2 for phonons
                                                           ),
                                                       isOrbitalDiagonal_(jj["IsOrbitalDiagonal"].get<bool>())
 
@@ -418,21 +400,21 @@ class VertexBuilder
                 const VertexPart vStart(vertextype, tau, site, FermionSpin_t::Up, o1, aux);
                 const VertexPart vEnd(vertextype, tau, site, FermionSpin_t::Down, o2, aux);
 
-                return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
+                return Vertex(vertextype, vStart, vEnd, GetKxio1o2(vertextype));
             }
             else if ((o1 != o2) && (spin1 != spin2))
             {
                 vertextype = VertexType::HubbardInter;
                 const VertexPart vStart(vertextype, tau, site, FermionSpin_t::Up, o1, aux);
                 const VertexPart vEnd(vertextype, tau, site, FermionSpin_t::Down, o2, aux);
-                return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
+                return Vertex(vertextype, vStart, vEnd, GetKxio1o2(vertextype));
             }
             else if ((o1 != o2) && (spin1 == spin2))
             {
                 vertextype = VertexType::HubbardInterSpin;
                 const VertexPart vStart(vertextype, tau, site, spin1, o1, aux);
                 const VertexPart vEnd(vertextype, tau, site, spin2, o2, aux);
-                return Vertex(vertextype, vStart, vEnd, aux, GetKxio1o2(vertextype));
+                return Vertex(vertextype, vStart, vEnd, GetKxio1o2(vertextype));
             }
             else
             {
@@ -445,7 +427,7 @@ class VertexBuilder
             const VertexPart vStart(vertextype, tau, site, spin1, o1, aux);
             const VertexPart vEnd(vertextype, tau2, site, spin2, o2, aux);
             const double tauMtau2 = tau - tau2;
-            return Vertex(vertextype, vStart, vEnd, aux, PhononPropagator(tauMtau2) * GetKxio1o2(vertextype));
+            return Vertex(vertextype, vStart, vEnd, PhononPropagator(tauMtau2) * GetKxio1o2(vertextype));
         }
 
         throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
@@ -481,7 +463,7 @@ class VertexBuilder
         }
         else if (vtype == VertexType::Phonon)
         {
-            U_xio1o2 = -Utensor.gPhonon() / 2.0;
+            U_xio1o2 = Utensor.gPhonon() / 2.0;
             return (Nc_ * beta_ * beta_ * factXi_ * U_xio1o2 * delta_ * delta_);
         }
         else
