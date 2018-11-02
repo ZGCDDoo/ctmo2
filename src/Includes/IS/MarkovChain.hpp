@@ -1,6 +1,11 @@
 #pragma once
 
+#ifdef GREEN_STYLE
+#include "ABC_MarkovChain_GreenStyle.hpp"
+#else
 #include "ABC_MarkovChain.hpp"
+#endif
+
 #include "../Utilities/VerticesSimple.hpp"
 
 namespace Markov
@@ -21,8 +26,28 @@ public:
 #ifdef GREEN_STYLE
   double FAux(const VertexPart &vp) override
   {
-    return (auxH_.auxValue(vp.spin(), vp.aux()));
+    if (vp.vtype() == VertexType::Phonon)
+    {
+      return (auxH_.auxPh(vp.aux()));
+    }
+    else
+    {
+      return (auxH_.auxValue(vp.spin(), vp.aux()));
+    }
   }
+
+  double FAuxBar(const VertexPart &vp) override
+  {
+    if (vp.vtype() == VertexType::Phonon)
+    {
+      return (auxH_.auxPh(vp.aux()));
+    }
+    else
+    {
+      return (auxH_.auxValueBar(vp.spin(), vp.aux()));
+    }
+  }
+
 #else
   double FAux(const VertexPart &vp) override
   {

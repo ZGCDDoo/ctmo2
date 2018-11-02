@@ -256,9 +256,15 @@ class ABC_MarkovChain
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         AssertSizes();
-
+        // std::cout << "In InsertVertexSameSpin " << std::endl;
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
+
+        if (std::abs(x.tau() - y.tau()) < 1e-14)
+        {
+            assert(x.orbital() != y.orbital());
+        }
+
         assert(x.spin() == y.spin());
 
         const double faux = FAux(x);
@@ -267,8 +273,8 @@ class ABC_MarkovChain
         const double fauxM1Bar = fauxBar - 1.0;
 
         const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
-        const double s01 = GetGreenTau0(x, y);
-        const double s10 = GetGreenTau0(y, x);
+        const double s01 = GetGreenTau0(x, y) * fauxM1Bar;
+        const double s10 = GetGreenTau0(y, x) * fauxM1;
         const double s11 = -fauxBar + GetGreenTau0(y, y) * fauxM1Bar;
 
         if (Nspin.n_rows())
@@ -434,7 +440,10 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        assert(x.orbital() != y.orbital());
+        if (std::abs(x.tau() - y.tau()) < 1e-14)
+        {
+            assert(x.orbital() != y.orbital());
+        }
         assert(x.site() == y.site());
 
         const size_t pp1Spin = dataCT_->vertices_.GetKeyIndex(vertexKey, x.spin());

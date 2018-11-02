@@ -319,12 +319,29 @@ class AuxHelper
         }
     }
 
+    double auxValueBar(const FermionSpin_t &spin, const AuxSpin_t &aux) const
+    {
+        if (spin == FermionSpin_t::Up)
+        {
+            return ((aux == AuxSpin_t::Up) ? -delta_ : 1.0 + delta_);
+        }
+        else
+        {
+            return ((aux == AuxSpin_t::Down) ? -delta_ : 1.0 + delta_);
+        }
+    }
+
+    double auxPh(const AuxSpin_t &aux) const
+    {
+        return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_);
+    }
+
     double FAux(const VertexPart &vp) const
     {
 
-        if (vp.vtype() == VertexType::Phonon)
+        if (vp.vtype() == Diagrammatic::VertexType::Phonon)
         {
-            return ((1.0 + delta_) / delta_);
+            return (auxPh(vp.aux()) / (auxPh(vp.aux()) - 1.0));
         }
         else
         {
@@ -337,14 +354,14 @@ class AuxHelper
         //return FAux_sigma(-s);
         if (vp.vtype() == VertexType::Phonon)
         {
-            return ((1.0 + delta_) / delta_);
+            return FAux(vp);
         }
         else
         {
             const AuxSpin_t sBar = (vp.aux() == AuxSpin_t::Up) ? AuxSpin_t::Down : AuxSpin_t::Up;
             return (auxValue(vp.spin(), sBar) / (auxValue(vp.spin(), sBar) - 1.0));
         }
-    };
+    }
 
     double delta() const { return delta_; };
 
@@ -382,39 +399,38 @@ class VertexBuilder
         FermionSpin_t spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
         FermionSpin_t spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
 
-        while ((o1 == o2) && (spin1 == spin2))
-        {
-            o1 = urng() * NOrb_;
-            o2 = urng() * NOrb_;
-            spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-            spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
-        }
-
         VertexType vertextype = VertexType::Invalid;
 
         if (urng() < 0.5) //Then build Electron-Eletron vertex
         {
+            while ((o1 == o2) && (spin1 == spin2))
+            {
+                o1 = urng() * NOrb_;
+                o2 = urng() * NOrb_;
+                spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+                spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
+            }
             if ((o1 == o2) && (spin1 != spin2))
             {
                 vertextype = VertexType::HubbardIntra;
                 const VertexPart vStart(vertextype, tau, site, FermionSpin_t::Up, o1, aux);
                 const VertexPart vEnd(vertextype, tau, site, FermionSpin_t::Down, o2, aux);
 
-                return Vertex(vertextype, vStart, vEnd, GetKxio1o2(vertextype));
+                return Vertex(vertextype, vStart, vEnd, GetProbProb(vStart, vEnd));
             }
             else if ((o1 != o2) && (spin1 != spin2))
             {
                 vertextype = VertexType::HubbardInter;
                 const VertexPart vStart(vertextype, tau, site, FermionSpin_t::Up, o1, aux);
                 const VertexPart vEnd(vertextype, tau, site, FermionSpin_t::Down, o2, aux);
-                return Vertex(vertextype, vStart, vEnd, GetKxio1o2(vertextype));
+                return Vertex(vertextype, vStart, vEnd, GetProbProb(vStart, vEnd));
             }
             else if ((o1 != o2) && (spin1 == spin2))
             {
                 vertextype = VertexType::HubbardInterSpin;
                 const VertexPart vStart(vertextype, tau, site, spin1, o1, aux);
                 const VertexPart vEnd(vertextype, tau, site, spin2, o2, aux);
-                return Vertex(vertextype, vStart, vEnd, GetKxio1o2(vertextype));
+                return Vertex(vertextype, vStart, vEnd, GetProbProb(vStart, vEnd));
             }
             else
             {
@@ -427,14 +443,18 @@ class VertexBuilder
             const VertexPart vStart(vertextype, tau, site, spin1, o1, aux);
             const VertexPart vEnd(vertextype, tau2, site, spin2, o2, aux);
             const double tauMtau2 = tau - tau2;
-            return Vertex(vertextype, vStart, vEnd, PhononPropagator(tauMtau2) * GetKxio1o2(vertextype));
+            return Vertex(vertextype, vStart, vEnd, PhononPropagator(tauMtau2) * GetProbProb(vStart, vEnd));
         }
 
         throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
     }
 
-    double GetKxio1o2(const VertexType &vtype)
+    double GetProbProb(const VertexPart &x, const VertexPart &y)
     {
+        assert(x.aux() == y.aux());
+        assert(x.vtype() == y.vtype());
+
+        const VertexType vtype = x.vtype();
 
         double U_xio1o2 = INVALID;
 
@@ -463,8 +483,13 @@ class VertexBuilder
         }
         else if (vtype == VertexType::Phonon)
         {
-            U_xio1o2 = Utensor.gPhonon() / 2.0;
-            return (Nc_ * beta_ * beta_ * factXi_ * U_xio1o2 * delta_ * delta_);
+            U_xio1o2 = Utensor.gPhonon() * Utensor.gPhonon() / 4.0;
+            const double fact = 1.0 / (auxHelper_.FAux(x) - 1.0);
+#ifdef GREEN_STYLE
+            return (Nc * beta_ * factXi_ * U_xio1o2);
+#else
+            return (Nc_ * beta_ * factXi_ * U_xio1o2 * fact * fact);
+#endif
         }
         else
         {
@@ -482,7 +507,24 @@ class VertexBuilder
     double PhononPropagator(const double &tau)
     {
         const double w0 = Utensor.w0Phonon();
-        return (w0 / (2.0 * (1.0 - std::exp(-beta_ * w0))) * (std::exp(-std::abs(tau) * w0) + std::exp(-(beta_ - std::abs(tau)) * w0)));
+        const double expp = std::exp(w0 * tau);
+        const double expm = std::exp(-w0 * tau);
+
+        const double nbose = 1.0 / (std::exp(beta_ * w0) - 1.0);
+        //Gull
+        // return (std::cosh(tau - beta_ / 2.0) / std::sinh(beta_ * w0 / 2.0));
+        //Assaad
+        // return (w0 / (2.0 * (1.0 - std::exp(-beta_ * w0))) * (std::exp(-std::abs(tau) * w0) + std::exp(-(beta_ - std::abs(tau)) * w0)));
+
+        //Sangiovani
+        if (tau > 0.0)
+        {
+            return (-((nbose + 1.0) * expm + nbose * expp));
+        }
+        else
+        {
+            return (-(nbose * expm + (nbose + 1.0) * expp));
+        }
     }
 
   private:
