@@ -118,6 +118,8 @@ endif ()
 ################################
 set(EXECECUTABLES
     ctmo
+    ctmo_nosc
+    #ctmo_green
     #cttg_sub
     #cttg_afm
     #cttg_sub_afm

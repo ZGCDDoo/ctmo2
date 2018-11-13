@@ -44,5 +44,7 @@
     "WEIGHTSI": 0.0,
     "N_T_INV": 5,
     "IsOrbitalDiagonal": true,
-    "AverageOrbitals": false
+    "AverageOrbitals": false,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.1
 }

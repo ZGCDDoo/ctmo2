@@ -379,8 +379,9 @@ class VertexBuilder
                                                       beta_(jj["beta"].get<double>()),
                                                       Nc_(Nc),
                                                       NOrb_(jj["NOrb"].get<size_t>()),
+                                                      probU_(0.5),
                                                       factXi_(
-                                                          2 * (NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_) // Pauli principale and dont double count pairs, x2 for phonons
+                                                          1.0 / probU_ * (NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_) // Pauli principale and dont double count pairs
                                                           ),
                                                       isOrbitalDiagonal_(jj["IsOrbitalDiagonal"].get<bool>())
 
@@ -390,7 +391,6 @@ class VertexBuilder
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
     {
         const Tau_t tau = urng() * beta_;
-        const Tau_t tau2 = urng() * beta_;
         const Site_t site = urng() * Nc_;
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
@@ -401,7 +401,7 @@ class VertexBuilder
 
         VertexType vertextype = VertexType::Invalid;
 
-        if (urng() < 0.5) //Then build Electron-Eletron vertex
+        if (urng() < probU_) //Then build Electron-Eletron vertex
         {
             while ((o1 == o2) && (spin1 == spin2))
             {
@@ -440,10 +440,18 @@ class VertexBuilder
         else //Then build Electron-Phonon vertex
         {
             vertextype = VertexType::Phonon;
-            const VertexPart vStart(vertextype, tau, site, spin1, o1, aux);
-            const VertexPart vEnd(vertextype, tau2, site, spin2, o2, aux);
-            const double tauMtau2 = tau - tau2;
-            return Vertex(vertextype, vStart, vEnd, PhononPropagator(tauMtau2) * GetProbProb(vStart, vEnd));
+            const double deltaTau = GetDeltaTauPhonon(urng());
+            double tau1 = urng() * (beta_ - deltaTau) + deltaTau;
+            double tauPrime = tau1 - deltaTau;
+            // std::cout << "tau, deltaTau, tauPrime = " << tau << ", " << deltaTau << ", " << tauPrime << ", " << std::endl;
+            assert((tauPrime > 0.0) && (tauPrime < beta_));
+            assert(tau1 > tauPrime);
+            assert(tau1 > deltaTau);
+
+            const VertexPart vStart(vertextype, tau1, site, spin1, o1, aux);
+            const VertexPart vEnd(vertextype, tauPrime, site, spin2, o2, aux);
+
+            return Vertex(vertextype, vStart, vEnd, GetProbProb(vStart, vEnd));
         }
 
         throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
@@ -460,11 +468,11 @@ class VertexBuilder
 
         if (vtype == VertexType::HubbardIntra)
         {
-            U_xio1o2 = Utensor.U();
+            U_xio1o2 = Utensor.U() / 2.0;
         }
         else if (vtype == VertexType::HubbardInter)
         {
-            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : Utensor.UPrime();
+            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : Utensor.UPrime() / 2.0;
         }
         else if (vtype == VertexType::HubbardInterSpin)
         {
@@ -478,17 +486,20 @@ class VertexBuilder
             }
             else
             {
-                U_xio1o2 = (Utensor.UPrime() - Utensor.JH());
+                U_xio1o2 = (Utensor.UPrime() - Utensor.JH()) / 2.0;
             }
         }
         else if (vtype == VertexType::Phonon)
         {
-            U_xio1o2 = Utensor.gPhonon() * Utensor.gPhonon() / 4.0;
+            const double w0 = Utensor.w0Phonon();
+            //Big M is = 1.0
+            U_xio1o2 = Utensor.gPhonon() * Utensor.gPhonon() / (4.0 * w0 * w0);
+            const double factPh = 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0;
             const double fact = 1.0 / (auxHelper_.FAux(x) - 1.0);
 #ifdef GREEN_STYLE
-            return (Nc * beta_ * factXi_ * U_xio1o2);
+            return (static_cast<double>(Nc_) * beta_ * factPh * U_xio1o2 * 2.0);
 #else
-            return (Nc_ * beta_ * factXi_ * U_xio1o2 * fact * fact);
+            return (static_cast<double>(Nc_) * beta_ * factPh * U_xio1o2 * fact * fact * 2.0);
 #endif
         }
         else
@@ -497,34 +508,37 @@ class VertexBuilder
         }
 
 #ifdef GREEN_STYLE
-        return (-U_xio1o2 * beta_ * Nc_ * factXi_);
+        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_) * factXi_ * 2.0);
 
 #else
-        return (-U_xio1o2 * beta_ * Nc_ * factXi_ / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
+        //factor of 2 for Ising Spin
+        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_) * factXi_ * 2.0 / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
 #endif
     }
 
-    double PhononPropagator(const double &tau)
+    double PhononPropagator(const double &tauIn)
     {
+        double tau = tauIn;
+        if (tau < 0.0)
+        {
+            tau += beta_;
+        }
+
         const double w0 = Utensor.w0Phonon();
-        const double expp = std::exp(w0 * tau);
-        const double expm = std::exp(-w0 * tau);
 
-        const double nbose = 1.0 / (std::exp(beta_ * w0) - 1.0);
-        //Gull
-        // return (std::cosh(tau - beta_ / 2.0) / std::sinh(beta_ * w0 / 2.0));
-        //Assaad
-        // return (w0 / (2.0 * (1.0 - std::exp(-beta_ * w0))) * (std::exp(-std::abs(tau) * w0) + std::exp(-(beta_ - std::abs(tau)) * w0)));
+        return (-0.5 * w0 * (std::cosh((tau - beta_ / 2.0) * w0) / std::sinh(beta_ * w0 / 2.0)));
+    }
 
-        //Sangiovani
-        if (tau > 0.0)
-        {
-            return (-((nbose + 1.0) * expm + nbose * expp));
-        }
-        else
-        {
-            return (-(nbose * expm + (nbose + 1.0) * expp));
-        }
+    double GetDeltaTauPhonon(const double &u)
+    {
+
+        const double w0 = Utensor.w0Phonon();
+        const double coth = 1.0 / std::tanh(w0 * beta_ / 2.0);
+        const double cothfact = 4.0 * coth * coth;
+
+        const double deltaTau = 1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
+        assert((deltaTau > 0.0) && (deltaTau < beta_));
+        return deltaTau;
     }
 
   private:
@@ -534,6 +548,7 @@ class VertexBuilder
     const double beta_;
     const size_t Nc_;
     const size_t NOrb_;
+    const double probU_;
     const double factXi_;
     const bool isOrbitalDiagonal_;
 };
