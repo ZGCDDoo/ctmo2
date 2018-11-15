@@ -11,12 +11,12 @@ const size_t Nx4 = 4;
 const size_t Nx6 = 6;
 const size_t Nx8 = 8;
 
-template <size_t TNX, size_t TNY>
+template <size_t TNX, size_t TNY, size_t TNZ = 1>
 class Base_IOModel
 {
 
   public:
-    const size_t Nc = TNX * TNY;
+    const size_t Nc = TNX * TNY * TNZ;
     static const size_t INVALID;
 
     Base_IOModel(){};
@@ -484,8 +484,8 @@ class Base_IOModel
     std::vector<size_t> downEquivalentSites_;
 };
 
-template <size_t TNX, size_t TNY>
-const size_t Base_IOModel<TNX, TNY>::INVALID = 999;
+template <size_t TNX, size_t TNY, size_t TNZ>
+const size_t Base_IOModel<TNX, TNY, TNZ>::INVALID = 999;
 
 class IOTriangle2x2 : public Base_IOModel<Nx2, Nx2>
 {
