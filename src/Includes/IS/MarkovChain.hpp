@@ -26,7 +26,7 @@ public:
 #ifdef GREEN_STYLE
   double FAux(const VertexPart &vp) override
   {
-    if (vp.vtype() == VertexType::Phonon)
+    if (vp.vtype() == Diagrammatic::VertexType::Phonon)
     {
       return (auxH_.auxPh(vp.aux()));
     }
@@ -38,7 +38,7 @@ public:
 
   double FAuxBar(const VertexPart &vp) override
   {
-    if (vp.vtype() == VertexType::Phonon)
+    if (vp.vtype() == Diagrammatic::VertexType::Phonon)
     {
       return (auxH_.auxPh(vp.aux()));
     }

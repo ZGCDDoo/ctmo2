@@ -89,7 +89,7 @@ class ABC_H0
 
                 t2xVec_.push_back(jj["t2x"].get<double>());
                 t2yVec_.push_back(jj["t2y"].get<double>());
-                t2zVec_.push_back(jj["t2y"].get<double>());
+                t2zVec_.push_back(jj["t2z"].get<double>());
 
                 t3Vec_.push_back(jj["t3"].get<double>());
             }
@@ -195,10 +195,10 @@ class ABC_H0
             const double kTildeX = static_cast<double>(kx) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Nx);
             for (size_t ky = 0; ky < kytildepts; ky++)
             {
-                const double kTildeY = static_cast<double>(ky) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Ny);
+                const double kTildeY = static_cast<double>(ky) / static_cast<double>(kytildepts) * 2.0 * M_PI / static_cast<double>(Ny);
                 for (size_t kz = 0; kz < kztildepts; kz++)
                 {
-                    const double kTildeZ = static_cast<double>(kz) / static_cast<double>(kxtildepts) * 2.0 * M_PI / static_cast<double>(Nz);
+                    const double kTildeZ = static_cast<double>(kz) / static_cast<double>(kztildepts) * 2.0 * M_PI / static_cast<double>(Nz);
                     tKTildeGrid.slice(sliceindex) = (*this)(kTildeX, kTildeY, kTildeZ);
                     tLoc += tKTildeGrid.slice(sliceindex);
                     sliceindex++;

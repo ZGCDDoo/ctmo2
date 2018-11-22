@@ -496,8 +496,10 @@ class VertexBuilder
             U_xio1o2 = Utensor.gPhonon() * Utensor.gPhonon() / (4.0 * w0 * w0);
             const double factPh = 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0;
             const double fact = 1.0 / (auxHelper_.FAux(x) - 1.0);
+
 #ifdef GREEN_STYLE
-            return (static_cast<double>(Nc_) * beta_ * factPh * U_xio1o2 * 2.0);
+            const double gtauPH = PhononPropagator(std::abs(x.tau() - y.tau()));
+            return (static_cast<double>(Nc_) * beta_ * beta_ * factPh * U_xio1o2 * 2.0 * gtauPH); //For testing purposes, green style is defined by sampling the two times uniformaly
 #else
             return (static_cast<double>(Nc_) * beta_ * factPh * U_xio1o2 * fact * fact * 2.0);
 #endif

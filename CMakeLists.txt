@@ -119,7 +119,7 @@ endif ()
 set(EXECECUTABLES
     ctmo
     ctmo_nosc
-    #ctmo_green
+    ctmo_green
     #cttg_sub
     #cttg_afm
     #cttg_sub_afm
@@ -191,8 +191,8 @@ if (${TEST})
     GreenBinningTests
     GreenMatTests
     #GreenTauTests
-    HybFMAndTLocTests
-    IntegratorTests
+    #HybFMAndTLocTests
+    #IntegratorTests
     IOTests
     ModelTriangle2x2Tests
     UtilitiesTests
