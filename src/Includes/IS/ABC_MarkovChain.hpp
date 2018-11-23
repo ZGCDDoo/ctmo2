@@ -393,6 +393,11 @@ class ABC_MarkovChain
         const auto y = dataCT_->vertices_.atDown(ppDown);
         assert(x.spin() == FermionSpin_t::Up);
         assert(y.spin() == FermionSpin_t::Down);
+        if (x.vtype() != Diagrammatic::VertexType::Phonon)
+        {
+            assert(x.vtype() == y.vtype());
+            assert(std::abs(x.tau() - y.tau()) < 1e-14);
+        }
 
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
 
@@ -440,10 +445,13 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        if (std::abs(x.tau() - y.tau()) < 1e-14)
+        if (x.vtype() != Diagrammatic::VertexType::Phonon)
         {
+            assert(x.vtype() == y.vtype());
+            assert(std::abs(x.tau() - y.tau()) < 1e-14);
             assert(x.orbital() != y.orbital());
         }
+
         assert(x.site() == y.site());
 
         const size_t pp1Spin = dataCT_->vertices_.GetKeyIndex(vertexKey, x.spin());

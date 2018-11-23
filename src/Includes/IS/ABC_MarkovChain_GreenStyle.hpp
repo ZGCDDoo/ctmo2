@@ -269,10 +269,10 @@ class ABC_MarkovChain
         const double faux = FAux(x);
         const double fauxBar = FAuxBar(x);
 
-        const double s00 = GetGreenTau0(x, x);
+        const double s00 = GetGreenTau0(x, x) - faux;
         const double s01 = GetGreenTau0(x, y);
         const double s10 = GetGreenTau0(y, x);
-        const double s11 = GetGreenTau0(y, y);
+        const double s11 = GetGreenTau0(y, y) - fauxBar;
 
         if (Nspin.n_rows())
         {
