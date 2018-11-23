@@ -498,7 +498,7 @@ class VertexBuilder
 
 #ifdef GREEN_STYLE
             const double gtauPH = PhononPropagator(std::abs(x.tau() - y.tau()));
-            return (static_cast<double>(Nc_) * beta_ * beta_ * factPh * U_xio1o2 * 2.0 * gtauPH); //For testing purposes, green style is defined by sampling the two times uniformaly
+            return (-static_cast<double>(Nc_) * beta_ * beta_ * factPh * U_xio1o2 * 2.0 * gtauPH); //For testing purposes, green style is defined by sampling the two times uniformaly
 #else
             const double fact = 1.0 / (auxHelper_.FAux(x) - 1.0);
             return (static_cast<double>(Nc_) * beta_ * factPh * U_xio1o2 * fact * fact * 2.0);
