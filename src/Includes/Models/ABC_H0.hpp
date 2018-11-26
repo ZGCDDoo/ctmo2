@@ -16,7 +16,8 @@ class ABC_H0
     ABC_H0(const ABC_H0 &abc_h0) = default;
     ABC_H0(const Json &tJson) : RSites_(Nc),
                                 KWaveVectors_(Nc),
-                                NOrb_(tJson["NOrb"].get<size_t>())
+                                NOrb_(tJson["NOrb"].get<size_t>()),
+                                NKPTS_(tJson["NKPTS"].get<size_t>())
 
     {
         assert(TNX == TNY);
@@ -55,7 +56,7 @@ class ABC_H0
     std::vector<double> t2xVec() const { return t2xVec_; };
     std::vector<double> t2yVec() const { return t2yVec_; };
     std::vector<double> t2zVec() const { return t2zVec_; };
-    std::vector<double> t3Vec() const { return t3Vec_; };
+    // std::vector<double> t3Vec() const { return t3Vec_; };
 
     size_t n_rows() const { return Nc * NOrb_; };
     size_t n_cols() const { return Nc * NOrb_; };
@@ -91,7 +92,7 @@ class ABC_H0
                 t2yVec_.push_back(jj["t2y"].get<double>());
                 t2zVec_.push_back(jj["t2z"].get<double>());
 
-                t3Vec_.push_back(jj["t3"].get<double>());
+                // t3Vec_.push_back(jj["t3"].get<double>());
             }
         }
     }
@@ -119,10 +120,10 @@ class ABC_H0
             //second neighbor hopping in straight line
             2.0 * t2xVec_.at(NIndepOrbIndex) * std::cos(2.0 * kx) +
             2.0 * t2yVec_.at(NIndepOrbIndex) * std::cos(2.0 * ky) +
-            2.0 * t2zVec_.at(NIndepOrbIndex) * std::cos(2.0 * kz) +
+            2.0 * t2zVec_.at(NIndepOrbIndex) * std::cos(2.0 * kz); //+
 
-            //Third neihbor hopping
-            2.0 * t3Vec_.at(NIndepOrbIndex) * (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
+        //Third neihbor hopping
+        // 2.0 * t3Vec_.at(NIndepOrbIndex) * (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
 
         return eps0k;
     }
@@ -178,10 +179,9 @@ class ABC_H0
         }
         std::cout << "Calculating tktilde, tloc and hybFM. " << std::endl;
 
-        const double deltak = (std::abs(tzVec_.at(0)) < 1e-10) ? 0.01 : 0.04;
-        const size_t kxtildepts = 2.0 * M_PI / deltak / static_cast<double>(std::min(Nx, Ny));
-        const size_t kytildepts = 2.0 * M_PI / deltak / static_cast<double>(std::min(Nx, Ny));
-        const size_t kztildepts = (std::abs(tzVec_.at(0)) < 1e-10) ? 1 : 2.0 * M_PI / deltak / static_cast<double>(Nz);
+        const size_t kxtildepts = (std::abs(txVec_.at(0)) < 1e-10) ? 1 : NKPTS_;
+        const size_t kytildepts = (std::abs(tyVec_.at(0)) < 1e-10) ? 1 : NKPTS_;
+        const size_t kztildepts = (std::abs(tzVec_.at(0)) < 1e-10) ? 1 : NKPTS_;
 
         const size_t NS = Nc * NOrb_;
         ClusterCubeCD_t tKTildeGrid(NS, NS, kxtildepts * kytildepts * kztildepts);
@@ -214,12 +214,12 @@ class ABC_H0
         ClusterMatrixCD_t hybFM(NS, NS);
         hybFM.zeros();
 
-        const size_t Nkpts = tKTildeGrid.n_slices;
-        for (size_t nn = 0; nn < Nkpts; nn++)
+        const size_t nslices = tKTildeGrid.n_slices;
+        for (size_t nn = 0; nn < nslices; nn++)
         {
             hybFM += tKTildeGrid.slice(nn) * tKTildeGrid.slice(nn);
         }
-        hybFM /= Nkpts;
+        hybFM /= nslices;
         hybFM -= tLoc * tLoc;
         hybFM.save("hybFM.arma", arma::arma_ascii);
     }
@@ -242,9 +242,10 @@ class ABC_H0
     std::vector<double> t2yVec_;
     std::vector<double> t2zVec_;
 
-    std::vector<double> t3Vec_;
+    //std::vector<double> t3Vec_;
 
     const size_t NOrb_;
+    const size_t NKPTS_;
 };
 
 template <size_t TNX, size_t TNY, size_t TNZ>
