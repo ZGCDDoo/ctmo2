@@ -85,10 +85,10 @@ TEST(GreenTauTests, Init)
     //Test diagonal part
     std::cout << "======Start Init======== " << std::endl;
     std::cout << "======     Start Diagonal part======== " << std::endl;
-    std::cout << " greenCluster0Tau(0, 0, NTAU - 1) =  " << greenCluster0Tau(0, 0, BETA - EPS) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, NTAU - 1) =  " << greenCluster0Tau({0, 0}, {0, 0}, BETA - EPS) << std::endl;
     std::cout << " goodvalue at tau = beta = " << -1.0 << std::endl;
     std::cout << "\n";
-    std::cout << " greenCluster0Tau(0, 0, NTAU/2) =  " << greenCluster0Tau(0, 0, BETA / 2.0) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, NTAU/2) =  " << greenCluster0Tau({0, 0}, {0, 0}, BETA / 2.0) << std::endl;
     std::cout << " goodvalue at tau = beta/2 = " << -0.0007903151368341482 << std::endl;
     std::cout << "=======    End Diagonal Part======== " << std::endl;
     std::cout << "\n";
@@ -96,9 +96,9 @@ TEST(GreenTauTests, Init)
     double eps;
     for (size_t i = 0; i < Nc; i++)
     {
-        eps = std::abs(1.0 - greenCluster0Tau(0, 0, BETA - EPS) / (-1.0));
+        eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, BETA - EPS) / (-1.0));
         ASSERT_TRUE(eps < DELTADIAG);
-        eps = std::abs(1.0 - greenCluster0Tau(0, 0, BETA / 2.0) / (-0.0007903151368341482));
+        eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, BETA / 2.0) / (-0.0007903151368341482));
         ASSERT_TRUE(eps < DELTADIAG);
     }
 
@@ -107,19 +107,19 @@ TEST(GreenTauTests, Init)
     double goodGreenTau1 = -(std::exp(xi1 * (BETA - tau1)) * Fermi(BETA, xi1) - std::exp(xi2 * (BETA - tau1)) * Fermi(BETA, xi2)) / 4.0; //out-of-diagonal, but not anti-diagonal
 
     std::cout << "======     Start Non-Diagonal part======== " << std::endl;
-    std::cout << " greenCluster0Tau(0, 1, beta/2) =  " << greenCluster0Tau(0, 1, BETA / 2.0) << std::endl;
+    std::cout << " greenCluster0Tau(0, 1, beta/2) =  " << greenCluster0Tau({0, 0}, {1, 0}, BETA / 2.0) << std::endl;
     std::cout << " goodvalue at tau = beta/2 = " << goodGreenTau1 << std::endl;
     std::cout << "=======    End Non-Diagonal Part======== " << std::endl;
     std::cout << "======End Init======== " << std::endl;
     std::cout << "\n";
 
-    eps = std::abs(1.0 - greenCluster0Tau(0, 1, BETA / 2.0) / (goodGreenTau1));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {1, 0}, BETA / 2.0) / (goodGreenTau1));
     ASSERT_TRUE(eps < DELTANONDIAG);
-    eps = std::abs(1.0 - greenCluster0Tau(0, 1, BETA / 2.0) / (goodGreenTau1));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {1, 0}, BETA / 2.0) / (goodGreenTau1));
     ASSERT_TRUE(eps < DELTANONDIAG);
-    eps = std::abs(1.0 - greenCluster0Tau(0, 1, BETA / 2.0) / (goodGreenTau1));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {1, 0}, BETA / 2.0) / (goodGreenTau1));
     ASSERT_TRUE(eps < DELTANONDIAG);
-    eps = std::abs(1.0 - greenCluster0Tau(0, 1, BETA / 2.0) / (goodGreenTau1));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {1, 0}, BETA / 2.0) / (goodGreenTau1));
     ASSERT_TRUE(eps < DELTANONDIAG);
 }
 
@@ -136,41 +136,41 @@ TEST(GreenTauTests, NonInteracting)
     double eps;
 
     std::cout << "======Start non-interacting======== " << std::endl;
-    std::cout << " greenCluster0Tau(0, 0, -1e-10) =  " << greenCluster0Tau(0, 0, tau) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, -1e-10) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau) << std::endl;
     std::cout << " goodvalue at tau 1e-10 = " << greenTau0(MU, energy, tau, BETA) << std::endl;
     std::cout << "\n";
-    std::cout << " greenCluster0Tau(0, 0, 1e-9) =  " << greenCluster0Tau(0, 0, tau1) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, 1e-9) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau1) << std::endl;
     std::cout << " goodvalue at tau1 = " << greenTau0(MU, energy, tau1, BETA) << std::endl;
     std::cout << "\n";
-    std::cout << " greenCluster0Tau(0, 0, beta/2.0) =  " << greenCluster0Tau(0, 0, tau2) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, beta/2.0) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau2) << std::endl;
     std::cout << " goodvalue at beta/2.0 = " << greenTau0(MU, energy, tau2, BETA) << std::endl;
     std::cout << "\n";
-    std::cout << " greenCluster0Tau(0, 0, -beta/3.0) =  " << greenCluster0Tau(0, 0, tau3) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, -beta/3.0) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau3) << std::endl;
     std::cout << " goodvalue at -beta/3.0 = " << greenTau0(MU, energy, tau3, BETA) << std::endl;
     std::cout << "\n";
-    std::cout << " greenCluster0Tau(0, 0, beta) =  " << greenCluster0Tau(0, 0, tau4) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, beta) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau4) << std::endl;
     std::cout << " goodvalue at beta = " << greenTau0(MU, energy, tau4, BETA) << std::endl;
     std::cout << "\n";
     std::cout << "==========End non-interacting======== " << std::endl;
     std::cout << "\n";
 
     const double ERR = 1e-7;
-    ASSERT_NEAR(greenCluster0Tau(0, 0, tau), greenTau0(MU, energy, tau, BETA), ERR);
-    ASSERT_NEAR(greenCluster0Tau(0, 0, tau1), greenTau0(MU, energy, tau1, BETA), ERR);
-    ASSERT_NEAR(greenCluster0Tau(0, 0, tau2), greenTau0(MU, energy, tau2, BETA), ERR);
-    ASSERT_NEAR(greenCluster0Tau(0, 0, tau3), greenTau0(MU, energy, tau3, BETA), ERR);
-    ASSERT_NEAR(greenCluster0Tau(0, 0, tau4), greenTau0(MU, energy, tau4, BETA), ERR);
+    ASSERT_NEAR(greenCluster0Tau({0, 0}, {0, 0}, tau), greenTau0(MU, energy, tau, BETA), ERR);
+    ASSERT_NEAR(greenCluster0Tau({0, 0}, {0, 0}, tau1), greenTau0(MU, energy, tau1, BETA), ERR);
+    ASSERT_NEAR(greenCluster0Tau({0, 0}, {0, 0}, tau2), greenTau0(MU, energy, tau2, BETA), ERR);
+    ASSERT_NEAR(greenCluster0Tau({0, 0}, {0, 0}, tau3), greenTau0(MU, energy, tau3, BETA), ERR);
+    ASSERT_NEAR(greenCluster0Tau({0, 0}, {0, 0}, tau4), greenTau0(MU, energy, tau4, BETA), ERR);
 
-    eps = std::abs(1.0 - greenCluster0Tau(0, 0, tau) / greenTau0(MU, energy, tau, BETA));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, tau) / greenTau0(MU, energy, tau, BETA));
     ASSERT_TRUE(eps < DELTANONINTERAC);
-    eps = std::abs(1.0 - greenCluster0Tau(0, 0, tau1) / greenTau0(MU, energy, tau1, BETA));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, tau1) / greenTau0(MU, energy, tau1, BETA));
     ASSERT_TRUE(eps < DELTANONINTERAC);
-    eps = std::abs(1.0 - greenCluster0Tau(0, 0, tau2) / greenTau0(MU, energy, tau2, BETA));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, tau2) / greenTau0(MU, energy, tau2, BETA));
     ASSERT_TRUE(eps < DELTANONINTERAC);
-    eps = std::abs(1.0 - greenCluster0Tau(0, 0, tau3) / greenTau0(MU, energy, tau3, BETA));
+    eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, tau3) / greenTau0(MU, energy, tau3, BETA));
     ASSERT_TRUE(eps < DELTANONINTERAC);
 
-    std::cout << "first moment = " << -(greenCluster0Tau(0, 0, 1e-12) + greenCluster0Tau(0, 0, BETA - 1e-12)) << std::endl;
+    std::cout << "first moment = " << -(greenCluster0Tau({0, 0}, {0, 0}, 1e-12) + greenCluster0Tau({0, 0}, {0, 0}, BETA - 1e-12)) << std::endl;
 }
 
 TEST(GreenTauTests, Operator)
@@ -185,10 +185,10 @@ TEST(GreenTauTests, Operator)
     double eps;
 
     std::cout << "======Start operator() ======== " << std::endl;
-    std::cout << " greenCluster0Tau(0, 0, beta/1.1167) =  " << greenCluster0Tau(0, 0, tau) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, beta/1.1167) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau) << std::endl;
     std::cout << " goodvalue at tau = beta/1.167  = " << greenTau0(MU, energy, tau, BETA) << std::endl;
     std::cout << "\n";
-    std::cout << " greenCluster0Tau(0, 0, tau1) =  " << greenCluster0Tau(0, 0, tau1) << std::endl;
+    std::cout << " greenCluster0Tau(0, 0, tau1) =  " << greenCluster0Tau({0, 0}, {0, 0}, tau1) << std::endl;
     std::cout << " goodvalue at tau1  = " << greenTau0(MU, energy, tau1, BETA) << std::endl;
     std::cout << "\n";
     std::cout << "==========End operator() ======== " << std::endl;
@@ -196,9 +196,9 @@ TEST(GreenTauTests, Operator)
 
     for (size_t i = 0; i < Nc; i++)
     {
-        eps = std::abs(1.0 - greenCluster0Tau(i, i, tau) / goodValue);
+        eps = std::abs(1.0 - greenCluster0Tau({i, 0}, {i, 0}, tau) / goodValue);
         ASSERT_TRUE(eps < DELTANONINTERAC);
-        eps = std::abs(1.0 - greenCluster0Tau(i, i, tau1) / goodValue1);
+        eps = std::abs(1.0 - greenCluster0Tau({i, 0}, {i, 0}, tau1) / goodValue1);
         ASSERT_TRUE(eps < DELTANONINTERAC);
     }
 }

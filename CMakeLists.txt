@@ -16,7 +16,7 @@ if (${MP2})
 elseif (${MPI_BUILD})
     SET(CMAKE_CXX_COMPILER mpic++)
 else ()
-    SET(CMAKE_CXX_COMPILER clang++)
+    SET(CMAKE_CXX_COMPILER g++)
 endif()
 
 
@@ -120,10 +120,6 @@ set(EXECECUTABLES
     ctmo
     ctmo_nosc
     ctmo_green
-    #cttg_sub
-    #cttg_afm
-    #cttg_sub_afm
-    #cttg_DCA
 )
 
 foreach(executable ${EXECECUTABLES})
@@ -190,7 +186,7 @@ if (${TEST})
     FillingAndDoccTests
     GreenBinningTests
     GreenMatTests
-    #GreenTauTests
+    GreenTauTests
     #HybFMAndTLocTests
     #IntegratorTests
     IOTests
@@ -199,8 +195,6 @@ if (${TEST})
     SelfConsistencyTests
     MarkovChainTests
     MarkovChainSquare2x2Tests
-    #MarkovChainSubMatrixSquare2x2Tests
-    #MarkovChainSubMatrixTests
     MatrixTests
     ObservablesTests
     VerticesTests
