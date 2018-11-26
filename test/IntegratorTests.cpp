@@ -32,7 +32,7 @@ struct FctTest
     size_t n_rows() const { return Nc; };
     size_t n_cols() const { return Nc; };
 
-    ClusterMatrixCD_t operator()(const double &x, const double &y)
+    ClusterMatrixCD_t operator()(const double &x, const double &y, const double &z)
     {
         ClusterMatrixCD_t tmp(Nc, Nc);
         tmp.zeros();
@@ -40,13 +40,11 @@ struct FctTest
         {
             for (size_t j = 0; j < Nc; j++)
             {
-                tmp(i, j) = cd_t(i * x + i * i * x * x, j * y);
+                tmp(i, j) = cd_t(i * x + i * i * x * x + z, j * y);
             }
         }
         return tmp;
     }
-
-  private:
 };
 
 TEST(IntegratorTest, TestGridKTilde)
@@ -88,8 +86,8 @@ TEST(IntegratorTest, TestGridKTilde)
 
 TEST(IntegratorTest, TestCubature)
 {
-    double xmin2[2] = {-1.1, 0.0};
-    double xmax2[2] = {1.1, 1.0};
+    double xmin2[3] = {-1.1, 0.0, 0.0};
+    double xmax2[3] = {1.1, 1.0, 1.0};
     FctTest fcttest;
 
     ClusterMatrixCD_t test2 = Cubature<FctTest>(fcttest, xmin2, xmax2, 0, 1.49e-8, 1.49e-8);
@@ -98,7 +96,7 @@ TEST(IntegratorTest, TestCubature)
     {
         for (size_t j = 0; j < test2.n_cols; j++)
         {
-            cd_t tmpGood = cd_t(2.0 * 1.1 * 1.1 * 1.1 / 3.0 * static_cast<double>(i * i), 1.1 * static_cast<double>(j));
+            cd_t tmpGood = cd_t(1.1 + 0.88733333333333 * static_cast<double>(i * i), 1.1 * static_cast<double>(j));
             ASSERT_NEAR(test2(i, j).real(), tmpGood.real(), DELTA);
             ASSERT_NEAR(test2(i, j).imag(), tmpGood.imag(), DELTA);
         }
