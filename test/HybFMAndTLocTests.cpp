@@ -21,7 +21,7 @@ Json BuildJson()
     return tJson;
 }
 
-TEST(H0Triangle2DTest, Init)
+TEST(HybFMAndTLocTests, Init)
 {
     const size_t Nx = 4;
     const size_t Nc = Nx * Nx;
