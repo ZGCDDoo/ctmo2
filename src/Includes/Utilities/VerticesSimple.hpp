@@ -441,12 +441,16 @@ class VertexBuilder
         {
             vertextype = VertexType::Phonon;
             const double deltaTau = GetDeltaTauPhonon(urng());
-            double tau1 = urng() * (beta_ - deltaTau) + deltaTau;
-            double tauPrime = tau1 - deltaTau;
-            // std::cout << "tau, deltaTau, tauPrime = " << tau << ", " << deltaTau << ", " << tauPrime << ", " << std::endl;
+            double tau1 = urng() * beta_;
+            double tauPrime = (tau1 > deltaTau) ? tau1 - deltaTau : deltaTau - tau1;
             assert((tauPrime > 0.0) && (tauPrime < beta_));
-            assert(tau1 > tauPrime);
-            assert(tau1 > deltaTau);
+            // assert(tau1 > tauPrime);
+            // assert(tau1 > deltaTau);
+            //Would or should it change something (time-ordering) if I always set tau1 as bigger than tauPrime as this:
+            // if (tauPrime < tau1)
+            // {
+            //     std::swap(tau1, tauPrime);
+            // }
 
 //Use completely random insertion for GREEN_STYLE, testing purpose: ctmo and ctmo_green should give the same results.
 #ifdef GREEN_STYLE
