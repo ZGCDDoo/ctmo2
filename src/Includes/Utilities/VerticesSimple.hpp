@@ -448,6 +448,11 @@ class VertexBuilder
             assert(tau1 > tauPrime);
             assert(tau1 > deltaTau);
 
+//Use completely random insertion for GREEN_STYLE, testing purpose: ctmo and ctmo_green should give the same results.
+#ifdef GREEN_STYLE
+            tau1 = urng() * beta_;
+            tauPrime = urng() * beta_;
+#endif
             const VertexPart vStart(vertextype, tau1, site, spin1, o1, aux);
             const VertexPart vEnd(vertextype, tauPrime, site, spin2, o2, aux);
 
@@ -492,12 +497,17 @@ class VertexBuilder
         else if (vtype == VertexType::Phonon)
         {
             const double w0 = Utensor.w0Phonon();
+            if ((std::abs(w0) < 1e-10) || (std::abs(Utensor.gPhonon()) < 1e-10))
+            {
+                return 0.0;
+            }
+
             //Big M is = 1.0
             U_xio1o2 = Utensor.gPhonon() * Utensor.gPhonon() / (4.0 * w0 * w0);
             const double factPh = 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0;
 
 #ifdef GREEN_STYLE
-            const double gtauPH = PhononPropagator(std::abs(x.tau() - y.tau()));
+            const double gtauPH = PhononPropagator(x.tau() - y.tau());
             return (-static_cast<double>(Nc_) * beta_ * beta_ * factPh * U_xio1o2 * 2.0 * gtauPH); //For testing purposes, green style is defined by sampling the two times uniformaly
 #else
             const double fact = 1.0 / (auxHelper_.FAux(x) - 1.0);
@@ -535,12 +545,23 @@ class VertexBuilder
     {
 
         const double w0 = Utensor.w0Phonon();
-        const double coth = 1.0 / std::tanh(w0 * beta_ / 2.0);
-        const double cothfact = 4.0 * coth * coth;
+        if ((std::abs(w0) < 1e-10) || (std::abs(Utensor.gPhonon()) < 1e-10))
+        {
+            return 1e-14;
+        }
+        else if (std::abs(w0 * beta_) > 25.0)
+        {
+            return 1e-14;
+        }
+        else
+        {
+            const double coth = 1.0 / std::tanh(w0 * beta_ / 2.0);
+            const double cothfact = 4.0 * coth * coth;
 
-        const double deltaTau = 1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
-        assert((deltaTau > 0.0) && (deltaTau < beta_));
-        return deltaTau;
+            const double deltaTau = 1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
+            assert((deltaTau > 0.0) && (deltaTau < beta_));
+            return deltaTau;
+        }
     }
 
   private:
