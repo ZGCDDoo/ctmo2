@@ -118,9 +118,10 @@ endif ()
 ################################
 set(EXECECUTABLES
     ctmo
-    ctmo_nosc
     ctmo_green
-   ctmo_nosc_green
+    #ctmo_DCA
+    ctmo_nosc
+    ctmo_nosc_green
 )
 
 foreach(executable ${EXECECUTABLES})

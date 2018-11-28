@@ -563,7 +563,33 @@ class VertexBuilder
             const double cothfact = 4.0 * coth * coth;
 
             const double deltaTau = 1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
-            assert((deltaTau > 0.0) && (deltaTau < beta_));
+            // std::cout << "deltaTau = " << deltaTau << std::endl;
+
+            if (deltaTau < 0.0)
+            {
+                std::cerr << "Warning, deltaTau < 0.0 ? " << std::endl;
+                return 0.0;
+            }
+            if (deltaTau > beta_)
+            {
+                std::cerr << "Warning, deltaTau > beta  ? " << std::endl;
+                return beta_;
+            }
+
+            // assert((deltaTau > 0.0) && (deltaTau < beta_));
+
+            // deltaTauVec_.push_back(deltaTau);
+            // if (deltaTauVec_.size() > 1000000)
+            // {
+            //     std::ofstream fout("deltatauvec.dat");
+            //     for (const auto &dd : deltaTauVec_)
+            //     {
+            //         fout << dd << std::endl;
+            //     }
+
+            //     assert(false);
+            // }
+
             return deltaTau;
         }
     }
@@ -578,6 +604,8 @@ class VertexBuilder
     const double probU_;
     const double factXi_;
     const bool isOrbitalDiagonal_;
+
+    std::vector<double> deltaTauVec_;
 };
 
 } // namespace Diagrammatic

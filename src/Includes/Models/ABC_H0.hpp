@@ -60,6 +60,7 @@ class ABC_H0
 
     size_t n_rows() const { return Nc * NOrb_; };
     size_t n_cols() const { return Nc * NOrb_; };
+    size_t NKPTS() const { return NKPTS_; };
     ClusterSites_t RSites() const { return RSites_; };
     ClusterSites_t KWaveVectors() const { return KWaveVectors_; };
 
