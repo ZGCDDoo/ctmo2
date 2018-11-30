@@ -28,12 +28,6 @@
     "WEIGHTSI": 0.0,
     "ESelfCon": 200,
     "N_T_INV": 5,
-    "UParameters": {
-        "00": {
-            "U": 14.0,
-            "J_H": 0.0
-        }
-    },
     "tParameters": {
         "00": {
             "tIntra": 0.0,

@@ -56,7 +56,7 @@ class ABC_H0
     std::vector<double> t2xVec() const { return t2xVec_; };
     std::vector<double> t2yVec() const { return t2yVec_; };
     std::vector<double> t2zVec() const { return t2zVec_; };
-    // std::vector<double> t3Vec() const { return t3Vec_; };
+    std::vector<double> t3Vec() const { return t3Vec_; };
 
     size_t n_rows() const { return Nc * NOrb_; };
     size_t n_cols() const { return Nc * NOrb_; };
@@ -93,7 +93,7 @@ class ABC_H0
                 t2yVec_.push_back(jj["t2y"].get<double>());
                 t2zVec_.push_back(jj["t2z"].get<double>());
 
-                // t3Vec_.push_back(jj["t3"].get<double>());
+                t3Vec_.push_back(jj["t3"].get<double>());
             }
         }
     }
@@ -121,10 +121,10 @@ class ABC_H0
             //second neighbor hopping in straight line
             2.0 * t2xVec_.at(NIndepOrbIndex) * std::cos(2.0 * kx) +
             2.0 * t2yVec_.at(NIndepOrbIndex) * std::cos(2.0 * ky) +
-            2.0 * t2zVec_.at(NIndepOrbIndex) * std::cos(2.0 * kz); //+
+            2.0 * t2zVec_.at(NIndepOrbIndex) * std::cos(2.0 * kz) +
 
-        //Third neihbor hopping
-        // 2.0 * t3Vec_.at(NIndepOrbIndex) * (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
+            //Third neihbor hopping
+            2.0 * t3Vec_.at(NIndepOrbIndex) * (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
 
         return eps0k;
     }
@@ -243,7 +243,7 @@ class ABC_H0
     std::vector<double> t2yVec_;
     std::vector<double> t2zVec_;
 
-    //std::vector<double> t3Vec_;
+    std::vector<double> t3Vec_;
 
     const size_t NOrb_;
     const size_t NKPTS_;
