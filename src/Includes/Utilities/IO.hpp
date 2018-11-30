@@ -193,7 +193,7 @@ class Base_IOModel
     }
 
     void SaveCube(const std::string &fname, const ClusterCubeCD_t &green, const double &beta,
-                  const size_t &NOrb, const size_t &precision = 10, const bool &saveArma = false)
+                  const size_t &NOrb, const size_t &precision = 14, const bool &saveArma = false)
     {
         assert(!green.has_nan());
         assert(!green.has_inf());
@@ -210,7 +210,7 @@ class Base_IOModel
         for (size_t nn = 0; nn < green.n_slices; nn++)
         {
             const double iwn = (2.0 * nn + 1.0) * M_PI / beta;
-            fout << iwn << " ";
+            fout << std::setprecision(precision) << iwn << " ";
 
             for (Orbital_t o1 = 0; o1 < NOrb; ++o1)
             {
@@ -243,7 +243,7 @@ class Base_IOModel
     }
 
 #ifdef DCA
-    void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb, const size_t &precision = 6) const
+    void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb, const size_t &precision = 14) const
     {
         const size_t shutUpWarning = NOrb;
         std::cout << shutUpWarning << "WARNING, Norb not implemented in SaveK" << std::endl;
@@ -253,7 +253,7 @@ class Base_IOModel
         for (size_t nn = 0; nn < green.n_slices; ++nn)
         {
             const double iwn = (2.0 * nn + 1.0) * M_PI / beta;
-            fout << iwn << " ";
+            fout << std::setprecision(precision) << iwn << " ";
 
             for (Site_t ii = 0; ii < Nc; ++ii)
             {
