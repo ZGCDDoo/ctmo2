@@ -3,7 +3,7 @@
 #!/bin/bash
 iter=1
 iterMax=10
-myExe=cttg
+myExe=ctmo
 nprocess=4
 
 rm tktilde.arma tloc.arma hybFM.arma config.dat
