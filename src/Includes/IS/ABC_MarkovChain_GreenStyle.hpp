@@ -259,7 +259,7 @@ class ABC_MarkovChain
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
 
-        if (std::abs(x.tau() - y.tau()) < 1e-14)
+        if ((std::abs(x.tau() - y.tau()) < 1e-14) && (x.vtype() != Diagrammatic::VertexType::Phonon))
         {
             assert(x.orbital() != y.orbital());
         }
