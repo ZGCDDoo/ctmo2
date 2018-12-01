@@ -440,17 +440,17 @@ class VertexBuilder
         else //Then build Electron-Phonon vertex
         {
             vertextype = VertexType::Phonon;
-            const double deltaTau = GetDeltaTauPhonon(0.5 * urng());
+            const double deltaTau = GetDeltaTauPhonon(urng());
             double tau1 = urng() * beta_;
             double tauPrime = tau1 - deltaTau;
 
-            if (tauPrime > beta_)
-            {
-                tauPrime -= beta_;
-            }
-            else if (tauPrime < 0.0)
+            if (tauPrime < 0.0)
             {
                 tauPrime += beta_;
+            }
+            else if (tauPrime > beta_)
+            {
+                tauPrime -= beta_;
             }
 
 //Use completely random insertion for GREEN_STYLE, testing purpose: ctmo and ctmo_green should give the same results.
@@ -564,32 +564,17 @@ class VertexBuilder
             const double cothfact = 4.0 * coth * coth;
 
             const double deltaTau = 1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
-            // std::cout << "deltaTau = " << deltaTau << std::endl;
 
             if (deltaTau < 0.0)
             {
                 std::cerr << "Warning, deltaTau < 0.0 ? " << std::endl;
-                return 0.0;
+                return 0.0 + 1e-14;
             }
-            if (deltaTau > beta_)
+            else if (deltaTau > beta_)
             {
                 std::cerr << "Warning, deltaTau > beta  ? " << std::endl;
-                return beta_;
+                return beta_ - 1e-14;
             }
-
-            // assert((deltaTau > 0.0) && (deltaTau < beta_));
-
-            // deltaTauVec_.push_back(deltaTau);
-            // if (deltaTauVec_.size() > 1000000)
-            // {
-            //     std::ofstream fout("deltatauvec.dat");
-            //     for (const auto &dd : deltaTauVec_)
-            //     {
-            //         fout << dd << std::endl;
-            //     }
-
-            //     assert(false);
-            // }
 
             return deltaTau;
         }
