@@ -1,7 +1,10 @@
 {
     "modelType": "SIAM_Square",
     "solver": "Int",
+    "NKPTS": 100,
     "NOrb": 1,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "IsOrbitalDiagonal": true,
     "AverageOrbitals": true,
     "CLEANUPDATE": 100,
@@ -29,21 +32,22 @@
     "WEIGHTSI": 0.0,
     "ESelfCon": 200,
     "N_T_INV": 5,
-    "UParameters": {
-        "00": {
-            "U": 14.0,
-            "J_H": 0.0
-        }
-    },
     "tParameters": {
         "00": {
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,
+            "tz": 0.0,
             "tx=y": 0.0,
             "tx=-y": 0.0,
+            "tx=z": 0.0,
+            "tx=-z": 0.0,
+            "ty=z": 0.0,
+            "ty=-z": 0.0,
             "t2x": 0.0,
-            "t2y": 0.0
+            "t2y": 0.0,
+            "t2z": 0.0,
+            "t3": 0.0
         }
     }
 }

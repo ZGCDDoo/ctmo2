@@ -1,10 +1,13 @@
 {
     "NOrb": 1,
+    "NKPTS": 100,
     "IsOrbitalDiagonal": true,
     "AverageOrbitals": true,
     "modelType": "Square2x2",
     "solver": "Int",
     "U": 5.0,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "J_H": 0.0,
     "UPrime": 0.0,
     "tParameters": {
@@ -12,10 +15,17 @@
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,
+            "tz": 0.0,
             "tx=y": 0.30,
             "tx=-y": 0.30,
+            "tx=z": 0.0,
+            "tx=-z": 0.0,
+            "ty=z": 0.0,
+            "ty=-z": 0.0,
             "t2x": -0.20,
-            "t2y": -0.20
+            "t2y": -0.20,
+            "t2z": 0.0,
+            "t3": 0.0
         }
     },
     "EGreen": 60,

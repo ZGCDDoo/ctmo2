@@ -1,5 +1,7 @@
 {
     "NOrb": 1,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.1,
     "UPrime": 0.0,
     "SEED": 100002,
     "PROBFLIP": 0.25,

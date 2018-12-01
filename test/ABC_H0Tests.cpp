@@ -16,13 +16,14 @@ TEST(ABC_H0_Tests, Init)
 
     Json tJson = R"(
     {   "NOrb": 2,
+        "NKPTS": 100,
         "tParameters": 
             {"00": 
-                {"tIntra": 0.0, "tx": 1.0, "ty": 1.08, "tx=y": 1.07, "tx=-y": 1.06, "t2x" : 1.05, "t2y": 1.04},
+                {"tIntra": 0.0, "tx": 1.0, "ty": 1.08, "tz": 0.0,  "tx=y": 1.07, "tx=-y": 1.06, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 1.05, "t2y": 1.04, "t2z": 0.0, "t3": 0.0},
             "01":
-                {"tIntra": -100.0, "tx": 1.10, "ty": 1.09, "tx=y": 1.04, "tx=-y": 1.03, "t2x" : 1.02, "t2y": 1.01},
+                {"tIntra": -100.0, "tx": 1.10, "ty": 1.09, "tz": 0.0, "tx=y": 1.04, "tx=-y": 1.03, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 1.02, "t2y": 1.01, "t2z": 0.0, "t3": 0.0},
             "11":
-                {"tIntra": 0.201, "tx": -1.01, "ty": 1.01, "tx=y": 1.02, "tx=-y": 1.03, "t2x" : -1.04, "t2y": 1.09}
+                {"tIntra": 0.201, "tx": -1.01, "ty": 1.01, "tz":0.0, "tx=y": 1.02, "tx=-y": 1.03, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : -1.04, "t2y": 1.09, "t2z": 0.0, "t3": 0.0}
 
             }
     }
@@ -62,7 +63,7 @@ TEST(ABC_H0_Tests, Init2)
 
     ASSERT_EQ(h0.RSites().size(), Nc);
     ASSERT_EQ(h0.KWaveVectors().size(), Nc);
-    ASSERT_EQ(h0(0.0, 0.0).n_cols, Nc * NOrb);
+    ASSERT_EQ(h0(0.0, 0.0, 0.0).n_cols, Nc * NOrb);
 
     ASSERT_DOUBLE_EQ(h0.KWaveVectors()[0][0], 0.0);
     ASSERT_DOUBLE_EQ(h0.KWaveVectors()[0][1], 0.0);
@@ -82,7 +83,7 @@ TEST(ABC_H0_Tests, Init2)
     ASSERT_DOUBLE_EQ(h0.RSites()[3][0], 1.0);
     ASSERT_DOUBLE_EQ(h0.RSites()[3][1], 1.0);
 
-    ASSERT_DOUBLE_EQ(-4.6847345710802575, h0.Eps0k(-0.1, 0.3, 0));
+    ASSERT_DOUBLE_EQ(-4.6847345710802575, h0.Eps0k(-0.1, 0.3, 0.0, 0));
 }
 
 TEST(ABC_H0_Tests, Hopping)
@@ -130,7 +131,7 @@ TEST(ABC_H0_Tests, Hopping)
     GoodHoppingKTilde.submat(0, Nc, Nc - 1, NOrb * Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
     GoodHoppingKTilde.submat(Nc, 0, NOrb * Nc - 1, Nc - 1) = off_diagonal + INTRA * ClusterMatrixCD_t(Nc, Nc).eye();
 
-    ClusterMatrixCD_t hopping = h0(0.1, -0.3);
+    ClusterMatrixCD_t hopping = h0(0.1, -0.3, 0.0);
     for (size_t i = 0; i < Nc * NOrb; i++)
     {
         for (size_t j = 0; j < Nc * NOrb; j++)

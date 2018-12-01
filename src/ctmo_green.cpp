@@ -1,6 +1,6 @@
-#define SUBMATRIX
+#define GREEN_STYLE
 
-#include "Includes/IS/MonteCarloSubMatrixBuilder.hpp"
+#include "Includes/IS/MonteCarloBuilder.hpp"
 #include "Includes/Utilities/SelfConsistencyBuilder.hpp"
 #include "Includes/Utilities/FS.hpp"
 #include "Includes/PrintVersion.hpp"

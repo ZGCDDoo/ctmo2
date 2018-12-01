@@ -145,11 +145,10 @@ class ABC_MarkovChain
     void CalculateUpdDataInsertDiffSpin(const VertexPart &x)
     {
         const double faux = FAux(x);
-        const double fauxM1 = faux - 1.0;
 
         if (x.spin() == FermionSpin_t::Up)
         {
-            upddata_.sTildeUpI_ = -faux + GetGreenTau0(x, x) * fauxM1;
+            upddata_.sTildeUpI_ = GetGreenTau0(x, x) - faux;
 
             if (nfdata_.Nup_.n_rows())
             {
@@ -160,8 +159,8 @@ class ABC_MarkovChain
 
                 for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
                 {
-                    upddata_.newLastRowUp_(iUp) = GetGreenTau0(x, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
-                    newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), x) * fauxM1;
+                    upddata_.newLastRowUp_(iUp) = GetGreenTau0(x, dataCT_->vertices_.atUp(iUp));
+                    newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), x);
                 }
                 MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, upddata_.NQUp_);
                 upddata_.sTildeUpI_ -= LinAlg::DotVectors(upddata_.newLastRowUp_, upddata_.NQUp_);
@@ -169,7 +168,7 @@ class ABC_MarkovChain
         }
         else
         {
-            upddata_.sTildeDownI_ = -faux + GetGreenTau0(x, x) * fauxM1;
+            upddata_.sTildeDownI_ = GetGreenTau0(x, x) - faux;
 
             if (nfdata_.Ndown_.n_rows())
             {
@@ -180,8 +179,8 @@ class ABC_MarkovChain
 
                 for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
                 {
-                    upddata_.newLastRowDown_(iDown) = GetGreenTau0(x, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
-                    newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), x) * fauxM1;
+                    upddata_.newLastRowDown_(iDown) = GetGreenTau0(x, dataCT_->vertices_.atDown(iDown));
+                    newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), x);
                 }
 
                 MatrixVectorMult(nfdata_.Ndown_, newLastColDown_, 1.0, upddata_.NQDown_);
@@ -268,14 +267,12 @@ class ABC_MarkovChain
         assert(x.spin() == y.spin());
 
         const double faux = FAux(x);
-        const double fauxM1 = faux - 1.0;
         const double fauxBar = FAuxBar(x);
-        const double fauxM1Bar = fauxBar - 1.0;
 
-        const double s00 = -faux + GetGreenTau0(x, x) * fauxM1;
-        const double s01 = GetGreenTau0(x, y) * fauxM1Bar;
-        const double s10 = GetGreenTau0(y, x) * fauxM1;
-        const double s11 = -fauxBar + GetGreenTau0(y, y) * fauxM1Bar;
+        const double s00 = GetGreenTau0(x, x) - faux;
+        const double s01 = GetGreenTau0(x, y);
+        const double s10 = GetGreenTau0(y, x);
+        const double s11 = GetGreenTau0(y, y) - fauxBar;
 
         if (Nspin.n_rows())
         {
@@ -292,14 +289,13 @@ class ABC_MarkovChain
             {
 
                 const VertexPart vPartI = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(i) : dataCT_->vertices_.atDown(i);
-                const double fauxIm1 = FVspin(i) - 1.0; // Faux_i - 1.0
-                Q_(i, 0) = GetGreenTau0(vPartI, x) * fauxM1;
-                Q_(i, 1) = GetGreenTau0(vPartI, y) * fauxM1Bar;
+                Q_(i, 0) = GetGreenTau0(vPartI, x);
+                Q_(i, 1) = GetGreenTau0(vPartI, y);
 
                 assert(vPartI.spin() == x.spin());
 
-                R_(0, i) = GetGreenTau0(x, vPartI) * fauxIm1;
-                R_(1, i) = GetGreenTau0(y, vPartI) * fauxIm1;
+                R_(0, i) = GetGreenTau0(x, vPartI);
+                R_(1, i) = GetGreenTau0(y, vPartI);
             }
 
             Matrix_t NQ_(kkoldspin, 2); //NQ = N*Q
@@ -393,11 +389,6 @@ class ABC_MarkovChain
         const auto y = dataCT_->vertices_.atDown(ppDown);
         assert(x.spin() == FermionSpin_t::Up);
         assert(y.spin() == FermionSpin_t::Down);
-        if (x.vtype() != Diagrammatic::VertexType::Phonon)
-        {
-            assert(x.vtype() == y.vtype());
-            assert(std::abs(x.tau() - y.tau()) < 1e-14);
-        }
 
         const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
 
@@ -445,13 +436,10 @@ class ABC_MarkovChain
         const VertexPart y = vertex.vEnd();
         assert(x.spin() == y.spin());
 
-        if (x.vtype() != Diagrammatic::VertexType::Phonon)
+        if (std::abs(x.tau() - y.tau()) < 1e-14)
         {
-            assert(x.vtype() == y.vtype());
-            assert(std::abs(x.tau() - y.tau()) < 1e-14);
             assert(x.orbital() != y.orbital());
         }
-
         assert(x.site() == y.site());
 
         const size_t pp1Spin = dataCT_->vertices_.GetKeyIndex(vertexKey, x.spin());
@@ -511,7 +499,7 @@ class ABC_MarkovChain
                 for (size_t jUp = 0; jUp < kkup; jUp++)
                 {
 
-                    nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
+                    nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp));
 
                     if (iUp == jUp)
                     {
@@ -529,7 +517,7 @@ class ABC_MarkovChain
                 for (size_t jDown = 0; jDown < kkdown; jDown++)
                 {
 
-                    nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
+                    nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown));
 
                     if (iDown == jDown)
                     {
@@ -561,10 +549,9 @@ class ABC_MarkovChain
     void Measure()
     {
         AssertSizes();
-        const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
-        const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
-        DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
-        DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
+
+        *(dataCT_->MupPtr_) = nfdata_.Nup_;
+        *(dataCT_->MdownPtr_) = nfdata_.Ndown_;
         obs_.Measure();
     }
 

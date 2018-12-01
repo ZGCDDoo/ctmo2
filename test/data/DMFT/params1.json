@@ -1,5 +1,6 @@
 {
     "NOrb": 2,
+    "NKPTS": 100,
     "modelType": "SIAM_Square",
     "solver": "Int",
     "CLEANUPDATE": 100,
@@ -13,6 +14,8 @@
     "THERMALIZATION_TIME": 0.05,
     "THERM_FROM_CONFIG": false,
     "U": 4.0,
+    "gPhonon": 0.1,
+    "w0Phonon": 0.1,
     "J_H": 1.0,
     "UPrime": 3.0,
     "UPDATESMEAS": 50,
@@ -38,28 +41,49 @@
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,
+            "tz": 0.0,
             "tx=y": 0.0,
             "tx=-y": 0.0,
+            "tx=z": 0.0,
+            "tx=-z": 0.0,
+            "ty=z": 0.0,
+            "ty=-z": 0.0,
             "t2x": 0.0,
-            "t2y": 0.0
+            "t2y": 0.0,
+            "t2z": 0.0,
+            "t3": 0.0
         },
         "01": {
             "tIntra": 0.0,
             "tx": 0.0,
             "ty": 0.0,
+            "tz": 0.0,
             "tx=y": 0.0,
             "tx=-y": 0.0,
+            "tx=z": 0.0,
+            "tx=-z": 0.0,
+            "ty=z": 0.0,
+            "ty=-z": 0.0,
             "t2x": 0.0,
-            "t2y": 0.0
+            "t2y": 0.0,
+            "t2z": 0.0,
+            "t3": 0.0
         },
         "11": {
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,
+            "tz": 0.0,
             "tx=y": 0.0,
             "tx=-y": 0.0,
+            "tx=z": 0.0,
+            "tx=-z": 0.0,
+            "ty=z": 0.0,
+            "ty=-z": 0.0,
             "t2x": 0.0,
-            "t2y": 0.0
+            "t2y": 0.0,
+            "t2z": 0.0,
+            "t3": 0.0
         }
     },
     "IsOrbitalDiagonal": false,

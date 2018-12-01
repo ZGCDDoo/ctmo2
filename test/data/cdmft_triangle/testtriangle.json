@@ -1,8 +1,11 @@
 {
     "NOrb": 1,
+    "NKPTS": 100,
     "SEED": 100002,
     "AverageOrbitals": false,
     "PROBFLIP": 0.25,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.1,
     "beta": 10.0,
     "EGreen": 1000,
     "NTAU": 10000,
@@ -15,10 +18,17 @@
             "tIntra": 0.0,
             "tx": -1.0,
             "ty": -1.0,
+            "tz": 0.0,
             "tx=y": -0.40,
             "tx=-y": 0.0,
+            "tx=z": 0.0,
+            "tx=-z": 0.0,
+            "ty=z": 0.0,
+            "ty=-z": 0.0,
             "t2x": 0.0,
-            "t2y": 0.0
+            "t2y": 0.0,
+            "t2z": 0.0,
+            "t3": 0.0
         }
     },
     "U": 3.0,

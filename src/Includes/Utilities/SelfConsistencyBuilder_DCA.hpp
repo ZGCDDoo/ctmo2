@@ -15,7 +15,7 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         const size_t Nx = 1;
         using Model_t = Models::SIAM_Square;
         using IOModel_t = IO::IOSIAM;
-        using H0_t = Models::H0Square<Nx, Nx>;
+        using H0_t = Models::ABC_H0<Nx, Nx>;
 
         Model_t model(jj);
         IOModel_t ioModel;
@@ -38,7 +38,7 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         const size_t Nx = 2;
         using Model_t = Models::ModelSquare2x2;
         using IOModel_t = IO::IOSquare2x2;
-        using H0_t = Models::H0Square<Nx, Nx>;
+        using H0_t = Models::ABC_H0<Nx, Nx>;
 
         Model_t model(jj);
         IOModel_t ioModel;
@@ -61,7 +61,7 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
         const size_t Nx = 4;
         using Model_t = Models::ModelSquare4x4_DCA;
         using IOModel_t = IO::IOSquare4x4_DCA;
-        using H0_t = Models::H0Square<Nx, Nx>;
+        using H0_t = Models::ABC_H0<Nx, Nx>;
 
         Model_t model(jj);
         IOModel_t ioModel;

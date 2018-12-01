@@ -10,9 +10,10 @@ Json BuildJson()
 {
     Json tJson = R"(
     {   "NOrb": 1,
+        "NKPTS": 100,
         "tParameters": 
             {"00": 
-                {"tIntra": 0.0, "tx": -1.120, "ty": -1.120, "tx=y": 0.1560, "tx=-y": 0.156, "t2x" : 0.23700, "t2y": 0.23700}
+                {"tIntra": 0.0, "tx": -1.120, "ty": -1.120, "tz": 0.0, "tx=y": 0.1560, "tx=-y": 0.156, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 0.23700, "t2y": 0.23700, "t2z": 0.0, "t3": 0.0}
             }
     }
     )"_json;
@@ -20,7 +21,7 @@ Json BuildJson()
     return tJson;
 }
 
-TEST(H0Triangle2DTest, Init)
+TEST(HybFMAndTLocTests, Init)
 {
     const size_t Nx = 4;
     const size_t Nc = Nx * Nx;
@@ -69,6 +70,10 @@ TEST(H0Triangle2DTest, Init)
 
     tloc_K_Good(15, 15) = -0.6035155442;
     hybFM_K_Good(15, 15) = 1.878710931;
+
+    tloc_K_Good.print();
+    std::cout << "\n\n\n";
+    tloc_K.print();
 
     for (size_t ii = 0; ii < Nc; ii++)
     {

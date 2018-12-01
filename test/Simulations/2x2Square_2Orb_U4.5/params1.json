@@ -1,5 +1,8 @@
 {
     "AverageOrbitals": true,
+    "NKPTS": 100,
+    "gPhonon": 0.0,
+    "w0Phonon": 0.0,
     "CLEANUPDATE": 100,
     "EGreen": 100,
     "ESelfCon": 200,
@@ -7,6 +10,8 @@
     "IsOrbitalDiagonal": false,
     "J_H": 0.75,
     "K": 1.0,
+    "w0Phonon": 0.1,
+    "gPhonon": 0.0,
     "KMAX_UPD": 100,
     "MEASUREMENT_TIME": 30,
     "MEASURE_FILLING": true,
@@ -30,29 +35,50 @@
         "00": {
             "t2x": 0.0,
             "t2y": 0.0,
+            "t2z": 0.0,
             "tIntra": 0.0,
             "tx": -1.0,
             "tx=-y": 0.0,
             "tx=y": 0.0,
-            "ty": -1.0
+            "tx=-z": 0.0,
+            "tx=z": 0.0,
+            "ty=-z": 0.0,
+            "ty=z": 0.0,
+            "ty": -1.0,
+            "tz": 0.0,
+            "t3": 0.0
         },
         "01": {
             "t2x": 0.0,
             "t2y": 0.0,
+            "t2z": 0.0,
             "tIntra": 0.0,
             "tx": 0.0,
             "tx=-y": 0.0,
             "tx=y": 0.0,
-            "ty": 0.0
+            "tx=-z": 0.0,
+            "tx=z": 0.0,
+            "ty=-z": 0.0,
+            "ty=z": 0.0,
+            "ty": 0.0,
+            "tz": 0.0,
+            "t3": 0.0
         },
         "11": {
             "t2x": 0.0,
             "t2y": 0.0,
+            "t2z": 0.0,
             "tIntra": 0.0,
             "tx": -1.0,
             "tx=-y": 0.0,
             "tx=y": 0.0,
-            "ty": -1.0
+            "tx=-z": 0.0,
+            "tx=z": 0.0,
+            "ty=-z": 0.0,
+            "ty=z": 0.0,
+            "ty": -1.0,
+            "tz": 0.0,
+            "t3": 0.0
         }
     }
 }

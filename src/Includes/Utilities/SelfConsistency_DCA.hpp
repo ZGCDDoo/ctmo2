@@ -46,7 +46,7 @@ class SelfConsistency : public ABC_SelfConsistency
     static const size_t Nc;
     static const ClusterMatrixCD_t II;
     static const double factNSelfCon;
-    const size_t hybSavePrecision = 10;
+    const size_t hybSavePrecision = 14;
 
     SelfConsistency(const Json &jj, const TModel &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
                                                                                                                             ioModel_(TIOModel()),
@@ -62,18 +62,7 @@ class SelfConsistency : public ABC_SelfConsistency
         mpiUt::Print("Start of SC constructor");
 
         const size_t NGreen = greenImpurity_.n_slices;
-        size_t NSelfConTmp = std::max<double>(0.5 * (jj["ESelfCon"].get<double>() * model_.beta() / M_PI - 1.0),
-                                              0.5 * (200.0 * model_.beta() / M_PI - 1.0));
-        if (NGreen >= NSelfConTmp)
-        {
-            NSelfConTmp = factNSelfCon * static_cast<double>(NGreen);
-        }
-        const size_t NSelfCon = NSelfConTmp;
-        assert(NSelfCon >= NGreen);
-        //Patcher la hyb si necessaire
-        hybridization_.PatchHF(NSelfCon, model_.beta());
-        const size_t NHyb = hybridization_.n_slices();
-        assert(NHyb >= NSelfCon);
+        const size_t NSelfCon = NGreen;
 
         selfEnergy_.resize(Nc, Nc, NSelfCon);
         selfEnergy_.zeros();
@@ -83,37 +72,6 @@ class SelfConsistency : public ABC_SelfConsistency
         {
             const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
             selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(Nc, Nc).eye() - model_.tLoc() - hybridization_.slice(nn);
-        }
-
-        //1.) Patcher la self par HF de NGreen à NSelfCon
-        ClusterMatrix_t nUpMatrix;
-        assert(nUpMatrix.load("nUpMatrix.dat"));
-        ClusterMatrix_t nDownMatrix;
-        assert(nDownMatrix.load("nDownMatrix.dat"));
-
-        ClusterMatrixCD_t nMatrix(nUpMatrix + nDownMatrix, ClusterMatrix_t(Nc, Nc).zeros());
-        nMatrix = FourierDCA::RtoK(nMatrix, h0_.RSites(), h0_.KWaveVectors());
-        nMatrix.save("nMatrix_K.arma", arma::arma_ascii);
-
-        for (size_t nn = NGreen; nn < NSelfCon; nn++)
-        {
-            const cd_t iwn = cd_t(0.0, (2.0 * nn + 1.0) * M_PI / model_.beta());
-#ifndef AFM
-            selfEnergy_.slice(nn) = 0.5 * model_.U() * nMatrix + 1.0 / iwn * model_.U() * model_.U() * nMatrix / 2.0 * (II - nMatrix / 2.0);
-#else
-            if (spin_ == FermionSpin_t::Up)
-            {
-                selfEnergy_.slice(nn) = model_.U() * nDownMatrix + 1.0 / iwn * model_.U() * model_.U() * nDownMatrix * (II - nDownMatrix);
-            }
-            else if (spin_ == FermionSpin_t::Down)
-            {
-                selfEnergy_.slice(nn) = model_.U() * nUpMatrix + 1.0 / iwn * model_.U() * model_.U() * nUpMatrix * (II - nUpMatrix);
-            }
-            else
-            {
-                throw std::runtime_error("Ayaya, must be a spin man");
-            }
-#endif
         }
 
         if (mpiUt::Rank() == mpiUt::master)
@@ -140,7 +98,7 @@ class SelfConsistency : public ABC_SelfConsistency
         {
             std::cout << "In Selfonsistency DOSC serial" << std::endl;
             const size_t NSelfCon = selfEnergy_.n_slices;
-            const size_t NKPTS = 200;
+            const size_t NKPTS = h0_.NKPTS();
             ClusterCubeCD_t gImpUpNext(Nc, Nc, NSelfCon);
             assert(Nc == h0_.KWaveVectors().size());
             gImpUpNext.zeros();
@@ -148,11 +106,18 @@ class SelfConsistency : public ABC_SelfConsistency
 
             const double kxCenter = M_PI / static_cast<double>(h0_.Nx);
             const double kyCenter = M_PI / static_cast<double>(h0_.Ny);
+            const double kzCenter = M_PI / static_cast<double>(h0_.Nz);
+
+            const size_t kxtildepts = (std::abs(h0_.txVec().at(0)) < 1e-10) ? 1 : NKPTS;
+            const size_t kytildepts = (std::abs(h0_.tyVec().at(0)) < 1e-10) ? 1 : NKPTS;
+            const size_t kztildepts = (std::abs(h0_.tzVec().at(0)) < 1e-10) ? 1 : NKPTS;
 
             for (size_t KIndex = 0; KIndex < h0_.KWaveVectors().size(); KIndex++)
             {
                 const double Kx = h0_.KWaveVectors().at(KIndex)(0);
                 const double Ky = h0_.KWaveVectors().at(KIndex)(1);
+                const double Kz = h0_.KWaveVectors().at(KIndex)(2);
+
                 for (size_t nn = 0; nn < NSelfCon; nn++)
                 {
                     const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
@@ -162,7 +127,11 @@ class SelfConsistency : public ABC_SelfConsistency
                         for (size_t kyindex = 0; kyindex < NKPTS; kyindex++)
                         {
                             const double ky = (Ky - kyCenter) + static_cast<double>(kyindex) / static_cast<double>(NKPTS - 1) * 2.0 * kyCenter;
-                            gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky) - selfEnergy_(KIndex, KIndex, nn));
+                            for (size_t kzindex = 0; kzindex < NKPTS; kzindex++)
+                            {
+                                const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
+                                gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz) - selfEnergy_(KIndex, KIndex, nn));
+                            }
                         }
                     }
                     gImpUpNext(KIndex, KIndex, nn) /= static_cast<double>(NKPTS * NKPTS);
@@ -205,9 +174,14 @@ class SelfConsistency : public ABC_SelfConsistency
         ClusterCubeCD_t hybNextRank(Nc, Nc, NSelfConRank);
         hybNextRank.zeros();
 
-        const size_t NKPTS = 400;
         const double kxCenter = M_PI / static_cast<double>(h0_.Nx);
         const double kyCenter = M_PI / static_cast<double>(h0_.Ny);
+        const double kzCenter = M_PI / static_cast<double>(h0_.Nz);
+
+        const size_t kxtildepts = (std::abs(h0_.txVec().at(0)) < 1e-10) ? 1 : NKPTS;
+        const size_t kytildepts = (std::abs(h0_.tyVec().at(0)) < 1e-10) ? 1 : NKPTS;
+        const size_t kztildepts = (std::abs(h0_.tzVec().at(0)) < 1e-10) ? 1 : NKPTS;
+
         const size_t nnStart = mpiUt::Rank() == mpiUt::master ? 0 : NSelfCon % mpiUt::NWorkers() + (NSelfCon / mpiUt::NWorkers()) * mpiUt::Rank();
         const size_t nnEnd = nnStart + NSelfConRank;
         for (size_t KIndex = 0; KIndex < h0_.KWaveVectors().size(); KIndex++)
@@ -215,6 +189,8 @@ class SelfConsistency : public ABC_SelfConsistency
 
             const double Kx = h0_.KWaveVectors().at(KIndex)(0);
             const double Ky = h0_.KWaveVectors().at(KIndex)(1);
+            const double Kz = h0_.KWaveVectors().at(KIndex)(2);
+
             for (size_t nn = nnStart; nn < nnEnd; nn++)
             {
                 const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
