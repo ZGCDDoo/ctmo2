@@ -14,6 +14,7 @@ namespace Obs
 
 class FillingAndDocc;
 class GreenBinning;
+class Observables;
 
 using namespace LinAlg;
 
@@ -50,7 +51,7 @@ public:
   };
 
 private:
-  // friend class Markov::Obs::Observables;
+  friend class Markov::Obs::Observables;
   friend class Markov::Obs::GreenBinning;
   friend class Markov::Obs::FillingAndDocc;
   // friend class Markov::Obs::GreenTauMesure;

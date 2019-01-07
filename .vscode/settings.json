@@ -74,6 +74,9 @@
         "*.tcc": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "csignal": "cpp",
+        "bitset": "cpp",
+        "mutex": "cpp"
     }
 }

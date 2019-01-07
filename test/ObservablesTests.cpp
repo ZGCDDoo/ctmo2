@@ -3,13 +3,12 @@
 #include <gtest/gtest.h>
 
 #include "../src/Includes/IS/Obs/Observables.hpp"
-#include "../src/Includes/Models/ModelSquare2x2.hpp"
 
-using Model_t = Models::ModelSquare2x2;
-using IOModel_t = IO::IOSquare2x2;
-using GreenBinning_t = Markov::Obs::GreenBinning<IO::IOSquare2x2, Models::ModelSquare2x2>;
-using Obs_t = Markov::Obs::Observables<IO::IOSquare2x2, Models::ModelSquare2x2>;
-using ISDataCT_t = Markov::Obs::ISDataCT<IO::IOSquare2x2, Models::ModelSquare2x2>;
+using Model_t = Models::ABC_Model_2D;
+using IOModel_t = IO::Base_IOModel;
+using GreenBinning_t = Markov::Obs::GreenBinning;
+using Obs_t = Markov::Obs::Observables;
+using ISDataCT_t = Markov::Obs::ISDataCT;
 
 // const double DELTA = 1e-11;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";

@@ -21,16 +21,16 @@ class Observables
 {
 
       public:
-        Observables(){};
+        // Observables(){};
         Observables(const std::shared_ptr<ISDataCT> &dataCT,
-                    const Json &jj) : modelPtr_(new TModel(jj)),
+                    const Json &jj) : modelPtr_(new Model_t(jj)),
                                       ioModelPtr_(new IOModel_t(jj)),
                                       dataCT_(dataCT),
                                       rng_(jj["SEED"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
                                       urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
                                       greenBinningUp_(modelPtr_, dataCT_, jj, FermionSpin_t::Up),
                                       greenBinningDown_(modelPtr_, dataCT_, jj, FermionSpin_t::Down),
-                                      fillingAndDocc_(dataCT_, urngPtr_, jj["N_T_INV"].get<size_t>()),
+                                      fillingAndDocc_(dataCT_, ioModelPtr_, urngPtr_, jj["N_T_INV"].get<size_t>()),
                                       signMeas_(0.0),
                                       expOrder_(0.0),
                                       NMeas_(0),
@@ -45,7 +45,7 @@ class Observables
 
         //Getters
         double signMeas() const { return signMeas_; };
-        double expOrder() const { return expOrder; };
+        double expOrder() const { return expOrder_; };
 
         void Measure()
         {
@@ -115,12 +115,12 @@ class Observables
                 }
                 if (mpiUt::Rank() == mpiUt::master)
                 {
-                        mpiUt::IOResult<TIOModel>::SaveISResults(isResultVec, dataCT_->beta_);
+                        mpiUt::IOResult::SaveISResults(isResultVec, *ioModelPtr_, dataCT_->beta_);
                 }
 
 #else
                 isResultVec.push_back(isResult);
-                mpiUt::IOResult<TIOModel>::SaveISResults(isResultVec, dataCT_->beta_);
+                mpiUt::IOResult::SaveISResults(isResultVec, *ioModelPtr_, dataCT_->beta_);
 #endif
 
                 // Start: This should be in PostProcess.cpp ?
