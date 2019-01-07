@@ -5,6 +5,7 @@
 #include "MPIUtilities.hpp"
 #include "GreenMat.hpp"
 #include "ABC_SelfConsistency.hpp"
+#include "../Models/ABC_Model.hpp"
 
 namespace SelfCon
 {
@@ -18,16 +19,16 @@ class SelfConsistency : public ABC_SelfConsistency
     using IOModel_t = IO::Base_IOModel;
 
   public:
-    SelfConsistency(const Json &jj, const TModel &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
-                                                                                                                            ioModel_(TIOModel()),
-                                                                                                                            greenImpurity_(greenImpurity),
-                                                                                                                            hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
-                                                                                                                            selfEnergy_(),
-                                                                                                                            hybNext_(),
-                                                                                                                            spin_(spin),
-                                                                                                                            weights_(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>()),
-                                                                                                                            NOrb_(jj["NOrb"].get<size_t>()),
-                                                                                                                            NSS_(NOrb_ * ioModel_.Nc)
+    SelfConsistency(const Json &jj, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
+                                                                                                                             ioModel_(jj),
+                                                                                                                             greenImpurity_(greenImpurity),
+                                                                                                                             hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
+                                                                                                                             selfEnergy_(),
+                                                                                                                             hybNext_(),
+                                                                                                                             spin_(spin),
+                                                                                                                             weights_(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>()),
+                                                                                                                             NOrb_(jj["NOrb"].get<size_t>()),
+                                                                                                                             NSS_(NOrb_ * ioModel_.Nc)
 
     {
 
@@ -231,8 +232,8 @@ class SelfConsistency : public ABC_SelfConsistency
     };
 
   private:
-    TModel model_;
-    TIOModel ioModel_;
+    Model_t model_;
+    IOModel_t ioModel_;
 
     const ClusterCubeCD_t greenImpurity_;
     GreenMat::HybridizationMat hybridization_;

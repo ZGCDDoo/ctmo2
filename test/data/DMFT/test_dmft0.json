@@ -2,6 +2,10 @@
     "NOrb": 1,
     "UPrime": 0.0,
     "NKPTS": 100,
+    "Nx": 1,
+    "Ny": 1,
+    "Nz": 1,
+    "ModelFile": "../data/SIAM_Square.model",
     "tParameters": {
         "00": {
             "tIntra": 0.0,

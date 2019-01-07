@@ -22,7 +22,6 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jj, const size_t &
 #endif
 
     using Model_t = Models::ABC_Model_2D;
-    using IOModel_t = IO::Base_IOModel;
     using MarkovInt_t = Markov::MarkovChain;
 
     //Init a dummy model just to be sure that all files are present:
