@@ -22,7 +22,7 @@ class Base_IOModel
                                    Nz(jj["Nz"].get<size_t>()),
                                    Nc(Nx * Ny * Nz)
     {
-        GreenSites_ = BuildGreenSites("Model.model");
+        GreenSites_ = BuildGreenSites(jj["ModelFile"].get<std::string>());
         indepSites_ = BuildIndepSites(GreenSites_);
         FinishConstructor();
     };

@@ -12,6 +12,7 @@ Json BuildJson()
     {   "Nx": 4,
         "Ny": 4,
         "Nz": 1,
+        "ModelFile": "../data/Square4x4.model",
         "NOrb": 1,
         "NKPTS": 100,
         "tParameters": 
