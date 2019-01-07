@@ -22,9 +22,11 @@ class Base_IOModel
                                    Nz(jj["Nz"].get<size_t>()),
                                    Nc(Nx * Ny * Nz)
     {
+        std::cout << "Start Base_IOModel construction " << std::endl;
         GreenSites_ = BuildGreenSites(jj["ModelFile"].get<std::string>());
         indepSites_ = BuildIndepSites(GreenSites_);
         FinishConstructor();
+        std::cout << "End Base_IOModel construction " << std::endl;
     };
 
     void FinishConstructor()

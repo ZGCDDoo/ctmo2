@@ -13,7 +13,6 @@ using namespace GreenMat;
 using Vector_t = std::vector<double>;
 using Data_t = std::vector<Vector_t>;
 
-template <typename TIOModel>
 class GreenCluster0Tau
 {
     //definit par la fct hyb, tloc, mu et beta et un Nombre de slice de temps NTau
@@ -22,13 +21,13 @@ class GreenCluster0Tau
     const double EPS = 1e-13;
     const double deltaTau = 0.008;
 
-    GreenCluster0Tau() : gfMatCluster_(), beta_(), NTau_(){};
+    // GreenCluster0Tau() : gfMatCluster_(), beta_(), NTau_(){};
 
-    GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const size_t &NTau) : ioModel_(),
-                                                                                 gfMatCluster_(gfMatCluster),
-                                                                                 beta_(gfMatCluster.beta()),
-                                                                                 NTau_(std::max<double>(static_cast<double>(NTau), beta_ / deltaTau)),
-                                                                                 NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
+    GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const Json &jj) : ioModel_(jj),
+                                                                             gfMatCluster_(gfMatCluster),
+                                                                             beta_(gfMatCluster.beta()),
+                                                                             NTau_(std::max<double>(jj["NTAU"].get<double>(), beta_ / deltaTau)),
+                                                                             NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
     {
         mpiUt::Print("Creating gtau ");
         assert(NOrb_ >= 1);
@@ -185,7 +184,7 @@ class GreenCluster0Tau
     }
 
   private:
-    TIOModel ioModel_;
+    IO::Base_IOModel ioModel_;
     GreenCluster0Mat gfMatCluster_;
     Data_t data_;
 
