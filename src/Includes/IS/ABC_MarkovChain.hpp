@@ -63,7 +63,7 @@ class ABC_MarkovChain
                                                                   jj,
                                                                   *modelPtr_)),
                                                           obs_(dataCT_, jj),
-                                                          vertexBuilder_(jj, modelPtr_->Nc),
+                                                          vertexBuilder_(jj, modelPtr_->Nc()),
                                                           updsamespin_(0)
     {
         const std::valarray<size_t> zeroPair = {0, 0};

@@ -3,7 +3,7 @@
 
 namespace Models
 {
-template <size_t TNX, size_t TNY, size_t TNZ = 1>
+
 class ABC_H0
 {
 
@@ -24,18 +24,18 @@ class ABC_H0
                                 NKPTS_(tJson["NKPTS"].get<size_t>())
 
     {
-        assert(TNX == TNY);
+        // assert(TNX == TNY);
 
-        for (size_t i = 0; i < TNX; i++)
+        for (size_t i = 0; i < Nx; i++)
         {
-            for (size_t j = 0; j < TNY; j++)
+            for (size_t j = 0; j < Ny; j++)
             {
-                for (size_t k = 0; k < TNZ; k++)
+                for (size_t k = 0; k < Nz; k++)
                 {
 
-                    const size_t index = i + TNY * j + TNZ * k;
+                    const size_t index = i + Ny * j + Nz * k;
                     RSites_.at(index) = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(k)};
-                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(TNX), static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(TNY), static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(TNZ)};
+                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx), static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny), static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
                 }
             }
         }
@@ -252,17 +252,5 @@ class ABC_H0
     const size_t NOrb_;
     const size_t NKPTS_;
 };
-
-// template <size_t TNX, size_t TNY, size_t TNZ>
-// const size_t ABC_H0<TNX, TNY, TNZ>::Nx = TNX;
-
-// template <size_t TNX, size_t TNY, size_t TNZ>
-// const size_t ABC_H0<TNX, TNY, TNZ>::Ny = TNY;
-
-// template <size_t TNX, size_t TNY, size_t TNZ>
-// const size_t ABC_H0<TNX, TNY, TNZ>::Nz = TNZ;
-
-// template <size_t TNX, size_t TNY, size_t TNZ>
-// const size_t ABC_H0<TNX, TNY, TNZ>::Nc = TNX *TNY;
 
 } // namespace Models

@@ -11,7 +11,7 @@ namespace SelfCon
 
 using Utilities::GetSpinName;
 
-template <typename TIOModel, typename TModel, typename TH0>
+template <typename TIOModel, typename TModel>
 class SelfConsistency : public ABC_SelfConsistency
 {
 

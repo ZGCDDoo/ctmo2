@@ -5,6 +5,7 @@
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/GreenMat.hpp"
 #include "../Utilities/IO.hpp"
+#include "ABC_H0.hpp"
 #include "UTensorSimple.hpp"
 #include "HybFMAndTLoc.hpp"
 
@@ -17,23 +18,20 @@ const size_t Nx4 = 4;
 const size_t Nx6 = 6;
 const size_t Nx8 = 8;
 
-template <typename TIOModel, typename TH0> //Template Number of X, Y sites
+template <typename TIOModel> //Template Number of X, Y sites
 class ABC_Model_2D
 {
 
       public:
-        const double MIN_EHYB = 300;
-        const size_t Nc;
-
-        ABC_Model_2D(const Json &jjSim) : Nc(h0_.Nc),
-                                          ioModel_(),
+        ABC_Model_2D(const Json &jjSim) : ioModel_(),
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
                                           U_(jjSim["U"].get<double>()),
                                           beta_(jjSim["beta"].get<double>()),
                                           mu_(jjSim["mu"].get<double>()),
-                                          NOrb_(jjSim["NOrb"].get<size_t>())
+                                          NOrb_(jjSim["NOrb"].get<size_t>()),
+                                          Nc_(h0_.Nc)
         {
                 mpiUt::Print("start abc_model constructor ");
 
@@ -75,10 +73,10 @@ class ABC_Model_2D
                 const size_t NHyb = hybtmpUp.n_slices;
                 const double factNHyb = 3.0;
                 const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb),
-                                                        0.5 * (MIN_EHYB * beta_ / M_PI - 1.0));
-                hybtmpUp.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
+                                                        0.5 * (MIN_EHYB_ * beta_ / M_PI - 1.0));
+                hybtmpUp.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
 #ifdef AFM
-                hybtmpDown.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
+                hybtmpDown.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
 #endif
 
                 for (size_t nn = NHyb; nn < NHyb_HF; nn++)
@@ -117,19 +115,20 @@ class ABC_Model_2D
         virtual ~ABC_Model_2D() = 0;
 
         //Getters
-        double mu() const { return mu_; };
-        double U() const { return U_; };
-        double beta() const { return beta_; };
-        size_t NOrb() const { return NOrb_; };
-        ClusterMatrixCD_t tLoc() const { return tLoc_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatUp() const { return greenCluster0MatUp_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatDown() const { return greenCluster0MatDown_; };
-        GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; };
-        GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; };
-        TH0 const h0() const { return h0_; };
-        TIOModel const ioModel() const { return ioModel_; };
+        double mu() const { return mu_; }
+        double U() const { return U_; }
+        double beta() const { return beta_; }
+        size_t NOrb() const { return NOrb_; }
+        ClusterMatrixCD_t tLoc() const { return tLoc_; }
+        GreenMat::GreenCluster0Mat const greenCluster0MatUp() const { return greenCluster0MatUp_; }
+        GreenMat::GreenCluster0Mat const greenCluster0MatDown() const { return greenCluster0MatDown_; }
+        GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; }
+        GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; }
+        Models::ABC_H0 const h0() const { return h0_; }
+        TIOModel const ioModel() const { return ioModel_; }
+        size_t Nc() const { return Nc_; }
 
-        double auxU() const { return U_ / 2.0; };
+        double auxU() const { return U_ / 2.0; }
 
       protected:
         TIOModel ioModel_;
@@ -137,7 +136,7 @@ class ABC_Model_2D
         GreenMat::HybridizationMat hybridizationMatDown_;
         GreenMat::GreenCluster0Mat greenCluster0MatUp_;
         GreenMat::GreenCluster0Mat greenCluster0MatDown_;
-        TH0 h0_;
+        Models::ABC_H0 h0_;
 
         ClusterMatrixCD_t hybFM_;
         ClusterMatrixCD_t tLoc_;
@@ -146,9 +145,11 @@ class ABC_Model_2D
         const double beta_;
         const double mu_;
         const size_t NOrb_;
+        const double MIN_EHYB_ = 300;
+        const size_t Nc_;
 };
 
-template <typename TIOModel, typename TH0>
-ABC_Model_2D<TIOModel, TH0>::~ABC_Model_2D() {} //destructors must exist
+template <typename TIOModel>
+ABC_Model_2D<TIOModel>::~ABC_Model_2D() {} //destructors must exist
 
 } // namespace Models
