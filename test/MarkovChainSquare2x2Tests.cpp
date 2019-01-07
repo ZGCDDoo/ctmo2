@@ -1,13 +1,10 @@
 #include <gtest/gtest.h>
 
 #include "../src/Includes/IS/MarkovChain.hpp"
-#include "../src/Includes/Models/ModelSquare2x2.hpp"
 
 using namespace LinAlg;
 
-using Model_t = Models::ModelSquare2x2;
-using IOModel_t = IO::IOSquare2x2;
-using Markov_t = Markov::MarkovChain<IOModel_t, Model_t>;
+using Markov_t = Markov::MarkovChain;
 
 const double DELTA = 1e-9;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";

@@ -7,30 +7,20 @@ namespace SelfCon
 
 std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, const FermionSpin_t &spin)
 {
-    const std::string modelType = jj["modelType"].get<std::string>();
     const size_t NOrb = jj["NOrb"].get<size_t>();
 
-    if (modelType == "SIAM_Square")
+    ClusterCubeCD_t greenImpurity;
+    if (spin == FermionSpin_t::Up)
     {
-        using Model_t = Models::SIAM_Square;
-        using IOModel_t = IO::IOSIAM;
-
-        Model_t model(jj);
-        IOModel_t ioModel;
-
-        ClusterCubeCD_t greenImpurity;
-        if (spin == FermionSpin_t::Up)
-        {
-            greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
-        }
-        else if (spin == FermionSpin_t::Down)
-        {
-            greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
-        }
-
-        using SelfCon_t = SelfCon::SelfConsistency<IOModel_t, Model_t>;
-        return std::make_unique<SelfCon_t>(SelfCon_t(jj, model, greenImpurity, spin));
+        greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
     }
+    else if (spin == FermionSpin_t::Down)
+    {
+        greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
+    }
+
+    using SelfCon_t = SelfCon::SelfConsistency;
+    return std::make_unique<SelfCon_t>(SelfCon_t(jj, model, greenImpurity, spin));
     // else if (modelType == "Square2x2")
     // {
     //     const size_t Nx = 2;

@@ -11,9 +11,11 @@ namespace SelfCon
 
 using Utilities::GetSpinName;
 
-template <typename TIOModel, typename TModel>
 class SelfConsistency : public ABC_SelfConsistency
 {
+
+    using Model_t = Models::ABC_Model_2D;
+    using IOModel_t = IO::Base_IOModel;
 
   public:
     SelfConsistency(const Json &jj, const TModel &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
