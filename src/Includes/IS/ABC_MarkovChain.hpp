@@ -50,7 +50,6 @@ class ABC_MarkovChain
     using GreenTau_t = GreenTau::GreenCluster0Tau<TIOModel>;
 
   public:
-    const size_t Nc = TModel::Nc;
     const double PROBINSERT = 0.333;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
@@ -64,7 +63,7 @@ class ABC_MarkovChain
                                                                   jj,
                                                                   *modelPtr_)),
                                                           obs_(dataCT_, jj),
-                                                          vertexBuilder_(jj, TModel::Nc),
+                                                          vertexBuilder_(jj, modelPtr_->Nc),
                                                           updsamespin_(0)
     {
         const std::valarray<size_t> zeroPair = {0, 0};

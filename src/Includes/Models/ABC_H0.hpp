@@ -8,13 +8,17 @@ class ABC_H0
 {
 
   public:
-    static const size_t Nx;
-    static const size_t Ny;
-    static const size_t Nz;
-    static const size_t Nc;
+    const size_t Nx;
+    const size_t Ny;
+    const size_t Nz;
+    const size_t Nc;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
-    ABC_H0(const Json &tJson) : RSites_(Nc),
+    ABC_H0(const Json &tJson) : Nx(tJson["Nx"]),
+                                Ny(tJson["Ny"]),
+                                Nz(tJson["Nz"]),
+                                Nc(Nx * Ny * Nz),
+                                RSites_(Nc),
                                 KWaveVectors_(Nc),
                                 NOrb_(tJson["NOrb"].get<size_t>()),
                                 NKPTS_(tJson["NKPTS"].get<size_t>())
@@ -249,16 +253,16 @@ class ABC_H0
     const size_t NKPTS_;
 };
 
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Nx = TNX;
+// template <size_t TNX, size_t TNY, size_t TNZ>
+// const size_t ABC_H0<TNX, TNY, TNZ>::Nx = TNX;
 
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Ny = TNY;
+// template <size_t TNX, size_t TNY, size_t TNZ>
+// const size_t ABC_H0<TNX, TNY, TNZ>::Ny = TNY;
 
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Nz = TNZ;
+// template <size_t TNX, size_t TNY, size_t TNZ>
+// const size_t ABC_H0<TNX, TNY, TNZ>::Nz = TNZ;
 
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Nc = TNX *TNY;
+// template <size_t TNX, size_t TNY, size_t TNZ>
+// const size_t ABC_H0<TNX, TNY, TNZ>::Nc = TNX *TNY;
 
 } // namespace Models

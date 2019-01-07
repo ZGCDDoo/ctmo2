@@ -22,10 +22,11 @@ class ABC_Model_2D
 {
 
       public:
-        static const size_t Nc;
         const double MIN_EHYB = 300;
+        const size_t Nc;
 
-        ABC_Model_2D(const Json &jjSim) : ioModel_(),
+        ABC_Model_2D(const Json &jjSim) : Nc(h0_.Nc),
+                                          ioModel_(),
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
@@ -149,8 +150,5 @@ class ABC_Model_2D
 
 template <typename TIOModel, typename TH0>
 ABC_Model_2D<TIOModel, TH0>::~ABC_Model_2D() {} //destructors must exist
-
-template <typename TIOModel, typename TH0>
-const size_t ABC_Model_2D<TIOModel, TH0>::Nc = TH0::Nc;
 
 } // namespace Models
