@@ -10,13 +10,14 @@ namespace Markov
 namespace Obs
 {
 const size_t N_BIN_TAU = 100000;
+using IOModel_t = IO::Base_IOModel;
+using Model_t = Models::ABC_Model_2D;
 
-template <typename TIOModel, typename TModel>
 class GreenBinning
 {
 
   public:
-    GreenBinning(const std::shared_ptr<TModel> &modelPtr, const std::shared_ptr<ISDataCT<TIOModel, TModel>> &dataCT,
+    GreenBinning(const std::shared_ptr<Model_t> &modelPtr, const std::shared_ptr<ISDataCT> &dataCT,
                  const Json &jj, const FermionSpin_t &spin) : modelPtr_(modelPtr),
                                                               ioModel_(modelPtr_->ioModel()),
                                                               dataCT_(dataCT),
@@ -135,9 +136,9 @@ class GreenBinning
     }
 
   private:
-    std::shared_ptr<TModel> modelPtr_;
-    TIOModel ioModel_;
-    std::shared_ptr<ISDataCT<TIOModel, TModel>> dataCT_;
+    std::shared_ptr<Model_t> modelPtr_;
+    IOModel_t ioModel_;
+    std::shared_ptr<ISDataCT> dataCT_;
 
     std::vector<std::vector<double>> M0Bins_;
     std::vector<std::vector<double>> M1Bins_;

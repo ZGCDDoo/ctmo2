@@ -16,8 +16,6 @@ namespace Obs
 {
 
 using Matrix_t = LinAlg::Matrix<double>;
-using IOModel_t = IO::Base_IOModel;
-using Model_t = Models::ABC_Model_2D;
 
 class Observables
 {
