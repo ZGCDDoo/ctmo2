@@ -14,9 +14,9 @@ class ABC_H0
     const size_t Nc;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
-    ABC_H0(const Json &tJson) : Nx(tJson["Nx"]),
-                                Ny(tJson["Ny"]),
-                                Nz(tJson["Nz"]),
+    ABC_H0(const Json &tJson) : Nx(tJson["Nx"].get<size_t>()),
+                                Ny(tJson["Ny"].get<size_t>()),
+                                Nz(tJson["Nz"].get<size_t>()),
                                 Nc(Nx * Ny * Nz),
                                 RSites_(Nc),
                                 KWaveVectors_(Nc),

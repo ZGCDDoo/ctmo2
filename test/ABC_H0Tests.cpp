@@ -15,7 +15,10 @@ TEST(ABC_H0_Tests, Init)
 {
 
     Json tJson = R"(
-    {   "NOrb": 2,
+    {   "Nx": 2,
+        "Ny": 2,
+        "Nz": 1,
+        "NOrb": 2,
         "NKPTS": 100,
         "tParameters": 
             {"00": 
@@ -33,7 +36,7 @@ TEST(ABC_H0_Tests, Init)
     Json jj = tJson["tParameters"];
     assert(jj.size() == 3);
 
-    Models::ABC_H0<Nx, Ny> h0(tJson);
+    Models::ABC_H0 h0(tJson);
 
     std::vector<double> tIntraVec = {0.0, -100.0, 0.201};
     std::vector<double> txVec = {1.0, 1.10, -1.01};
@@ -59,7 +62,7 @@ TEST(ABC_H0_Tests, Init2)
 {
     Json tJson = TestTools::BuildJson();
 
-    Models::ABC_H0<Nx, Ny> h0(tJson);
+    Models::ABC_H0 h0(tJson);
 
     ASSERT_EQ(h0.RSites().size(), Nc);
     ASSERT_EQ(h0.KWaveVectors().size(), Nc);
@@ -91,7 +94,7 @@ TEST(ABC_H0_Tests, Hopping)
 
     Json tJson = TestTools::BuildJson();
 
-    Models::ABC_H0<Nx, Nx> h0(tJson);
+    Models::ABC_H0 h0(tJson);
 
     ClusterMatrixCD_t GoodHoppingKTilde(Nc * NOrb, Nc * NOrb);
     GoodHoppingKTilde.zeros();

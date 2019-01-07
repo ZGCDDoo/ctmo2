@@ -24,7 +24,10 @@ void RemoveFilesForTests()
 Json BuildJson()
 {
     Json tJson = R"(
-    {   "NOrb": 2,
+    {   "Nx": 2,
+        "Ny": 2,
+        "Nz": 1,
+        "NOrb": 2,
         "NKPTS": 100,
         "tParameters": 
             {"00": 

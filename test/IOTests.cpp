@@ -1,18 +1,33 @@
 
 #include <gtest/gtest.h>
-
-#include "../src/Includes/Models/ModelSquare4x4.hpp"
-
-using Model_t = Models::ModelSquare4x4;
-using IOModel_t = IO::IOSquare4x4;
+#include "../src/Includes/Utilities/IO.hpp"
 
 const double DELTA = 1e-12;
 const size_t NOrb = 5;
 const std::string FNAME = "../test/data/cdmft_square4x4/hyb_5Orb.dat";
 
+Json BuildJson()
+{
+    Json tJson = R"(
+    {   "Nx": 4,
+        "Ny": 4,
+        "Nz": 1,
+        "NOrb": 1,
+        "NKPTS": 100,
+        "tParameters": 
+            {"00": 
+                {"tIntra": 0.0, "tx": -1.120, "ty": -1.120, "tz": 0.0, "tx=y": 0.1560, "tx=-y": 0.156, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 0.23700, "t2y": 0.23700, "t2z": 0.0, "t3": 0.0}
+            }
+    }
+    )"_json;
+
+    return tJson;
+}
+
 TEST(IOModelTests, IndepToFullAndBack)
 {
-    IOModel_t ioModel;
+
+    IO::Base_IOModel ioModel(BuildJson());
     const ClusterCubeCD_t greenCube = ioModel.ReadGreenDat(FNAME, 5);
     const ClusterMatrixCD_t greenIndep = ioModel.FullCubeToIndep(greenCube);
 
@@ -38,7 +53,7 @@ TEST(IOModelTests, IndepToFullAndBack)
 
 TEST(IOModelTests, ReadAndWrite)
 {
-    IOModel_t ioModel;
+    IO::Base_IOModel ioModel(BuildJson());
     const ClusterCubeCD_t greenCube = ioModel.ReadGreenDat(FNAME, 5);
     ioModel.SaveCube("tmp_test", greenCube, 10.0, NOrb, 15);
     const ClusterCubeCD_t readGreenCube = ioModel.ReadGreenDat("tmp_test.dat", 5);

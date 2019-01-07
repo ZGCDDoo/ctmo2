@@ -50,8 +50,7 @@ struct FctTest
 TEST(IntegratorTest, TestGridKTilde)
 {
 
-    using H0_t = Models::ABC_H0<Nx, Ny>;
-    H0_t h0(TestTools::BuildJson());
+    Models::ABC_H0 h0(TestTools::BuildJson());
     ClusterMatrixCD_t tLocTest = GridKTilde(h0, 100);
 
     ClusterMatrixCD_t diagonal_part = {{0.0, t_diag, t_diag, tp_diag},

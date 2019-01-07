@@ -12,18 +12,11 @@
 namespace Models
 {
 
-const size_t Nx1 = 1;
-const size_t Nx2 = 2;
-const size_t Nx4 = 4;
-const size_t Nx6 = 6;
-const size_t Nx8 = 8;
-
-template <typename TIOModel> //Template Number of X, Y sites
 class ABC_Model_2D
 {
 
       public:
-        ABC_Model_2D(const Json &jjSim) : ioModel_(),
+        ABC_Model_2D(const Json &jjSim) : ioModel_(jjSim),
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
@@ -125,13 +118,13 @@ class ABC_Model_2D
         GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; }
         GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; }
         Models::ABC_H0 const h0() const { return h0_; }
-        TIOModel const ioModel() const { return ioModel_; }
+        IO::Base_IOModel const ioModel() const { return ioModel_; }
         size_t Nc() const { return Nc_; }
 
         double auxU() const { return U_ / 2.0; }
 
       protected:
-        TIOModel ioModel_;
+        IO::Base_IOModel ioModel_;
         GreenMat::HybridizationMat hybridizationMatUp_;
         GreenMat::HybridizationMat hybridizationMatDown_;
         GreenMat::GreenCluster0Mat greenCluster0MatUp_;
@@ -148,8 +141,5 @@ class ABC_Model_2D
         const double MIN_EHYB_ = 300;
         const size_t Nc_;
 };
-
-template <typename TIOModel>
-ABC_Model_2D<TIOModel>::~ABC_Model_2D() {} //destructors must exist
 
 } // namespace Models
