@@ -105,7 +105,7 @@ class ABC_Model_2D
 #endif
         }
 
-        virtual ~ABC_Model_2D() = 0;
+        ~ABC_Model_2D() = default;
 
         //Getters
         double mu() const { return mu_; }

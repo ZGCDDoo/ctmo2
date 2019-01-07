@@ -9,18 +9,20 @@ namespace Markov
 namespace Obs
 {
 
-template <typename TIOModel, typename TModel>
+using IOModel_t = IO::Base_IOModel;
+using Model_t = Models::ABC_Model_2D;
+
 class FillingAndDocc
 {
 
   public:
-    FillingAndDocc(const std::shared_ptr<ISDataCT<TIOModel, TModel>> &dataCT,
+    FillingAndDocc(const std::shared_ptr<ISDataCT> &dataCT, const std::shared_ptr<IOModel_t> &ioModelPtr,
                    std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr, const size_t &N_T_INV) : dataCT_(dataCT),
-                                                                                                           ioModel_(TIOModel()),
+                                                                                                           ioModelPtr_(ioModelPtr),
                                                                                                            urngPtr_(urngPtr),
                                                                                                            N_T_INV_(N_T_INV)
     {
-        const size_t LL = dataCT_->NOrb_ * ioModel_.fillingSites().size();
+        const size_t LL = dataCT_->NOrb_ * ioModelPtr_->fillingSites().size();
 
         fillingUpCurrent_.resize(LL, 0.0);
         fillingDownCurrent_.resize(LL, 0.0);
@@ -46,10 +48,10 @@ class FillingAndDocc
         size_t index = 0;
         for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
         {
-            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
-                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
+                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
                 fillingUpTotalCurrent += factFilling * fillingUpCurrent_[index];
                 index++;
             }
@@ -65,10 +67,10 @@ class FillingAndDocc
 
         for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
         {
-            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
-                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
+                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
                 fillingDownTotalCurrent += factFilling * fillingDownCurrent_[index];
                 index++;
             }
@@ -81,10 +83,10 @@ class FillingAndDocc
         double doccTotalCurrent = 0.0;
         size_t index = 0;
         for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
-            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
-                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk)));
+                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
                 doccTotalCurrent += factFilling * doccCurrent_[index];
                 index++;
             }
@@ -118,7 +120,7 @@ class FillingAndDocc
         SiteVector_t vec2Down(KKDown);
 
         const double sign = static_cast<double>(dataCT_->sign_);
-        const size_t fillingSize = ioModel_.fillingSites().size();
+        const size_t fillingSize = ioModelPtr_->fillingSites().size();
 
         for (size_t oIndex = 0; oIndex < dataCT_->NOrb_; oIndex++)
         {
@@ -126,13 +128,13 @@ class FillingAndDocc
             {
                 const size_t index = oIndex * fillingSize + ii;
 
-                const Site_t s1 = ioModel_.fillingSites()[ii];
+                const Site_t s1 = ioModelPtr_->fillingSites()[ii];
                 const SuperSite_t superSite1{s1, oIndex};
 
                 for (size_t nsamples = 0; nsamples < N_T_INV_; nsamples++)
                 {
                     const double tauRng = (*urngPtr_)() * dataCT_->beta_;
-                    const Site_t siteRng = ioModel_.FindSitesRng(s1, s1, (*urngPtr_)()).first;
+                    const Site_t siteRng = ioModelPtr_->FindSitesRng(s1, s1, (*urngPtr_)()).first;
                     const SuperSite_t superSiteRng{siteRng, oIndex};
 
                     for (size_t iUp = 0; iUp < KKUp; iUp++)
@@ -210,26 +212,26 @@ class FillingAndDocc
 
         for (size_t oIndex = 0; oIndex < dataCT_->NOrb_; oIndex++)
         {
-            for (size_t kk = 0; kk < ioModel_.fillingSites().size(); kk++)
+            for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
-                const size_t index = oIndex * ioModel_.fillingSites().size() + kk;
+                const size_t index = oIndex * ioModelPtr_->fillingSites().size() + kk;
 
                 fillingUp_.at(index) /= fact;
                 fillingDown_.at(index) /= fact;
 
-                nName = "n" + std::to_string(ioModel_.fillingSites().at(kk)) + "_" + std::to_string(oIndex);
+                nName = "n" + std::to_string(ioModelPtr_->fillingSites().at(kk)) + "_" + std::to_string(oIndex);
                 obsmap_[nName + "Up"] = fillingUp_.at(index);
                 obsmap_[nName + "Down"] = fillingDown_.at(index);
 
                 docc_.at(index) /= fact;
-                nName = "docc" + std::to_string(ioModel_.fillingSites().at(kk)) + "_" + std::to_string(oIndex);
+                nName = "docc" + std::to_string(ioModelPtr_->fillingSites().at(kk)) + "_" + std::to_string(oIndex);
                 obsmap_[nName] = docc_.at(index);
 
                 Sz_.at(index) /= fact;
-                nName = "Sz" + std::to_string(ioModel_.fillingSites().at(kk)) + "_" + std::to_string(oIndex);
+                nName = "Sz" + std::to_string(ioModelPtr_->fillingSites().at(kk)) + "_" + std::to_string(oIndex);
                 obsmap_[nName] = Sz_.at(index);
 
-                const double factFilling = static_cast<double>(ioModel_.nOfAssociatedSites().at(ioModel_.fillingSitesIndex().at(kk))) / static_cast<double>(ioModel_.Nc);
+                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk))) / static_cast<double>(ioModelPtr_->Nc);
                 fillingTotal += factFilling * (fillingUp_.at(index) + fillingDown_.at(index));
                 doccTotal += factFilling * docc_.at(index);
                 SzTotal += factFilling * Sz_.at(index);
@@ -242,8 +244,8 @@ class FillingAndDocc
     }
 
   private:
-    const std::shared_ptr<ISDataCT<TIOModel, TModel>> &dataCT_;
-    TIOModel ioModel_;
+    std::shared_ptr<ISDataCT> dataCT_;
+    std::shared_ptr<IOModel_t> ioModelPtr_;
     std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr_;
 
     std::map<std::string, double> obsmap_;

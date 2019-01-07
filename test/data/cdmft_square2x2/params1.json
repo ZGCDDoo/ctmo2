@@ -3,6 +3,9 @@
     "NKPTS": 100,
     "AverageOrbitals": false,
     "U": 4.0,
+    "Nx": 2,
+    "Ny": 2,
+    "Nz": 1,
     "w0Phonon": 0.1,
     "gPhonon": 0.1,
     "J_H": 1.0,
@@ -17,6 +20,7 @@
     "UPDATESMEAS": 300,
     "KMAX_UPD": 100,
     "CLEANUPDATE": 100,
+    "ModelFile": "../data/Square2x2.model",
     "HybFileUp": "../test/data/cdmft_square2x2/hyb_2Orb",
     "tParameters": {
         "00": {

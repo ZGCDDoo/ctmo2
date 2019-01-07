@@ -14,17 +14,19 @@ namespace Markov
 {
 namespace Obs
 {
-using Matrix_t = LinAlg::Matrix<double>;
 
-template <typename TIOModel, typename TModel>
+using Matrix_t = LinAlg::Matrix<double>;
+using IOModel_t = IO::Base_IOModel;
+using Model_t = Models::ABC_Model_2D;
+
 class Observables
 {
 
       public:
         Observables(){};
-        Observables(const std::shared_ptr<ISDataCT<TIOModel, TModel>> &dataCT,
+        Observables(const std::shared_ptr<ISDataCT> &dataCT,
                     const Json &jj) : modelPtr_(new TModel(jj)),
-                                      ioModel_(TIOModel()),
+                                      ioModelPtr_(new IOModel_t(jj)),
                                       dataCT_(dataCT),
                                       rng_(jj["SEED"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
                                       urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
@@ -87,12 +89,12 @@ class Observables
                 //Average the green Functions if orbitals have the same parameters
                 if (averageOrbitals_)
                 {
-                        greenCubeMatUp = ioModel_.AverageOrbitals(greenCubeMatUp);
-                        greenCubeMatDown = ioModel_.AverageOrbitals(greenCubeMatDown);
+                        greenCubeMatUp = ioModelPtr_->AverageOrbitals(greenCubeMatUp);
+                        greenCubeMatDown = ioModelPtr_->AverageOrbitals(greenCubeMatDown);
                 }
 
-                ClusterMatrixCD_t greenMatsubaraUp = ioModel_.FullCubeToIndep(greenCubeMatUp);
-                ClusterMatrixCD_t greenMatsubaraDown = ioModel_.FullCubeToIndep(greenCubeMatDown);
+                ClusterMatrixCD_t greenMatsubaraUp = ioModelPtr_->FullCubeToIndep(greenCubeMatUp);
+                ClusterMatrixCD_t greenMatsubaraDown = ioModelPtr_->FullCubeToIndep(greenCubeMatDown);
 
 //Gather and stats of all the results for all cores
 #ifndef AFM
@@ -135,7 +137,7 @@ class Observables
                 //                         fin.close();
 
                 //                         std::cout << "Start Calculating Kinetic Energy " << std::endl;
-                //                         KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModel_.ReadGreenDat("greenUp.dat", NOrb_));
+                //                         KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModelPtr_->ReadGreenDat("greenUp.dat", NOrb_));
                 //                         results["KEnergy"] = {kEnergy.GetKineticEnergy(), 0.0};
                 //                         std::cout << "End Calculating Kinetic Energy " << std::endl;
 
@@ -146,20 +148,20 @@ class Observables
 
                 //                 //End: This should be in PostProcess.cpp ?
                 // #endif
-                //ioModel_.SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
+                //ioModelPtr_->SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
                 mpiUt::Print("End of Observables.Save()");
         }
 
       private:
-        std::shared_ptr<TModel> modelPtr_;
-        TIOModel ioModel_;
-        std::shared_ptr<ISDataCT<TIOModel, TModel>> dataCT_;
+        std::shared_ptr<Model_t> modelPtr_;
+        std::shared_ptr<IOModel_t> ioModelPtr_;
+        std::shared_ptr<ISDataCT> dataCT_;
         Utilities::EngineTypeFibonacci3217_t rng_;
         std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr_;
 
-        GreenBinning<TIOModel, TModel> greenBinningUp_;
-        GreenBinning<TIOModel, TModel> greenBinningDown_;
-        FillingAndDocc<TIOModel, TModel> fillingAndDocc_;
+        GreenBinning greenBinningUp_;
+        GreenBinning greenBinningDown_;
+        FillingAndDocc fillingAndDocc_;
 
         Matrix_t Maveraged_;
 
