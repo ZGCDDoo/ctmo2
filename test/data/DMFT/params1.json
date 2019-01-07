@@ -1,7 +1,10 @@
 {
     "NOrb": 2,
+    "Nx": 1,
+    "Ny": 1,
+    "Nz": 1,
     "NKPTS": 100,
-    "modelType": "SIAM_Square",
+    "ModelFile": "../data/SIAM_Square.model",
     "solver": "Int",
     "CLEANUPDATE": 100,
     "HybFileUp": "../test/data/DMFT/hyb_2Orb",

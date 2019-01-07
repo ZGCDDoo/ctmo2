@@ -9,6 +9,12 @@
 namespace Markov
 {
 
+#if defined SUBMATRIX
+class ABC_MarkovChainSubMatrix;
+#else
+class ABC_MarkovChain;
+#endif
+
 namespace Obs
 {
 
@@ -56,11 +62,11 @@ private:
   friend class Markov::Obs::FillingAndDocc;
   // friend class Markov::Obs::GreenTauMesure;
 
-  // #if defined SUBMATRIX
-  // friend class Markov::ABC_MarkovChainSubMatrix;
-  // #else
-  // friend class Markov::ABC_MarkovChain;
-  // #endif
+#if defined SUBMATRIX
+  friend class Markov::ABC_MarkovChainSubMatrix;
+#else
+  friend class Markov::ABC_MarkovChain;
+#endif
 
   GreenTau_t green0CachedUp_;
 #ifdef AFM
