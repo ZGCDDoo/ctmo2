@@ -29,20 +29,20 @@ class ISDataCT
   using GreenTau_t = GreenTau::GreenCluster0Tau;
 
 public:
-  ISDataCT(const Json &jj, const Models::ABC_Model_2D &model) :
+  ISDataCT(const Json &jjSim, const Models::ABC_Model_2D &model) :
 #ifdef AFM
-                                                                green0CachedUp_(model.greenCluster0MatUp(), jj),
-                                                                green0CachedDown_(model.greenCluster0MatDown(), jj),
+                                                                   green0CachedUp_(model.greenCluster0MatUp(), jjSim),
+                                                                   green0CachedDown_(model.greenCluster0MatDown(), jjSim),
 #endif
 #ifndef AFM
-                                                                green0CachedUp_(model.greenCluster0MatUp(), jj),
+                                                                   green0CachedUp_(model.greenCluster0MatUp(), jjSim),
 #endif
-                                                                MupPtr_(new Matrix_t()),
-                                                                MdownPtr_(new Matrix_t()),
-                                                                vertices_(),
-                                                                beta_(model.beta()),
-                                                                NOrb_(model.NOrb()),
-                                                                sign_(1)
+                                                                   MupPtr_(new Matrix_t()),
+                                                                   MdownPtr_(new Matrix_t()),
+                                                                   vertices_(),
+                                                                   beta_(model.beta()),
+                                                                   NOrb_(model.NOrb()),
+                                                                   sign_(1)
 
   {
   }

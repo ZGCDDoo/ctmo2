@@ -7,8 +7,8 @@
     },
     "model": {
         "beta": 5.0,
-        "hybUpFile": "../test/data/cdmft_square2x2/hyb_2Orb",
-        "modelFile": "Square2x2.model",
+        "hybUpFile": "../test/data/cdmft_square2x2/hyb_2Orb.dat",
+        "modelFile": "../data/Square2x2.model",
         "J_H": 1.0,
         "nkpts": 100,
         "nOrb": 2,
@@ -72,22 +72,23 @@
                 "t2z": 0.0,
                 "t3": 0.0
             }
-        },
-        "solver": {
-            "cleanUpdate": 100,
-            "updatesMeas": 300,
-            "averageOrbitals": false,
-            "isOrbitalDiagonal": false,
-            "eCutGreen": 60,
-            "ntau": 5000,
-            "n_tau_sampling": 5
-        },
-        "selfCon": {
-            "eCutSelfCon": 200,
-            "weightsR": 0.0,
-            "weightsI": 0.0
-        },
-        "logging": {
-            "level": "debug"
         }
+    },
+    "solver": {
+        "cleanUpdate": 100,
+        "updatesMeas": 300,
+        "averageOrbitals": false,
+        "isOrbitalDiagonal": false,
+        "eCutGreen": 60,
+        "ntau": 5000,
+        "n_tau_sampling": 5
+    },
+    "selfCon": {
+        "eCutSelfCon": 200,
+        "weightsR": 0.0,
+        "weightsI": 0.0
+    },
+    "logging": {
+        "level": "debug"
     }
+}
