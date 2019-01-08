@@ -187,7 +187,7 @@ if (${TEST})
     GreenBinningTests
     GreenMatTests
     GreenTauTests
-    #HybFMAndTLocTests
+    HybFMAndTLocTests
     IntegratorTests
     IOTests
     UtilitiesTests

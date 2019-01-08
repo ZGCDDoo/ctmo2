@@ -7,7 +7,7 @@
     },
     "model": {
         "beta": 33.3333333,
-        "hybUpFile": "hybUp1.dat",
+        "hybUpFile": "hyb_obs66.dat",
         "modelFile": "Triangle2x2.model",
         "J_H": 0.0,
         "nkpts": 60,
