@@ -1,50 +1,62 @@
 {
-    "NOrb": 1,
-    "NKPTS": 100,
-    "SEED": 100002,
-    "AverageOrbitals": false,
-    "PROBFLIP": 0.25,
-    "w0Phonon": 0.1,
-    "gPhonon": 0.1,
-    "beta": 10.0,
-    "EGreen": 1000,
-    "NTAU": 10000,
-    "UPDATESMEAS": 100,
-    "THERMALIZATION_TIME": 1,
-    "MEASUREMENT_TIME": 5,
-    "CLEANUPDATE": 5,
-    "tParameters": {
-        "00": {
-            "tIntra": 0.0,
-            "tx": -1.0,
-            "ty": -1.0,
-            "tz": 0.0,
-            "tx=y": -0.40,
-            "tx=-y": 0.0,
-            "tx=z": 0.0,
-            "tx=-z": 0.0,
-            "ty=z": 0.0,
-            "ty=-z": 0.0,
-            "t2x": 0.0,
-            "t2y": 0.0,
-            "t2z": 0.0,
-            "t3": 0.0
+    "monteCarlo": {
+        "measurementTime": 5.0,
+        "thermalizationTime": 0.5,
+        "thermFromConfig": false,
+        "seed": 1096954689
+    },
+    "model": {
+        "beta": 33.3333333,
+        "hybUpFile": "hybUp1.dat",
+        "modelFile": "Triangle2x2.model",
+        "J_H": 0.0,
+        "nkpts": 60,
+        "nOrb": 1,
+        "U": 3.0,
+        "UPrime": 0.0,
+        "delta": 0.01,
+        "gPhonon": 0.08,
+        "w0Phonon": 0.08,
+        "mu": 1.8941850792671628,
+        "cluster": {
+            "Nx": 1,
+            "Ny": 1,
+            "Nz": 1
+        },
+        "tParameters": {
+            "00": {
+                "t2x": 0.0,
+                "t2y": 0.0,
+                "t2z": 0.0,
+                "tIntra": 0.0,
+                "tx": -0.3926,
+                "tx=-y": 0.0,
+                "tx=-z": 0.0,
+                "tx=y": 0.0,
+                "tx=z": 0.0,
+                "ty": -0.3926,
+                "ty=-z": 0.0,
+                "ty=z": 0.0,
+                "tz": -0.3926,
+                "t3": 0.0
+            }
         }
     },
-    "U": 3.0,
-    "J_H": 0.0,
-    "UPrime": 0.0,
-    "mu": 1.8941850792671628,
-    "delta": 0.01,
-    "n": 0.5,
-    "S": 1.0,
-    "HybFileUp": "../test/data/cdmft_triangle/hybtriangle0",
-    "K": 1.0,
-    "MEASURE_FILLING": true,
-    "PRECISE": true,
-    "THERM_FROM_CONFIG": false,
-    "WEIGHTSR": 0.0,
-    "WEIGHTSI": 0.0,
-    "N_T_INV": 5,
-    "IsOrbitalDiagonal": true
+    "solver": {
+        "cleanUpdate": 100,
+        "updatesMeas": 50,
+        "averageOrbitals": true,
+        "isOrbitalDiagonal": true,
+        "eCutGreen": 100,
+        "ntau": 5000,
+        "n_tau_sampling": 5
+    },
+    "selfCon": {
+        "eCutSelfCon": 200,
+        "weightsR": 0.2,
+        "weightsI": 0.2
+    },
+    "logging": {
+        "level": "debug"
+    }
 }
