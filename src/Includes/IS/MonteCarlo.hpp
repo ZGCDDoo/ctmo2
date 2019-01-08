@@ -46,11 +46,11 @@ class MonteCarlo : public ABC_MonteCarlo
     MonteCarlo(const std::shared_ptr<TMarkovChain_t> &markovchainPtr, const Json &jj) : markovchainPtr_(markovchainPtr),
                                                                                         thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
                                                                                         measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()),
-                                                                                        updatesMeas_(jj["monteCarlo"]["updatesMeas"].get<size_t>()),
-                                                                                        cleanUpdate_(jj["monteCarlo"]["cleanUpdate"].get<size_t>()),
+                                                                                        updatesMeas_(jj["solver"]["updatesMeas"].get<size_t>()),
+                                                                                        cleanUpdate_(jj["solver"]["cleanUpdate"].get<size_t>()),
                                                                                         NMeas_(0),
                                                                                         NCleanUpdates_(0),
-                                                                                        thermFromConfig_(jj["monteCarlo"]["THERM_FROM_CONFIG"].get<bool>())
+                                                                                        thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
     {
     }
 
@@ -125,7 +125,6 @@ class MonteCarlo : public ABC_MonteCarlo
         mpiUt::Print(std::string("End Measurements at: "));
         timer.PrintTime();
         markovchainPtr_->SaveMeas();
-        return;
     }
 
     //Getters

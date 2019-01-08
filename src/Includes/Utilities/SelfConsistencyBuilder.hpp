@@ -5,12 +5,12 @@
 namespace SelfCon
 {
 
-std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, const FermionSpin_t &spin)
+std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jjSim, const FermionSpin_t &spin)
 {
-    const size_t NOrb = jj["NOrb"].get<size_t>();
+    const size_t NOrb = jjSim["model"]["nOrb"].get<size_t>();
 
-    Models::ABC_Model_2D model(jj);
-    IO::Base_IOModel ioModel(jj);
+    Models::ABC_Model_2D model(jjSim);
+    IO::Base_IOModel ioModel(jjSim);
 
     ClusterCubeCD_t greenImpurity;
     if (spin == FermionSpin_t::Up)
@@ -23,7 +23,7 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jj, cons
     }
 
     using SelfCon_t = SelfCon::SelfConsistency;
-    return std::make_unique<SelfCon_t>(SelfCon_t(jj, model, greenImpurity, spin));
+    return std::make_unique<SelfCon_t>(SelfCon_t(jjSim, model, greenImpurity, spin));
 }
 
 } // namespace SelfCon
