@@ -21,14 +21,20 @@ using GreenTau_t = GreenTau::GreenCluster0Tau;
 Json BuildJson()
 {
     Json tJson = R"(
-    {   "Nx": 2,
-        "Ny": 2,
-        "Nz": 1,
-        "ModelFile": "../data/Square2x2.model",
-        "NOrb": 1,
-        "NTAU": 100000,
-        "NKPTS": 100
-    }
+    {   "model": {
+            "cluster": {
+                        "Nx": 2,
+                        "Ny": 2,
+                        "Nz": 1
+            },
+            "modelFile": "../data/Square2x2.model",
+            "nOrb": 1,
+            "nkpts": 100
+        },
+        "solver": {
+            "ntau": 100000
+        }
+    }    
     )"_json;
 
     return tJson;

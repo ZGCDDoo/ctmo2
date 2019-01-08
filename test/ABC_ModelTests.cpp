@@ -89,7 +89,7 @@ TEST(ABC_Model_Tests, Init)
     ASSERT_DOUBLE_EQ(model.mu(), 10.1);
     ASSERT_DOUBLE_EQ(model.beta(), 33.3);
     ASSERT_EQ(model.NOrb(), 1);
-    ASSERT_EQ(model.Nc(), 4);
+    ASSERT_EQ(model.Nc(), 1);
 }
 
 int main(int argc, char **argv)

@@ -23,11 +23,11 @@ class GreenCluster0Tau
 
     // GreenCluster0Tau() : gfMatCluster_(), beta_(), NTau_(){};
 
-    GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const Json &jj) : ioModel_(jj),
-                                                                             gfMatCluster_(gfMatCluster),
-                                                                             beta_(gfMatCluster.beta()),
-                                                                             NTau_(std::max<double>(jj["NTAU"].get<double>(), beta_ / deltaTau)),
-                                                                             NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
+    GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const Json &jjSim) : ioModel_(jjSim),
+                                                                                gfMatCluster_(gfMatCluster),
+                                                                                beta_(gfMatCluster.beta()),
+                                                                                NTau_(std::max<double>(jjSim["solver"]["ntau"].get<double>(), beta_ / deltaTau)),
+                                                                                NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
     {
         mpiUt::Print("Creating gtau ");
         assert(NOrb_ >= 1);
