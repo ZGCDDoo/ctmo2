@@ -19,23 +19,23 @@ class SelfConsistency : public ABC_SelfConsistency
     using IOModel_t = IO::Base_IOModel;
 
   public:
-    SelfConsistency(const Json &jj, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
-                                                                                                                             ioModel_(jj),
-                                                                                                                             greenImpurity_(greenImpurity),
-                                                                                                                             hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
-                                                                                                                             selfEnergy_(),
-                                                                                                                             hybNext_(),
-                                                                                                                             spin_(spin),
-                                                                                                                             weights_(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>()),
-                                                                                                                             NOrb_(jj["NOrb"].get<size_t>()),
-                                                                                                                             NSS_(NOrb_ * ioModel_.Nc)
+    SelfConsistency(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
+                                                                                                                                ioModel_(jjSim),
+                                                                                                                                greenImpurity_(greenImpurity),
+                                                                                                                                hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
+                                                                                                                                selfEnergy_(),
+                                                                                                                                hybNext_(),
+                                                                                                                                spin_(spin),
+                                                                                                                                weights_(jjSim["selfCon"]["weightsR"].get<double>(), jjSim["selfCon"]["weightsI"].get<double>()),
+                                                                                                                                NOrb_(model.NOrb()),
+                                                                                                                                NSS_(NOrb_ * ioModel_.Nc)
 
     {
 
         mpiUt::Print("Start of SC constructor");
 
         const size_t NGreen = greenImpurity_.n_slices;
-        size_t NSelfConTmp = std::max<double>(0.5 * (jj["ESelfCon"].get<double>() * model_.beta() / M_PI - 1.0),
+        size_t NSelfConTmp = std::max<double>(0.5 * (jjSim["selfCon"]["eCutSelfCon"].get<double>() * model_.beta() / M_PI - 1.0),
                                               0.5 * (200.0 * model_.beta() / M_PI - 1.0));
         if (NGreen >= NSelfConTmp)
         {
@@ -56,34 +56,6 @@ class SelfConsistency : public ABC_SelfConsistency
             const cd_t zz(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
             selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc() - hybridization_.slice(nn);
         }
-
-        //         //1.) Patcher la self par HF de NGreen à NSelfCon
-        //         ClusterMatrix_t nUpMatrix;
-        //         assert(nUpMatrix.load("nUpMatrix.dat"));
-        //         ClusterMatrix_t nDownMatrix;
-        //         assert(nDownMatrix.load("nDownMatrix.dat"));
-        //         ClusterMatrixCD_t nMatrix(nUpMatrix + nDownMatrix, ClusterMatrix_t(NSS_, NSS_).zeros());
-
-        //         for (size_t nn = NGreen; nn < NSelfCon; nn++)
-        //         {
-        //             const cd_t iwn = cd_t(0.0, (2.0 * nn + 1.0) * M_PI / model_.beta());
-        // #ifndef AFM
-        //             selfEnergy_.slice(nn) = 0.5 * model_.U() * nMatrix + 1.0 / iwn * model_.U() * model_.U() * nMatrix / 2.0 * (II - nMatrix / 2.0);
-        // #else
-        //             if (spin_ == FermionSpin_t::Up)
-        //             {
-        //                 selfEnergy_.slice(nn) = model_.U() * nDownMatrix + 1.0 / iwn * model_.U() * model_.U() * nDownMatrix * (II - nDownMatrix);
-        //             }
-        //             else if (spin_ == FermionSpin_t::Down)
-        //             {
-        //                 selfEnergy_.slice(nn) = model_.U() * nUpMatrix + 1.0 / iwn * model_.U() * model_.U() * nUpMatrix * (II - nUpMatrix);
-        //             }
-        //             else
-        //             {
-        //                 throw std::runtime_error("Ayaya, must be a spin man");
-        //             }
-        // #endif
-        //         }
 
         if (mpiUt::Rank() == mpiUt::master)
         {

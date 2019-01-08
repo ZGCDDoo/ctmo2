@@ -1,3 +1,19 @@
+
+#include <gtest/gtest.h>
+#include "../src/Includes/Models/ABC_Model.hpp"
+#include "TestTools.hpp"
+
+const double DELTA = 1e-7;
+// const double DELTA_SMALL = 1e-11;
+const size_t Nc = 4;
+const size_t Nx = 2;
+const size_t Ny = 2;
+const size_t NOrb = 2;
+const double INTRA = -0.01;
+
+Json BuildJson()
+{
+    Json jj = R"(
 {
     "monteCarlo": {
         "measurementTime": 5.0,
@@ -59,4 +75,24 @@
     "logging": {
         "level": "debug"
     }
+}
+    )"_json;
+
+    return jj;
+}
+
+TEST(ABC_Model_Tests, Init)
+{
+
+    Models::ABC_Model_2D model(BuildJson());
+
+    ASSERT_DOUBLE_EQ(model.mu(), 10.1);
+    ASSERT_DOUBLE_EQ(model.beta(), 6.66);
+}
+
+int main(int argc, char **argv)
+{
+    TestTools::RemoveFilesForTests();
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

@@ -9,15 +9,34 @@ const double delta = 5e-9;
 Json BuildJson()
 {
     Json tJson = R"(
-    {   "Nx": 4,
-        "Ny": 4,
-        "Nz": 1,
-        "NOrb": 1,
-        "NKPTS": 100,
-        "tParameters": 
-            {"00": 
-                {"tIntra": 0.0, "tx": -1.120, "ty": -1.120, "tz": 0.0, "tx=y": 0.1560, "tx=-y": 0.156, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 0.23700, "t2y": 0.23700, "t2z": 0.0, "t3": 0.0}
+    {
+        "model": {
+            "cluster": {
+                "Nx": 4,
+                "Ny": 4,
+                "Nz": 1
+            },
+            "nOrb": 1,
+            "nkpts": 100,
+            "tParameters": {
+                "00": {
+                    "tIntra": 0.0,
+                    "tx": -1.120,
+                    "ty": -1.120,
+                    "tz": 0.0,
+                    "tx=y": 0.1560,
+                    "tx=-y": 0.156,
+                    "tx=z": 0.0,
+                    "tx=-z": 0.0,
+                    "ty=z": 0.0,
+                    "ty=-z": 0.0,
+                    "t2x": 0.23700,
+                    "t2y": 0.23700,
+                    "t2z": 0.0,
+                    "t3": 0.0
+                }
             }
+        }
     }
     )"_json;
 

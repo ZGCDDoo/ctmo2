@@ -183,6 +183,7 @@ if (${TEST})
 
     set(TESTS
     ABC_H0Tests
+    ABC_ModelTests
     Fourier_DCATests
     FourierTests
     FillingAndDoccTests

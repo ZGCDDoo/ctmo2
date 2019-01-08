@@ -20,10 +20,9 @@ class ABC_Model_2D
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
-                                          U_(jjSim["U"].get<double>()),
-                                          beta_(jjSim["beta"].get<double>()),
-                                          mu_(jjSim["mu"].get<double>()),
-                                          NOrb_(jjSim["NOrb"].get<size_t>()),
+                                          beta_(jjSim["model"]["beta"].get<double>()),
+                                          mu_(jjSim["model"]["mu"].get<double>()),
+                                          NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
                                           Nc_(h0_.Nc)
         {
                 mpiUt::Print("start abc_model constructor ");
@@ -51,16 +50,16 @@ class ABC_Model_2D
 
         void FinishConstructor(const Json &jjSim)
         {
-                std::string hybNameUp = jjSim["HybFileUp"].get<std::string>();
+                std::string hybNameUp = jjSim["model"]["HybUpFile"].get<std::string>();
 #ifdef DCA
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp + ".dat", NOrb_);
+                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp, NOrb_);
 #else
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp + ".dat", NOrb_);
+                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp, NOrb_);
 #endif
 
 #ifdef AFM
-                std::string hybNameDown = jjSim["HybFileDown"].get<std::string>();
-                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown + ".dat", NOrb_);
+                std::string hybNameDown = jjSim["model"]["HybDownFile"].get<std::string>();
+                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown, NOrb_);
 #endif
 
                 const size_t NHyb = hybtmpUp.n_slices;
@@ -109,7 +108,6 @@ class ABC_Model_2D
 
         //Getters
         double mu() const { return mu_; }
-        double U() const { return U_; }
         double beta() const { return beta_; }
         size_t NOrb() const { return NOrb_; }
         ClusterMatrixCD_t tLoc() const { return tLoc_; }
@@ -120,8 +118,6 @@ class ABC_Model_2D
         Models::ABC_H0 const h0() const { return h0_; }
         IO::Base_IOModel const ioModel() const { return ioModel_; }
         size_t Nc() const { return Nc_; }
-
-        double auxU() const { return U_ / 2.0; }
 
       protected:
         IO::Base_IOModel ioModel_;
@@ -134,7 +130,6 @@ class ABC_Model_2D
         ClusterMatrixCD_t hybFM_;
         ClusterMatrixCD_t tLoc_;
 
-        const double U_;
         const double beta_;
         const double mu_;
         const size_t NOrb_;
