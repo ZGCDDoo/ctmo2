@@ -18,12 +18,12 @@ class GreenBinning
 
   public:
     GreenBinning(const std::shared_ptr<Model_t> &modelPtr, const std::shared_ptr<ISDataCT> &dataCT,
-                 const Json &jj, const FermionSpin_t &spin) : modelPtr_(modelPtr),
-                                                              ioModel_(modelPtr_->ioModel()),
-                                                              dataCT_(dataCT),
-                                                              NMat_(0.5 * (jj["EGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0)),
-                                                              spin_(spin),
-                                                              NOrb_(jj["NOrb"].get<size_t>())
+                 const Json &jjSim, const FermionSpin_t &spin) : modelPtr_(modelPtr),
+                                                                 ioModel_(modelPtr_->ioModel()),
+                                                                 dataCT_(dataCT),
+                                                                 NMat_(0.5 * (jjSim["solver"]["eCutGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0)),
+                                                                 spin_(spin),
+                                                                 NOrb_(jjSim["model"]["nOrb"].get<size_t>())
     {
 
         const size_t LL = ioModel_.GetNIndepSuperSites(NOrb_);

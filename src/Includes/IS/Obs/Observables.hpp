@@ -23,19 +23,19 @@ class Observables
       public:
         // Observables(){};
         Observables(const std::shared_ptr<ISDataCT> &dataCT,
-                    const Json &jj) : modelPtr_(new Model_t(jj)),
-                                      ioModelPtr_(new IOModel_t(jj)),
-                                      dataCT_(dataCT),
-                                      rng_(jj["SEED"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
-                                      urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
-                                      greenBinningUp_(modelPtr_, dataCT_, jj, FermionSpin_t::Up),
-                                      greenBinningDown_(modelPtr_, dataCT_, jj, FermionSpin_t::Down),
-                                      fillingAndDocc_(dataCT_, ioModelPtr_, urngPtr_, jj["N_T_INV"].get<size_t>()),
-                                      signMeas_(0.0),
-                                      expOrder_(0.0),
-                                      NMeas_(0),
-                                      NOrb_(jj["NOrb"].get<size_t>()),
-                                      averageOrbitals_(jj["AverageOrbitals"].get<bool>())
+                    const Json &jjSim) : modelPtr_(new Model_t(jjSim)),
+                                         ioModelPtr_(new IOModel_t(jjSim)),
+                                         dataCT_(dataCT),
+                                         rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
+                                         urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
+                                         greenBinningUp_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Up),
+                                         greenBinningDown_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Down),
+                                         fillingAndDocc_(dataCT_, ioModelPtr_, urngPtr_, jjSim["solver"]["n_tau_sampling"].get<size_t>()),
+                                         signMeas_(0.0),
+                                         expOrder_(0.0),
+                                         NMeas_(0),
+                                         NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+                                         averageOrbitals_(jjSim["solver"]["averageOrbitals"].get<bool>())
         {
 
                 mpiUt::Print("In Obs constructor ");
