@@ -60,7 +60,6 @@ private:
   friend class Markov::Obs::Observables;
   friend class Markov::Obs::GreenBinning;
   friend class Markov::Obs::FillingAndDocc;
-  // friend class Markov::Obs::GreenTauMesure;
 
 #if defined SUBMATRIX
   friend class Markov::ABC_MarkovChainSubMatrix;

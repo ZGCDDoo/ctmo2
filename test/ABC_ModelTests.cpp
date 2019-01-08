@@ -23,7 +23,7 @@ Json BuildJson()
     },
     "model": {
         "beta": 33.3,
-        "hybUpFile": "../test/data/DMFT/hyb_obs.dat",
+        "hybUpFile": "../test/data/DMFT/hybfm_SIAM_Square.dat",
         "modelFile": "../data/SIAM_Square.model",
         "J_H": 0.0,
         "nkpts": 60,

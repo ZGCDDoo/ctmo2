@@ -10,7 +10,7 @@ const double hybFM = 4.0;
 const double hartree = 0.1;
 const double fock = 0.312;
 const std::string FNAME_HYB = "../test/data/DMFT/hybfm_SIAM_Square.dat";
-const std::string FNAME_JSON = "../test/data/DMFT/test_dmft0.json";
+const std::string FNAME_JSON = "../test/data/DMFT/params_selfcon.json";
 
 using Model_t = Models::ABC_Model_2D;
 

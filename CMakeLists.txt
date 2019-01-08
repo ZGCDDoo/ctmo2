@@ -118,10 +118,7 @@ endif ()
 ################################
 set(EXECECUTABLES
     ctmo
-    #ctmo_green
     #ctmo_DCA
-    #ctmo_nosc
-    #ctmo_nosc_green
 )
 
 foreach(executable ${EXECECUTABLES})
@@ -190,7 +187,7 @@ if (${TEST})
     GreenBinningTests
     GreenMatTests
     GreenTauTests
-    HybFMAndTLocTests
+    #HybFMAndTLocTests
     IntegratorTests
     IOTests
     UtilitiesTests
@@ -199,7 +196,6 @@ if (${TEST})
     MarkovChainSquare2x2Tests
     MatrixTests
     ObservablesTests
-    VerticesTests
     UTensorSimpleTests
     VerticesSimpleTests
     )
