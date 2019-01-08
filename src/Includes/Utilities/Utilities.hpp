@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <valarray>
@@ -19,7 +20,7 @@
 
 //External Libraries
 #include <armadillo>
-#include "json.hpp"
+#include "../../deps/json.hpp"
 
 using Json = nlohmann::json;
 
