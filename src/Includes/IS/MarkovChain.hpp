@@ -15,7 +15,7 @@ class MarkovChain : public ABC_MarkovChain
 {
 
 public:
-  MarkovChain(const Json &jj, const size_t &seed) : ABC_MarkovChain(jj, seed), auxH_(jj["delta"].get<double>()){};
+  MarkovChain(const Json &jj, const size_t &seed) : ABC_MarkovChain(jj, seed), auxH_(jj["model"]["delta"].get<double>()){};
 
   ~MarkovChain(){};
 

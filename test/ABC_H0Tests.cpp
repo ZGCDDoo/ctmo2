@@ -11,32 +11,79 @@ const size_t Ny = 2;
 const size_t NOrb = 2;
 const double INTRA = -0.01;
 
-TEST(ABC_H0_Tests, Init)
+Json BuildJson()
 {
-
-    Json tJson = R"(
-    {   "Nx": 2,
-        "Ny": 2,
-        "Nz": 1,
-        "NOrb": 2,
-        "NKPTS": 100,
-        "tParameters": 
-            {"00": 
-                {"tIntra": 0.0, "tx": 1.0, "ty": 1.08, "tz": 0.0,  "tx=y": 1.07, "tx=-y": 1.06, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 1.05, "t2y": 1.04, "t2z": 0.0, "t3": 0.0},
-            "01":
-                {"tIntra": -100.0, "tx": 1.10, "ty": 1.09, "tz": 0.0, "tx=y": 1.04, "tx=-y": 1.03, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 1.02, "t2y": 1.01, "t2z": 0.0, "t3": 0.0},
-            "11":
-                {"tIntra": 0.201, "tx": -1.01, "ty": 1.01, "tz":0.0, "tx=y": 1.02, "tx=-y": 1.03, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : -1.04, "t2y": 1.09, "t2z": 0.0, "t3": 0.0}
-
+    Json jj = R"(
+{
+        "model": {
+            "cluster": {
+                "Nx": 2,
+                "Ny": 2,
+                "Nz": 1
+            },
+            "nOrb": 2,
+            "nkpts": 100,
+            "tParameters": {
+                "00": {
+                    "tIntra": 0.0,
+                    "tx": 1.0,
+                    "ty": 1.08,
+                    "tz": 0.0,
+                    "tx=y": 1.07,
+                    "tx=-y": 1.06,
+                    "tx=z": 0.0,
+                    "tx=-z": 0.0,
+                    "ty=z": 0.0,
+                    "ty=-z": 0.0,
+                    "t2x": 1.05,
+                    "t2y": 1.04,
+                    "t2z": 0.0,
+                    "t3": 0.0
+                },
+                "01": {
+                    "tIntra": -100.0,
+                    "tx": 1.10,
+                    "ty": 1.09,
+                    "tz": 0.0,
+                    "tx=y": 1.04,
+                    "tx=-y": 1.03,
+                    "tx=z": 0.0,
+                    "tx=-z": 0.0,
+                    "ty=z": 0.0,
+                    "ty=-z": 0.0,
+                    "t2x": 1.02,
+                    "t2y": 1.01,
+                    "t2z": 0.0,
+                    "t3": 0.0
+                },
+                "11": {
+                    "tIntra": 0.201,
+                    "tx": -1.01,
+                    "ty": 1.01,
+                    "tz": 0.0,
+                    "tx=y": 1.02,
+                    "tx=-y": 1.03,
+                    "tx=z": 0.0,
+                    "tx=-z": 0.0,
+                    "ty=z": 0.0,
+                    "ty=-z": 0.0,
+                    "t2x": -1.04,
+                    "t2y": 1.09,
+                    "t2z": 0.0,
+                    "t3": 0.0
+                }
             }
+        }
     }
     )"_json;
 
-    std::cout << "tJson.size() = " << tJson.size() << std::endl;
-    Json jj = tJson["tParameters"];
-    assert(jj.size() == 3);
+    return jj;
+}
 
-    Models::ABC_H0 h0(tJson);
+TEST(ABC_H0_Tests, Init)
+{
+
+    Models::ABC_H0 h0(BuildJson());
 
     std::vector<double> tIntraVec = {0.0, -100.0, 0.201};
     std::vector<double> txVec = {1.0, 1.10, -1.01};
@@ -60,9 +107,8 @@ TEST(ABC_H0_Tests, Init)
 
 TEST(ABC_H0_Tests, Init2)
 {
-    Json tJson = TestTools::BuildJson();
 
-    Models::ABC_H0 h0(tJson);
+    Models::ABC_H0 h0(TestTools::BuildJson());
 
     ASSERT_EQ(h0.RSites().size(), Nc);
     ASSERT_EQ(h0.KWaveVectors().size(), Nc);
@@ -92,9 +138,7 @@ TEST(ABC_H0_Tests, Init2)
 TEST(ABC_H0_Tests, Hopping)
 {
 
-    Json tJson = TestTools::BuildJson();
-
-    Models::ABC_H0 h0(tJson);
+    Models::ABC_H0 h0(TestTools::BuildJson());
 
     ClusterMatrixCD_t GoodHoppingKTilde(Nc * NOrb, Nc * NOrb);
     GoodHoppingKTilde.zeros();
@@ -139,7 +183,6 @@ TEST(ABC_H0_Tests, Hopping)
     {
         for (size_t j = 0; j < Nc * NOrb; j++)
         {
-            //std::cout << "i ,j " << i << " " << j << std::endl;
             ASSERT_NEAR(hopping(i, j).real(), GoodHoppingKTilde(i, j).real(), DELTA);
             ASSERT_NEAR(hopping(i, j).imag(), GoodHoppingKTilde(i, j).imag(), DELTA);
         }

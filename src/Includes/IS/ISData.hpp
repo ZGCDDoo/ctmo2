@@ -40,8 +40,8 @@ public:
                                                                 MupPtr_(new Matrix_t()),
                                                                 MdownPtr_(new Matrix_t()),
                                                                 vertices_(),
-                                                                beta_(jj["beta"].get<double>()),
-                                                                NOrb_(jj["NOrb"].get<size_t>()),
+                                                                beta_(model.beta()),
+                                                                NOrb_(model.NOrb()),
                                                                 sign_(1)
 
   {

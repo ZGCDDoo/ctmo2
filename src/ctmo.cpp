@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     fin >> jj;
     fin.close();
     std::cout << "Iter = " << ITER << std::endl;
-    const size_t seed = jj["SEED"].get<size_t>();
+    const size_t seed = jj["monteCarlo"]["seed"].get<size_t>();
 
     //init a model, to make sure all the files are present and that not all proc write to the same files
 
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     world.barrier();
     //wait_all
     const size_t rank = world.rank();
-    const size_t seed = jj["SEED"].get<size_t>() + 2797 * rank;
+    const size_t seed = jj["monteCarlo"]["seed"].get<size_t>() + 2797 * rank;
 
     {
         std::unique_ptr<MC::ABC_MonteCarlo> monteCarloMachinePtr = MC::MonteCarloBuilder(jj, seed);

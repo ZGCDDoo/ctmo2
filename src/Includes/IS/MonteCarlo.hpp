@@ -19,7 +19,7 @@ struct Timer
 
     void PrintTime()
     {
-        if (mpiUt::Rank() == 0)
+        if (mpiUt::Rank() == mpiUt::master)
         {
             auto timeChrono = std::chrono::system_clock::now();
             std::time_t timeNow = std::chrono::system_clock::to_time_t(timeChrono);
@@ -44,17 +44,13 @@ class MonteCarlo : public ABC_MonteCarlo
 {
   public:
     MonteCarlo(const std::shared_ptr<TMarkovChain_t> &markovchainPtr, const Json &jj) : markovchainPtr_(markovchainPtr),
-                                                                                        thermalizationTime_(jj["THERMALIZATION_TIME"].get<double>()),
-                                                                                        measurementTime_(jj["MEASUREMENT_TIME"].get<double>()),
-#if defined SUBMATRIX
-                                                                                        updatesMeas_((jj["UPDATESMEAS"].get<size_t>() / jj["KMAX_UPD"].get<size_t>()) * jj["KMAX_UPD"].get<size_t>()),
-#else
-                                                                                        updatesMeas_(jj["UPDATESMEAS"].get<size_t>()),
-#endif
-                                                                                        cleanUpdate_(jj["CLEANUPDATE"].get<size_t>()),
+                                                                                        thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
+                                                                                        measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()),
+                                                                                        updatesMeas_(jj["monteCarlo"]["updatesMeas"].get<size_t>()),
+                                                                                        cleanUpdate_(jj["monteCarlo"]["cleanUpdate"].get<size_t>()),
                                                                                         NMeas_(0),
                                                                                         NCleanUpdates_(0),
-                                                                                        thermFromConfig_(jj["THERM_FROM_CONFIG"].get<bool>())
+                                                                                        thermFromConfig_(jj["monteCarlo"]["THERM_FROM_CONFIG"].get<bool>())
     {
     }
 

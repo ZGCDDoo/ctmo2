@@ -1,7 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
-    <generated />
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="cttg5.2" targetName="gmock" />
+      <config projectName="cttg5.2" targetName="FillingAndDoccTests" />
+      <config projectName="cttg5.2" targetName="cubature" />
+      <config projectName="cttg5.2" targetName="IOTests" />
+      <config projectName="cttg5.2" targetName="gtest_main" />
+      <config projectName="cttg5.2" targetName="GreenMatTests" />
+      <config projectName="cttg5.2" targetName="GreenBinningTests" />
+      <config projectName="cttg5.2" targetName="MatrixTests" />
+      <config projectName="cttg5.2" targetName="UTensorSimpleTests" />
+      <config projectName="cttg5.2" targetName="VerticesTests" />
+      <config projectName="cttg5.2" targetName="FourierTests" />
+      <config projectName="cttg5.2" targetName="ctmo" />
+      <config projectName="cttg5.2" targetName="HybFMAndTLocTests" />
+      <config projectName="cttg5.2" targetName="VerticesSimpleTests" />
+      <config projectName="cttg5.2" targetName="MarkovChainSquare2x2Tests" />
+      <config projectName="cttg5.2" targetName="GreenTauTests" />
+      <config projectName="cttg5.2" targetName="ABC_H0Tests" />
+      <config projectName="cttg5.2" targetName="Fourier_DCATests" />
+      <config projectName="cttg5.2" targetName="gmock_main" />
+      <config projectName="cttg5.2" targetName="SelfConsistencyTests" />
+      <config projectName="cttg5.2" targetName="UtilitiesTests" />
+      <config projectName="cttg5.2" targetName="gtest" />
+      <config projectName="cttg5.2" targetName="MarkovChainTests" />
+      <config projectName="cttg5.2" targetName="ObservablesTests" />
+      <config projectName="cttg5.2" targetName="IntegratorTests" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -10,87 +36,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9802acc1-c647-45a7-8a86-08d2ddc41214" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Models/UTensor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/UTensor.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/Vertices.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/Vertices.hpp" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
+    <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="1478071010">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.0" value="1" />
-          <entry key="project.opened" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="cpp" value="1" />
-          <entry key="hpp" value="1" />
-          <entry key="py" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="ObjectiveC" value="2" />
-          <entry key="Python" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="cpp" value="6" />
-          <entry key="hpp" value="47" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="ObjectiveC" value="53" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Models/UTensor.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Vertices.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="251" column="9" selection-start-line="251" selection-start-column="9" selection-end-line="251" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/VerticesTests.cpp">
+        <entry file="file://$PROJECT_DIR$/src/Includes/IS/ISResult.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+            <state relative-caret-position="1463">
+              <caret line="77" column="23" selection-start-line="77" selection-start-column="23" selection-end-line="77" selection-end-column="23" />
+              <folding>
+                <element signature="e#14#34#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/docs/conf.py">
+        <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="116">
-              <caret line="76" column="12" selection-start-line="76" selection-start-column="12" selection-end-line="76" selection-end-column="12" />
+            <state relative-caret-position="190">
+              <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+              <folding>
+                <element signature="e#13#32#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -109,40 +89,46 @@
       </list>
     </option>
   </component>
-  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
-  <component name="JsGulpfileManager">
-    <detection-done>true</detection-done>
-    <sorting>DEFINITION_ORDER</sorting>
-  </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="164" />
-    <option name="y" value="226" />
-    <option name="width" value="1260" />
-    <option name="height" value="620" />
+    <option name="x" value="1920" />
+    <option name="width" value="1920" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="cttg6.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cttg6.0" type="462c0819:PsiDirectoryNode" />
+              <item name="cttg5.2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo1.0" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="cttg6.0" type="b2602c69:ProjectViewProjectNode" />
-              <item name="cttg6.0" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="cttg5.2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo1.0" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cttg5.2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo1.0" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Includes" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cttg5.2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo1.0" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Includes" type="462c0819:PsiDirectoryNode" />
+              <item name="IS" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -163,12 +149,165 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Build All">
+    <configuration name="ABC_H0Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="ABC_H0Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="ABC_H0Tests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="FillingAndDoccTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="FillingAndDoccTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="FillingAndDoccTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FourierTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="FourierTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="FourierTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Fourier_DCATests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="Fourier_DCATests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="Fourier_DCATests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GreenBinningTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="GreenBinningTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="GreenBinningTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GreenMatTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="GreenMatTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="GreenMatTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GreenTauTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="GreenTauTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="GreenTauTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HybFMAndTLocTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="HybFMAndTLocTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="HybFMAndTLocTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IOTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="IOTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="IOTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IntegratorTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="IntegratorTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="IntegratorTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MarkovChainSquare2x2Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="MarkovChainSquare2x2Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="MarkovChainSquare2x2Tests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MarkovChainTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="MarkovChainTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="MarkovChainTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MatrixTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="MatrixTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="MatrixTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ObservablesTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="ObservablesTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="ObservablesTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SelfConsistencyTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="SelfConsistencyTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="SelfConsistencyTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UTensorSimpleTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="UTensorSimpleTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="UTensorSimpleTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UtilitiesTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="UtilitiesTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="UtilitiesTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="VerticesSimpleTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="VerticesSimpleTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="VerticesSimpleTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="VerticesTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="VerticesTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="VerticesTests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ctmo" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="ctmo" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cttg5.2" RUN_TARGET_NAME="ctmo">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cubature" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="cubature" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="gmock" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gmock_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="gmock_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="gtest" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cttg5.2" TARGET_NAME="gtest_main" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Build All" />
+      <item itemvalue="Application.ABC_H0Tests" />
+      <item itemvalue="Application.ctmo" />
+      <item itemvalue="Application.FillingAndDoccTests" />
+      <item itemvalue="Application.Fourier_DCATests" />
+      <item itemvalue="Application.FourierTests" />
+      <item itemvalue="Application.GreenBinningTests" />
+      <item itemvalue="Application.GreenMatTests" />
+      <item itemvalue="Application.GreenTauTests" />
+      <item itemvalue="Application.HybFMAndTLocTests" />
+      <item itemvalue="Application.IntegratorTests" />
+      <item itemvalue="Application.IOTests" />
+      <item itemvalue="Application.MarkovChainSquare2x2Tests" />
+      <item itemvalue="Application.MarkovChainTests" />
+      <item itemvalue="Application.MatrixTests" />
+      <item itemvalue="Application.ObservablesTests" />
+      <item itemvalue="Application.SelfConsistencyTests" />
+      <item itemvalue="Application.UTensorSimpleTests" />
+      <item itemvalue="Application.UtilitiesTests" />
+      <item itemvalue="Application.VerticesSimpleTests" />
+      <item itemvalue="Application.VerticesTests" />
+      <item itemvalue="Application.gmock" />
+      <item itemvalue="Application.gmock_main" />
+      <item itemvalue="Application.gtest" />
+      <item itemvalue="Application.gtest_main" />
+      <item itemvalue="Application.cubature" />
+    </list>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -182,11 +321,12 @@
       <updated>1528809328642</updated>
       <workItem from="1528809331460" duration="1680000" />
       <workItem from="1534343807296" duration="835000" />
+      <workItem from="1546904097521" duration="575000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2515000" />
+    <option name="totallyTimeSpent" value="3090000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -198,13 +338,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.1641791" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1638207" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" />
@@ -212,22 +350,20 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3285968" />
-      <window_info anchor="bottom" id="CMake" order="7" weight="0.047957372" />
+      <window_info anchor="bottom" id="CMake" order="7" weight="0.34842107" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.3285968" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" weight="0.3285968" />
-      <window_info active="true" anchor="bottom" id="Messages" order="11" visible="true" weight="0.08635394" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Messages" order="11" visible="true" weight="0.3031579" />
+      <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
     <ignored-roots>
@@ -240,8 +376,15 @@
     <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_H0_DCA.hpp" />
     <entry file="file://$PROJECT_DIR$/src/Includes/Models/UTensor.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
+        <state relative-caret-position="171">
           <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Vertices.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4769">
+          <caret line="251" column="9" selection-start-line="251" selection-start-column="9" selection-end-line="251" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -252,17 +395,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Vertices.hpp">
+    <entry file="file://$PROJECT_DIR$/test/VerticesTests.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="251" column="9" selection-start-line="251" selection-start-column="9" selection-end-line="251" selection-end-column="9" />
+        <state relative-caret-position="323">
+          <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/VerticesTests.cpp">
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="39" selection-start-line="17" selection-start-column="39" selection-end-line="17" selection-end-column="39" />
+        <state relative-caret-position="190">
+          <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+          <folding>
+            <element signature="e#13#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ISResult.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1463">
+          <caret line="77" column="23" selection-start-line="77" selection-start-column="23" selection-end-line="77" selection-end-column="23" />
+          <folding>
+            <element signature="e#14#34#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
