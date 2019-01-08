@@ -51,7 +51,7 @@ TEST(Vertices2DTest, InitVertices)
     fin >> jj;
     fin.close();
 
-    Utilities::EngineTypeMt19937_t rng_(1 + jj["SEED"].get<size_t>());
+    Utilities::EngineTypeMt19937_t rng_(1 + jj["monteCarlo"]["seed"].get<size_t>());
     Utilities::UniformRngMt19937_t urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0));
 
     Diagrammatic::Vertices vertices;
@@ -182,7 +182,7 @@ TEST(Vertices2DTest, TestBuildVertex)
     fin >> jj;
     fin.close();
 
-    Utilities::EngineTypeMt19937_t rng_(1 + jj["SEED"].get<size_t>());
+    Utilities::EngineTypeMt19937_t rng_(1 + jj["monteCarlo"]["seed"].get<size_t>());
     Utilities::UniformRngMt19937_t urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0));
 
     Diagrammatic::Vertices vertices;

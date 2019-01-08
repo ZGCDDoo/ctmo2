@@ -374,16 +374,16 @@ class VertexBuilder
   public:
     //must hold the alphas, the values of the U, U' and (U-J_H)
     VertexBuilder(const Json &jj, const size_t &Nc) : Utensor(jj),
-                                                      auxHelper_(jj["delta"].get<double>()),
-                                                      delta_(jj["delta"].get<double>()),
-                                                      beta_(jj["beta"].get<double>()),
+                                                      auxHelper_(jj["model"]["delta"].get<double>()),
+                                                      delta_(jj["model"]["delta"].get<double>()),
+                                                      beta_(jj["model"]["beta"].get<double>()),
                                                       Nc_(Nc),
-                                                      NOrb_(jj["NOrb"].get<size_t>()),
+                                                      NOrb_(jj["model"]["nOrb"].get<size_t>()),
                                                       probU_(0.5),
                                                       factXi_(
                                                           1.0 / probU_ * (NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_) // Pauli principale and dont double count pairs
                                                           ),
-                                                      isOrbitalDiagonal_(jj["IsOrbitalDiagonal"].get<bool>())
+                                                      isOrbitalDiagonal_(jj["solver"]["isOrbitalDiagonal"].get<bool>())
 
     {
     }

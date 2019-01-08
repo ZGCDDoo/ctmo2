@@ -22,9 +22,9 @@ Json BuildJson()
         "seed": 1096954689
     },
     "model": {
-        "beta": 33.3333333,
-        "hybUpFile": "hybUp1.dat",
-        "modelFile": "SIAM_Square.model",
+        "beta": 33.3,
+        "hybUpFile": "../test/data/DMFT/hyb_obs.dat",
+        "modelFile": "../data/SIAM_Square.model",
         "J_H": 0.0,
         "nkpts": 60,
         "nOrb": 1,
@@ -33,7 +33,7 @@ Json BuildJson()
         "delta": 0.01,
         "gPhonon": 0.08,
         "w0Phonon": 0.08,
-        "mu": 0.0,
+        "mu": 10.10,
         "cluster": {
             "Nx": 1,
             "Ny": 1,
@@ -87,7 +87,9 @@ TEST(ABC_Model_Tests, Init)
     Models::ABC_Model_2D model(BuildJson());
 
     ASSERT_DOUBLE_EQ(model.mu(), 10.1);
-    ASSERT_DOUBLE_EQ(model.beta(), 6.66);
+    ASSERT_DOUBLE_EQ(model.beta(), 33.3);
+    ASSERT_EQ(model.NOrb(), 1);
+    ASSERT_EQ(model.Nc(), 4);
 }
 
 int main(int argc, char **argv)

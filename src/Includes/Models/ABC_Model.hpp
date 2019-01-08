@@ -50,7 +50,7 @@ class ABC_Model_2D
 
         void FinishConstructor(const Json &jjSim)
         {
-                std::string hybNameUp = jjSim["model"]["HybUpFile"].get<std::string>();
+                std::string hybNameUp = jjSim["model"]["hybUpFile"].get<std::string>();
 #ifdef DCA
                 ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp, NOrb_);
 #else
@@ -58,7 +58,7 @@ class ABC_Model_2D
 #endif
 
 #ifdef AFM
-                std::string hybNameDown = jjSim["model"]["HybDownFile"].get<std::string>();
+                std::string hybNameDown = jjSim["model"]["hybDownFile"].get<std::string>();
                 ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown, NOrb_);
 #endif
 

@@ -35,13 +35,13 @@ class Base_IOModel
         return (NOrb * (NOrb + 1) / 2);
     }
 
-    Base_IOModel(const Json &jj) : Nx(jj["Nx"].get<size_t>()),
-                                   Ny(jj["Ny"].get<size_t>()),
-                                   Nz(jj["Nz"].get<size_t>()),
-                                   Nc(Nx * Ny * Nz)
+    Base_IOModel(const Json &jjSim) : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
+                                      Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
+                                      Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
+                                      Nc(Nx * Ny * Nz)
     {
         std::cout << "Start Base_IOModel construction " << std::endl;
-        GreenSites_ = BuildGreenSites(jj["ModelFile"].get<std::string>());
+        GreenSites_ = BuildGreenSites(jjSim["model"]["modelFile"].get<std::string>());
         indepSites_ = BuildIndepSites(GreenSites_);
         FinishConstructor();
         std::cout << "End Base_IOModel construction " << std::endl;
