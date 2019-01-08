@@ -51,7 +51,7 @@ size_t CalculateNextSeed()
     return (static_cast<size_t>(nextSeed));
 }
 
-void PrepareNextIter(const std::string paramsName, const size_t &iter)
+void PrepareNextIter(const std::string &paramsName, const size_t &iter)
 {
     // std::cout << "Start of PrepareNexIter " << std::endl;
     using boost::filesystem::copy_file;
@@ -88,19 +88,19 @@ void PrepareNextIter(const std::string paramsName, const size_t &iter)
     }
 
     size_t nextSeed = CalculateNextSeed();
-    params["SEED"] = static_cast<size_t>(nextSeed);
+    params["monteCarlo"]["seed"] = static_cast<size_t>(nextSeed);
 
-    params["HybFileUp"] = std::string("hybUp") + std::to_string(iter + 1);
+    params["model"]["hybUpFile"] = std::string("hybUp") + std::to_string(iter + 1) + ".dat";
 
 #ifdef AFM
-    params["HybFileDown"] = std::string("hybDown") + std::to_string(iter + 1);
+    params["model"]["hybDownFile"] = std::string("hybDown") + std::to_string(iter + 1) + ".dat";
 #endif
 
-    if (params.find("n") != params.end())
+    if (params["model"].find("n") != params["model"].end())
     {
-        double nParams = params["n"];
+        double nParams = params["model"]["n"];
         double nResult = results["n"].at(0); //mean of n from simulation
-        params["mu"] = double(params["mu"]) - double(params["S"]) * (nResult - nParams);
+        params["model"]["mu"] = double(params["model"]["mu"]) - double(params["solver"]["S"]) * (nResult - nParams);
     }
     std::ofstream fout(std::string("params") + std::to_string(iter + 1) + std::string(".json"));
     fout << std::setw(4) << params << std::endl;
