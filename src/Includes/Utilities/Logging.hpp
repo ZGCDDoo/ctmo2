@@ -10,27 +10,24 @@ namespace Logging
 
 const std::string ROOT = "ROOT";
 
-void Init(const std::string &loggerName = ROOT, const std::string &logLevel = "DEBUG") //, const std::string &sink = "STDOUT")
+void InitFile(const Json &jjLog, const std::string &loggerName = ROOT)
 {
-    // #ifdef HAVEMPI
-    // mpi::environment env;
-    // mpi::communicator world;
-    // #endif
+    const std::string logLevel = jjLog["level"].get<std::string>();
+    const std::string file_sink = jjLog["file"].get<std::string>();
 
     if (mpiUt::Rank() == mpiUt::master)
     {
-        // auto logger_ = (sink == "STDOUT") ? spdlog::stdout_color_st(loggerName) : spdlog::basic_logger_st(loggerName, );
-        auto logger_ = spdlog::stdout_color_st(loggerName);
+        auto logger_ = spdlog::basic_logger_st(loggerName, file_sink);
 
-        if (logLevel == "INFO")
+        if (logLevel == "info")
         {
             logger_->set_level(spdlog::level::info);
         }
-        else if (logLevel == "WARN")
+        else if (logLevel == "warn")
         {
             logger_->set_level(spdlog::level::warn);
         }
-        else if (logLevel == "DEBUG")
+        else if (logLevel == "debug")
         {
             logger_->set_level(spdlog::level::debug);
         }
@@ -41,6 +38,53 @@ void Init(const std::string &loggerName = ROOT, const std::string &logLevel = "D
 
         const std::string msg = "Logger " + loggerName + " initialized";
         logger_->info(msg);
+    }
+}
+
+void InitStdout(const Json &jjLog, const std::string loggerName = ROOT)
+{
+    const std::string logLevel = jjLog["level"].get<std::string>();
+
+    if (mpiUt::Rank() == mpiUt::master)
+    {
+        auto logger_ = spdlog::stdout_color_st(loggerName);
+
+        if (logLevel == "info")
+        {
+            logger_->set_level(spdlog::level::info);
+        }
+        else if (logLevel == "warn")
+        {
+            logger_->set_level(spdlog::level::warn);
+        }
+        else if (logLevel == "debug")
+        {
+            logger_->set_level(spdlog::level::debug);
+        }
+        else
+        {
+            logger_->set_level(spdlog::level::critical);
+        }
+
+        const std::string msg = "Logger " + loggerName + " initialized";
+        logger_->info(msg);
+    }
+}
+
+void Init(const Json &jjLog, const std::string &loggerName = ROOT)
+{
+    const bool logToFile = jjLog["logToFile"].get<bool>();
+
+    if (mpiUt::Rank() == mpiUt::master)
+    {
+        if (logToFile)
+        {
+            InitFile(jjLog, loggerName);
+        }
+        else
+        {
+            InitStdout(jjLog, loggerName);
+        }
     }
 }
 

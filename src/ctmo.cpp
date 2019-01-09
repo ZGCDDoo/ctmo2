@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
 #ifndef HAVEMPI
     PrintVersion::PrintVersion();
-    Logging::Init();
+    Logging::Init(jjSim["logging"]);
     Logging::Info("Iteration " + std::to_string(ITER));
     std::ifstream fin(fname_params);
     fin >> jjSim;
@@ -62,6 +62,8 @@ int main(int argc, char **argv)
 
     mpi::broadcast(world, jjSimStr, mpiUt::master);
     jjSim = Json::parse(jjSimStr);
+    Logging::Init(jjSim["logging"]);
+    Logging::Info("Iteration " + std::to_string(ITER));
     world.barrier();
     //wait_all
     const size_t rank = world.rank();
