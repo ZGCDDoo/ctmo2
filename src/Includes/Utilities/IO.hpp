@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Utilities.hpp"
-// #include "MPIUtilities.hpp"
 #include "IOConstruct.hpp"
 
 namespace IO
@@ -143,7 +142,7 @@ class Base_IOModel
     //read a green in .dat format.
     ClusterCubeCD_t ReadGreenKDat(const std::string &filename, const size_t &NOrb) const
     {
-        // mpiUt::Print("In IOModel ReadGreenKDat ");
+        // mpiUt::Tools::Print("In IOModel ReadGreenKDat ");
 
         const size_t shutUpWarning = NOrb;
         std::cout << shutUpWarning << "WARNING, Norb not implemented in ReadGreenKDat" << std::endl;
@@ -177,7 +176,7 @@ class Base_IOModel
     //Read green in .dat format.
     ClusterCubeCD_t ReadGreenDat(const std::string &filename, const size_t &NOrb) const
     {
-        // mpiUt::Print("In IOModel ReadGreenNDat ");
+        // mpiUt::Tools::Print("In IOModel ReadGreenNDat ");
 
         const size_t NN = Nc * NOrb;
         const size_t NOrbIndep = GetNOrbIndep(NOrb);

@@ -4,7 +4,7 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/LinAlg.hpp"
 #include "../Utilities/Matrix.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
 #include "../Utilities/Fourier.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "Obs/Observables.hpp"
@@ -72,7 +72,7 @@ class ABC_MarkovChain
         updStats_["Flips"] = zeroPair;
         updatesProposed_ = 0;
 
-        mpiUt::Print("MarkovChain Created \n");
+        mpiUt::Tools::Print("MarkovChain Created \n");
     }
 
     ~ABC_MarkovChain() = default;
@@ -573,7 +573,7 @@ class ABC_MarkovChain
         obs_.Save();
         std::cout << "updsamespin = " << updsamespin_ << std::endl;
         SaveUpd("upd.meas");
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             dataCT_->vertices_.SaveConfig("Config.dat");
         }
@@ -596,25 +596,25 @@ class ABC_MarkovChain
 #ifdef HAVEMPI
 
         mpi::communicator world;
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            mpi::gather(world, updStats_, updStatsVec, mpiUt::master);
+            mpi::gather(world, updStats_, updStatsVec, mpiUt::Tools::master);
         }
         else
         {
-            mpi::gather(world, updStats_, mpiUt::master);
+            mpi::gather(world, updStats_, mpiUt::Tools::master);
         }
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            mpiUt::SaveUpdStats(fname, updStatsVec);
+            mpiUt::Tools::SaveUpdStats(fname, updStatsVec);
         }
 
 #else
         updStatsVec.push_back(updStats_);
-        mpiUt::SaveUpdStats(fname, updStatsVec);
+        mpiUt::Tools::SaveUpdStats(fname, updStatsVec);
 #endif
 
-        mpiUt::Print("Finished Saving MarkovChain.");
+        mpiUt::Tools::Print("Finished Saving MarkovChain.");
     }
 
   protected:

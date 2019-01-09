@@ -6,7 +6,7 @@
 
 #include "../Models/ModelSquare2x2_AFM.hpp"
 #include "../Models/ModelTriangle2x2.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
 
 namespace MC
 {
@@ -27,7 +27,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder_AFM(const Json &jj, const size
         using MarkovInt_t = Markov::MarkovChain<IOModel_t, Model_t>;
 
         //Init a dummy model just to be sure that all files are present:
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             const Model_t modelDummy(jj);
         }
@@ -44,7 +44,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder_AFM(const Json &jj, const size
         using MarkovInt_t = Markov::MarkovChain<IOModel_t, Model_t>;
         //Init a dummy model just to be sure that all files are present:
 
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             const Model_t modelDummy(jj);
         }

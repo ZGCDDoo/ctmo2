@@ -25,8 +25,7 @@ class ABC_H0
                                 NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
 
     {
-        // assert(TNX == TNY);
-
+        Logging::Debug("Start ABC_H0 Constructor. ");
         for (size_t i = 0; i < Nx; i++)
         {
             for (size_t j = 0; j < Ny; j++)
@@ -42,6 +41,7 @@ class ABC_H0
         }
 
         ReadInHoppings(jjSim);
+        Logging::Debug("ABC_H0 Constructed. ");
     }
 
     ~ABC_H0()
@@ -142,7 +142,6 @@ class ABC_H0
         ClusterMatrixCD_t HoppingKTilde(NS, NS);
         HoppingKTilde.zeros();
 
-        // std::cout << "Here " << std::endl;
         for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
             for (size_t o2 = 0; o2 < NOrb_; o2++)
@@ -165,7 +164,6 @@ class ABC_H0
                 }
             }
         }
-        // std::cout << "Here 2" << std::endl;
 
         return (HoppingKTilde / static_cast<double>(Nc));
     }
@@ -183,7 +181,8 @@ class ABC_H0
                 return;
             }
         }
-        std::cout << "Calculating tktilde, tloc and hybFM. " << std::endl;
+
+        Logging::Debug("Calculating tktilde, tloc and hybFM. ");
 
         const size_t kxtildepts = (std::abs(txVec_.at(0)) < 1e-10) ? 1 : NKPTS_;
         const size_t kytildepts = (std::abs(tyVec_.at(0)) < 1e-10) ? 1 : NKPTS_;

@@ -3,7 +3,7 @@
 #include "GreenMat.hpp"
 #include "Fourier.hpp"
 #include "Utilities.hpp"
-#include "MPIUtilities.hpp"
+#include "MPITools.hpp"
 #include "IO.hpp"
 
 namespace GreenTau
@@ -29,7 +29,7 @@ class GreenCluster0Tau
                                                                                 NTau_(std::max<double>(jjSim["solver"]["ntau"].get<double>(), beta_ / deltaTau)),
                                                                                 NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
     {
-        mpiUt::Print("Creating gtau ");
+        mpiUt::Tools::Print("Creating gtau ");
         assert(NOrb_ >= 1);
         data_.resize(ioModel_.GetNIndepSuperSites(NOrb_));
 
@@ -40,13 +40,13 @@ class GreenCluster0Tau
         BuildSerial();
 #endif
 
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             Save("gtau.dat");
         }
 
         gfMatCluster_.clear();
-        mpiUt::Print("gtau Created");
+        mpiUt::Tools::Print("gtau Created");
     };
 
     Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) //return g_i(tau)
@@ -93,9 +93,9 @@ class GreenCluster0Tau
 
         std::vector<Data_t> dataVec;
         size_t ii = 0;
-        while (ii * mpiUt::NWorkers() < ioModel_.GetNIndepSuperSites(NOrb_))
+        while (ii * mpiUt::Tools::NWorkers() < ioModel_.GetNIndepSuperSites(NOrb_))
         {
-            const size_t indepSuperSiteIndex = mpiUt::Rank() + ii * mpiUt::NWorkers();
+            const size_t indepSuperSiteIndex = mpiUt::Tools::Rank() + ii * mpiUt::Tools::NWorkers();
             Vector_t g0Tau;
 
             if (indepSuperSiteIndex < ioModel_.GetNIndepSuperSites(NOrb_))

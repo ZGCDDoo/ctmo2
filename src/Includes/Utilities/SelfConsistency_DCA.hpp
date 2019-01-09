@@ -2,7 +2,7 @@
 
 #include "Integrator.hpp"
 #include "Utilities.hpp"
-#include "MPIUtilities.hpp"
+#include "MPITools.hpp"
 #include "GreenMat.hpp"
 #include "ABC_SelfConsistency.hpp"
 #include "Fourier_DCA.hpp"
@@ -59,7 +59,7 @@ class SelfConsistency : public ABC_SelfConsistency
                                                                                                                             weights_(cd_t(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>())),
                                                                                                                             NOrb_(jj["NOrb"].get<size_t>())
     {
-        mpiUt::Print("Start of SC constructor");
+        mpiUt::Tools::Print("Start of SC constructor");
 
         const size_t NGreen = greenImpurity_.n_slices;
         const size_t NSelfCon = NGreen;
@@ -74,13 +74,13 @@ class SelfConsistency : public ABC_SelfConsistency
             selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(Nc, Nc).eye() - model_.tLoc() - hybridization_.slice(nn);
         }
 
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             ioModel_.SaveK("self" + GetSpinName(spin_), selfEnergy_, model_.beta(), NOrb_, hybSavePrecision);
             std::cout << "In Selfonsistency constructor, after save selfenery " << std::endl;
         }
 
-        mpiUt::Print("After SC constructor");
+        mpiUt::Tools::Print("After SC constructor");
     }
 
     void DoSCGrid() override
@@ -94,7 +94,7 @@ class SelfConsistency : public ABC_SelfConsistency
 
     void DoSCGridSerial()
     {
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             std::cout << "In Selfonsistency DOSC serial" << std::endl;
             const size_t NSelfCon = selfEnergy_.n_slices;
@@ -158,16 +158,16 @@ class SelfConsistency : public ABC_SelfConsistency
 
         mpi::communicator world;
 
-        mpiUt::Print("In Selfonsistency DOSC Parallel");
+        mpiUt::Tools::Print("In Selfonsistency DOSC Parallel");
         const size_t NSelfCon = selfEnergy_.n_slices;
 
-        if (static_cast<size_t>(mpiUt::NWorkers()) > NSelfCon)
+        if (static_cast<size_t>(mpiUt::Tools::NWorkers()) > NSelfCon)
         {
             DoSCGridSerial();
             return;
         }
 
-        const size_t NSelfConRank = mpiUt::Rank() == mpiUt::master ? (NSelfCon / mpiUt::NWorkers() + NSelfCon % mpiUt::NWorkers()) : NSelfCon / mpiUt::NWorkers();
+        const size_t NSelfConRank = mpiUt::Tools::Rank() == mpiUt::Tools::master ? (NSelfCon / mpiUt::Tools::NWorkers() + NSelfCon % mpiUt::Tools::NWorkers()) : NSelfCon / mpiUt::Tools::NWorkers();
 
         ClusterCubeCD_t gImpUpNextRank(Nc, Nc, NSelfConRank);
         gImpUpNextRank.zeros();
@@ -182,7 +182,7 @@ class SelfConsistency : public ABC_SelfConsistency
         const size_t kytildepts = (std::abs(h0_.tyVec().at(0)) < 1e-10) ? 1 : NKPTS;
         const size_t kztildepts = (std::abs(h0_.tzVec().at(0)) < 1e-10) ? 1 : NKPTS;
 
-        const size_t nnStart = mpiUt::Rank() == mpiUt::master ? 0 : NSelfCon % mpiUt::NWorkers() + (NSelfCon / mpiUt::NWorkers()) * mpiUt::Rank();
+        const size_t nnStart = mpiUt::Tools::Rank() == mpiUt::Tools::master ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * mpiUt::Tools::Rank();
         const size_t nnEnd = nnStart + NSelfConRank;
         for (size_t KIndex = 0; KIndex < h0_.KWaveVectors().size(); KIndex++)
         {
@@ -210,33 +210,33 @@ class SelfConsistency : public ABC_SelfConsistency
 
         std::vector<std::vector<cd_t>> tmpMemGImpVec;
         std::vector<std::vector<cd_t>> tmpMemHybNextVec;
-        std::vector<cd_t> tmpMemGImp = mpiUt::CubeCDToVecCD(gImpUpNextRank);
-        std::vector<cd_t> tmpMemHybNext = mpiUt::CubeCDToVecCD(hybNextRank);
+        std::vector<cd_t> tmpMemGImp = mpiUt::Tools::CubeCDToVecCD(gImpUpNextRank);
+        std::vector<cd_t> tmpMemHybNext = mpiUt::Tools::CubeCDToVecCD(hybNextRank);
 
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            mpi::gather(world, tmpMemGImp, tmpMemGImpVec, mpiUt::master);
-            mpi::gather(world, tmpMemHybNext, tmpMemHybNextVec, mpiUt::master);
+            mpi::gather(world, tmpMemGImp, tmpMemGImpVec, mpiUt::Tools::master);
+            mpi::gather(world, tmpMemHybNext, tmpMemHybNextVec, mpiUt::Tools::master);
         }
         else
         {
-            mpi::gather(world, tmpMemGImp, mpiUt::master);
-            mpi::gather(world, tmpMemHybNext, mpiUt::master);
+            mpi::gather(world, tmpMemGImp, mpiUt::Tools::master);
+            mpi::gather(world, tmpMemHybNext, mpiUt::Tools::master);
         }
 
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             ClusterCubeCD_t gImpUpNext(Nc, Nc, NSelfCon);
             gImpUpNext.zeros();
             hybNext_.resize(Nc, Nc, NSelfCon);
             hybNext_.zeros();
 
-            for (size_t ii = 0; ii < static_cast<size_t>(mpiUt::NWorkers()); ii++)
+            for (size_t ii = 0; ii < static_cast<size_t>(mpiUt::Tools::NWorkers()); ii++)
             {
-                ClusterCubeCD_t tmpGImpNextRank = mpiUt::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc, Nc, tmpMemGImpVec.at(ii).size() / (Nc * Nc));
-                ClusterCubeCD_t tmpHybNextRank = mpiUt::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc, Nc, tmpMemHybNextVec.at(ii).size() / (Nc * Nc));
+                ClusterCubeCD_t tmpGImpNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc, Nc, tmpMemGImpVec.at(ii).size() / (Nc * Nc));
+                ClusterCubeCD_t tmpHybNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc, Nc, tmpMemHybNextVec.at(ii).size() / (Nc * Nc));
 
-                const size_t jjStart = ii == 0 ? 0 : NSelfCon % mpiUt::NWorkers() + (NSelfCon / mpiUt::NWorkers()) * ii;
+                const size_t jjStart = ii == 0 ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * ii;
                 const size_t jjEnd = jjStart + tmpGImpNextRank.n_slices;
                 for (size_t jj = jjStart; jj < jjEnd; jj++)
                 {
@@ -250,7 +250,7 @@ class SelfConsistency : public ABC_SelfConsistency
             ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
             ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
-            mpiUt::Print("After Selfonsistency DOSC Parallel");
+            mpiUt::Tools::Print("After Selfonsistency DOSC Parallel");
         }
     }
 

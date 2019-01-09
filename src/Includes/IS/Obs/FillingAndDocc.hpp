@@ -103,7 +103,7 @@ class FillingAndDocc
 
     void MeasureFillingAndDocc()
     {
-        // mpiUt::Print("Start of MeasureFillingAndDocc ");
+        // mpiUt::Tools::Print("Start of MeasureFillingAndDocc ");
         ResetCurrent();
 
         const size_t KK = dataCT_->vertices_.size();
@@ -198,7 +198,7 @@ class FillingAndDocc
             }
         }
 
-        // mpiUt::Print("End of MeasureFillingAndDocc");
+        // mpiUt::Tools::Print("End of MeasureFillingAndDocc");
     }
 
     void Finalize(const double &signMeas, const double &NMeas)

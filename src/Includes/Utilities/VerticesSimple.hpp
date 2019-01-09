@@ -4,6 +4,7 @@
 #include "../Utilities/LinAlg.hpp"
 
 #include "../Models/UTensorSimple.hpp"
+#include "../Utilities/Logging.hpp"
 #include <boost/math/special_functions/binomial.hpp>
 
 namespace Diagrammatic
@@ -120,8 +121,7 @@ class Vertices
 
     void AssertSizes() const
     {
-        // std::cout << "data_.size(), vPartUpVec_.size(), vPartDownVec_.size() = "
-        //   << data_.size() << ", " << vPartUpVec_.size() << ", " << vPartDownVec_.size() << std::endl;
+
         assert(2 * data_.size() == (vPartUpVec_.size() + vPartDownVec_.size()));
         assert(indexPartUpVec_.size() == vPartUpVec_.size());
         assert(indexPartDownVec_.size() == vPartDownVec_.size());
@@ -184,7 +184,7 @@ class Vertices
                 }
             }
         }
-        // std::cout << "indices.size() = " << indices.size() << std::endl;
+
         assert(indices.size() == 1);
         return (indices.at(0));
     }
@@ -220,9 +220,6 @@ class Vertices
         {
             const auto x = data_.at(ii).vStart();
             const auto y = data_.at(ii).vEnd();
-            // assert(x.tau() == y.tau());
-            // assert(x.aux() == y.aux());
-
             fout << static_cast<int>(x.aux()) << " " << x.site() << " " << x.tau() << " " << static_cast<int>(x.spin()) << " " << static_cast<int>(y.spin()) << " " << x.orbital() << " " << y.orbital() << " " << std::endl;
         }
     }
@@ -567,12 +564,12 @@ class VertexBuilder
 
             if (deltaTau < 0.0)
             {
-                std::cerr << "Warning, deltaTau < 0.0 ? " << std::endl;
+                Logging::Critical("GetDeltaTauPhonon: deltaTau < 0.0 ? ");
                 return 0.0 + 1e-14;
             }
             else if (deltaTau > beta_)
             {
-                std::cerr << "Warning, deltaTau > beta  ? " << std::endl;
+                Logging::Critical("GetDeltaTauPhonon: deltaTau > beta  ? ");
                 return beta_ - 1e-14;
             }
 

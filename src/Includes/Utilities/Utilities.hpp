@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdlib>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -14,6 +15,7 @@
 #include <boost/random.hpp>
 #include <boost/filesystem.hpp>
 #include <mm_malloc.h>
+#include <valarray>
 #include <vector>
 #include <string>
 #include <ccomplex>
@@ -59,6 +61,8 @@ using SiteRow_t = arma::rowvec;
 using ClusterSites_t = std::vector<arma::vec>;
 using ClusterMatrix_t = arma::mat;
 using ClusterCube_t = arma::cube;
+
+using UpdStats_t = std::map<std::string, std::valarray<size_t>>;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

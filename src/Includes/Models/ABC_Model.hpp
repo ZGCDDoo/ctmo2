@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Utilities/Utilities.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/GreenMat.hpp"
 #include "../Utilities/IO.hpp"
@@ -25,9 +24,9 @@ class ABC_Model_2D
                                           NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
                                           Nc_(h0_.Nc)
         {
-                mpiUt::Print("start abc_model constructor ");
+                Logging::Debug("Start ABC_Model Constructor. ");
 
-                if (mpiUt::Rank() == mpiUt::master)
+                if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 {
 
 #ifdef DCA
@@ -45,7 +44,7 @@ class ABC_Model_2D
                 assert(hybFM_.load(mapNames["hybFMFile"]));
 
                 FinishConstructor(jjSim);
-                mpiUt::Print(" End of ABC_Model Constructor ");
+                Logging::Debug(" End of ABC_Model Constructor. ");
         };
 
         void FinishConstructor(const Json &jjSim)
@@ -92,7 +91,7 @@ class ABC_Model_2D
                 greenCluster0MatUp_.FourierTransform(h0_.RSites(), h0_.KWaveVectors());
 #endif
                 //save green0mat
-                if (mpiUt::Rank() == mpiUt::master)
+                if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 {
                         ioModel_.SaveCube("giwn", this->greenCluster0MatUp_.data(), this->beta_, NOrb_);
                 }
