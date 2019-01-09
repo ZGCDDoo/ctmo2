@@ -208,7 +208,7 @@ value are identical to `hcubature`, above, except that now the integrand
 form. The integrand function `F` should now be a function of the form:
 
 ```c
-int f(unsigned ndim, unsigned npts, const double *x, void *fdata,
+int f(unsigned ndim, size_t npts, const double *x, void *fdata,
       unsigned fdim, double *fval);
 ```
 
@@ -353,7 +353,7 @@ To compile a test programs, just compile `hcubature.c` and/or
 GNU/Linux) via:
 
 ```
-cc -o htest test.c hcubature.c -l
+cc -o htest test.c hcubature.c -lm
 cc -o ptest -DPCUBATURE test.c pcubature.c -lm
 ```
 

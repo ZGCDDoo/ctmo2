@@ -28,10 +28,6 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jjSim, const size_
 #endif
 
     return std::make_unique<MC::MonteCarlo<MarkovInt_t>>(std::make_shared<MarkovInt_t>(jjSim, seed), jjSim);
-
-    throw std::runtime_error("Miseria: solver and or modelType error in params file. Stupido !");
-
-    return NULL;
-} // namespace MC
+}
 
 } // namespace MC
