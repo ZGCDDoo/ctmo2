@@ -54,17 +54,17 @@ int main(int argc, char **argv)
 
     std::string jjStr;
 
-    if (mpiUt::Rank() == mpiUt::master)
+    if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
         PrintVersion::PrintVersion();
-        mpiUt::Print("ITER = " + std::to_string(ITER));
+        Logging::Info("ITER = " + std::to_string(ITER));
         std::ifstream fin(fname_params);
         fin >> jj;
         jjStr = jj.dump();
         fin.close();
     }
 
-    mpi::broadcast(world, jjStr, mpiUt::master);
+    mpi::broadcast(world, jjStr, mpiUt::Tools::master);
     jj = Json::parse(jjStr);
     world.barrier();
     //wait_all
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
     const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconDownPtr = SelfCon::SelfConsistencyBuilder_AFM(jj, FermionSpin_t::Down);
     selfconDownPtr->DoSCGrid();
 
-    if (mpiUt::Rank() == mpiUt::master)
+    if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
         SymmetrizeSpins::SymmetrizeUpAndDown(jj);
         IO::FS::PrepareNextIter(paramsName, ITER);

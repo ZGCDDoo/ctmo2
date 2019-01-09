@@ -54,8 +54,6 @@ int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim
     {
         for (size_t j = 0; j < fct.n_cols(); j++)
         {
-            //std::cout << " x[0] = " << x[0]
-            //        << std::endl;
             tmpMat = fct(x[0], x[1], x[2]);
             fval[i + fct.n_rows() * j] = tmpMat(i, j).real();
             fval[i + fct.n_rows() * (fct.n_cols() + j)] = tmpMat(i, j).imag();
@@ -71,8 +69,6 @@ ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals
     const unsigned nelem = fct.n_rows() * fct.n_cols();
     double *val = new double[2 * nelem]; //for complex values
     double *err = new double[2 * nelem];
-
-    //std::cout << "before calling hcubature in integrator.hpp " << 2 * nelem << std::endl;
 
     hcubature(2 * nelem, IntegrandCubature<TFct>, &fct, 3, xmin, xmax, maxevals, absError, relError, ERROR_INDIVIDUAL, val, err);
 
@@ -136,8 +132,6 @@ ClusterMatrixCD_t CubatureDCA(TFct fct, double *xmin, double *xmax, size_t maxev
     const unsigned nelem = fct.n_rows(); //We only evaluate the diagonal parts, because diagonal in big K
     double *val = new double[2 * nelem]; //for complex values
     double *err = new double[2 * nelem];
-
-    //std::cout << "before calling hcubature in integrator.hpp " << 2 * nelem << std::endl;
 
     hcubature(2 * nelem, IntegrandCubatureDCA<TFct>, &fct, 3, xmin, xmax, maxevals, absError, relError, ERROR_INDIVIDUAL, val, err);
 

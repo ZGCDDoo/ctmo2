@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdlib>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -14,13 +15,14 @@
 #include <boost/random.hpp>
 #include <boost/filesystem.hpp>
 #include <mm_malloc.h>
+#include <valarray>
 #include <vector>
 #include <string>
 #include <ccomplex>
 
 //External Libraries
 #include <armadillo>
-#include "../../deps/json.hpp"
+#include "../../deps/nlohmann_json/json.hpp"
 
 using Json = nlohmann::json;
 
@@ -60,6 +62,8 @@ using ClusterSites_t = std::vector<arma::vec>;
 using ClusterMatrix_t = arma::mat;
 using ClusterCube_t = arma::cube;
 
+using UpdStats_t = std::map<std::string, std::valarray<size_t>>;
+
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,8 +83,6 @@ std::string GetSpinName(const FermionSpin_t &spin)
 
 size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NOrb)
 {
-	// std::cout << "o1, o2 =  " << o1 << ", " << o2 << std::endl;
-	// std::cout << "NOrb =  " << NOrb << std::endl;
 
 	assert(o1 < NOrb);
 	assert(o2 < NOrb);

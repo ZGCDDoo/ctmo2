@@ -2,7 +2,7 @@
 
 #include "../../Utilities/Utilities.hpp"
 #include "../../Utilities/LinAlg.hpp"
-#include "../../Utilities/MPIUtilities.hpp"
+#include "../../Utilities/MPIResult.hpp"
 
 #include "GreenBinning.hpp"
 #include "FillingAndDocc.hpp"
@@ -26,7 +26,7 @@ class Observables
                     const Json &jjSim) : modelPtr_(new Model_t(jjSim)),
                                          ioModelPtr_(new IOModel_t(jjSim)),
                                          dataCT_(dataCT),
-                                         rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
+                                         rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Tools::Rank() * mpiUt::Tools::Rank()),
                                          urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
                                          greenBinningUp_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Up),
                                          greenBinningDown_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Down),
@@ -38,9 +38,9 @@ class Observables
                                          averageOrbitals_(jjSim["solver"]["averageOrbitals"].get<bool>())
         {
 
-                mpiUt::Print("In Obs constructor ");
+                Logging::Debug("In Obs constructor ");
 
-                mpiUt::Print("After Obs  constructor ");
+                Logging::Debug("After Obs  constructor ");
         }
 
         //Getters
@@ -50,8 +50,6 @@ class Observables
         void Measure()
         {
 
-                // mpiUt::Print("start of Measure");
-
                 ++NMeas_;
                 signMeas_ += static_cast<double>(dataCT_->sign_);
                 expOrder_ += static_cast<double>(dataCT_->vertices_.size()) * static_cast<double>(dataCT_->sign_);
@@ -60,13 +58,11 @@ class Observables
 
                 greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
                 greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
-
-                // mpiUt::Print("End of Measure");
         }
 
         void Save()
         {
-                mpiUt::Print("Start of Observables.Save()");
+                Logging::Info("Start of Observables.Save()");
                 signMeas_ /= NMeas_;
 
                 fillingAndDocc_.Finalize(signMeas_, NMeas_);
@@ -105,15 +101,15 @@ class Observables
 #ifdef HAVEMPI
 
                 mpi::communicator world;
-                if (mpiUt::Rank() == mpiUt::master)
+                if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 {
-                        mpi::gather(world, isResult, isResultVec, mpiUt::master);
+                        mpi::gather(world, isResult, isResultVec, mpiUt::Tools::master);
                 }
                 else
                 {
-                        mpi::gather(world, isResult, mpiUt::master);
+                        mpi::gather(world, isResult, mpiUt::Tools::master);
                 }
-                if (mpiUt::Rank() == mpiUt::master)
+                if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 {
                         mpiUt::IOResult::SaveISResults(isResultVec, *ioModelPtr_, dataCT_->beta_);
                 }
@@ -127,7 +123,7 @@ class Observables
                 //Start of observables that are easier and ok to do once all has been saved (for exemples, depends only on final green function)
                 //Get KinecticEnergy
                 // #ifndef DCA
-                //                 if (mpiUt::Rank() == mpiUt::master)
+                //                 if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 //                 {
                 //                         std::ifstream fin("Obs.json");
                 //                         Json results;
@@ -147,7 +143,7 @@ class Observables
                 //                 //End: This should be in PostProcess.cpp ?
                 // #endif
                 //ioModelPtr_->SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
-                mpiUt::Print("End of Observables.Save()");
+                Logging::Info("End of Observables.Save()");
         }
 
       private:

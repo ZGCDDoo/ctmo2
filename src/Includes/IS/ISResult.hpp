@@ -1,14 +1,9 @@
 #pragma once
 
-#include <armadillo>
-#include <string>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/valarray.hpp>
 #include <boost/serialization/complex.hpp>
-#include <ccomplex>
-#include <valarray>
-
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPIResult.hpp"
 
 namespace mpiUt
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Utilities/Utilities.hpp"
+#include "../Utilities/Logging.hpp"
 
 namespace Models
 {
@@ -29,6 +30,8 @@ public:
     {
       auxMu_ = jjSim["model"]["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0 - static_cast<double>(NOrb_ - 1) * (UPrime_ - JH_) / 2.0;
     }
+
+    Logging::Debug("UTensor Created. ");
   }
 
   ~UTensor()

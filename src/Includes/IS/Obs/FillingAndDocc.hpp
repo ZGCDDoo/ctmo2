@@ -33,6 +33,8 @@ class FillingAndDocc
         fillingDown_.resize(LL, 0.0);
         docc_.resize(LL, 0.0);
         Sz_.resize(LL, 0.0);
+
+        Logging::Trace("FillingAndDocc created.");
     }
 
     std::vector<double> fillingUp() const { return fillingUp_; }
@@ -103,7 +105,6 @@ class FillingAndDocc
 
     void MeasureFillingAndDocc()
     {
-        // mpiUt::Print("Start of MeasureFillingAndDocc ");
         ResetCurrent();
 
         const size_t KK = dataCT_->vertices_.size();
@@ -197,8 +198,6 @@ class FillingAndDocc
                 Sz_[index] += SzCurrent_[index];
             }
         }
-
-        // mpiUt::Print("End of MeasureFillingAndDocc");
     }
 
     void Finalize(const double &signMeas, const double &NMeas)

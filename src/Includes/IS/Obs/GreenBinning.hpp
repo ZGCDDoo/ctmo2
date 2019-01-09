@@ -27,7 +27,6 @@ class GreenBinning
     {
 
         const size_t LL = ioModel_.GetNIndepSuperSites(NOrb_);
-        // std::cout << " ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
         M0Bins_.resize(LL);
         M1Bins_.resize(LL);
         M2Bins_.resize(LL);
@@ -84,15 +83,13 @@ class GreenBinning
 
     ClusterCubeCD_t FinalizeGreenBinning(const double &signMeas, const size_t &NMeas)
     {
-        mpiUt::Print("Start of GreenBinning.FinalizeGreenBinning()");
+        Logging::Debug("Start of GreenBinning.FinalizeGreenBinning()");
 
         const double dTau = dataCT_->beta_ / N_BIN_TAU;
         SiteVectorCD_t indep_M_matsubara_sampled(ioModel_.GetNIndepSuperSites(NOrb_));
         const ClusterCubeCD_t green0CubeMatsubara = spin_ == FermionSpin_t::Up ? modelPtr_->greenCluster0MatUp().data() : modelPtr_->greenCluster0MatDown().data();
         ClusterCubeCD_t greenCube(NOrb_ * ioModel_.Nc, NOrb_ * ioModel_.Nc, NMat_);
         greenCube.zeros();
-
-        // std::cout << "ioModel_.GetNIndepSuperSites(NOrb_) = " << ioModel_.GetNIndepSuperSites(NOrb_) << std::endl;
 
         for (size_t n = 0; n < NMat_; ++n)
         {
@@ -103,7 +100,6 @@ class GreenBinning
 
             for (size_t ll = 0; ll < ioModel_.GetNIndepSuperSites(NOrb_); ++ll)
             {
-                // std::cout << "Here 1 " << std::endl;
                 cd_t temp_matsubara = 0.0;
 
                 const size_t llSite = ll % ioModel_.indepSites().size();                                                             // ll / ioModel_.indepSites().size();
@@ -121,17 +117,15 @@ class GreenBinning
                 }
                 indep_M_matsubara_sampled(ll) = temp_matsubara;
             }
-            // std::cout << "Here 2 " << std::endl;
             const ClusterMatrixCD_t dummy1 = ioModel_.IndepToFull(indep_M_matsubara_sampled, NOrb_);
             const ClusterMatrixCD_t green0 = green0CubeMatsubara.slice(n);
 
             greenCube.slice(n) = green0 - green0 * dummy1 * green0 / (dataCT_->beta_ * signMeas);
-            // std::cout << "Here 3 " << std::endl;
         }
 
         greenCube_ = greenCube; //in case it is needed later on
 
-        mpiUt::Print("End of GreenBinning.FinalizeGreenBinning()");
+        Logging::Debug("End of GreenBinning.FinalizeGreenBinning()");
         return greenCube; //the  measured interacting green function
     }
 

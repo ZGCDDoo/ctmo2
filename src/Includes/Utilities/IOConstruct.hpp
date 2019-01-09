@@ -1,5 +1,6 @@
 
 #include "Utilities.hpp"
+#include "Logging.hpp"
 
 namespace IO
 {
@@ -10,7 +11,7 @@ using GreenSites_t = std::vector<std::vector<std::pair<size_t, size_t>>>;
 // in the file, the greensites are given as a complex matrix of ints.
 GreenSites_t BuildGreenSites(const std::string &fname)
 {
-
+    Logging::Trace("Start of IO::BuildGreenSites");
     GreenSites_t greenSites;
     ClusterMatrixCD_t inGreen;
     inGreen.load(fname);
@@ -26,16 +27,17 @@ GreenSites_t BuildGreenSites(const std::string &fname)
         greenSites.push_back(tmpvec);
     }
 
-    std::cout << "greensites = " << std::endl;
+    Logging::Trace("greensites = ");
     for (size_t i = 0; i < inGreen.n_rows; ++i)
     {
         std::vector<std::pair<size_t, size_t>> tmpvec;
         for (size_t j = 0; j < inGreen.n_rows; ++j)
         {
-            std::cout << greenSites.at(i).at(j).first << ", " << greenSites.at(i).at(j).second << std::endl;
+            Logging::Trace(std::to_string(greenSites.at(i).at(j).first) + ", " + std::to_string(greenSites.at(i).at(j).second));
         }
     }
 
+    Logging::Trace("End of IO::BuildGreenSites. ");
     return greenSites;
 }
 

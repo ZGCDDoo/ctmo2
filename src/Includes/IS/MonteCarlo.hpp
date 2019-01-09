@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../Utilities/Utilities.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
+#include "../Utilities/Logging.hpp"
 #include "ABC_MonteCarlo.hpp"
 #include <chrono>
 #include <ctime>
@@ -19,7 +20,7 @@ struct Timer
 
     void PrintTime()
     {
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             auto timeChrono = std::chrono::system_clock::now();
             std::time_t timeNow = std::chrono::system_clock::to_time_t(timeChrono);
@@ -69,8 +70,7 @@ class MonteCarlo : public ABC_MonteCarlo
         {
 
             time = std::chrono::system_clock::now();
-            mpiUt::Print(std::string("Start Thermalization at: "));
-            timer.PrintTime();
+            Logging::Info("Start Thermalization. ");
 
             timer.Start(60.0 * thermalizationTime_);
             while (true)
@@ -91,14 +91,12 @@ class MonteCarlo : public ABC_MonteCarlo
             }
 
             markovchainPtr_->SaveTherm();
-            mpiUt::Print(std::string("End Thermalization at: "));
-            timer.PrintTime();
+            Logging::Info("End Thermalization.: ");
         }
 
         NMeas_ = 0;
         timer.Start(60.0 * measurementTime_);
-        mpiUt::Print(std::string("Start Measurements at: "));
-        timer.PrintTime();
+        Logging::Info("Start Measurements. ");
 
         while (true)
         {
@@ -112,18 +110,15 @@ class MonteCarlo : public ABC_MonteCarlo
                 }
                 markovchainPtr_->Measure();
                 NMeas_++;
-                //mpiUt::Print(std::string("Measuring, ") + std::to_string(updatesProposed_) + std::string(" Updates Proposed"));
                 if (NMeas_ % cleanUpdate_ == 0 && NMeas_ != 0)
                 {
                     markovchainPtr_->CleanUpdate();
                     NCleanUpdates_++;
-                    //mpiUt::Print(std::string("Cleaning, ") + std::to_string(updatesProposed_) + std::string(" Updates Proposed"));
                 }
             }
         }
 
-        mpiUt::Print(std::string("End Measurements at: "));
-        timer.PrintTime();
+        Logging::Info("End Measurements.");
         markovchainPtr_->SaveMeas();
     }
 

@@ -6,7 +6,7 @@
 #include "../Models/SIAM_Square.hpp"
 #include "../Models/ModelSquare4x4_DCA.hpp"
 #include "../Models/ModelSquare2x2.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
 
 namespace MC
 {
@@ -27,7 +27,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jj, const size_t &
         using MarkovInt_t = Markov::MarkovChain<IOModel_t, Model_t>;
         //Init a dummy model just to be sure that all files are present:
 
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             const Model_t modelDummy(jj);
         }
@@ -45,7 +45,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jj, const size_t &
         using MarkovInt_t = Markov::MarkovChain<IOModel_t, Model_t>;
 
         //Init a dummy model just to be sure that all files are present:
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             const Model_t modelDummy(jj);
         }
@@ -63,7 +63,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jj, const size_t &
         using MarkovInt_t = Markov::MarkovChain<IOModel_t, Model_t>;
 
         //Init a dummy model just to be sure that all files are present:
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             const Model_t modelDummy(jj);
         }

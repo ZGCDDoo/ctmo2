@@ -9,7 +9,7 @@ const double delta = 5e-9;
 Json BuildJson()
 {
     Json tJson = R"(
-    {
+     {
         "model": {
             "cluster": {
                 "Nx": 4,
@@ -36,6 +36,11 @@ Json BuildJson()
                     "t3": 0.0
                 }
             }
+        },
+        "logging": {
+            "level": "trace",
+            "file": "out.log",
+            "logToFile": false
         }
     }
     )"_json;

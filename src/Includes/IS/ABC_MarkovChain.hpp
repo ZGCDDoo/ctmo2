@@ -4,7 +4,7 @@
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/LinAlg.hpp"
 #include "../Utilities/Matrix.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
 #include "../Utilities/Fourier.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "Obs/Observables.hpp"
@@ -72,7 +72,7 @@ class ABC_MarkovChain
         updStats_["Flips"] = zeroPair;
         updatesProposed_ = 0;
 
-        mpiUt::Print("MarkovChain Created \n");
+        Logging::Debug("MarkovChain Created.");
     }
 
     ~ABC_MarkovChain() = default;
@@ -255,7 +255,6 @@ class ABC_MarkovChain
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         AssertSizes();
-        // std::cout << "In InsertVertexSameSpin " << std::endl;
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
 
@@ -571,18 +570,19 @@ class ABC_MarkovChain
     {
 
         obs_.Save();
-        std::cout << "updsamespin = " << updsamespin_ << std::endl;
-        SaveUpd("upd.meas");
-        if (mpiUt::Rank() == mpiUt::master)
+        Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
+        SaveUpd("Measurements");
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             dataCT_->vertices_.SaveConfig("Config.dat");
         }
+        Logging::Info("Finished Saving MarkovChain.");
     }
 
     void SaveTherm()
     {
 
-        SaveUpd("upd.therm");
+        SaveUpd("Thermalization");
         for (UpdStats_t::iterator it = updStats_.begin(); it != updStats_.end(); ++it)
         {
             std::string key = it->first;
@@ -590,31 +590,30 @@ class ABC_MarkovChain
         }
     }
 
-    void SaveUpd(const std::string fname)
+    void SaveUpd(const std::string &updType)
     {
         std::vector<UpdStats_t> updStatsVec;
 #ifdef HAVEMPI
 
         mpi::communicator world;
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            mpi::gather(world, updStats_, updStatsVec, mpiUt::master);
+            mpi::gather(world, updStats_, updStatsVec, mpiUt::Tools::master);
         }
         else
         {
-            mpi::gather(world, updStats_, mpiUt::master);
+            mpi::gather(world, updStats_, mpiUt::Tools::master);
         }
-        if (mpiUt::Rank() == mpiUt::master)
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            mpiUt::SaveUpdStats(fname, updStatsVec);
+            Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
         }
 
 #else
         updStatsVec.push_back(updStats_);
-        mpiUt::SaveUpdStats(fname, updStatsVec);
-#endif
+        Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
 
-        mpiUt::Print("Finished Saving MarkovChain.");
+#endif
     }
 
   protected:

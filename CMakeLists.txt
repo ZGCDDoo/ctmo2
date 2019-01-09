@@ -2,6 +2,8 @@
 #           https://github.com/misaka-10032/boost-mpi-examples
 
 cmake_minimum_required(VERSION 2.8.2)
+set(PROJECT_NAME ctmo1.0)
+
 
 option(TEST "Build all tests." ON) # Makes boolean 'test' available.
 option(HOME "home build" ON) #builds for linux, default
@@ -20,7 +22,6 @@ else ()
 endif()
 
 
-set(PROJECT_NAME cttg5.2)
 project("${PROJECT_NAME}")
 
 
@@ -74,6 +75,8 @@ endif()
 
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/src/Includes)
 add_subdirectory(${PROJECT_SOURCE_DIR}/deps/cubature)
+include_directories(${PROJECT_SOURCE_DIR}/deps/spdlog/include)
+
 
 find_package(LAPACK REQUIRED)
 

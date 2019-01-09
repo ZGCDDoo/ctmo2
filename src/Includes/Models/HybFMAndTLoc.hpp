@@ -4,6 +4,7 @@
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/Conventions.hpp"
 #include "../Utilities/Fourier_DCA.hpp"
+#include "../Utilities/Logging.hpp"
 
 namespace Models
 {
@@ -14,7 +15,7 @@ class HybFMAndTLoc
   public:
     static void CalculateHybFMAndTLoc(const Models::ABC_H0 &h0)
     {
-        std::cout << "Start of CalculateHybFMAndTLoc: This should only be for DCA !!!! " << std::endl;
+        Logging::Debug("Start of CalculateHybFMAndTLoc: This should only be for DCA ! ");
 
         Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
         const std::string tlocFName = mapNames["tlocFile"]; //tloc File Name
@@ -32,12 +33,13 @@ class HybFMAndTLoc
         }
 
         //Get TLoc = Int[t(ktilde)]
-        std::cout << "Calculating tLoc" << std::endl;
+        Logging::Warn("Calculating tLoc");
+
         TKTildeK tktildeK(h0);
         const ClusterMatrixCD_t tlocK = Integrator::CubatureKTildeDCA(tktildeK);
 
         //Get Int[ t(ktilde)^2 ]
-        std::cout << "Calculating hybFM" << std::endl;
+        Logging::Warn("Calculating hybFM");
         TKTildeSquaredK tktildesquaredK(h0);
         const ClusterMatrixCD_t tktildeSquaredKIntegrated = Integrator::CubatureKTildeDCA(tktildesquaredK);
 
@@ -45,7 +47,7 @@ class HybFMAndTLoc
 
         tlocK.save(tlocFName, arma::arma_binary);
         hybFMK.save(hybFMFName, arma::arma_binary);
-        std::cout << "End of CalculateHybFMAndTLoc" << std::endl;
+        Logging::Debug("End of CalculateHybFMAndTLoc");
     }
 
     struct TKTildeK

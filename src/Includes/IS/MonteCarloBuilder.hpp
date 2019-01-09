@@ -3,7 +3,7 @@
 #include "MonteCarlo.hpp"
 
 #include "MarkovChain.hpp"
-#include "../Utilities/MPIUtilities.hpp"
+#include "../Utilities/MPITools.hpp"
 
 namespace MC
 {
@@ -19,7 +19,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jjSim, const size_
     using MarkovInt_t = Markov::MarkovChain;
 
     //Init a dummy model just to be sure that all files are present:
-    if (mpiUt::Rank() == mpiUt::master)
+    if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
         const Model_t modelDummy(jjSim);
     }

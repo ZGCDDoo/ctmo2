@@ -3,6 +3,7 @@
 #include "Includes/Utilities/SelfConsistencyBuilder.hpp"
 #include "Includes/Utilities/FS.hpp"
 #include "Includes/PrintVersion.hpp"
+#include "Includes/Utilities/Logging.hpp"
 
 int main(int argc, char **argv)
 {
@@ -23,11 +24,13 @@ int main(int argc, char **argv)
     Json jjSim;
 
 #ifndef HAVEMPI
-    PrintVersion::PrintVersion();
     std::ifstream fin(fname_params);
     fin >> jjSim;
     fin.close();
-    std::cout << "Iter = " << ITER << std::endl;
+
+    Logging::Init(jjSim["logging"]);
+    Logging::Info(PrintVersion::GetVersion());
+    Logging::Info("Iteration " + std::to_string(ITER));
     const size_t seed = jjSim["monteCarlo"]["seed"].get<size_t>();
 
     //init a model, to make sure all the files are present and that not all proc write to the same files
@@ -47,20 +50,23 @@ int main(int argc, char **argv)
 
     std::string jjSimStr;
 
-    if (mpiUt::Rank() == mpiUt::master)
+    if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
-        PrintVersion::PrintVersion();
-        mpiUt::Print("ITER = " + std::to_string(ITER));
         std::ifstream fin(fname_params);
         fin >> jjSim;
         jjSimStr = jjSim.dump();
         fin.close();
     }
 
-    mpi::broadcast(world, jjSimStr, mpiUt::master);
+    mpi::broadcast(world, jjSimStr, mpiUt::Tools::master);
     jjSim = Json::parse(jjSimStr);
+
+    Logging::Init(jjSim["logging"]);
+    Logging::Info(PrintVersion::GetVersion());
+    Logging::Info("Iteration " + std::to_string(ITER));
     world.barrier();
     //wait_all
+
     const size_t rank = world.rank();
     const size_t seed = jjSim["monteCarlo"]["seed"].get<size_t>() + 2797 * rank;
 
@@ -75,7 +81,7 @@ int main(int argc, char **argv)
     const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);
     selfconUpPtr->DoSCGrid();
 
-    if (mpiUt::Rank() == mpiUt::master)
+    if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
         IO::FS::PrepareNextIter(paramsName, ITER);
     }
