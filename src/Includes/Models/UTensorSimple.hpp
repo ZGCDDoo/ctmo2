@@ -9,25 +9,25 @@ class UTensor
 {
 
 public:
-  UTensor(const Json &jjSim) : NOrb_(jjSim["NOrb"].get<size_t>()),
-                               U_(jjSim["U"].get<double>()),
-                               JH_(jjSim["IsOrbitalDiagonal"].get<bool>() ? 0.0 : jjSim["J_H"].get<double>()),
-                               UPrime_(jjSim["IsOrbitalDiagonal"].get<bool>() ? 0.0 : jjSim["UPrime"].get<double>()), //Normaly, U_ - 2 * JH_),
-                               w0Phonon_(jjSim["w0Phonon"].get<double>()),
-                               gPhonon_(jjSim["gPhonon"].get<double>())
+  UTensor(const Json &jjSim) : NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+                               U_(jjSim["model"]["U"].get<double>()),
+                               JH_(jjSim["solver"]["isOrbitalDiagonal"].get<bool>() ? 0.0 : jjSim["model"]["J_H"].get<double>()),
+                               UPrime_(jjSim["solver"]["isOrbitalDiagonal"].get<bool>() ? 0.0 : jjSim["model"]["UPrime"].get<double>()), //Normaly, U_ - 2 * JH_),
+                               w0Phonon_(jjSim["model"]["w0Phonon"].get<double>()),
+                               gPhonon_(jjSim["model"]["gPhonon"].get<double>())
 
   {
-    if (jjSim["IsOrbitalDiagonal"])
+    if (jjSim["solver"]["isOrbitalDiagonal"])
     {
-      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0;
+      auxMu_ = jjSim["model"]["mu"].get<double>() - U_ / 2.0;
     }
     else if (std::abs(JH_) < 1e-10)
     {
-      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0;
+      auxMu_ = jjSim["model"]["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0;
     }
     else
     {
-      auxMu_ = jjSim["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0 - static_cast<double>(NOrb_ - 1) * (UPrime_ - JH_) / 2.0;
+      auxMu_ = jjSim["model"]["mu"].get<double>() - U_ / 2.0 - static_cast<double>(NOrb_ - 1) * UPrime_ / 2.0 - static_cast<double>(NOrb_ - 1) * (UPrime_ - JH_) / 2.0;
     }
   }
 

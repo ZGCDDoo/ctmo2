@@ -1,43 +1,43 @@
 {
     "monteCarlo": {
-        "measurementTime": 15.0,
+        "measurementTime": 5.0,
         "thermalizationTime": 0.5,
         "thermFromConfig": false,
-        "seed": 4689
+        "seed": 100002
     },
     "model": {
-        "beta": 50,
-        "hybUpFile": "hyb_Pat_R23.dat",
-        "modelFile": "Square2x2.model",
+        "beta": 10.10,
+        "hybUpFile": "../test/data/DMFT/hybfm_SIAM_Square.dat",
+        "modelFile": "../data/SIAM_Square.model",
         "J_H": 0.0,
         "nkpts": 100,
         "nOrb": 1,
-        "U": 5.0,
+        "U": 3.0,
         "UPrime": 0.0,
         "delta": 0.01,
-        "gPhonon": 0.0,
-        "w0Phonon": 0.0,
-        "mu": 2.50,
+        "gPhonon": 0.10,
+        "w0Phonon": 0.10,
+        "mu": 1.10,
         "cluster": {
-            "Nx": 2,
-            "Ny": 2,
+            "Nx": 1,
+            "Ny": 1,
             "Nz": 1
         },
         "tParameters": {
             "00": {
-                "tIntra": 0.0,
-                "tx": -1.0,
-                "ty": -1.0,
-                "tz": 0.0,
-                "tx=y": 0.30,
-                "tx=-y": 0.30,
-                "tx=z": 0.0,
-                "tx=-z": 0.0,
-                "ty=z": 0.0,
-                "ty=-z": 0.0,
-                "t2x": -0.20,
-                "t2y": -0.20,
+                "t2x": 0.0,
+                "t2y": 0.0,
                 "t2z": 0.0,
+                "tIntra": 0.0,
+                "tx": 1.0,
+                "tx=-y": 0.0,
+                "tx=-z": 0.0,
+                "tx=y": 0.0,
+                "tx=z": 0.0,
+                "ty": 1.0,
+                "ty=-z": 0.0,
+                "ty=z": 0.0,
+                "tz": 0.0,
                 "t3": 0.0
             }
         }
@@ -47,14 +47,14 @@
         "updatesMeas": 50,
         "averageOrbitals": true,
         "isOrbitalDiagonal": true,
-        "eCutGreen": 100,
+        "eCutGreen": 13,
         "ntau": 5000,
         "n_tau_sampling": 5
     },
     "selfCon": {
         "eCutSelfCon": 200,
-        "weightsR": 0.2,
-        "weightsI": 0.2
+        "weightsR": 0.0,
+        "weightsI": 0.0
     },
     "logging": {
         "level": "debug"

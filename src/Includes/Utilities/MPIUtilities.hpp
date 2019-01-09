@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <armadillo>
 #include "Utilities.hpp"
+#include "IO.hpp"
 #include "../IS/ISResult.hpp"
 
 #ifdef HAVEMPI
@@ -53,13 +54,15 @@ void Print(const std::string &message)
 #endif
 }
 
-template <typename TIOModel>
 class IOResult
 {
   public:
-    static void SaveISResults(const std::vector<Result::ISResult> &isResultVec, const double &beta)
+    // IOResult(const std::vector<Result::ISResult> &isResultVec, const double IO::Base_IOModel ioModel, const double &beta) : isResultVec_(isResultVec),
+    //                                                                                                                         ioModel_(ioModel),
+    //                                                                                                                         beta_(beta) {}
+
+    static void SaveISResults(const std::vector<Result::ISResult> &isResultVec, const IO::Base_IOModel &ioModel, const double &beta)
     {
-        TIOModel ioModel;
         assert(NWorkers() == int(isResultVec.size()));
         const size_t n_cols = isResultVec.at(0).n_cols_;
         const size_t n_rows = isResultVec.at(0).n_rows_;
@@ -107,7 +110,7 @@ class IOResult
         SaveTabular("greenDown", greenDown, beta, PRECISION_OUT, false);
 
         //Average the obsScale_
-        SaveFillingMatrixs(fillingResultUp, fillingResultDown);
+        SaveFillingMatrixs(fillingResultUp, fillingResultDown, ioModel);
         StatsJsons(isResultVec);
     }
 
@@ -186,10 +189,9 @@ class IOResult
         }
     }
 
-    static void SaveFillingMatrixs(std::valarray<double> fillingResultUp, std::valarray<double> fillingResultDown)
+    static void SaveFillingMatrixs(std::valarray<double> &fillingResultUp, std::valarray<double> &fillingResultDown, const IO::Base_IOModel &ioModel)
     {
         std::cout << "Just before saving NMatrix " << std::endl;
-        TIOModel ioModel;
         ClusterMatrix_t nUpMatrix(ioModel.Nc, ioModel.Nc);
         nUpMatrix.zeros();
         ClusterMatrix_t nDownMatrix = nUpMatrix;
@@ -218,6 +220,11 @@ class IOResult
         assert(nUpMatrix.save("nUpMatrix.dat", arma::raw_ascii));
         assert(nDownMatrix.save("nDownMatrix.dat", arma::raw_ascii));
     }
+
+    //   private:
+    //     const std::vector<Result::ISResult> isResultVec_;
+    //     const double IO::Base_IOModel ioModel_;
+    //     const double beta_;
 };
 
 void SaveUpdStats(const std::string &fname, std::vector<UpdStats_t> &updStatsVec)

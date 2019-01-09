@@ -16,8 +16,29 @@ const double xi1 = -MU + 2.0 * t;
 const double xi2 = -(MU + 2.0 * t);
 const double energy = MU + 0.1;
 
-//const IO::IOSquare2x2 IOMODEL;
-using GreenTau_t = GreenTau::GreenCluster0Tau<IO::IOSquare2x2>;
+using GreenTau_t = GreenTau::GreenCluster0Tau;
+
+Json BuildJson()
+{
+    Json tJson = R"(
+    {   "model": {
+            "cluster": {
+                        "Nx": 2,
+                        "Ny": 2,
+                        "Nz": 1
+            },
+            "modelFile": "../data/Square2x2.model",
+            "nOrb": 1,
+            "nkpts": 100
+        },
+        "solver": {
+            "ntau": 100000
+        }
+    }    
+    )"_json;
+
+    return tJson;
+}
 
 GreenMat::GreenCluster0Mat BuildGreenMat()
 {
@@ -79,8 +100,14 @@ TEST(GreenTauTests, Init)
     //simple diagonal green function to test the fourier transform with the moments.
     //G is 2x2 diagonal G_00 = (iwn + mu) => Tloc = hyb = 0
 
+    std::cout << "here  ! " << std::endl;
     GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMat();
-    GreenTau_t greenCluster0Tau(greenCluster0Mat, NTAU);
+
+    std::cout << "here 2 ! " << std::endl;
+
+    GreenTau_t greenCluster0Tau(greenCluster0Mat, BuildJson());
+
+    std::cout << "here 3 ! " << std::endl;
 
     //Test diagonal part
     std::cout << "======Start Init======== " << std::endl;
@@ -126,7 +153,7 @@ TEST(GreenTauTests, Init)
 TEST(GreenTauTests, NonInteracting)
 {
     GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMatNonInteracting();
-    GreenTau_t greenCluster0Tau(greenCluster0Mat, NTAU);
+    GreenTau_t greenCluster0Tau(greenCluster0Mat, BuildJson());
 
     double tau = -1e-10;
     double tau1 = 1e-9;
@@ -176,7 +203,7 @@ TEST(GreenTauTests, NonInteracting)
 TEST(GreenTauTests, Operator)
 {
     GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMatNonInteracting();
-    GreenTau_t greenCluster0Tau(greenCluster0Mat, NTAU);
+    GreenTau_t greenCluster0Tau(greenCluster0Mat, BuildJson());
 
     double tau = BETA / 1.1167;
     double tau1 = -tau + 0.12345680;

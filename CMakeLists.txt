@@ -62,7 +62,7 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 #-------------------------------------------------------------------------------------------------------------
 
 
-set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer -O3") 
+set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer -Ofast") 
 if(${MPI_BUILD})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVEMPI")
     set(TEST OFF)
@@ -118,10 +118,7 @@ endif ()
 ################################
 set(EXECECUTABLES
     ctmo
-    ctmo_green
     #ctmo_DCA
-    ctmo_nosc
-    ctmo_nosc_green
 )
 
 foreach(executable ${EXECECUTABLES})
@@ -183,6 +180,7 @@ if (${TEST})
 
     set(TESTS
     ABC_H0Tests
+    ABC_ModelTests
     Fourier_DCATests
     FourierTests
     FillingAndDoccTests
@@ -192,14 +190,12 @@ if (${TEST})
     HybFMAndTLocTests
     IntegratorTests
     IOTests
-    ModelTriangle2x2Tests
     UtilitiesTests
     SelfConsistencyTests
     MarkovChainTests
     MarkovChainSquare2x2Tests
     MatrixTests
     ObservablesTests
-    VerticesTests
     UTensorSimpleTests
     VerticesSimpleTests
     )

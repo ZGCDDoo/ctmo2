@@ -43,28 +43,27 @@ struct NFData
     Matrix_t dummy_;
 };
 
-template <typename TIOModel, typename TModel>
 class ABC_MarkovChain
 {
 
-    using GreenTau_t = GreenTau::GreenCluster0Tau<TIOModel>;
+    using GreenTau_t = GreenTau::GreenCluster0Tau;
+    using Model_t = Models::ABC_Model_2D;
 
   public:
-    const size_t Nc = TModel::Nc;
     const double PROBINSERT = 0.333;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
-    ABC_MarkovChain(const Json &jj, const size_t &seed) : modelPtr_(new TModel(jj)),
+    ABC_MarkovChain(const Json &jj, const size_t &seed) : modelPtr_(new Model_t(jj)),
                                                           rng_(seed),
                                                           urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
                                                           nfdata_(),
                                                           upddata_(),
                                                           dataCT_(
-                                                              new Obs::ISDataCT<TIOModel, TModel>(
+                                                              new Obs::ISDataCT(
                                                                   jj,
                                                                   *modelPtr_)),
                                                           obs_(dataCT_, jj),
-                                                          vertexBuilder_(jj, TModel::Nc),
+                                                          vertexBuilder_(jj, modelPtr_->Nc()),
                                                           updsamespin_(0)
     {
         const std::valarray<size_t> zeroPair = {0, 0};
@@ -76,10 +75,10 @@ class ABC_MarkovChain
         mpiUt::Print("MarkovChain Created \n");
     }
 
-    virtual ~ABC_MarkovChain() = 0;
+    ~ABC_MarkovChain() = default;
 
     //Getters
-    TModel model() const
+    Model_t model() const
     {
         return (*modelPtr_);
     };
@@ -620,13 +619,13 @@ class ABC_MarkovChain
 
   protected:
     //attributes
-    std::shared_ptr<TModel> modelPtr_;
+    std::shared_ptr<Model_t> modelPtr_;
     Utilities::EngineTypeMt19937_t rng_;
     Utilities::UniformRngMt19937_t urng_;
     NFData nfdata_;
     UpdData upddata_;
-    std::shared_ptr<Obs::ISDataCT<TIOModel, TModel>> dataCT_;
-    Obs::Observables<TIOModel, TModel> obs_;
+    std::shared_ptr<Obs::ISDataCT> dataCT_;
+    Obs::Observables obs_;
     Diagrammatic::VertexBuilder vertexBuilder_;
 
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
@@ -634,8 +633,5 @@ class ABC_MarkovChain
     size_t updatesProposed_;
     size_t updsamespin_;
 }; // namespace Markov
-
-template <typename TIOModel, typename TModel>
-ABC_MarkovChain<TIOModel, TModel>::~ABC_MarkovChain() {} //destructors must exist
 
 } // namespace Markov

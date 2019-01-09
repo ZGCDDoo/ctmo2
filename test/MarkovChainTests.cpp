@@ -1,14 +1,15 @@
 #include <gtest/gtest.h>
 
 #include "../src/Includes/IS/MarkovChain.hpp"
-#include "../src/Includes/Models/SIAM_Square.hpp"
 
 using namespace LinAlg;
 
 const double DELTA = 1e-10;
 const std::string FNAME = "../test/data/DMFT/params1.json";
+using Model_t = Models::ABC_Model_2D;
+using IOModel_t = IO::Base_IOModel;
 
-Markov::MarkovChain<IO::IOSIAM, Models::SIAM_Square> BuildMarkovChain() //for SIAM_Square
+Markov::MarkovChain BuildMarkovChain() //for SIAM_Square
 {
     std::ifstream fin(FNAME);
     Json jj;
@@ -16,19 +17,19 @@ Markov::MarkovChain<IO::IOSIAM, Models::SIAM_Square> BuildMarkovChain() //for SI
     fin.close();
     std::cout << "Reading in Json in BuildMarkovChain() " << std::endl;
     const size_t seed = 10224;
-    Markov::MarkovChain<IO::IOSIAM, Models::SIAM_Square> markovchain(jj, seed);
+    Markov::MarkovChain markovchain(jj, seed);
     std::cout << "After BuildMarkovChain() " << std::endl;
     return markovchain;
 }
 
 TEST(MarkovChainTests, Init)
 {
-    Markov::MarkovChain<IO::IOSIAM, Models::SIAM_Square> mc = BuildMarkovChain();
+    Markov::MarkovChain mc = BuildMarkovChain();
 }
 
 TEST(MonteCarloTest, DoStep)
 {
-    Markov::MarkovChain<IO::IOSIAM, Models::SIAM_Square> mc = BuildMarkovChain();
+    Markov::MarkovChain mc = BuildMarkovChain();
 
     for (size_t i = 0; i < 2; i++)
     {

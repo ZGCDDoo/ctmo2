@@ -5,34 +5,25 @@
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/GreenMat.hpp"
 #include "../Utilities/IO.hpp"
+#include "ABC_H0.hpp"
 #include "UTensorSimple.hpp"
 #include "HybFMAndTLoc.hpp"
 
 namespace Models
 {
 
-const size_t Nx1 = 1;
-const size_t Nx2 = 2;
-const size_t Nx4 = 4;
-const size_t Nx6 = 6;
-const size_t Nx8 = 8;
-
-template <typename TIOModel, typename TH0> //Template Number of X, Y sites
 class ABC_Model_2D
 {
 
       public:
-        static const size_t Nc;
-        const double MIN_EHYB = 300;
-
-        ABC_Model_2D(const Json &jjSim) : ioModel_(),
+        ABC_Model_2D(const Json &jjSim) : ioModel_(jjSim),
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
-                                          U_(jjSim["U"].get<double>()),
-                                          beta_(jjSim["beta"].get<double>()),
-                                          mu_(jjSim["mu"].get<double>()),
-                                          NOrb_(jjSim["NOrb"].get<size_t>())
+                                          beta_(jjSim["model"]["beta"].get<double>()),
+                                          mu_(jjSim["model"]["mu"].get<double>()),
+                                          NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+                                          Nc_(h0_.Nc)
         {
                 mpiUt::Print("start abc_model constructor ");
 
@@ -59,25 +50,25 @@ class ABC_Model_2D
 
         void FinishConstructor(const Json &jjSim)
         {
-                std::string hybNameUp = jjSim["HybFileUp"].get<std::string>();
+                std::string hybNameUp = jjSim["model"]["hybUpFile"].get<std::string>();
 #ifdef DCA
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp + ".dat", NOrb_);
+                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp, NOrb_);
 #else
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp + ".dat", NOrb_);
+                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp, NOrb_);
 #endif
 
 #ifdef AFM
-                std::string hybNameDown = jjSim["HybFileDown"].get<std::string>();
-                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown + ".dat", NOrb_);
+                std::string hybNameDown = jjSim["model"]["hybDownFile"].get<std::string>();
+                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown, NOrb_);
 #endif
 
                 const size_t NHyb = hybtmpUp.n_slices;
                 const double factNHyb = 3.0;
                 const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb),
-                                                        0.5 * (MIN_EHYB * beta_ / M_PI - 1.0));
-                hybtmpUp.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
+                                                        0.5 * (MIN_EHYB_ * beta_ / M_PI - 1.0));
+                hybtmpUp.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
 #ifdef AFM
-                hybtmpDown.resize(Nc * NOrb_, Nc * NOrb_, NHyb_HF);
+                hybtmpDown.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
 #endif
 
                 for (size_t nn = NHyb; nn < NHyb_HF; nn++)
@@ -113,44 +104,37 @@ class ABC_Model_2D
 #endif
         }
 
-        virtual ~ABC_Model_2D() = 0;
+        ~ABC_Model_2D() = default;
 
         //Getters
-        double mu() const { return mu_; };
-        double U() const { return U_; };
-        double beta() const { return beta_; };
-        size_t NOrb() const { return NOrb_; };
-        ClusterMatrixCD_t tLoc() const { return tLoc_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatUp() const { return greenCluster0MatUp_; };
-        GreenMat::GreenCluster0Mat const greenCluster0MatDown() const { return greenCluster0MatDown_; };
-        GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; };
-        GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; };
-        TH0 const h0() const { return h0_; };
-        TIOModel const ioModel() const { return ioModel_; };
-
-        double auxU() const { return U_ / 2.0; };
+        double mu() const { return mu_; }
+        double beta() const { return beta_; }
+        size_t NOrb() const { return NOrb_; }
+        ClusterMatrixCD_t tLoc() const { return tLoc_; }
+        GreenMat::GreenCluster0Mat const greenCluster0MatUp() const { return greenCluster0MatUp_; }
+        GreenMat::GreenCluster0Mat const greenCluster0MatDown() const { return greenCluster0MatDown_; }
+        GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; }
+        GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; }
+        Models::ABC_H0 const h0() const { return h0_; }
+        IO::Base_IOModel const ioModel() const { return ioModel_; }
+        size_t Nc() const { return Nc_; }
 
       protected:
-        TIOModel ioModel_;
+        IO::Base_IOModel ioModel_;
         GreenMat::HybridizationMat hybridizationMatUp_;
         GreenMat::HybridizationMat hybridizationMatDown_;
         GreenMat::GreenCluster0Mat greenCluster0MatUp_;
         GreenMat::GreenCluster0Mat greenCluster0MatDown_;
-        TH0 h0_;
+        Models::ABC_H0 h0_;
 
         ClusterMatrixCD_t hybFM_;
         ClusterMatrixCD_t tLoc_;
 
-        const double U_;
         const double beta_;
         const double mu_;
         const size_t NOrb_;
+        const double MIN_EHYB_ = 300;
+        const size_t Nc_;
 };
-
-template <typename TIOModel, typename TH0>
-ABC_Model_2D<TIOModel, TH0>::~ABC_Model_2D() {} //destructors must exist
-
-template <typename TIOModel, typename TH0>
-const size_t ABC_Model_2D<TIOModel, TH0>::Nc = TH0::Nc;
 
 } // namespace Models

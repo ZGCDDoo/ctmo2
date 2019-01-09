@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Utilities/Utilities.hpp"
+#include "../Models/ABC_H0.hpp"
 #include "../Utilities/Integrator.hpp"
 #include "../Utilities/Conventions.hpp"
 #include "../Utilities/Fourier_DCA.hpp"
@@ -8,12 +8,11 @@
 namespace Models
 {
 
-template <typename TH0>
 class HybFMAndTLoc
 {
 
   public:
-    static void CalculateHybFMAndTLoc(const TH0 &h0)
+    static void CalculateHybFMAndTLoc(const Models::ABC_H0 &h0)
     {
         std::cout << "Start of CalculateHybFMAndTLoc: This should only be for DCA !!!! " << std::endl;
 
@@ -26,7 +25,7 @@ class HybFMAndTLoc
         {
             ClusterMatrixCD_t tmp;
             tmp.load(tlocFName);
-            if (tmp.n_cols == TH0::Nc)
+            if (tmp.n_cols == h0.Nc)
             {
                 return;
             }
@@ -52,16 +51,15 @@ class HybFMAndTLoc
     struct TKTildeK
     {
 
-        TKTildeK(const TH0 &h0) : h0_(h0){};
+        TKTildeK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
         size_t n_rows() const { return h0_.n_rows(); };
         size_t n_cols() const { return h0_.n_cols(); };
 
-        const size_t Nx = TH0::Nx;
-        const size_t Ny = TH0::Ny;
-        const size_t Nz = TH0::Nz;
-        const size_t Nc = TH0::Nc;
-
-        TH0 h0_;
+        Models::ABC_H0 h0_;
+        const size_t Nx;
+        const size_t Ny;
+        const size_t Nz;
+        const size_t Nc;
 
         ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) //return t(ktilde)^2
         {
@@ -72,16 +70,15 @@ class HybFMAndTLoc
     struct TKTildeSquaredK
     {
 
-        TKTildeSquaredK(const TH0 &h0) : h0_(h0){};
+        TKTildeSquaredK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
         size_t n_rows() const { return h0_.n_rows(); };
         size_t n_cols() const { return h0_.n_cols(); };
 
-        const size_t Nx = TH0::Nx;
-        const size_t Ny = TH0::Ny;
-        const size_t Nz = TH0::Nz;
-        const size_t Nc = TH0::Nc;
-
-        TH0 h0_;
+        Models::ABC_H0 h0_;
+        const size_t Nx;
+        const size_t Ny;
+        const size_t Nz;
+        const size_t Nc;
 
         ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) //return t(ktilde)^2
         {

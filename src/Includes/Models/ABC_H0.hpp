@@ -3,40 +3,44 @@
 
 namespace Models
 {
-template <size_t TNX, size_t TNY, size_t TNZ = 1>
+
 class ABC_H0
 {
 
   public:
-    static const size_t Nx;
-    static const size_t Ny;
-    static const size_t Nz;
-    static const size_t Nc;
+    const size_t Nx;
+    const size_t Ny;
+    const size_t Nz;
+    const size_t Nc;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
-    ABC_H0(const Json &tJson) : RSites_(Nc),
+    ABC_H0(const Json &jjSim) : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
+                                Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
+                                Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
+                                Nc(Nx * Ny * Nz),
+                                RSites_(Nc),
                                 KWaveVectors_(Nc),
-                                NOrb_(tJson["NOrb"].get<size_t>()),
-                                NKPTS_(tJson["NKPTS"].get<size_t>())
+                                NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+                                NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
 
     {
-        assert(TNX == TNY);
+        // assert(TNX == TNY);
 
-        for (size_t i = 0; i < TNX; i++)
+        for (size_t i = 0; i < Nx; i++)
         {
-            for (size_t j = 0; j < TNY; j++)
+            for (size_t j = 0; j < Ny; j++)
             {
-                for (size_t k = 0; k < TNZ; k++)
+                for (size_t k = 0; k < Nz; k++)
                 {
 
-                    const size_t index = i + TNY * j + TNZ * k;
+                    const size_t index = i + Ny * j + Nz * k;
                     RSites_.at(index) = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(k)};
-                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(TNX), static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(TNY), static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(TNZ)};
+                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx), static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny), static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
                 }
             }
         }
 
-        ReadInHoppings(tJson);
+        ReadInHoppings(jjSim);
     }
 
     ~ABC_H0()
@@ -64,10 +68,10 @@ class ABC_H0
     ClusterSites_t RSites() const { return RSites_; };
     ClusterSites_t KWaveVectors() const { return KWaveVectors_; };
 
-    void ReadInHoppings(const Json &tJson)
+    void ReadInHoppings(const Json &jjSim)
     {
 
-        assert(tJson["tParameters"].size() == NOrb_ * (NOrb_ + 1) / 2);
+        assert(jjSim["model"]["tParameters"].size() == NOrb_ * (NOrb_ + 1) / 2);
 
         for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
@@ -75,7 +79,7 @@ class ABC_H0
             {
 
                 const std::string o1o2Name = std::to_string(o1) + std::to_string(o2);
-                const Json &jj = tJson["tParameters"][o1o2Name];
+                const Json &jj = jjSim["model"]["tParameters"][o1o2Name];
 
                 tIntraOrbitalVec_.push_back(jj["tIntra"].get<double>());
                 txVec_.push_back(jj["tx"].get<double>());
@@ -248,17 +252,5 @@ class ABC_H0
     const size_t NOrb_;
     const size_t NKPTS_;
 };
-
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Nx = TNX;
-
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Ny = TNY;
-
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Nz = TNZ;
-
-template <size_t TNX, size_t TNY, size_t TNZ>
-const size_t ABC_H0<TNX, TNY, TNZ>::Nc = TNX *TNY;
 
 } // namespace Models

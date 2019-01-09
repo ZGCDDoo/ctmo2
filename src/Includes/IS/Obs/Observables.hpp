@@ -14,28 +14,28 @@ namespace Markov
 {
 namespace Obs
 {
+
 using Matrix_t = LinAlg::Matrix<double>;
 
-template <typename TIOModel, typename TModel>
 class Observables
 {
 
       public:
-        Observables(){};
-        Observables(const std::shared_ptr<ISDataCT<TIOModel, TModel>> &dataCT,
-                    const Json &jj) : modelPtr_(new TModel(jj)),
-                                      ioModel_(TIOModel()),
-                                      dataCT_(dataCT),
-                                      rng_(jj["SEED"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
-                                      urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
-                                      greenBinningUp_(modelPtr_, dataCT_, jj, FermionSpin_t::Up),
-                                      greenBinningDown_(modelPtr_, dataCT_, jj, FermionSpin_t::Down),
-                                      fillingAndDocc_(dataCT_, urngPtr_, jj["N_T_INV"].get<size_t>()),
-                                      signMeas_(0.0),
-                                      expOrder_(0.0),
-                                      NMeas_(0),
-                                      NOrb_(jj["NOrb"].get<size_t>()),
-                                      averageOrbitals_(jj["AverageOrbitals"].get<bool>())
+        // Observables(){};
+        Observables(const std::shared_ptr<ISDataCT> &dataCT,
+                    const Json &jjSim) : modelPtr_(new Model_t(jjSim)),
+                                         ioModelPtr_(new IOModel_t(jjSim)),
+                                         dataCT_(dataCT),
+                                         rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Rank() * mpiUt::Rank()),
+                                         urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
+                                         greenBinningUp_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Up),
+                                         greenBinningDown_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Down),
+                                         fillingAndDocc_(dataCT_, ioModelPtr_, urngPtr_, jjSim["solver"]["n_tau_sampling"].get<size_t>()),
+                                         signMeas_(0.0),
+                                         expOrder_(0.0),
+                                         NMeas_(0),
+                                         NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+                                         averageOrbitals_(jjSim["solver"]["averageOrbitals"].get<bool>())
         {
 
                 mpiUt::Print("In Obs constructor ");
@@ -45,7 +45,7 @@ class Observables
 
         //Getters
         double signMeas() const { return signMeas_; };
-        double expOrder() const { return expOrder; };
+        double expOrder() const { return expOrder_; };
 
         void Measure()
         {
@@ -87,12 +87,12 @@ class Observables
                 //Average the green Functions if orbitals have the same parameters
                 if (averageOrbitals_)
                 {
-                        greenCubeMatUp = ioModel_.AverageOrbitals(greenCubeMatUp);
-                        greenCubeMatDown = ioModel_.AverageOrbitals(greenCubeMatDown);
+                        greenCubeMatUp = ioModelPtr_->AverageOrbitals(greenCubeMatUp);
+                        greenCubeMatDown = ioModelPtr_->AverageOrbitals(greenCubeMatDown);
                 }
 
-                ClusterMatrixCD_t greenMatsubaraUp = ioModel_.FullCubeToIndep(greenCubeMatUp);
-                ClusterMatrixCD_t greenMatsubaraDown = ioModel_.FullCubeToIndep(greenCubeMatDown);
+                ClusterMatrixCD_t greenMatsubaraUp = ioModelPtr_->FullCubeToIndep(greenCubeMatUp);
+                ClusterMatrixCD_t greenMatsubaraDown = ioModelPtr_->FullCubeToIndep(greenCubeMatDown);
 
 //Gather and stats of all the results for all cores
 #ifndef AFM
@@ -115,12 +115,12 @@ class Observables
                 }
                 if (mpiUt::Rank() == mpiUt::master)
                 {
-                        mpiUt::IOResult<TIOModel>::SaveISResults(isResultVec, dataCT_->beta_);
+                        mpiUt::IOResult::SaveISResults(isResultVec, *ioModelPtr_, dataCT_->beta_);
                 }
 
 #else
                 isResultVec.push_back(isResult);
-                mpiUt::IOResult<TIOModel>::SaveISResults(isResultVec, dataCT_->beta_);
+                mpiUt::IOResult::SaveISResults(isResultVec, *ioModelPtr_, dataCT_->beta_);
 #endif
 
                 // Start: This should be in PostProcess.cpp ?
@@ -135,7 +135,7 @@ class Observables
                 //                         fin.close();
 
                 //                         std::cout << "Start Calculating Kinetic Energy " << std::endl;
-                //                         KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModel_.ReadGreenDat("greenUp.dat", NOrb_));
+                //                         KineticEnergy<TModel, TIOModel> kEnergy(modelPtr_, ioModelPtr_->ReadGreenDat("greenUp.dat", NOrb_));
                 //                         results["KEnergy"] = {kEnergy.GetKineticEnergy(), 0.0};
                 //                         std::cout << "End Calculating Kinetic Energy " << std::endl;
 
@@ -146,20 +146,20 @@ class Observables
 
                 //                 //End: This should be in PostProcess.cpp ?
                 // #endif
-                //ioModel_.SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
+                //ioModelPtr_->SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
                 mpiUt::Print("End of Observables.Save()");
         }
 
       private:
-        std::shared_ptr<TModel> modelPtr_;
-        TIOModel ioModel_;
-        std::shared_ptr<ISDataCT<TIOModel, TModel>> dataCT_;
+        std::shared_ptr<Model_t> modelPtr_;
+        std::shared_ptr<IOModel_t> ioModelPtr_;
+        std::shared_ptr<ISDataCT> dataCT_;
         Utilities::EngineTypeFibonacci3217_t rng_;
         std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr_;
 
-        GreenBinning<TIOModel, TModel> greenBinningUp_;
-        GreenBinning<TIOModel, TModel> greenBinningDown_;
-        FillingAndDocc<TIOModel, TModel> fillingAndDocc_;
+        GreenBinning greenBinningUp_;
+        GreenBinning greenBinningDown_;
+        FillingAndDocc fillingAndDocc_;
 
         Matrix_t Maveraged_;
 

@@ -9,12 +9,34 @@ const double delta = 5e-9;
 Json BuildJson()
 {
     Json tJson = R"(
-    {   "NOrb": 1,
-        "NKPTS": 100,
-        "tParameters": 
-            {"00": 
-                {"tIntra": 0.0, "tx": -1.120, "ty": -1.120, "tz": 0.0, "tx=y": 0.1560, "tx=-y": 0.156, "tx=z": 0.0, "tx=-z": 0.0, "ty=z": 0.0, "ty=-z": 0.0, "t2x" : 0.23700, "t2y": 0.23700, "t2z": 0.0, "t3": 0.0}
+    {
+        "model": {
+            "cluster": {
+                "Nx": 4,
+                "Ny": 4,
+                "Nz": 1
+            },
+            "nOrb": 1,
+            "nkpts": 100,
+            "tParameters": {
+                "00": {
+                    "tIntra": 0.0,
+                    "tx": -1.120,
+                    "ty": -1.120,
+                    "tz": 0.0,
+                    "tx=y": 0.1560,
+                    "tx=-y": 0.156,
+                    "tx=z": 0.0,
+                    "tx=-z": 0.0,
+                    "ty=z": 0.0,
+                    "ty=-z": 0.0,
+                    "t2x": 0.23700,
+                    "t2y": 0.23700,
+                    "t2z": 0.0,
+                    "t3": 0.0
+                }
             }
+        }
     }
     )"_json;
 
@@ -26,13 +48,12 @@ TEST(HybFMAndTLocTests, Init)
     const size_t Nx = 4;
     const size_t Nc = Nx * Nx;
 
-    using h0_t = Models::ABC_H0<Nx, Nx>;
-    h0_t h0(BuildJson());
+    Models::ABC_H0 h0(BuildJson());
 
     std::cout << h0.txVec().at(0) << std::endl;
     std::cout << h0.txVec().size() << std::endl;
 
-    Models::HybFMAndTLoc<h0_t>::CalculateHybFMAndTLoc(h0);
+    Models::HybFMAndTLoc::CalculateHybFMAndTLoc(h0);
 
     ClusterMatrixCD_t tloc_K;
     tloc_K.load("tloc_K.arma");

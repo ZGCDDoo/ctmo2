@@ -12,7 +12,6 @@
 
 namespace mpiUt
 {
-template <typename TIOModel>
 class IOResult;
 }
 
@@ -59,7 +58,6 @@ class ISResult
 
   private:
     //From boost::mpi and boost::serialze tutorial
-    template <typename TIOModel>
     friend class mpiUt::IOResult;
     friend class boost::serialization::access;
     // When the class Archive corresponds to an output archive, the

@@ -26,9 +26,9 @@ TEST(UTensorSimple, Init)
 
     //Test with JH=0, but UPrime=3.21
 
-    jj["IsOrbitalDiagonal"] = false;
-    jj["UPrime"] = 3.21;
-    jj["NOrb"] = 2;
+    jj["solver"]["isOrbitalDiagonal"] = false;
+    jj["model"]["UPrime"] = 3.21;
+    jj["model"]["nOrb"] = 2;
 
     UTensor ut2(jj);
 
@@ -41,7 +41,7 @@ TEST(UTensorSimple, Init)
 
     //============ Test with JH=1.33, but UPrime=3.21 ========================
 
-    jj["J_H"] = 1.33;
+    jj["model"]["J_H"] = 1.33;
 
     UTensor ut3(jj);
 

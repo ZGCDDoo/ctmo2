@@ -3,12 +3,11 @@
 #include <gtest/gtest.h>
 
 #include "../src/Includes/IS/Obs/GreenBinning.hpp"
-#include "../src/Includes/Models/ModelSquare2x2.hpp"
 
-using Model_t = Models::ModelSquare2x2;
-using IOModel_t = IO::IOSquare2x2;
-using GreenBinning_t = Markov::Obs::GreenBinning<IO::IOSquare2x2, Models::ModelSquare2x2>;
-using ISDataCT_t = Markov::Obs::ISDataCT<IO::IOSquare2x2, Models::ModelSquare2x2>;
+using Model_t = Models::ABC_Model_2D;
+using IOModel_t = IO::Base_IOModel;
+using GreenBinning_t = Markov::Obs::GreenBinning;
+using ISDataCT_t = Markov::Obs::ISDataCT;
 
 // const double DELTA = 1e-11;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
@@ -26,7 +25,11 @@ GreenBinning_t BuildGreenBinning() //for Square2x2
             jj,
             model));
     std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
+
+    std::cout << "Here 1 " << std::endl;
     GreenBinning_t greenBinning(modelPtr, dataCT, jj, FermionSpin_t::Up);
+    std::cout << "Here 2 " << std::endl;
+
     return greenBinning;
 }
 
