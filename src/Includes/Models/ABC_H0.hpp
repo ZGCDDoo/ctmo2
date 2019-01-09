@@ -227,6 +227,43 @@ class ABC_H0
         hybFM /= nslices;
         hybFM -= tLoc * tLoc;
         hybFM.save("hybFM.arma", arma::arma_ascii);
+
+        CalculateNonIntDos();
+    }
+
+    void CalculateNonIntDos()
+    {
+        Logging::Info("Start calculating Non-interacting density of states.");
+        const double NW = 2000;
+        const double wlimit = 4.00;
+
+        ClusterCubeCD_t tktildeGrid;
+        tktildeGrid.load("tktilde.arma");
+        const size_t nkpts = tktildeGrid.n_slices;
+        const arma::vec wvec = arma::linspace(-wlimit, wlimit, NW);
+        const cd_t ieta(0.0, 0.05);
+        ClusterMatrix_t AwMatrix(NW, Nc * NOrb_ + 1); //(column 0 is the frequencies)
+        AwMatrix.zeros();
+        AwMatrix.col(0) = wvec;
+
+        //ii is the index of a local SuperSite (for a 2x2 cluster with 2 Orbitals, then there are 8 supersites)
+        for (size_t ii = 0; ii < NOrb_ * Nc; ++ii)
+        {
+
+            for (size_t windex = 0; windex < NW; ++windex)
+            {
+                const double w = wvec(windex);
+                for (size_t k = 0; k < nkpts; ++k)
+                {
+                    const cd_t tmp = w + ieta - tktildeGrid(ii, ii, k);
+                    AwMatrix(windex, ii + 1) += (1.0 / tmp).imag();
+                }
+            }
+        }
+
+        AwMatrix.cols(1, Nc * NOrb_) /= (-M_PI * nkpts);
+        AwMatrix.save("NonIntDos.dat", arma::raw_ascii);
+        Logging::Info("End calculating Non-interacting density of states.");
     }
 
   protected:
