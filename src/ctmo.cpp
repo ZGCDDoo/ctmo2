@@ -3,6 +3,7 @@
 #include "Includes/Utilities/SelfConsistencyBuilder.hpp"
 #include "Includes/Utilities/FS.hpp"
 #include "Includes/PrintVersion.hpp"
+#include "Includes/Utilities/Logging.hpp"
 
 int main(int argc, char **argv)
 {
@@ -24,6 +25,8 @@ int main(int argc, char **argv)
 
 #ifndef HAVEMPI
     PrintVersion::PrintVersion();
+    Logging::Init();
+    Logging::Info("Iteration " + std::to_string(ITER));
     std::ifstream fin(fname_params);
     fin >> jjSim;
     fin.close();

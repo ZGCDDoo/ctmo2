@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../deps/json.hpp"
+#include "../../deps/nlohmann_json/json.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>

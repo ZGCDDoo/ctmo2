@@ -20,7 +20,7 @@
 
 //External Libraries
 #include <armadillo>
-#include "../../deps/json.hpp"
+#include "../../deps/nlohmann_json/json.hpp"
 
 using Json = nlohmann::json;
 
