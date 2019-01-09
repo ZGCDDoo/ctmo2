@@ -72,7 +72,7 @@ class ABC_MarkovChain
         updStats_["Flips"] = zeroPair;
         updatesProposed_ = 0;
 
-        mpiUt::Tools::Print("MarkovChain Created \n");
+        Logging::Debug("MarkovChain Created.");
     }
 
     ~ABC_MarkovChain() = default;
@@ -255,7 +255,6 @@ class ABC_MarkovChain
     void InsertVertexSameSpin(const Vertex &vertex, Matrix_t &Nspin, SiteVector_t &FVspin)
     {
         AssertSizes();
-        // std::cout << "In InsertVertexSameSpin " << std::endl;
         const VertexPart x = vertex.vStart();
         const VertexPart y = vertex.vEnd();
 
@@ -571,18 +570,19 @@ class ABC_MarkovChain
     {
 
         obs_.Save();
-        std::cout << "updsamespin = " << updsamespin_ << std::endl;
-        SaveUpd("upd.meas");
+        Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
+        SaveUpd("Measurements");
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             dataCT_->vertices_.SaveConfig("Config.dat");
         }
+        Logging::Info("Finished Saving MarkovChain.");
     }
 
     void SaveTherm()
     {
 
-        SaveUpd("upd.therm");
+        SaveUpd("Thermalization");
         for (UpdStats_t::iterator it = updStats_.begin(); it != updStats_.end(); ++it)
         {
             std::string key = it->first;
@@ -590,7 +590,7 @@ class ABC_MarkovChain
         }
     }
 
-    void SaveUpd(const std::string fname)
+    void SaveUpd(const std::string &updType)
     {
         std::vector<UpdStats_t> updStatsVec;
 #ifdef HAVEMPI
@@ -606,15 +606,14 @@ class ABC_MarkovChain
         }
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            mpiUt::Tools::SaveUpdStats(fname, updStatsVec);
+            Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
         }
 
 #else
         updStatsVec.push_back(updStats_);
-        mpiUt::Tools::SaveUpdStats(fname, updStatsVec);
-#endif
+        Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
 
-        mpiUt::Tools::Print("Finished Saving MarkovChain.");
+#endif
     }
 
   protected:

@@ -51,7 +51,7 @@ int main(int argc, char **argv)
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
         PrintVersion::PrintVersion();
-        mpiUt::Tools::Print("ITER = " + std::to_string(ITER));
+        Logging::Info("ITER = " + std::to_string(ITER));
         std::ifstream fin(fname_params);
         fin >> jj;
         jjStr = jj.dump();

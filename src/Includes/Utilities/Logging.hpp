@@ -197,4 +197,10 @@ void Critical(const std::string &msg, const std::string &loggerName = ROOT)
     }
 }
 
+bool LevelIsTrace(const std::string &loggerName = ROOT)
+{
+    auto logger = spdlog::get(loggerName);
+    return (spdlog::level::level_enum::trace == logger->level());
+}
+
 } // namespace Logging

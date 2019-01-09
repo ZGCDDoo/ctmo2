@@ -52,7 +52,7 @@ class Tools
 #endif
     }
 
-    static void SaveUpdStats(const std::string &fname, std::vector<UpdStats_t> &updStatsVec)
+    static std::string SaveUpdStats(const std::vector<UpdStats_t> &updStatsVec)
     {
 
         std::vector<std::string> keys;
@@ -65,9 +65,9 @@ class Tools
 
         for (size_t i = 1; i < updStatsVec.size(); i++)
         {
-            for (const std::string key : keys)
+            for (const std::string &key : keys)
             {
-                std::valarray<size_t> tmp = updStatsVec.at(i)[key];
+                const std::valarray<size_t> tmp = updStatsVec.at(i).at(key);
                 updStatsResult[key] += tmp;
             }
         }
@@ -84,9 +84,7 @@ class Tools
             jjout[key] = {{"Proposed", nbProposed}, {"Accepted", nbAccepted}};
         }
 
-        std::ofstream fout(fname + ".json");
-        fout << std::setw(4) << jjout << std::endl;
-        fout.close();
+        return jjout.dump(4);
     }
 
     static std::vector<cd_t> CubeCDToVecCD(const ClusterCubeCD_t &cubeCD)

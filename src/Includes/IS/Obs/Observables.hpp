@@ -38,9 +38,9 @@ class Observables
                                          averageOrbitals_(jjSim["solver"]["averageOrbitals"].get<bool>())
         {
 
-                mpiUt::Tools::Print("In Obs constructor ");
+                Logging::Debug("In Obs constructor ");
 
-                mpiUt::Tools::Print("After Obs  constructor ");
+                Logging::Debug("After Obs  constructor ");
         }
 
         //Getters
@@ -50,8 +50,6 @@ class Observables
         void Measure()
         {
 
-                // mpiUt::Tools::Print("start of Measure");
-
                 ++NMeas_;
                 signMeas_ += static_cast<double>(dataCT_->sign_);
                 expOrder_ += static_cast<double>(dataCT_->vertices_.size()) * static_cast<double>(dataCT_->sign_);
@@ -60,13 +58,11 @@ class Observables
 
                 greenBinningUp_.MeasureGreenBinning(*dataCT_->MupPtr_);
                 greenBinningDown_.MeasureGreenBinning(*dataCT_->MdownPtr_);
-
-                // mpiUt::Tools::Print("End of Measure");
         }
 
         void Save()
         {
-                mpiUt::Tools::Print("Start of Observables.Save()");
+                Logging::Info("Start of Observables.Save()");
                 signMeas_ /= NMeas_;
 
                 fillingAndDocc_.Finalize(signMeas_, NMeas_);
@@ -147,7 +143,7 @@ class Observables
                 //                 //End: This should be in PostProcess.cpp ?
                 // #endif
                 //ioModelPtr_->SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
-                mpiUt::Tools::Print("End of Observables.Save()");
+                Logging::Info("End of Observables.Save()");
         }
 
       private:

@@ -39,11 +39,11 @@ class Base_IOModel
                                       Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
                                       Nc(Nx * Ny * Nz)
     {
-        std::cout << "Start Base_IOModel construction " << std::endl;
+        Logging::Trace("Start Base_IOModel construction. ");
         GreenSites_ = BuildGreenSites(jjSim["model"]["modelFile"].get<std::string>());
         indepSites_ = BuildIndepSites(GreenSites_);
         FinishConstructor();
-        std::cout << "End Base_IOModel construction " << std::endl;
+        Logging::Trace("End Base_IOModel construction. ");
     };
 
     void FinishConstructor()
@@ -142,7 +142,7 @@ class Base_IOModel
     //read a green in .dat format.
     ClusterCubeCD_t ReadGreenKDat(const std::string &filename, const size_t &NOrb) const
     {
-        // mpiUt::Tools::Print("In IOModel ReadGreenKDat ");
+        Logging::Trace("In IOModel ReadGreenKDat ");
 
         const size_t shutUpWarning = NOrb;
         std::cout << shutUpWarning << "WARNING, Norb not implemented in ReadGreenKDat" << std::endl;
@@ -176,7 +176,7 @@ class Base_IOModel
     //Read green in .dat format.
     ClusterCubeCD_t ReadGreenDat(const std::string &filename, const size_t &NOrb) const
     {
-        // mpiUt::Tools::Print("In IOModel ReadGreenNDat ");
+        Logging::Trace("In IOModel ReadGreenNDat ");
 
         const size_t NN = Nc * NOrb;
         const size_t NOrbIndep = GetNOrbIndep(NOrb);

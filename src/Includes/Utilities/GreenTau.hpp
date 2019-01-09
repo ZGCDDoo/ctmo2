@@ -29,7 +29,7 @@ class GreenCluster0Tau
                                                                                 NTau_(std::max<double>(jjSim["solver"]["ntau"].get<double>(), beta_ / deltaTau)),
                                                                                 NOrb_(gfMatCluster_.n_rows() / ioModel_.Nc)
     {
-        mpiUt::Tools::Print("Creating gtau ");
+        Logging::Debug("Creating gtau ");
         assert(NOrb_ >= 1);
         data_.resize(ioModel_.GetNIndepSuperSites(NOrb_));
 
@@ -46,7 +46,7 @@ class GreenCluster0Tau
         }
 
         gfMatCluster_.clear();
-        mpiUt::Tools::Print("gtau Created");
+        Logging::Debug("gtau Created");
     };
 
     Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) //return g_i(tau)

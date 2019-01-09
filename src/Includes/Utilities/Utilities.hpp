@@ -83,8 +83,6 @@ std::string GetSpinName(const FermionSpin_t &spin)
 
 size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NOrb)
 {
-	// std::cout << "o1, o2 =  " << o1 << ", " << o2 << std::endl;
-	// std::cout << "NOrb =  " << NOrb << std::endl;
 
 	assert(o1 < NOrb);
 	assert(o2 < NOrb);

@@ -2,6 +2,7 @@
 
 #include "../Utilities/Utilities.hpp"
 #include "../Utilities/MPITools.hpp"
+#include "../Utilities/Logging.hpp"
 #include "ABC_MonteCarlo.hpp"
 #include <chrono>
 #include <ctime>
@@ -69,8 +70,7 @@ class MonteCarlo : public ABC_MonteCarlo
         {
 
             time = std::chrono::system_clock::now();
-            mpiUt::Tools::Print(std::string("Start Thermalization at: "));
-            timer.PrintTime();
+            Logging::Info("Start Thermalization. ");
 
             timer.Start(60.0 * thermalizationTime_);
             while (true)
@@ -91,14 +91,12 @@ class MonteCarlo : public ABC_MonteCarlo
             }
 
             markovchainPtr_->SaveTherm();
-            mpiUt::Tools::Print(std::string("End Thermalization at: "));
-            timer.PrintTime();
+            Logging::Info("End Thermalization.: ");
         }
 
         NMeas_ = 0;
         timer.Start(60.0 * measurementTime_);
-        mpiUt::Tools::Print(std::string("Start Measurements at: "));
-        timer.PrintTime();
+        Logging::Info("Start Measurements. ");
 
         while (true)
         {
@@ -112,18 +110,15 @@ class MonteCarlo : public ABC_MonteCarlo
                 }
                 markovchainPtr_->Measure();
                 NMeas_++;
-                //mpiUt::Tools::Print(std::string("Measuring, ") + std::to_string(updatesProposed_) + std::string(" Updates Proposed"));
                 if (NMeas_ % cleanUpdate_ == 0 && NMeas_ != 0)
                 {
                     markovchainPtr_->CleanUpdate();
                     NCleanUpdates_++;
-                    //mpiUt::Tools::Print(std::string("Cleaning, ") + std::to_string(updatesProposed_) + std::string(" Updates Proposed"));
                 }
             }
         }
 
-        mpiUt::Tools::Print(std::string("End Measurements at: "));
-        timer.PrintTime();
+        Logging::Info("End Measurements.");
         markovchainPtr_->SaveMeas();
     }
 

@@ -59,7 +59,7 @@ class SelfConsistency : public ABC_SelfConsistency
                                                                                                                             weights_(cd_t(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>())),
                                                                                                                             NOrb_(jj["NOrb"].get<size_t>())
     {
-        mpiUt::Tools::Print("Start of SC constructor");
+        Logging::Debug("Start of SC constructor");
 
         const size_t NGreen = greenImpurity_.n_slices;
         const size_t NSelfCon = NGreen;
@@ -80,7 +80,7 @@ class SelfConsistency : public ABC_SelfConsistency
             std::cout << "In Selfonsistency constructor, after save selfenery " << std::endl;
         }
 
-        mpiUt::Tools::Print("After SC constructor");
+        Logging::Debug("After SC constructor");
     }
 
     void DoSCGrid() override
@@ -158,7 +158,7 @@ class SelfConsistency : public ABC_SelfConsistency
 
         mpi::communicator world;
 
-        mpiUt::Tools::Print("In Selfonsistency DOSC Parallel");
+        Logging::Info("In Selfonsistency DOSC Parallel");
         const size_t NSelfCon = selfEnergy_.n_slices;
 
         if (static_cast<size_t>(mpiUt::Tools::NWorkers()) > NSelfCon)
@@ -250,7 +250,7 @@ class SelfConsistency : public ABC_SelfConsistency
             ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
             ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
-            mpiUt::Tools::Print("After Selfonsistency DOSC Parallel");
+            Logging::Info("After Selfonsistency DOSC Parallel");
         }
     }
 
