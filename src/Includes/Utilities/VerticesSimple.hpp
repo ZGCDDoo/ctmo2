@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utilities.hpp"
 #include "../Utilities/LinAlg.hpp"
 
 #include "../Models/UTensorSimple.hpp"

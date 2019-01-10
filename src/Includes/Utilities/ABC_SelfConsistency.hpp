@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Utilities.hpp"
-
 namespace SelfCon
 {
 

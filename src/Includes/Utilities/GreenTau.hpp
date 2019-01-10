@@ -1,8 +1,6 @@
 #pragma once
 
-#include "GreenMat.hpp"
 #include "Fourier.hpp"
-#include "Utilities.hpp"
 #include "MPITools.hpp"
 #include "IO.hpp"
 

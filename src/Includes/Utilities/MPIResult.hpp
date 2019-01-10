@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utilities.hpp"
 #include "IO.hpp"
 #include "MPITools.hpp"
 #include "../IS/ISResult.hpp"

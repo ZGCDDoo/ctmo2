@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Utilities.hpp"
 #include "IOConstruct.hpp"
 
 namespace IO

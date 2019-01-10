@@ -3,9 +3,6 @@
 #include "MonteCarlo.hpp"
 
 #include "MarkovChain.hpp"
-
-#include "../Models/ModelSquare2x2_AFM.hpp"
-#include "../Models/ModelTriangle2x2.hpp"
 #include "../Utilities/MPITools.hpp"
 
 namespace MC

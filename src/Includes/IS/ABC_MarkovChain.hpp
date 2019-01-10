@@ -1,11 +1,8 @@
 #pragma once
 #include <valarray>
 
-#include "../Utilities/Utilities.hpp"
-#include "../Utilities/LinAlg.hpp"
 #include "../Utilities/Matrix.hpp"
 #include "../Utilities/MPITools.hpp"
-#include "../Utilities/Fourier.hpp"
 #include "../Utilities/GreenTau.hpp"
 #include "Obs/Observables.hpp"
 #include "ISData.hpp"

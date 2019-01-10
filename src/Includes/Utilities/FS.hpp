@@ -7,7 +7,6 @@
 #include <boost/filesystem.hpp>
 #include <cstdlib>
 #include <ctime>
-#include "Utilities.hpp"
 #include "Logging.hpp"
 
 namespace IO
