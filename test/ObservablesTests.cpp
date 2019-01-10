@@ -20,13 +20,11 @@ Obs_t BuildObs() //for Square2x2
     Json jj;
     fin >> jj;
     fin.close();
-    Model_t model(jj);
+    std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
     std::shared_ptr<ISDataCT_t> dataCT(
         new ISDataCT_t(
             jj,
-            model));
-
-    std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
+            modelPtr));
 
     Obs_t obs(dataCT, jj);
     return obs;

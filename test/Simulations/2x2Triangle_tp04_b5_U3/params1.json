@@ -1,6 +1,8 @@
 {
     "logging": {
-        "level": "debug"
+        "level": "debug",
+        "logToFile": false,
+        "file": "ctmo_log.log"
     },
     "model": {
         "J_H": 0.0,

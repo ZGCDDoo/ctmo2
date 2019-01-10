@@ -51,6 +51,8 @@ class VertexPart
         return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) && (x.superSite() == superSite_) && (x.aux() == aux_));
     }
 
+    void FlipAux() { aux_ == AuxSpin_t::Up ? aux_ = AuxSpin_t::Down : aux_ = AuxSpin_t::Up; };
+
   private:
     VertexType vtype_;
     Tau_t tau_;
@@ -76,11 +78,18 @@ class Vertex
 
     Vertex &operator=(const Vertex &vertex) = default;
 
+    void FlipAux()
+    {
+        vStart_.FlipAux();
+        vEnd_.FlipAux();
+    }
+
     // Getters
-    VertexType vtype() const { return vtype_; };
-    double probProb() const { return probProb_; };
-    VertexPart vStart() const { return vStart_; };
-    VertexPart vEnd() const { return vEnd_; };
+    VertexType vtype() const { return vtype_; }
+    double probProb() const { return probProb_; }
+    VertexPart vStart() const { return vStart_; }
+    VertexPart vEnd() const { return vEnd_; }
+    AuxSpin_t aux() const { return vStart_.aux(); }
 
     //Setters
 

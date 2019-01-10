@@ -23,14 +23,14 @@ class Observables
       public:
         // Observables(){};
         Observables(const std::shared_ptr<ISDataCT> &dataCT,
-                    const Json &jjSim) : modelPtr_(new Model_t(jjSim)),
-                                         ioModelPtr_(new IOModel_t(jjSim)),
-                                         dataCT_(dataCT),
+                    const Json &jjSim) : dataCT_(dataCT),
+                                         modelPtr_(dataCT_->modelPtr_),
+                                         ioModelPtr_(modelPtr_->ioModelPtr()),
                                          rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Tools::Rank() * mpiUt::Tools::Rank()),
                                          urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
-                                         greenBinningUp_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Up),
-                                         greenBinningDown_(modelPtr_, dataCT_, jjSim, FermionSpin_t::Down),
-                                         fillingAndDocc_(dataCT_, ioModelPtr_, urngPtr_, jjSim["solver"]["n_tau_sampling"].get<size_t>()),
+                                         greenBinningUp_(dataCT_, jjSim, FermionSpin_t::Up),
+                                         greenBinningDown_(dataCT_, jjSim, FermionSpin_t::Down),
+                                         fillingAndDocc_(dataCT_, urngPtr_, jjSim["solver"]["n_tau_sampling"].get<size_t>()),
                                          signMeas_(0.0),
                                          expOrder_(0.0),
                                          NMeas_(0),
@@ -147,9 +147,9 @@ class Observables
         }
 
       private:
+        std::shared_ptr<ISDataCT> dataCT_;
         std::shared_ptr<Model_t> modelPtr_;
         std::shared_ptr<IOModel_t> ioModelPtr_;
-        std::shared_ptr<ISDataCT> dataCT_;
         Utilities::EngineTypeFibonacci3217_t rng_;
         std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr_;
 

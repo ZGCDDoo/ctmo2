@@ -89,6 +89,8 @@
         "weightsI": 0.2
     },
     "logging": {
-        "level": "debug"
+        "level": "debug",
+        "logToFile": false,
+        "file": "ctmo_log.log"
     }
 }

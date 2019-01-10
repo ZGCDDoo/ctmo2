@@ -19,19 +19,18 @@ FillingAndDocc_t BuildFillingAndDocc() //for Square2x2
     Json jj;
     fin >> jj;
     fin.close();
-    Model_t model(jj);
+    std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
+
     std::shared_ptr<ISDataCT_t> dataCT(
         new ISDataCT_t(
             jj,
-            model));
-
-    std::shared_ptr<IOModel_t> ioModelPtr(new IOModel_t(jj));
+            modelPtr));
 
     Utilities::EngineTypeFibonacci3217_t rng(0);
     std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr(new Utilities::UniformRngFibonacci3217_t(rng, Utilities::UniformDistribution_t(0.0, 1.0)));
 
     const size_t N_T_INV = 5;
-    FillingAndDocc_t fillingAndDocc(dataCT, ioModelPtr, urngPtr, N_T_INV);
+    FillingAndDocc_t fillingAndDocc(dataCT, urngPtr, N_T_INV);
     return fillingAndDocc;
 }
 
