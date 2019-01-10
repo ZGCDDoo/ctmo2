@@ -16,9 +16,9 @@ class FillingAndDocc
 {
 
   public:
-    FillingAndDocc(const std::shared_ptr<ISDataCT> &dataCT, const std::shared_ptr<IOModel_t> &ioModelPtr,
+    FillingAndDocc(const std::shared_ptr<ISDataCT> &dataCT,
                    std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr, const size_t &N_T_INV) : dataCT_(dataCT),
-                                                                                                           ioModelPtr_(ioModelPtr),
+                                                                                                           ioModelPtr_((dataCT_->modelPtr_)->ioModelPtr()),
                                                                                                            urngPtr_(urngPtr),
                                                                                                            N_T_INV_(N_T_INV)
     {

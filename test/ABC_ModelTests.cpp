@@ -59,7 +59,7 @@ Json BuildJson()
         }
     },
     "solver": {
-        "cleanUpdate": 100,
+        "cleanUpdate": 100000,
         "updatesMeas": 50,
         "averageOrbitals": true,
         "isOrbitalDiagonal": true,

@@ -43,7 +43,7 @@
         }
     },
     "solver": {
-        "cleanUpdate": 100,
+        "cleanUpdate": 100000,
         "updatesMeas": 50,
         "averageOrbitals": true,
         "isOrbitalDiagonal": true,
@@ -57,6 +57,8 @@
         "weightsI": 0.2
     },
     "logging": {
-        "level": "debug"
+        "level": "debug",
+        "logToFile": false,
+        "file": "ctmo_log.log"
     }
 }

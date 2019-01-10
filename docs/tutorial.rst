@@ -34,7 +34,7 @@ Mp2: Tutorial 1
 1. Connect to Mp2:
 2. Ensure you have done the Pre-Steps described in :ref:`installation`.
 3. Follow th Mp2 Procedure in :ref:`installation`.
-4. $ cd /path/to/cttg3.0/examples/CDMFT
+4. $ cd /path/to/ctmo3.0/examples/CDMFT
 5. $ cp ../Mp2/scriptMp2.pbs ./
 6. Change the walltime to 01:00:00 and the queue: "qwork" -> "qtest"
 7. Change "myExe=dmft" to "myExe=cdmft_square4x4"

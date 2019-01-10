@@ -15,7 +15,7 @@ class ABC_Model_2D
 {
 
       public:
-        ABC_Model_2D(const Json &jjSim) : ioModel_(jjSim),
+        ABC_Model_2D(const Json &jjSim) : ioModelPtr_(new IO::Base_IOModel(jjSim)),
                                           h0_(jjSim),
                                           hybFM_(),
                                           tLoc_(),
@@ -51,14 +51,14 @@ class ABC_Model_2D
         {
                 std::string hybNameUp = jjSim["model"]["hybUpFile"].get<std::string>();
 #ifdef DCA
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenKDat(hybNameUp, NOrb_);
+                ClusterCubeCD_t hybtmpUp = ioModelPtr_->ReadGreenKDat(hybNameUp, NOrb_);
 #else
-                ClusterCubeCD_t hybtmpUp = ioModel_.ReadGreenDat(hybNameUp, NOrb_);
+                ClusterCubeCD_t hybtmpUp = ioModelPtr_->ReadGreenDat(hybNameUp, NOrb_);
 #endif
 
 #ifdef AFM
                 std::string hybNameDown = jjSim["model"]["hybDownFile"].get<std::string>();
-                ClusterCubeCD_t hybtmpDown = ioModel_.ReadGreenDat(hybNameDown, NOrb_);
+                ClusterCubeCD_t hybtmpDown = ioModelPtr_->ReadGreenDat(hybNameDown, NOrb_);
 #endif
 
                 const size_t NHyb = hybtmpUp.n_slices;
@@ -93,7 +93,7 @@ class ABC_Model_2D
                 //save green0mat
                 if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 {
-                        ioModel_.SaveCube("giwn", this->greenCluster0MatUp_.data(), this->beta_, NOrb_);
+                        ioModelPtr_->SaveCube("giwn", this->greenCluster0MatUp_.data(), this->beta_, NOrb_);
                 }
 #ifndef AFM
                 this->greenCluster0MatDown_ = greenCluster0MatUp_;
@@ -115,11 +115,11 @@ class ABC_Model_2D
         GreenMat::HybridizationMat const hybridizationMatUp() const { return hybridizationMatUp_; }
         GreenMat::HybridizationMat const hybridizationMatDown() const { return hybridizationMatDown_; }
         Models::ABC_H0 const h0() const { return h0_; }
-        IO::Base_IOModel const ioModel() const { return ioModel_; }
+        const std::shared_ptr<IO::Base_IOModel> ioModelPtr() const { return ioModelPtr_; }
         size_t Nc() const { return Nc_; }
 
       protected:
-        IO::Base_IOModel ioModel_;
+        std::shared_ptr<IO::Base_IOModel> ioModelPtr_;
         GreenMat::HybridizationMat hybridizationMatUp_;
         GreenMat::HybridizationMat hybridizationMatDown_;
         GreenMat::GreenCluster0Mat greenCluster0MatUp_;

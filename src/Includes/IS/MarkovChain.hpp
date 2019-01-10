@@ -57,6 +57,9 @@ public:
   {
     return (auxH_.FAuxBar(vp));
   }
+
+  // double gammaUpTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaUp(auxTo, auxFrom)); }
+  // double gammaDownTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaDown(auxTo, auxFrom)); }
 #endif
 
 private:

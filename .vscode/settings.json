@@ -77,6 +77,9 @@
         "typeindex": "cpp",
         "csignal": "cpp",
         "bitset": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "condition_variable": "cpp",
+        "codecvt": "cpp",
+        "string_view": "cpp"
     }
 }

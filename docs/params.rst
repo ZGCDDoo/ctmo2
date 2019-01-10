@@ -22,7 +22,7 @@ The following parameters are the ones that the user has to change and need to un
         the solver to use, can be one of the following:
 
         =====   =========  
-        cttg    cttg_sub 
+        ctmo    ctmo_sub 
         =====   =========
         "Int"   "IntSub"
         "Aux"   "IntAux" 

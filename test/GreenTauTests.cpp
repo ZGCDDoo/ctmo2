@@ -74,6 +74,24 @@ GreenMat::GreenCluster0Mat BuildGreenMatNonInteracting()
     return greenCluster0Mat;
 }
 
+GreenTau_t BuildGreenTau()
+{
+    GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMat();
+    Json jjSim = BuildJson();
+    std::shared_ptr<IO::Base_IOModel> ioModelPtr(new IO::Base_IOModel(jjSim));
+    GreenTau_t greenCluster0Tau(greenCluster0Mat, ioModelPtr, jjSim["solver"]["ntau"]);
+    return greenCluster0Tau;
+}
+
+GreenTau_t BuildGreenTauNonInteract()
+{
+    GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMatNonInteracting();
+    Json jjSim = BuildJson();
+    std::shared_ptr<IO::Base_IOModel> ioModelPtr(new IO::Base_IOModel(jjSim));
+    GreenTau_t greenCluster0Tau(greenCluster0Mat, ioModelPtr, jjSim["solver"]["ntau"]);
+    return greenCluster0Tau;
+}
+
 double Fermi(const double &beta, const double &xi)
 {
     return (1.0 / (std::exp(beta * xi) + 1.0));
@@ -101,11 +119,10 @@ TEST(GreenTauTests, Init)
     //G is 2x2 diagonal G_00 = (iwn + mu) => Tloc = hyb = 0
 
     std::cout << "here  ! " << std::endl;
-    GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMat();
 
     std::cout << "here 2 ! " << std::endl;
 
-    GreenTau_t greenCluster0Tau(greenCluster0Mat, BuildJson());
+    GreenTau_t greenCluster0Tau = BuildGreenTau();
 
     std::cout << "here 3 ! " << std::endl;
 
@@ -152,8 +169,7 @@ TEST(GreenTauTests, Init)
 
 TEST(GreenTauTests, NonInteracting)
 {
-    GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMatNonInteracting();
-    GreenTau_t greenCluster0Tau(greenCluster0Mat, BuildJson());
+    GreenTau_t greenCluster0Tau = BuildGreenTauNonInteract();
 
     double tau = -1e-10;
     double tau1 = 1e-9;
@@ -202,8 +218,7 @@ TEST(GreenTauTests, NonInteracting)
 
 TEST(GreenTauTests, Operator)
 {
-    GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMatNonInteracting();
-    GreenTau_t greenCluster0Tau(greenCluster0Mat, BuildJson());
+    GreenTau_t greenCluster0Tau = BuildGreenTauNonInteract();
 
     double tau = BETA / 1.1167;
     double tau1 = -tau + 0.12345680;

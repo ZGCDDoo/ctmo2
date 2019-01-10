@@ -19,15 +19,15 @@ GreenBinning_t BuildGreenBinning() //for Square2x2
     Json jj;
     fin >> jj;
     fin.close();
-    Model_t model(jj);
+    std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
+
     std::shared_ptr<ISDataCT_t> dataCT(
         new ISDataCT_t(
             jj,
-            model));
-    std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
+            modelPtr));
 
     std::cout << "Here 1 " << std::endl;
-    GreenBinning_t greenBinning(modelPtr, dataCT, jj, FermionSpin_t::Up);
+    GreenBinning_t greenBinning(dataCT, jj, FermionSpin_t::Up);
     std::cout << "Here 2 " << std::endl;
 
     return greenBinning;

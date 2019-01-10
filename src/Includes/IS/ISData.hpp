@@ -29,22 +29,23 @@ class ISDataCT
   using GreenTau_t = GreenTau::GreenCluster0Tau;
 
 public:
-  ISDataCT(const Json &jjSim, const Models::ABC_Model_2D &model) :
+  ISDataCT(const Json &jjSim, const std::shared_ptr<Models::ABC_Model_2D> &modelPtr) : modelPtr_(modelPtr),
 #ifdef AFM
-                                                                   green0CachedUp_(model.greenCluster0MatUp(), jjSim),
-                                                                   green0CachedDown_(model.greenCluster0MatDown(), jjSim),
+                                                                                       green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
+                                                                                       green0CachedDown_(modelPtr->greenCluster0MatDown(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
 #endif
 #ifndef AFM
-                                                                   green0CachedUp_(model.greenCluster0MatUp(), jjSim),
+                                                                                       green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
 #endif
-                                                                   MupPtr_(new Matrix_t()),
-                                                                   MdownPtr_(new Matrix_t()),
-                                                                   vertices_(),
-                                                                   beta_(model.beta()),
-                                                                   NOrb_(model.NOrb()),
-                                                                   sign_(1)
+                                                                                       MupPtr_(new Matrix_t()),
+                                                                                       MdownPtr_(new Matrix_t()),
+                                                                                       vertices_(),
+                                                                                       beta_(modelPtr->beta()),
+                                                                                       NOrb_(modelPtr->NOrb()),
+                                                                                       sign_(1)
 
   {
+    Logging::Trace("ISData Created. ");
   }
 
   double beta() const
@@ -67,6 +68,7 @@ private:
   friend class Markov::ABC_MarkovChain;
 #endif
 
+  std::shared_ptr<Models::ABC_Model_2D> modelPtr_;
   GreenTau_t green0CachedUp_;
 #ifdef AFM
   GreenTau_t green0CachedDown_;

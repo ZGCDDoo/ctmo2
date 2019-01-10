@@ -51,6 +51,8 @@ class VertexPart
         return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) && (x.superSite() == superSite_) && (x.aux() == aux_));
     }
 
+    void FlipAux() { aux_ == AuxSpin_t::Up ? aux_ = AuxSpin_t::Down : aux_ = AuxSpin_t::Up; };
+
   private:
     VertexType vtype_;
     Tau_t tau_;
@@ -76,11 +78,18 @@ class Vertex
 
     Vertex &operator=(const Vertex &vertex) = default;
 
+    void FlipAux()
+    {
+        vStart_.FlipAux();
+        vEnd_.FlipAux();
+    }
+
     // Getters
-    VertexType vtype() const { return vtype_; };
-    double probProb() const { return probProb_; };
-    VertexPart vStart() const { return vStart_; };
-    VertexPart vEnd() const { return vEnd_; };
+    VertexType vtype() const { return vtype_; }
+    double probProb() const { return probProb_; }
+    VertexPart vStart() const { return vStart_; }
+    VertexPart vEnd() const { return vEnd_; }
+    AuxSpin_t aux() const { return vStart_.aux(); }
 
     //Setters
 
@@ -166,22 +175,19 @@ class Vertices
         if (spin == FermionSpin_t::Up)
         {
             //Find in order the vertexParts corresponding to the same vertex
-            for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
+
+            auto iitt = std::find(indexPartUpVec_.begin(), indexPartUpVec_.end(), key);
+            if (iitt != indexPartUpVec_.end())
             {
-                if (key == indexPartUpVec_.at(ii))
-                {
-                    indices.push_back(ii);
-                }
+                indices.push_back(std::distance(indexPartUpVec_.begin(), iitt));
             }
         }
         else
         {
-            for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
+            auto iitt = std::find(indexPartDownVec_.begin(), indexPartDownVec_.end(), key);
+            if (iitt != indexPartDownVec_.end())
             {
-                if (key == indexPartDownVec_.at(ii))
-                {
-                    indices.push_back(ii);
-                }
+                indices.push_back(std::distance(indexPartDownVec_.begin(), iitt));
             }
         }
 
@@ -194,23 +200,6 @@ class Vertices
         AssertSizes();
 
         return verticesKeysVec_.at(pp);
-    }
-
-    std::vector<size_t> GetIndicesSpins(const size_t &pp, const FermionSpin_t &spin) const
-    {
-        const UInt64_t vertexKey = verticesKeysVec_.at(pp);
-        const VertexPart x = data_.at(pp).vStart();
-        const VertexPart y = data_.at(pp).vEnd();
-        std::vector<size_t> indices;
-
-        indices.push_back(GetKeyIndex(vertexKey, spin));
-
-        if (x.spin() == y.spin())
-        {
-            indices.push_back(GetKeyIndex(vertexKey + 1, spin));
-        }
-
-        return indices;
     }
 
     void SaveConfig(const std::string &fname)
@@ -292,9 +281,9 @@ class Vertices
     std::vector<Vertex> data_;
     std::vector<VertexPart> vPartUpVec_;
     std::vector<VertexPart> vPartDownVec_;
-    std::vector<size_t> indexPartUpVec_;
-    std::vector<size_t> indexPartDownVec_;  // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the id of indexPartDownVec_.at(0)
-    std::vector<UInt64_t> verticesKeysVec_; // Each vertex has a unqique key identifying it
+    std::vector<UInt64_t> indexPartUpVec_;
+    std::vector<UInt64_t> indexPartDownVec_; // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the id of indexPartDownVec_.at(0)
+    std::vector<UInt64_t> verticesKeysVec_;  // Each vertex has a unqique key identifying it
     UInt64_t key_;
 
 }; // namespace Diagrammatic

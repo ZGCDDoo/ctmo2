@@ -62,37 +62,38 @@ class MonteCarlo : public ABC_MonteCarlo
         auto time = std::chrono::system_clock::now();
         Timer timer;
 
-        if (thermFromConfig_)
-        {
-            // markovchainPtr_->ThermalizeFromConfig();
-        }
-        else
-        {
+        // if (thermFromConfig_)
+        // {
+        //     // markovchainPtr_->ThermalizeFromConfig();
+        // }
+        // else
+        // {
 
-            time = std::chrono::system_clock::now();
-            Logging::Info("Start Thermalization. ");
+        time = std::chrono::system_clock::now();
+        Logging::Info("Start Thermalization. ");
 
-            timer.Start(60.0 * thermalizationTime_);
-            while (true)
+        timer.Start(60.0 * thermalizationTime_);
+        while (true)
+        {
+            markovchainPtr_->DoStep();
+            if (markovchainPtr_->updatesProposed() % updatesMeas_ == 0)
             {
-                markovchainPtr_->DoStep();
-                if (markovchainPtr_->updatesProposed() % updatesMeas_ == 0)
+                if (timer.End())
                 {
-                    if (timer.End())
-                    {
-                        break;
-                    }
-                    NMeas_++;
-                    if (NMeas_ % cleanUpdate_ == 0 && NMeas_ != 0)
-                    {
-                        markovchainPtr_->CleanUpdate();
-                    }
+                    break;
                 }
+                ++NMeas_;
             }
 
-            markovchainPtr_->SaveTherm();
-            Logging::Info("End Thermalization.: ");
+            if (markovchainPtr_->updatesProposed() % cleanUpdate_ == 0)
+            {
+                markovchainPtr_->CleanUpdate();
+            }
         }
+
+        markovchainPtr_->SaveTherm();
+        Logging::Info("End Thermalization.: ");
+        // }
 
         NMeas_ = 0;
         timer.Start(60.0 * measurementTime_);
@@ -110,22 +111,24 @@ class MonteCarlo : public ABC_MonteCarlo
                 }
                 markovchainPtr_->Measure();
                 NMeas_++;
-                if (NMeas_ % cleanUpdate_ == 0 && NMeas_ != 0)
-                {
-                    markovchainPtr_->CleanUpdate();
-                    NCleanUpdates_++;
-                }
+            }
+
+            if (markovchainPtr_->updatesProposed() % cleanUpdate_ == 0)
+            {
+                markovchainPtr_->CleanUpdate();
+                ++NCleanUpdates_;
             }
         }
 
+        Logging::Debug("NCleanUpdates = " + std::to_string(NCleanUpdates_));
         Logging::Info("End Measurements.");
         markovchainPtr_->SaveMeas();
     }
 
     //Getters
-    size_t NMeas() const { return NMeas_; };
-    size_t NCleanUpdates() const { return NCleanUpdates_; };
-    size_t updatesProposed() const { return markovchainPtr_->updatesProposed(); };
+    size_t NMeas() const { return NMeas_; }
+    size_t NCleanUpdates() const { return NCleanUpdates_; }
+    size_t updatesProposed() const { return markovchainPtr_->updatesProposed(); }
 
   private:
     //attributes
@@ -138,5 +141,5 @@ class MonteCarlo : public ABC_MonteCarlo
     size_t NMeas_;
     size_t NCleanUpdates_;
     bool thermFromConfig_;
-};
+}; // namespace MC
 } // namespace MC
