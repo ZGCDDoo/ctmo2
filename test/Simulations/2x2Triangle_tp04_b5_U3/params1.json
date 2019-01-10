@@ -54,7 +54,7 @@
     },
     "solver": {
         "averageOrbitals": true,
-        "cleanUpdate": 100,
+        "cleanUpdate": 100000,
         "eCutGreen": 60,
         "isOrbitalDiagonal": true,
         "n_tau_sampling": 5,
