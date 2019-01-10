@@ -1,10 +1,10 @@
 ==========================================================================
- CTMO1.0 : Continuous time multi-orbital
+ CTMO : Continuous time multi-orbital
 ==========================================================================
 
 :Authors: Charles-David Hébert, Maxime Charlebois, Patrick Sémon 
 :Date: $Date: 2018-09-07 $
-:Revision: $Revision: 1.0.0 $
+:Revision: $Revision: 2.0.0 $
 :Description: Description
 
 

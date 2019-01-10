@@ -1,7 +1,7 @@
 Introduction
 ================================
 
-cttg stands for *Continuous time Tremblay group* 
+ctmo stands for *Continuous time Tremblay group* 
 and regroups two main Continuous-time quantum monte-carlo algorithms, namely CT-INT and CT-AUX.
 
 Warning: Bad Docs
