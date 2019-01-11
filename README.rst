@@ -7,13 +7,8 @@
 :Revision: $Revision: 2.0.0 $
 :Description: Description
 
-
-.. image:: https://travis-ci.com/ZGCDDoo/ctmo1.0.svg?token=qU5DPfuxBM537pQaUFgc&branch=Phonon
-    :target: https://travis-ci.com/ZGCDDoo/ctmo1.0
-    
-
-.. image:: https://travis-ci.com/ZGCDDoo/ctmo1.0.svg?token=qU5DPfuxBM537pQaUFgc&branch=master
-    :target: https://travis-ci.com/ZGCDDoo/ctmo1.0
+.. image:: https://travis-ci.com/ZGCDDoo/ctmo.svg?token=qU5DPfuxBM537pQaUFgc&branch=master
+    :target: https://travis-ci.com/ZGCDDoo/ctmo
     
 
 Graham
