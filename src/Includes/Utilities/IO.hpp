@@ -142,9 +142,9 @@ class Base_IOModel
     ClusterCubeCD_t ReadGreenKDat(const std::string &filename, const size_t &NOrb) const
     {
         Logging::Trace("In IOModel ReadGreenKDat ");
+        Logging::Warn("DCA is implemented for only one orbital");
 
-        const size_t shutUpWarning = NOrb;
-        std::cout << shutUpWarning << "WARNING, Norb not implemented in ReadGreenKDat" << std::endl;
+        assert(NOrb == 1);
 
         ClusterMatrix_t fileMat;
         ClusterMatrixCD_t tmp(Nc, Nc);
@@ -283,8 +283,8 @@ class Base_IOModel
 #ifdef DCA
     void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb, const size_t &precision = 14) const
     {
-        const size_t shutUpWarning = NOrb;
-        std::cout << shutUpWarning << "WARNING, Norb not implemented in SaveK" << std::endl;
+        Logging::Warn("DCA is implemented for only one orbital");
+        assert(NOrb == 1);
 
         std::ofstream fout;
         fout.open(fname + std::string(".dat"), std::ios::out);

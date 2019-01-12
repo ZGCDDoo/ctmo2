@@ -52,6 +52,11 @@ class VertexPart
 
     void FlipAux() { aux_ == AuxSpin_t::Up ? aux_ = AuxSpin_t::Down : aux_ = AuxSpin_t::Up; };
 
+    void SetAux(const AuxSpin_t &aux)
+    {
+        aux_ = aux;
+    }
+
   private:
     VertexType vtype_;
     Tau_t tau_;
@@ -81,6 +86,12 @@ class Vertex
     {
         vStart_.FlipAux();
         vEnd_.FlipAux();
+    }
+
+    void SetAux(const AuxSpin_t &aux)
+    {
+        vStart_.SetAux(aux);
+        vEnd_.SetAux(aux);
     }
 
     // Getters
@@ -346,6 +357,12 @@ class AuxHelper
             const AuxSpin_t sBar = (vp.aux() == AuxSpin_t::Up) ? AuxSpin_t::Down : AuxSpin_t::Up;
             return (auxValue(vp.spin(), sBar) / (auxValue(vp.spin(), sBar) - 1.0));
         }
+    }
+
+    double gamma(const VertexPart &vpI, const VertexPart &vpJ) const //little gamma
+    {
+        const double fsJ = FAux(vpJ);
+        return ((FAux(vpI) - fsJ) / fsJ);
     }
 
     double delta() const { return delta_; };

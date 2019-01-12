@@ -87,19 +87,20 @@ class ABC_MarkovChainSubMatrix
     const double PROBINSERT = 0.5;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
-    ABC_MarkovChainSubMatrix(const Json &jj, const size_t &seed) : modelPtr_(new Model_t(jj)),
-                                                                   rng_(seed),
-                                                                   urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
-                                                                   gammadata_(),
-                                                                   upddata_(),
-                                                                   nfdata_(),
-                                                                   greendata_(),
-                                                                   dataCT_(
-                                                                       new Markov::Obs::ISDataCT(
-                                                                           jj,
-                                                                           modelPtr_) ),
-                                                                   obs_(dataCT_, jj),
-                                                                   KMAX_UPD_(jj["KMAX_UPD"].get<double>())
+    ABC_MarkovChainSubMatrix(const Json &jjSim, const size_t &seed) : modelPtr_(new Model_t(jjSim)),
+                                                                      rng_(seed),
+                                                                      urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
+                                                                      gammadata_(),
+                                                                      upddata_(),
+                                                                      nfdata_(),
+                                                                      greendata_(),
+                                                                      dataCT_(
+                                                                          new Markov::Obs::ISDataCT(
+                                                                              jjSim,
+                                                                              modelPtr_)),
+                                                                      obs_(dataCT_, jjSim),
+                                                                      vertexBuilder_(jjSim, modelPtr_->Nc()),
+                                                                      KMAX_UPD_(jjSim["KMAX_UPD"].get<double>())
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -108,7 +109,7 @@ class ABC_MarkovChainSubMatrix
 
         updatesProposed_ = 0;
 
-        assert(jj["model"]["nOrb"].get<size_t>() == 1);
+        assert(jjSim["model"]["nOrb"].get<size_t>() == 1);
         Logging::Debug("MarkovChain Created.");
     }
 
@@ -144,94 +145,90 @@ class ABC_MarkovChainSubMatrix
         assert(kk == nfdata_.Ndown_.n_cols());
     }
 
-    // virtual double gammaUpSubMatrix(const AuxSpin_t &auxxTo, const AuxSpin_t &vauxFrom) = 0;
-    // virtual double gammaDownSubMatrix(const AuxSpin_t &auxxTo, const AuxSpin_t &vauxFrom) = 0;
+    virtual double gammaSubMatrix(const VertexPart &vpTo, const VertexPart &vpFrom) const = 0;
     // virtual double KAux() = 0;
-    // virtual double FAuxUp(const AuxSpin_t &aux) = 0;
-    // virtual double FAuxDown(const AuxSpin_t &aux) = 0;
+    virtual double FAux(const VertexPart &vPart) const = 0;
 
     void DoStep()
     {
-//        PreparationSteps();
-//
-//        for (size_t kk = 0; kk < KMAX_UPD_; kk++)
-//        {
-//            DoInnerStep();
-//            updatesProposed_++;
-//        }
-//
-//        UpdateSteps();
+        PreparationSteps();
+
+        for (size_t kk = 0; kk < KMAX_UPD_; kk++)
+        {
+            DoInnerStep();
+            updatesProposed_++;
+        }
+
+        UpdateSteps();
     }
 
-//    void DoInnerStep()
-//    {
-//        urng_() < PROBINSERT ? InsertVertexSubMatrix() : RemoveVertexSubMatrix();
-//    }
+    void DoInnerStep()
+    {
+        urng_() < PROBINSERT ? InsertVertexSubMatrix() : RemoveVertexSubMatrix();
+    }
 
-//    double CalculateDeterminantRatio(const Vertex &vertexTo, const Vertex &vertexFrom, const size_t &vertexIndex) const
-//    {
+    double CalculateDeterminantRatio(const Vertex &vertexTo, const Vertex &vertexFrom, const size_t &vertexIndex)
+    {
 
-        // const AuxSpin_t auxTo = vertexTo.aux();
-        // const AuxSpin_t auxFrom = vertexFrom.aux();
-        // const double gammakup = gammaUpSubMatrix(auxTo, auxFrom);
-        // const double gammakdown = gammaDownSubMatrix(auxTo, auxFrom);
-        // upddata_.dup_ = (greendata_.greenInteractUp_(vertexIndex, vertexIndex) - (1.0 + gammakup) / gammakup);
-        // upddata_.ddown_ = (greendata_.greenInteractDown_(vertexIndex, vertexIndex) - (1.0 + gammakdown) / gammakdown);
+        const double gammakup = gammaSubMatrix(vertexTo.vStart(), vertexFrom.vStart()); //Remeber that for spin diagonal interactions start==up and end==down
+        const double gammakdown = gammaSubMatrix(vertexTo.vEnd(), vertexFrom.vEnd());
+        upddata_.dup_ = (greendata_.greenInteractUp_(vertexIndex, vertexIndex) - (1.0 + gammakup) / gammakup);
+        upddata_.ddown_ = (greendata_.greenInteractDown_(vertexIndex, vertexIndex) - (1.0 + gammakdown) / gammakdown);
 
-        // double ratio;
+        double ratio = 0.0;
 
-        // if (gammadata_.gammaUpI_.n_rows())
-        // {
-        //     const size_t kkold = gammadata_.gammaUpI_.n_rows();
-        //     upddata_.SetSize(kkold);
+        if (gammadata_.gammaUpI_.n_rows())
+        {
+            const size_t kkold = gammadata_.gammaUpI_.n_rows();
+            upddata_.SetSize(kkold);
 
-        //     for (size_t i = 0; i < kkold; i++)
-        //     {
-        //         upddata_.xup_(i) = greendata_.greenInteractUp_(vertexIndex, verticesUpdated_.at(i));
-        //         upddata_.yup_(i) = greendata_.greenInteractUp_(verticesUpdated_[i], vertexIndex);
+            for (size_t i = 0; i < kkold; i++)
+            {
+                upddata_.xup_(i) = greendata_.greenInteractUp_(vertexIndex, verticesUpdated_.at(i));
+                upddata_.yup_(i) = greendata_.greenInteractUp_(verticesUpdated_[i], vertexIndex);
 
-        //         upddata_.xdown_(i) = greendata_.greenInteractDown_(vertexIndex, verticesUpdated_[i]);
-        //         upddata_.ydown_(i) = greendata_.greenInteractDown_(verticesUpdated_[i], vertexIndex);
-        //     }
+                upddata_.xdown_(i) = greendata_.greenInteractDown_(vertexIndex, verticesUpdated_[i]);
+                upddata_.ydown_(i) = greendata_.greenInteractDown_(verticesUpdated_[i], vertexIndex);
+            }
 
-        //     MatrixVectorMult(gammadata_.gammaUpI_, upddata_.yup_, 1.0, upddata_.gammaUpIYup_);
-        //     MatrixVectorMult(gammadata_.gammaDownI_, upddata_.ydown_, 1.0, upddata_.gammaDownIYdown_);
-        //     upddata_.dTildeUpI_ = upddata_.dup_ - LinAlg::DotVectors(upddata_.xup_, upddata_.gammaUpIYup_); //this is in fact beta of submatrix gull article (last element of new matrix GammaI)
-        //     upddata_.dTildeDownI_ = upddata_.ddown_ - LinAlg::DotVectors(upddata_.xdown_, upddata_.gammaDownIYdown_);
+            MatrixVectorMult(gammadata_.gammaUpI_, upddata_.yup_, 1.0, upddata_.gammaUpIYup_);
+            MatrixVectorMult(gammadata_.gammaDownI_, upddata_.ydown_, 1.0, upddata_.gammaDownIYdown_);
+            upddata_.dTildeUpI_ = upddata_.dup_ - LinAlg::DotVectors(upddata_.xup_, upddata_.gammaUpIYup_); //this is in fact beta of submatrix gull article (last element of new matrix GammaI)
+            upddata_.dTildeDownI_ = upddata_.ddown_ - LinAlg::DotVectors(upddata_.xdown_, upddata_.gammaDownIYdown_);
 
-        //     ratio = gammakup * gammakdown * upddata_.dTildeUpI_ * upddata_.dTildeDownI_;
-        // }
-        // else
-        // {
-        //     ratio = gammakup * gammakdown * upddata_.dup_ * upddata_.ddown_;
-        // }
-        // return ratio;
-//        return 0.0;
-//    }
+            ratio = gammakup * gammakdown * upddata_.dTildeUpI_ * upddata_.dTildeDownI_;
+        }
+        else
+        {
+            ratio = gammakup * gammakdown * upddata_.dup_ * upddata_.ddown_;
+        }
+        return ratio;
+    }
 
-//    void AcceptMove(const double &probAcc)
-//    {
-        // if (probAcc < 0.0)
-        // {
-        //     dataCT_->sign_ *= -1;
-        // }
+    //    void AcceptMove(const double &probAcc)
+    //    {
+    // if (probAcc < 0.0)
+    // {
+    //     dataCT_->sign_ *= -1;
+    // }
 
-        // if (gammadata_.gammaUpI_.n_rows())
-        // {
-        //     LinAlg::BlockRankOneUpgrade(gammadata_.gammaUpI_, upddata_.gammaUpIYup_, upddata_.xup_, 1.0 / upddata_.dTildeUpI_);
-        //     LinAlg::BlockRankOneUpgrade(gammadata_.gammaDownI_, upddata_.gammaDownIYdown_, upddata_.xdown_, 1.0 / upddata_.dTildeDownI_);
-        // }
-        // else
-        // {
-        //     gammadata_.gammaUpI_ = Matrix_t(1, 1);
-        //     gammadata_.gammaUpI_(0, 0) = 1.0 / upddata_.dup_;
-        //     gammadata_.gammaDownI_ = Matrix_t(1, 1);
-        //     gammadata_.gammaDownI_(0, 0) = 1.0 / upddata_.ddown_;
-        // }
-//    }
+    // if (gammadata_.gammaUpI_.n_rows())
+    // {
+    //     LinAlg::BlockRankOneUpgrade(gammadata_.gammaUpI_, upddata_.gammaUpIYup_, upddata_.xup_, 1.0 / upddata_.dTildeUpI_);
+    //     LinAlg::BlockRankOneUpgrade(gammadata_.gammaDownI_, upddata_.gammaDownIYdown_, upddata_.xdown_, 1.0 / upddata_.dTildeDownI_);
+    // }
+    // else
+    // {
+    //     gammadata_.gammaUpI_ = Matrix_t(1, 1);
+    //     gammadata_.gammaUpI_(0, 0) = 1.0 / upddata_.dup_;
+    //     gammadata_.gammaDownI_ = Matrix_t(1, 1);
+    //     gammadata_.gammaDownI_(0, 0) = 1.0 / upddata_.ddown_;
+    // }
 
-//    void RemoveVertexSubMatrix()
-//    {
+    // }
+
+    void RemoveVertexSubMatrix()
+    {
         // if (vertices0_.size() && verticesRemovable_.size())
         // {
         //     updStats_["Removes"][0]++;
@@ -268,95 +265,96 @@ class ABC_MarkovChainSubMatrix
         //     }
         // }
         // // std::cout << "after remove " << std::endl;
-//    }
+    }
 
-//    void RemovePreviouslyInserted(const size_t &vertexIndex) //vertexIndex which is in cTilde
-//    {
-        // using itType_t = std::vector<size_t>::const_iterator;
-        // const itType_t ppit = std::find<itType_t, size_t>(verticesUpdated_.begin(), verticesUpdated_.end(), vertexIndex);
-        // if (ppit == verticesUpdated_.end())
-        // {
-        //     throw std::runtime_error("Bad index in find vertexIndex in verticesUpdated_!");
-        // }
+    //    void RemovePreviouslyInserted(const size_t &vertexIndex) //vertexIndex which is in cTilde
+    //    {
+    // using itType_t = std::vector<size_t>::const_iterator;
+    // const itType_t ppit = std::find<itType_t, size_t>(verticesUpdated_.begin(), verticesUpdated_.end(), vertexIndex);
+    // if (ppit == verticesUpdated_.end())
+    // {
+    //     throw std::runtime_error("Bad index in find vertexIndex in verticesUpdated_!");
+    // }
 
-        // const size_t pp = std::distance<itType_t>(verticesUpdated_.begin(), ppit); //the index of the updated vertex in the gammaSigma Matrices
+    // const size_t pp = std::distance<itType_t>(verticesUpdated_.begin(), ppit); //the index of the updated vertex in the gammaSigma Matrices
 
-        // const AuxSpin_t auxFrom = dataCT_->vertices_.at(vertexIndex).aux();
-        // assert(auxFrom != AuxSpin_t::Zero); //we are about to remove a vertex that has been inserted !
-        // const double gammappupI = -1.0 / gammaUpSubMatrix(auxFrom, AuxSpin_t::Zero);
-        // const double gammappdownI = -1.0 / gammaDownSubMatrix(auxFrom, AuxSpin_t::Zero);
-        // const double ratio = gammappupI * gammappdownI * gammadata_.gammaUpI_(pp, pp) * gammadata_.gammaDownI_(pp, pp);
-        // const double probAcc = PROBINSERT / PROBREMOVE * double(nPhyscialVertices_) * ratio / KAux();
+    // const AuxSpin_t auxFrom = dataCT_->vertices_.at(vertexIndex).aux();
+    // assert(auxFrom != AuxSpin_t::Zero); //we are about to remove a vertex that has been inserted !
+    // const double gammappupI = -1.0 / gammaUpSubMatrix(auxFrom, AuxSpin_t::Zero);
+    // const double gammappdownI = -1.0 / gammaDownSubMatrix(auxFrom, AuxSpin_t::Zero);
+    // const double ratio = gammappupI * gammappdownI * gammadata_.gammaUpI_(pp, pp) * gammadata_.gammaDownI_(pp, pp);
+    // const double probAcc = PROBINSERT / PROBREMOVE * double(nPhyscialVertices_) * ratio / KAux();
 
-        // if (urng_() < std::abs(probAcc))
-        // {
-        //     nPhyscialVertices_--;
-        //     if (probAcc < 0.0)
-        //     {
-        //         dataCT_->sign_ *= -1;
-        //     }
+    // if (urng_() < std::abs(probAcc))
+    // {
+    //     nPhyscialVertices_--;
+    //     if (probAcc < 0.0)
+    //     {
+    //         dataCT_->sign_ *= -1;
+    //     }
 
-        //     updStats_["Removes"][1]++;
-        //     LinAlg::BlockRankOneDowngrade(gammadata_.gammaUpI_, pp);
-        //     LinAlg::BlockRankOneDowngrade(gammadata_.gammaDownI_, pp);
+    //     updStats_["Removes"][1]++;
+    //     LinAlg::BlockRankOneDowngrade(gammadata_.gammaUpI_, pp);
+    //     LinAlg::BlockRankOneDowngrade(gammadata_.gammaDownI_, pp);
 
-        //     const size_t kkm1 = verticesUpdated_.size() - 1;
-        //     std::iter_swap(verticesUpdated_.begin() + pp, verticesUpdated_.begin() + kkm1);
-        //     verticesUpdated_.pop_back();
+    //     const size_t kkm1 = verticesUpdated_.size() - 1;
+    //     std::iter_swap(verticesUpdated_.begin() + pp, verticesUpdated_.begin() + kkm1);
+    //     verticesUpdated_.pop_back();
 
-        //     //Taken from : https://stackoverflow.com/questions/39912/how-do-i-remove-an-item-from-a-stl-vector-with-a-certain-value
-        //     verticesRemovable_.erase(std::remove(verticesRemovable_.begin(), verticesRemovable_.end(), vertexIndex), verticesRemovable_.end());
+    //     //Taken from : https://stackoverflow.com/questions/39912/how-do-i-remove-an-item-from-a-stl-vector-with-a-certain-value
+    //     verticesRemovable_.erase(std::remove(verticesRemovable_.begin(), verticesRemovable_.end(), vertexIndex), verticesRemovable_.end());
 
-        //     //just a check, make sure that the vertex is not in the verticesToRemove just yet
-        //     const itType_t rrit = std::find<itType_t, size_t>(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex);
-        //     if (rrit != verticesToRemove_.end())
-        //     {
-        //         throw std::runtime_error("Bad index in find vertexIndex in verticesToRemove_!");
-        //     }
-        //     //end of check
-        //     verticesToRemove_.push_back(vertexIndex);
+    //     //just a check, make sure that the vertex is not in the verticesToRemove just yet
+    //     const itType_t rrit = std::find<itType_t, size_t>(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex);
+    //     if (rrit != verticesToRemove_.end())
+    //     {
+    //         throw std::runtime_error("Bad index in find vertexIndex in verticesToRemove_!");
+    //     }
+    //     //end of check
+    //     verticesToRemove_.push_back(vertexIndex);
 
-        //     nfdata_.FVup_(vertexIndex) = 1.0;
-        //     nfdata_.FVdown_(vertexIndex) = 1.0;
-        //     dataCT_->vertices_.at(vertexIndex).SetAux(AuxSpin_t::Zero);
-        // }
-//    }
+    //     nfdata_.FVup_(vertexIndex) = 1.0;
+    //     nfdata_.FVdown_(vertexIndex) = 1.0;
+    //     dataCT_->vertices_.at(vertexIndex).SetAux(AuxSpin_t::Zero);
+    // }
+    //    }
 
-//    void InsertVertexSubMatrix()
-//    {
-        // if (verticesInsertable_.size())
-        // {
-        //     updStats_["Inserts"][0]++;
-        //     const size_t ii = static_cast<Site_t>(verticesInsertable_.size() * urng_());
-        //     const size_t vertexIndex = verticesInsertable_.at(ii);
-        //     Vertex vertex = vertices0Tilde_.at(vertexIndex);
+    void InsertVertexSubMatrix()
+    {
+        if (verticesInsertable_.size())
+        {
+            updStats_["Inserts"][0]++;
+            const size_t ii = static_cast<Site_t>(verticesInsertable_.size() * urng_());
+            const size_t vertexIndex = verticesInsertable_.at(ii);
+            Vertex vertex = vertices0Tilde_.at(vertexIndex);
 
-        //     vertex.SetAux(urng_() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down);
-        //     double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
-        //     const size_t kknew = nPhyscialVertices_ + 1;
+            vertex.SetAux(urng_() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down);
+            double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
+            ratio += 0.0;
+            // const size_t kknew = nPhyscialVertices_ + 1;
 
-        //     double probAcc = KAux() / double(kknew) * ratio;
-        //     probAcc *= PROBREMOVE / PROBINSERT;
+            //     double probAcc = KAux() / static_cast<double>(kknew) * ratio;
+            //     probAcc *= PROBREMOVE / PROBINSERT;
 
-        //     //dont propose to insert the same vertex, even if update rejected.
-        //     verticesInsertable_.erase(verticesInsertable_.begin() + ii);
+            //     //dont propose to insert the same vertex, even if update rejected.
+            //     verticesInsertable_.erase(verticesInsertable_.begin() + ii);
 
-        //     if (urng_() < std::abs(probAcc))
-        //     {
+            //     if (urng_() < std::abs(probAcc))
+            //     {
 
-        //         updStats_["Inserts"][1]++;
-        //         verticesUpdated_.push_back(vertexIndex);
-        //         dataCT_->vertices_.at(vertexIndex) = vertex;
-        //         verticesToRemove_.erase(std::remove(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex), verticesToRemove_.end());
-        //         verticesRemovable_.push_back(vertexIndex);
-        //         nPhyscialVertices_ += 1;
-        //         nfdata_.FVup_(vertexIndex) = FAuxUp(vertex.aux());
-        //         nfdata_.FVdown_(vertexIndex) = FAuxDown(vertex.aux());
+            //         updStats_["Inserts"][1]++;
+            //         verticesUpdated_.push_back(vertexIndex);
+            //         dataCT_->vertices_.at(vertexIndex) = vertex;
+            //         verticesToRemove_.erase(std::remove(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex), verticesToRemove_.end());
+            //         verticesRemovable_.push_back(vertexIndex);
+            //         nPhyscialVertices_ += 1;
+            //         nfdata_.FVup_(vertexIndex) = FAuxUp(vertex.aux());
+            //         nfdata_.FVdown_(vertexIndex) = FAuxDown(vertex.aux());
 
-        //         AcceptMove(probAcc);
-        //     }
-        // }
-//    }
+            //         AcceptMove(probAcc);
+            //     }
+        }
+    }
 
     void CleanUpdate()
     {
@@ -388,27 +386,27 @@ class ABC_MarkovChainSubMatrix
         // nfdata_.Ndown_.Inverse();
     }
 
-//    double GetGreenTau0Up(const Vertex &vertexI, const Vertex &vertexJ) const
-//    {
-//        // return (dataCT_->green0CachedUp_(vertexI.site(), vertexJ.site(), vertexI.tau() - (vertexJ.tau() + 1e-12)));
-//    }
+    //    double GetGreenTau0Up(const Vertex &vertexI, const Vertex &vertexJ) const
+    //    {
+    //        // return (dataCT_->green0CachedUp_(vertexI.site(), vertexJ.site(), vertexI.tau() - (vertexJ.tau() + 1e-12)));
+    //    }
 
-//    double GetGreenTau0Down(const Vertex &vertexI, const Vertex &vertexJ) const
-//    {
-//
-//        // #ifndef AFM
-//        //         return GetGreenTau0Up(vertexI, vertexJ);
-//        // #endif
-//
-//        // #ifdef AFM
-//        //         const double delta = 1e-12;
-//        //         // 1e-20;
-//        //         Tau_t tauDiff = vertexI.tau() - (vertexJ.tau() + delta);
-//        //         Site_t s1 = vertexI.site(); //model_.indepSites().at(ll).first;
-//        //         Site_t s2 = vertexJ.site(); //model_.indepSites().at(ll).second;
-//        //         return (dataCT_->green0CachedDown_(s1, s2, tauDiff));
-//        // #endif
-//    }
+    //    double GetGreenTau0Down(const Vertex &vertexI, const Vertex &vertexJ) const
+    //    {
+    //
+    //        // #ifndef AFM
+    //        //         return GetGreenTau0Up(vertexI, vertexJ);
+    //        // #endif
+    //
+    //        // #ifdef AFM
+    //        //         const double delta = 1e-12;
+    //        //         // 1e-20;
+    //        //         Tau_t tauDiff = vertexI.tau() - (vertexJ.tau() + delta);
+    //        //         Site_t s1 = vertexI.site(); //model_.indepSites().at(ll).first;
+    //        //         Site_t s2 = vertexJ.site(); //model_.indepSites().at(ll).second;
+    //        //         return (dataCT_->green0CachedDown_(s1, s2, tauDiff));
+    //        // #endif
+    //    }
 
     void Measure()
     {
@@ -440,32 +438,32 @@ class ABC_MarkovChainSubMatrix
         // }
     }
 
-//    void SaveUpd(const std::string fname)
-//    {
-        //         std::vector<UpdStats_t> updStatsVec;
-        // #ifdef HAVEMPI
+    //    void SaveUpd(const std::string fname)
+    //    {
+    //         std::vector<UpdStats_t> updStatsVec;
+    // #ifdef HAVEMPI
 
-        //         mpi::communicator world;
-        //         if (mpiUt::Rank() == mpiUt::master)
-        //         {
-        //             mpi::gather(world, updStats_, updStatsVec, mpiUt::master);
-        //         }
-        //         else
-        //         {
-        //             mpi::gather(world, updStats_, mpiUt::master);
-        //         }
-        //         if (mpiUt::Rank() == mpiUt::master)
-        //         {
-        //             mpiUt::SaveUpdStats(fname, updStatsVec);
-        //         }
+    //         mpi::communicator world;
+    //         if (mpiUt::Rank() == mpiUt::master)
+    //         {
+    //             mpi::gather(world, updStats_, updStatsVec, mpiUt::master);
+    //         }
+    //         else
+    //         {
+    //             mpi::gather(world, updStats_, mpiUt::master);
+    //         }
+    //         if (mpiUt::Rank() == mpiUt::master)
+    //         {
+    //             mpiUt::SaveUpdStats(fname, updStatsVec);
+    //         }
 
-        // #else
-        //         updStatsVec.push_back(updStats_);
-        //         mpiUt::SaveUpdStats(fname, updStatsVec);
-        // #endif
+    // #else
+    //         updStatsVec.push_back(updStats_);
+    //         mpiUt::SaveUpdStats(fname, updStatsVec);
+    // #endif
 
-        //         Logging::Info("Finished Saving MarkovChain.");
-//    }
+    //         Logging::Info("Finished Saving MarkovChain.");
+    //    }
 
     void PreparationSteps()
     {
@@ -796,6 +794,7 @@ class ABC_MarkovChainSubMatrix
 
     std::shared_ptr<Markov::Obs::ISDataCT> dataCT_;
     Markov::Obs::Observables obs_;
+    Diagrammatic::VertexBuilder vertexBuilder_;
 
     std::vector<size_t> verticesUpdated_;
     std::vector<size_t> verticesRemovable_; //the interacting vertices that can be removed
@@ -808,9 +807,8 @@ class ABC_MarkovChainSubMatrix
 
     const size_t KMAX_UPD_;
 
-
     size_t nPhyscialVertices_;
     size_t updatesProposed_;
-};
+}; // namespace MarkovSub
 
 } // namespace MarkovSub

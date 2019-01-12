@@ -9,16 +9,22 @@ class MarkovChainSub : public ABC_MarkovChainSubMatrix
 {
 
 public:
-  MarkovChainSub(const Json &jj, const size_t &seed) : ABC_MarkovChainSubMatrix(jj, seed){};
+  MarkovChainSub(const Json &jjSim, const size_t &seed) : ABC_MarkovChainSubMatrix(jjSim, seed), auxH_(jjSim["model"]["delta"].get<double>()){};
 
   ~MarkovChainSub(){};
 
   // //Overriding
-  // double gammaUpSubMatrix(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->model_.gammaUp(auxTo, auxFrom)); }
-  // double gammaDownSubMatrix(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->model_.gammaDown(auxTo, auxFrom)); }
-  // double FAux(const VertexPart &vp) override
-  // {
-  //   return 0.0; //return (auxH_.FAux(vp));
-  // }
+  double gammaSubMatrix(const VertexPart &vpTo, const VertexPart &vpFrom) const override
+  {
+    return auxH_.gamma(vpTo, vpFrom);
+  }
+
+  double FAux(const VertexPart &vp) const override
+  {
+    return (auxH_.FAux(vp));
+  }
+
+private:
+  Diagrammatic::AuxHelper auxH_;
 };
-} // namespace Markov
+} // namespace MarkovSub
