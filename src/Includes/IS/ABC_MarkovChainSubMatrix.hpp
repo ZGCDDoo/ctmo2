@@ -431,7 +431,7 @@ class ABC_MarkovChainSubMatrix
     {
 
         obs_.Save();
-        Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
+        // Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
         SaveUpd("Measurements");
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
@@ -479,78 +479,78 @@ class ABC_MarkovChainSubMatrix
 
     void PreparationSteps()
     {
-        // // std::cout << "in preparation steps " << std::endl;
-        // nPhyscialVertices_ = dataCT_->vertices_.size();
-        // InsertNonInteractVertices();
-        // EnlargeN();
-        // UpdateGreenInteract();
+        // std::cout << "in preparation steps " << std::endl;
+        nPhyscialVertices_ = dataCT_->vertices_.size();
+        InsertNonInteractVertices();
+        EnlargeN();
+        UpdateGreenInteract();
 
-        // // std::cout << "after preparation steps " << std::endl;
+        // std::cout << "after preparation steps " << std::endl;
     }
 
     void UpdateSteps()
     {
-        // // std::cout << "in update steps " << std::endl;
-        // UpdateN();
-        // dataCT_->vertices_.size() > verticesToRemove_.size() ? RemoveNonInteractEfficient() : RemoveNonInteract();
-        // // std::cout << "after update steps " << std::endl;
+        // std::cout << "in update steps " << std::endl;
+        UpdateN();
+        dataCT_->vertices_.size() > verticesToRemove_.size() ? RemoveNonInteractEfficient() : RemoveNonInteract();
+        // std::cout << "after update steps " << std::endl;
     }
 
     void UpdateN()
     {
         // // std::cout << "in updatN " << std::endl;
-        // if (verticesUpdated_.size())
-        // {
-        //     const size_t NN = vertices0Tilde_.size();
-        //     const size_t LK = verticesUpdated_.size();
+        if (verticesUpdated_.size())
+        {
+            const size_t NN = vertices0Tilde_.size();
+            const size_t LK = verticesUpdated_.size();
 
-        //     Matrix_t DMatrixUp(NN, NN);
-        //     Matrix_t DMatrixDown(NN, NN);
-        //     DMatrixUp.Zeros();
-        //     DMatrixDown.Zeros();
+            Matrix_t DMatrixUp(NN, NN);
+            Matrix_t DMatrixDown(NN, NN);
+            DMatrixUp.Zeros();
+            DMatrixDown.Zeros();
 
-        //     Matrix_t GTildeColUp(NN, LK);
-        //     Matrix_t GTildeColDown(NN, LK);
-        //     Matrix_t NTildeRowUp(LK, NN);
-        //     Matrix_t NTildeRowDown(LK, NN);
+            Matrix_t GTildeColUp(NN, LK);
+            Matrix_t GTildeColDown(NN, LK);
+            Matrix_t NTildeRowUp(LK, NN);
+            Matrix_t NTildeRowDown(LK, NN);
 
-        //     for (size_t i = 0; i < NN; i++)
-        //     {
-        //         AuxSpin_t auxI = dataCT_->vertices_.at(i).aux();
-        //         AuxSpin_t auxI0Tilde = vertices0Tilde_.at(i).aux();
-        //         DMatrixUp(i, i) = 1.0 / (1.0 + gammaUpSubMatrix(auxI, auxI0Tilde));
-        //         DMatrixDown(i, i) = 1.0 / (1.0 + gammaDownSubMatrix(auxI, auxI0Tilde));
+            //     for (size_t i = 0; i < NN; i++)
+            //     {
+            //         AuxSpin_t auxI = dataCT_->vertices_.at(i).aux();
+            //         AuxSpin_t auxI0Tilde = vertices0Tilde_.at(i).aux();
+            //         DMatrixUp(i, i) = 1.0 / (1.0 + gammaUpSubMatrix(auxI, auxI0Tilde));
+            //         DMatrixDown(i, i) = 1.0 / (1.0 + gammaDownSubMatrix(auxI, auxI0Tilde));
 
-        //         for (size_t j = 0; j < verticesUpdated_.size(); j++)
-        //         {
-        //             GTildeColUp(i, j) = greendata_.greenInteractUp_(i, verticesUpdated_.at(j));
-        //             GTildeColDown(i, j) = greendata_.greenInteractDown_(i, verticesUpdated_[j]);
+            //         for (size_t j = 0; j < verticesUpdated_.size(); j++)
+            //         {
+            //             GTildeColUp(i, j) = greendata_.greenInteractUp_(i, verticesUpdated_.at(j));
+            //             GTildeColDown(i, j) = greendata_.greenInteractDown_(i, verticesUpdated_[j]);
 
-        //             NTildeRowUp(j, i) = nfdata_.Nup_(verticesUpdated_[j], i);
-        //             NTildeRowDown(j, i) = nfdata_.Ndown_(verticesUpdated_[j], i);
-        //         }
-        //     }
+            //             NTildeRowUp(j, i) = nfdata_.Nup_(verticesUpdated_[j], i);
+            //             NTildeRowDown(j, i) = nfdata_.Ndown_(verticesUpdated_[j], i);
+            //         }
+            //     }
 
-        //     Matrix_t tmp(gammadata_.gammaUpI_.n_rows(), NTildeRowUp.n_cols());
-        //     LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaUpI_, NTildeRowUp, tmp);
-        //     LinAlg::DGEMM(-1.0, 1.0, GTildeColUp, tmp, nfdata_.Nup_);
+            //     Matrix_t tmp(gammadata_.gammaUpI_.n_rows(), NTildeRowUp.n_cols());
+            //     LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaUpI_, NTildeRowUp, tmp);
+            //     LinAlg::DGEMM(-1.0, 1.0, GTildeColUp, tmp, nfdata_.Nup_);
 
-        //     LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaDownI_, NTildeRowDown, tmp);
-        //     LinAlg::DGEMM(-1.0, 1.0, GTildeColDown, tmp, nfdata_.Ndown_);
+            //     LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaDownI_, NTildeRowDown, tmp);
+            //     LinAlg::DGEMM(-1.0, 1.0, GTildeColDown, tmp, nfdata_.Ndown_);
 
-        //     for (size_t j = 0; j < nfdata_.Nup_.n_cols(); j++)
-        //     {
-        //         for (size_t i = 0; i < nfdata_.Nup_.n_rows(); i++)
-        //         {
-        //             nfdata_.Nup_(i, j) *= DMatrixUp(i, i);
-        //             nfdata_.Ndown_(i, j) *= DMatrixDown(i, i);
-        //         }
-        //     }
+            //     for (size_t j = 0; j < nfdata_.Nup_.n_cols(); j++)
+            //     {
+            //         for (size_t i = 0; i < nfdata_.Nup_.n_rows(); i++)
+            //         {
+            //             nfdata_.Nup_(i, j) *= DMatrixUp(i, i);
+            //             nfdata_.Ndown_(i, j) *= DMatrixDown(i, i);
+            //         }
+            //     }
 
-        //     gammadata_.gammaUpI_.Clear();
-        //     gammadata_.gammaDownI_.Clear();
-        //     // std::cout << "After clear " << std::endl;
-        // }
+            //     gammadata_.gammaUpI_.Clear();
+            //     gammadata_.gammaDownI_.Clear();
+            //     // std::cout << "After clear " << std::endl;
+        }
 
         // // std::cout << "After updateN " << std::endl;
     }
@@ -559,64 +559,64 @@ class ABC_MarkovChainSubMatrix
     {
         // // std::cout << "in EnlargeN " << std::endl;
         // //build the B matrices
-        // const size_t N0 = vertices0_.size(); //here vertices0 is the same as vertices withouth the non-interacting spins
-        // if (N0)
-        // {
-        //     Matrix_t BUp(KMAX_UPD_, N0);
-        //     Matrix_t BDown(KMAX_UPD_, N0);
+        const size_t N0 = vertices0_.size(); //here vertices0 is the same as vertices withouth the non-interacting spins
+        if (N0)
+        {
+            Matrix_t BUp(KMAX_UPD_, N0);
+            Matrix_t BDown(KMAX_UPD_, N0);
 
-        //     for (size_t j = 0; j < N0; j++)
-        //     {
-        //         for (size_t i = 0; i < KMAX_UPD_; i++)
-        //         {
-        //             Vertex vertexI = vertices0Tilde_.at(N0 + i);
-        //             Vertex vertexJ = dataCT_->vertices_.at(j);
-        //             BUp(i, j) = GetGreenTau0Up(vertexI, vertexJ) * (nfdata_.FVup_(j) - 1.0);
-        //             BDown(i, j) = GetGreenTau0Up(vertexI, vertexJ) * (nfdata_.FVdown_(j) - 1.0);
-        //         }
-        //     }
+            for (size_t j = 0; j < N0; j++)
+            {
+                for (size_t i = 0; i < KMAX_UPD_; i++)
+                {
+                    Vertex vertexI = vertices0Tilde_.at(N0 + i);
+                    Vertex vertexJ = dataCT_->vertices_.at(j);
+                    BUp(i, j) = GetGreenTau0(vertexI.vStart(), vertexJ.vStart()) * (nfdata_.FVup_(j) - 1.0);
+                    BDown(i, j) = GetGreenTau0(vertexI.vEnd(), vertexJ.vEnd()) * (nfdata_.FVdown_(j) - 1.0);
+                }
+            }
 
-        //     Matrix_t BUpMTilde(BUp.n_rows(), nfdata_.Nup_.n_cols());
-        //     Matrix_t BDownMTilde(BDown.n_rows(), nfdata_.Ndown_.n_cols());
-        //     LinAlg::DGEMM(1.0, 0.0, BUp, nfdata_.Nup_, BUpMTilde);
-        //     LinAlg::DGEMM(1.0, 0.0, BDown, nfdata_.Ndown_, BDownMTilde);
+            Matrix_t BUpMTilde(BUp.n_rows(), nfdata_.Nup_.n_cols());
+            Matrix_t BDownMTilde(BDown.n_rows(), nfdata_.Ndown_.n_cols());
+            LinAlg::DGEMM(1.0, 0.0, BUp, nfdata_.Nup_, BUpMTilde);
+            LinAlg::DGEMM(1.0, 0.0, BDown, nfdata_.Ndown_, BDownMTilde);
 
-        //     const size_t newSize = N0 + KMAX_UPD_;
+            const size_t newSize = N0 + KMAX_UPD_;
 
-        //     nfdata_.Nup_.Resize(newSize, newSize);
-        //     nfdata_.Ndown_.Resize(newSize, newSize);
+            nfdata_.Nup_.Resize(newSize, newSize);
+            nfdata_.Ndown_.Resize(newSize, newSize);
 
-        //     nfdata_.FVup_.resize(newSize);
-        //     (nfdata_.FVdown_).resize(newSize);
+            nfdata_.FVup_.resize(newSize);
+            (nfdata_.FVdown_).resize(newSize);
 
-        //     //utiliser Lapack ici ?
-        //     for (size_t i = N0; i < newSize; i++)
-        //     {
-        //         nfdata_.FVup_(i) = 1.0;
-        //         (nfdata_.FVdown_)(i) = 1.0;
-        //     }
+            //     //utiliser Lapack ici ?
+            for (size_t i = N0; i < newSize; i++)
+            {
+                nfdata_.FVup_(i) = 1.0;
+                (nfdata_.FVdown_)(i) = 1.0;
+            }
 
-        //     //utiliser Lapack ici, slacpy, ?
-        //     Matrix_t eye(newSize - N0, newSize - N0);
-        //     eye.Eye();
-        //     nfdata_.Nup_.SubMat(0, N0, N0 - 1, newSize - 1, 0.0);
-        //     nfdata_.Nup_.SubMat(N0, 0, newSize - 1, N0 - 1, BUpMTilde);
-        //     nfdata_.Nup_.SubMat(N0, N0, newSize - 1, newSize - 1, eye);
+            //     //utiliser Lapack ici, slacpy, ?
+            Matrix_t eye(newSize - N0, newSize - N0);
+            eye.Eye();
+            nfdata_.Nup_.SubMat(0, N0, N0 - 1, newSize - 1, 0.0);
+            nfdata_.Nup_.SubMat(N0, 0, newSize - 1, N0 - 1, BUpMTilde);
+            nfdata_.Nup_.SubMat(N0, N0, newSize - 1, newSize - 1, eye);
 
-        //     nfdata_.Ndown_.SubMat(0, N0, N0 - 1, newSize - 1, 0.0);
-        //     nfdata_.Ndown_.SubMat(N0, 0, newSize - 1, N0 - 1, BDownMTilde);
-        //     nfdata_.Ndown_.SubMat(N0, N0, newSize - 1, newSize - 1, eye);
-        // }
-        // else
-        // {
+            nfdata_.Ndown_.SubMat(0, N0, N0 - 1, newSize - 1, 0.0);
+            nfdata_.Ndown_.SubMat(N0, 0, newSize - 1, N0 - 1, BDownMTilde);
+            nfdata_.Ndown_.SubMat(N0, N0, newSize - 1, newSize - 1, eye);
+        }
+        else
+        {
 
-        //     nfdata_.Nup_ = Matrix_t(KMAX_UPD_, KMAX_UPD_);
-        //     nfdata_.Nup_.Eye();
-        //     nfdata_.Ndown_ = Matrix_t(KMAX_UPD_, KMAX_UPD_);
-        //     nfdata_.Ndown_.Eye();
-        //     nfdata_.FVup_ = SiteVector_t(KMAX_UPD_).ones();
-        //     nfdata_.FVdown_ = SiteVector_t(KMAX_UPD_).ones();
-        // }
+            nfdata_.Nup_ = Matrix_t(KMAX_UPD_, KMAX_UPD_);
+            nfdata_.Nup_.Eye();
+            nfdata_.Ndown_ = Matrix_t(KMAX_UPD_, KMAX_UPD_);
+            nfdata_.Ndown_.Eye();
+            nfdata_.FVup_ = SiteVector_t(KMAX_UPD_).ones();
+            nfdata_.FVdown_ = SiteVector_t(KMAX_UPD_).ones();
+        }
         // // std::cout << "after EnlargeN " << std::endl;
     }
 
@@ -624,37 +624,39 @@ class ABC_MarkovChainSubMatrix
     {
 
         // // std::cout << "in greeninteract " << std::endl;
-        // const size_t N0 = vertices0_.size();
-        // const size_t NN = N0 + KMAX_UPD_;
-        // //assert(NN == vertices0Tilde_.size());
-        // Matrix_t green0up(NN, KMAX_UPD_);
+        const size_t N0 = vertices0_.size();
+        const size_t NN = N0 + KMAX_UPD_;
+        //assert(NN == vertices0Tilde_.size());
+        Matrix_t green0up(NN, KMAX_UPD_);
+        Matrix_t green0down(NN, KMAX_UPD_);
 
         // //ici updater que ce qui est necessaire, updater seulement les colonnes updater
-        // greendata_.greenInteractUp_ = nfdata_.Nup_;
-        // greendata_.greenInteractDown_ = nfdata_.Ndown_;
-        // for (size_t j = 0; j < N0; j++)
-        // {
+        greendata_.greenInteractUp_ = nfdata_.Nup_;
+        greendata_.greenInteractDown_ = nfdata_.Ndown_;
+        for (size_t j = 0; j < N0; j++)
+        {
 
-        //     double factup = 1.0 / (nfdata_.FVup_(j) - 1.0);
-        //     greendata_.greenInteractUp_.MultCol(j, nfdata_.FVup_(j) * factup);
-        //     greendata_.greenInteractUp_(j, j) -= factup;
+            double factup = 1.0 / (nfdata_.FVup_(j) - 1.0);
+            greendata_.greenInteractUp_.MultCol(j, nfdata_.FVup_(j) * factup);
+            greendata_.greenInteractUp_(j, j) -= factup;
 
-        //     double factdown = 1.0 / (nfdata_.FVdown_(j) - 1.0);
-        //     greendata_.greenInteractDown_.MultCol(j, nfdata_.FVdown_(j) * factdown);
-        //     greendata_.greenInteractDown_(j, j) -= factdown;
-        // }
+            double factdown = 1.0 / (nfdata_.FVdown_(j) - 1.0);
+            greendata_.greenInteractDown_.MultCol(j, nfdata_.FVdown_(j) * factdown);
+            greendata_.greenInteractDown_(j, j) -= factdown;
+        }
 
-        // for (size_t j = 0; j < KMAX_UPD_; j++)
-        // {
+        for (size_t j = 0; j < KMAX_UPD_; j++)
+        {
 
-        //     for (size_t i = 0; i < NN; i++)
-        //     {
-        //         green0up(i, j) = GetGreenTau0Up(vertices0Tilde_.at(i), vertices0Tilde_.at(N0 + j));
-        //     }
-        // }
+            for (size_t i = 0; i < NN; i++)
+            {
+                green0up(i, j) = GetGreenTau0(vertices0Tilde_.at(i).vStart(), vertices0Tilde_.at(N0 + j).vStart());
+                green0down(i, j) = GetGreenTau0(vertices0Tilde_.at(i).vEnd(), vertices0Tilde_.at(N0 + j).vEnd());
+            }
+        }
 
-        // LinAlg::DGEMM(1.0, 0.0, nfdata_.Nup_, green0up, greendata_.greenInteractUp_, N0);
-        // LinAlg::DGEMM(1.0, 0.0, nfdata_.Ndown_, green0up, greendata_.greenInteractDown_, N0);
+        LinAlg::DGEMM(1.0, 0.0, nfdata_.Nup_, green0up, greendata_.greenInteractUp_, N0);
+        LinAlg::DGEMM(1.0, 0.0, nfdata_.Ndown_, green0down, greendata_.greenInteractDown_, N0);
 
         // // std::cout << "after greeninteract " << std::endl;
     }
@@ -749,25 +751,26 @@ class ABC_MarkovChainSubMatrix
     void InsertNonInteractVertices()
     {
         // //AssertSanity();
-        // vertices0_ = dataCT_->vertices_;
-        // const size_t N0 = dataCT_->vertices_.size();
-        // assert(N0 == nfdata_.Nup_.n_rows());
+        vertices0_ = dataCT_->vertices_;
+        const size_t N0 = dataCT_->vertices_.size();
+        assert(N0 == nfdata_.Nup_.n_rows());
 
-        // for (size_t i = 0; i < KMAX_UPD_; i++)
-        // {
-        //     Vertex vertex(dataCT_->beta_ * urng_(), static_cast<Site_t>(Nc * urng_()), AuxSpin_t::Zero);
-        //     dataCT_->vertices_.push_back(vertex);
+        for (size_t i = 0; i < KMAX_UPD_; i++)
+        {
+            Vertex vertex = vertexBuilder_.BuildVertex(urng_);
+            vertex.SetAux(AuxSpin_t::Zero);
+            dataCT_->vertices_.AppendVertex(vertex);
 
-        //     verticesInsertable_.push_back(N0 + i);
-        // }
-        // verticesToRemove_ = verticesInsertable_;
+            verticesInsertable_.push_back(N0 + i);
+        }
+        verticesToRemove_ = verticesInsertable_;
 
-        // for (size_t i = 0; i < N0; i++)
-        // {
-        //     verticesRemovable_.push_back(i);
-        // }
+        for (size_t i = 0; i < N0; i++)
+        {
+            verticesRemovable_.push_back(i);
+        }
 
-        // vertices0Tilde_ = dataCT_->vertices_;
+        vertices0Tilde_ = dataCT_->vertices_;
     }
 
     void AssertSanity()
@@ -812,8 +815,8 @@ class ABC_MarkovChainSubMatrix
     std::vector<size_t> verticesRemovable_; //the interacting vertices that can be removed
     std::vector<size_t> verticesToRemove_;
     std::vector<size_t> verticesInsertable_; //the vertices at which you can insert
-    std::vector<Vertex> vertices0_;          //the initial config, withouth the noninteracting vertices
-    std::vector<Vertex> vertices0Tilde_;
+    Diagrammatic::Vertices vertices0_;       //the initial config, withouth the noninteracting vertices
+    Diagrammatic::Vertices vertices0Tilde_;
 
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
 

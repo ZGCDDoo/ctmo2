@@ -116,6 +116,8 @@ class Vertices
   public:
     Vertices() : key_(0){};
 
+    Vertices &operator=(const Vertices &vertices) = default;
+
     void AppendVertex(const Vertex &vertex)
     {
         AssertSizes();
