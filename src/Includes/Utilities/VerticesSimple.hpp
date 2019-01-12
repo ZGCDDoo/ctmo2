@@ -234,6 +234,42 @@ class Vertices
         verticesKeysVec_.pop_back();
     }
 
+    void EraseVertexOneOrbital(const size_t &pp)
+    {
+        data_.erase(data_.begin() + pp);
+        verticesKeysVec_.erase(verticesKeysVec_.begin() + pp);
+
+        vPartUpVec_.erase(vPartUpVec_.begin() + pp);
+        vPartDownVec_.erase(vPartDownVec_.begin() + pp);
+
+        indexPartUpVec_.erase(indexPartUpVec_.begin() + pp);
+        indexPartDownVec_.erase(indexPartDownVec_.begin() + pp);
+    }
+
+    void SwapVertexOneOrbital(const size_t &pp, const size_t &ii)
+    {
+        std::iter_swap(data_.begin() + pp, data_.begin() + ii);
+        std::iter_swap(verticesKeysVec_.begin() + pp, verticesKeysVec_.begin() + ii);
+
+        std::iter_swap(vPartUpVec_.begin() + pp, vPartUpVec_.begin() + ii);
+        std::iter_swap(vPartDownVec_.begin() + pp, vPartDownVec_.begin() + ii);
+
+        std::iter_swap(indexPartUpVec_.begin() + pp, indexPartUpVec_.begin() + ii);
+        std::iter_swap(indexPartDownVec_.begin() + pp, indexPartDownVec_.begin() + ii);
+    }
+
+    // void Resize(const size_t &ss)
+    // {
+    //     data_.resize(ss);
+    //     verticesKeysVec_.resize(ss);
+
+    //     vPartUpVec_.resize(ss);
+    //     vPartDownVec_.resize(ss);
+
+    //     indexPartUpVec_.resize(ss);
+    //     indexPartDownVec_.resize(ss);
+    // }
+
     void PopBackVertexPart(const FermionSpin_t &spin)
     {
         if (spin == FermionSpin_t::Up)

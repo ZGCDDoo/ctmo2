@@ -498,7 +498,7 @@ class ABC_MarkovChainSubMatrix
 
     void UpdateN()
     {
-        // // std::cout << "in updatN " << std::endl;
+        // std::cout << "in updatN " << std::endl;
         if (verticesUpdated_.size())
         {
             const size_t NN = vertices0Tilde_.size();
@@ -514,51 +514,51 @@ class ABC_MarkovChainSubMatrix
             Matrix_t NTildeRowUp(LK, NN);
             Matrix_t NTildeRowDown(LK, NN);
 
-            //     for (size_t i = 0; i < NN; i++)
-            //     {
-            //         AuxSpin_t auxI = dataCT_->vertices_.at(i).aux();
-            //         AuxSpin_t auxI0Tilde = vertices0Tilde_.at(i).aux();
-            //         DMatrixUp(i, i) = 1.0 / (1.0 + gammaUpSubMatrix(auxI, auxI0Tilde));
-            //         DMatrixDown(i, i) = 1.0 / (1.0 + gammaDownSubMatrix(auxI, auxI0Tilde));
+            for (size_t i = 0; i < NN; i++)
+            {
+                const Vertex vI = dataCT_->vertices_.at(i);
+                const Vertex vI0Tilde = vertices0Tilde_.at(i);
+                DMatrixUp(i, i) = 1.0 / (1.0 + gammaSubMatrix(vI.vStart(), vI0Tilde.vStart()));
+                DMatrixDown(i, i) = 1.0 / (1.0 + gammaSubMatrix(vI.vEnd(), vI0Tilde.vEnd()));
 
-            //         for (size_t j = 0; j < verticesUpdated_.size(); j++)
-            //         {
-            //             GTildeColUp(i, j) = greendata_.greenInteractUp_(i, verticesUpdated_.at(j));
-            //             GTildeColDown(i, j) = greendata_.greenInteractDown_(i, verticesUpdated_[j]);
+                for (size_t j = 0; j < verticesUpdated_.size(); j++)
+                {
+                    GTildeColUp(i, j) = greendata_.greenInteractUp_(i, verticesUpdated_.at(j));
+                    GTildeColDown(i, j) = greendata_.greenInteractDown_(i, verticesUpdated_[j]);
 
-            //             NTildeRowUp(j, i) = nfdata_.Nup_(verticesUpdated_[j], i);
-            //             NTildeRowDown(j, i) = nfdata_.Ndown_(verticesUpdated_[j], i);
-            //         }
-            //     }
+                    NTildeRowUp(j, i) = nfdata_.Nup_(verticesUpdated_[j], i);
+                    NTildeRowDown(j, i) = nfdata_.Ndown_(verticesUpdated_[j], i);
+                }
+            }
 
-            //     Matrix_t tmp(gammadata_.gammaUpI_.n_rows(), NTildeRowUp.n_cols());
-            //     LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaUpI_, NTildeRowUp, tmp);
-            //     LinAlg::DGEMM(-1.0, 1.0, GTildeColUp, tmp, nfdata_.Nup_);
+            Matrix_t tmp(gammadata_.gammaUpI_.n_rows(), NTildeRowUp.n_cols());
+            LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaUpI_, NTildeRowUp, tmp);
+            LinAlg::DGEMM(-1.0, 1.0, GTildeColUp, tmp, nfdata_.Nup_);
 
-            //     LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaDownI_, NTildeRowDown, tmp);
-            //     LinAlg::DGEMM(-1.0, 1.0, GTildeColDown, tmp, nfdata_.Ndown_);
+            LinAlg::DGEMM(1.0, 0.0, gammadata_.gammaDownI_, NTildeRowDown, tmp);
+            LinAlg::DGEMM(-1.0, 1.0, GTildeColDown, tmp, nfdata_.Ndown_);
 
-            //     for (size_t j = 0; j < nfdata_.Nup_.n_cols(); j++)
-            //     {
-            //         for (size_t i = 0; i < nfdata_.Nup_.n_rows(); i++)
-            //         {
-            //             nfdata_.Nup_(i, j) *= DMatrixUp(i, i);
-            //             nfdata_.Ndown_(i, j) *= DMatrixDown(i, i);
-            //         }
-            //     }
+            for (size_t j = 0; j < nfdata_.Nup_.n_cols(); j++)
+            {
+                for (size_t i = 0; i < nfdata_.Nup_.n_rows(); i++)
+                {
+                    nfdata_.Nup_(i, j) *= DMatrixUp(i, i);
+                    nfdata_.Ndown_(i, j) *= DMatrixDown(i, i);
+                }
+            }
 
-            //     gammadata_.gammaUpI_.Clear();
-            //     gammadata_.gammaDownI_.Clear();
-            //     // std::cout << "After clear " << std::endl;
+            gammadata_.gammaUpI_.Clear();
+            gammadata_.gammaDownI_.Clear();
+            // std::cout << "After clear " << std::endl;
         }
 
-        // // std::cout << "After updateN " << std::endl;
+        // std::cout << "After updateN " << std::endl;
     }
 
     void EnlargeN()
     {
-        // // std::cout << "in EnlargeN " << std::endl;
-        // //build the B matrices
+        // std::cout << "in EnlargeN " << std::endl;
+        //build the B matrices
         const size_t N0 = vertices0_.size(); //here vertices0 is the same as vertices withouth the non-interacting spins
         if (N0)
         {
@@ -589,14 +589,14 @@ class ABC_MarkovChainSubMatrix
             nfdata_.FVup_.resize(newSize);
             (nfdata_.FVdown_).resize(newSize);
 
-            //     //utiliser Lapack ici ?
+            //utiliser Lapack ici ?
             for (size_t i = N0; i < newSize; i++)
             {
                 nfdata_.FVup_(i) = 1.0;
                 (nfdata_.FVdown_)(i) = 1.0;
             }
 
-            //     //utiliser Lapack ici, slacpy, ?
+            //utiliser Lapack ici, slacpy, ?
             Matrix_t eye(newSize - N0, newSize - N0);
             eye.Eye();
             nfdata_.Nup_.SubMat(0, N0, N0 - 1, newSize - 1, 0.0);
@@ -617,20 +617,20 @@ class ABC_MarkovChainSubMatrix
             nfdata_.FVup_ = SiteVector_t(KMAX_UPD_).ones();
             nfdata_.FVdown_ = SiteVector_t(KMAX_UPD_).ones();
         }
-        // // std::cout << "after EnlargeN " << std::endl;
+        // std::cout << "after EnlargeN " << std::endl;
     }
 
     void UpdateGreenInteract()
     {
 
-        // // std::cout << "in greeninteract " << std::endl;
+        // std::cout << "in greeninteract " << std::endl;
         const size_t N0 = vertices0_.size();
         const size_t NN = N0 + KMAX_UPD_;
         //assert(NN == vertices0Tilde_.size());
         Matrix_t green0up(NN, KMAX_UPD_);
         Matrix_t green0down(NN, KMAX_UPD_);
 
-        // //ici updater que ce qui est necessaire, updater seulement les colonnes updater
+        //ici updater que ce qui est necessaire, updater seulement les colonnes updater
         greendata_.greenInteractUp_ = nfdata_.Nup_;
         greendata_.greenInteractDown_ = nfdata_.Ndown_;
         for (size_t j = 0; j < N0; j++)
@@ -658,85 +658,86 @@ class ABC_MarkovChainSubMatrix
         LinAlg::DGEMM(1.0, 0.0, nfdata_.Nup_, green0up, greendata_.greenInteractUp_, N0);
         LinAlg::DGEMM(1.0, 0.0, nfdata_.Ndown_, green0down, greendata_.greenInteractDown_, N0);
 
-        // // std::cout << "after greeninteract " << std::endl;
+        // std::cout << "after greeninteract " << std::endl;
     }
 
     void RemoveNonInteract()
     {
-        // // std::cout << "in removenoninteract " << std::endl;
-        // std::sort(verticesToRemove_.begin(), verticesToRemove_.end());
+        // std::cout << "in removenoninteract " << std::endl;
+        std::sort(verticesToRemove_.begin(), verticesToRemove_.end());
 
-        // for (size_t i = 0; i < verticesToRemove_.size(); i++)
-        // {
-        //     size_t index = verticesToRemove_[i] - i; //if verticesToRemove_ in increasing order of index
+        for (size_t i = 0; i < verticesToRemove_.size(); i++)
+        {
+            const size_t index = verticesToRemove_[i] - i; //if verticesToRemove_ in increasing order of index
 
-        //     //cela serait plus rapide de faire un swap et ensuite d'enlever les dernieres colones?
-        //     nfdata_.Nup_.ShedRowAndCol(index);
+            //cela serait plus rapide de faire un swap et ensuite d'enlever les dernieres colones?
+            nfdata_.Nup_.ShedRowAndCol(index);
 
-        //     nfdata_.Ndown_.ShedRowAndCol(index);
+            nfdata_.Ndown_.ShedRowAndCol(index);
 
-        //     nfdata_.FVup_.shed_row(index);
-        //     (nfdata_.FVdown_).shed_row(index);
+            nfdata_.FVup_.shed_row(index);
+            (nfdata_.FVdown_).shed_row(index);
 
-        //     dataCT_->vertices_.erase(dataCT_->vertices_.begin() + index);
-        // }
+            dataCT_->vertices_.EraseVertexOneOrbital(index);
+        }
 
-        // verticesToRemove_.clear();
-        // verticesInsertable_.clear();
-        // verticesUpdated_.clear();
+        verticesToRemove_.clear();
+        verticesInsertable_.clear();
+        verticesUpdated_.clear();
 
-        // //assert(nfdata_.Ndown_.n_rows == dataCT_->vertices_.size());
-        // verticesRemovable_.clear();
-        // AssertSanity();
-        // // std::cout << "after remvovenoninteract " << std::endl;
+        //assert(nfdata_.Ndown_.n_rows == dataCT_->vertices_.size());
+        verticesRemovable_.clear();
+        AssertSanity();
+        // std::cout << "after remvovenoninteract " << std::endl;
     }
 
     void RemoveNonInteractEfficient()
     {
-        // // std::cout << "in removenoninteractEfficient " << std::endl;
-        // std::sort(verticesToRemove_.begin(), verticesToRemove_.end());
-        // std::vector<size_t> verticesInteracting;
-        // // std::cout << "vertices.size() = " << dataCT_->vertices_.size() << std::endl;
-        // // std::cout << "verticesToRemove.size() = " << verticesToRemove_.size() << std::endl;
-        // for (size_t ii = 0; ii < vertices0Tilde_.size(); ii++)
-        // {
-        //     verticesInteracting.push_back(ii);
-        // }
+        // std::cout << "in removenoninteractEfficient " << std::endl;
+        std::sort(verticesToRemove_.begin(), verticesToRemove_.end());
+        std::vector<size_t> verticesInteracting;
+        // std::cout << "vertices.size() = " << dataCT_->vertices_.size() << std::endl;
+        // std::cout << "verticesToRemove.size() = " << verticesToRemove_.size() << std::endl;
+        for (size_t ii = 0; ii < vertices0Tilde_.size(); ii++)
+        {
+            verticesInteracting.push_back(ii);
+        }
 
-        // // std::cout << "Here 1" << std::endl;
-        // for (size_t ii = 0; ii < verticesToRemove_.size(); ii++)
-        // {
-        //     // std::cout << "in loop  " << ii << std::endl;
-        //     size_t indexToRemove = verticesToRemove_.at(ii) - ii;
-        //     verticesInteracting.erase(verticesInteracting.begin() + indexToRemove);
-        // }
-        // const size_t INTERS = verticesInteracting.size(); //interact size
-        // // assert(INTERS > verticesToRemove_.size());
-        // // std::cout << "Here 2" << std::endl;
+        // std::cout << "Here 1" << std::endl;
+        for (size_t ii = 0; ii < verticesToRemove_.size(); ii++)
+        {
+            // std::cout << "in loop  " << ii << std::endl;
+            size_t indexToRemove = verticesToRemove_.at(ii) - ii;
+            verticesInteracting.erase(verticesInteracting.begin() + indexToRemove);
+        }
 
-        // for (size_t i = 0; i < std::min<size_t>(verticesInteracting.size(), verticesToRemove_.size()); i++)
-        // {
-        //     size_t indexToRemove = verticesToRemove_.at(i);
-        //     size_t indexInteracting = verticesInteracting.at(INTERS - 1 - i);
-        //     if (indexInteracting > indexToRemove)
-        //     {
-        //         nfdata_.Nup_.SwapRowsAndCols(indexToRemove, indexInteracting);
-        //         nfdata_.Ndown_.SwapRowsAndCols(indexToRemove, indexInteracting);
-        //         // std::cout << "in if " << std::endl;
-        //         nfdata_.FVup_.swap_rows(indexToRemove, indexInteracting);
-        //         nfdata_.FVdown_.swap_rows(indexToRemove, indexInteracting);
+        const size_t INTERS = verticesInteracting.size(); //interact size
+        assert(INTERS > verticesToRemove_.size());
+        // std::cout << "Here 2" << std::endl;
 
-        //         std::iter_swap(dataCT_->vertices_.begin() + indexToRemove, dataCT_->vertices_.begin() + indexInteracting);
-        //     }
-        //     // std::cout << "After if " << std::endl;
-        // }
+        for (size_t i = 0; i < std::min<size_t>(verticesInteracting.size(), verticesToRemove_.size()); i++)
+        {
+            const size_t indexToRemove = verticesToRemove_.at(i);
+            const size_t indexInteracting = verticesInteracting.at(INTERS - 1 - i);
+            if (indexInteracting > indexToRemove)
+            {
+                nfdata_.Nup_.SwapRowsAndCols(indexToRemove, indexInteracting);
+                nfdata_.Ndown_.SwapRowsAndCols(indexToRemove, indexInteracting);
+                // std::cout << "in if " << std::endl;
+                nfdata_.FVup_.swap_rows(indexToRemove, indexInteracting);
+                nfdata_.FVdown_.swap_rows(indexToRemove, indexInteracting);
+
+                dataCT_->vertices_.SwapVertexOneOrbital(indexToRemove, indexInteracting);
+            }
+            // std::cout << "After if " << std::endl;
+        }
 
         // nfdata_.Nup_.Resize(INTERS, INTERS);
         // nfdata_.Ndown_.Resize(INTERS, INTERS);
 
         // nfdata_.FVup_.resize(INTERS);
         // nfdata_.FVdown_.resize(INTERS);
-        // dataCT_->vertices_.resize(INTERS);
+        // dataCT_->vertices_.Resize(INTERS);
 
         // verticesToRemove_.clear();
         // verticesInsertable_.clear();
@@ -745,7 +746,7 @@ class ABC_MarkovChainSubMatrix
         // assert(nfdata_.Ndown_.n_rows() == dataCT_->vertices_.size());
         // verticesRemovable_.clear();
         // AssertSanity();
-        // // std::cout << "after remvovenoninteractEfficient " << std::endl;
+        // std::cout << "after remvovenoninteractEfficient " << std::endl;
     }
 
     void InsertNonInteractVertices()
