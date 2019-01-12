@@ -114,7 +114,7 @@ class ABC_MarkovChainSubMatrix
         Logging::Debug("MarkovChain Created.");
     }
 
-    ~ABC_MarkovChainSubMatrix() = default;
+    virtual ~ABC_MarkovChainSubMatrix(){};
 
     //Getters
 
@@ -732,12 +732,12 @@ class ABC_MarkovChainSubMatrix
             // std::cout << "After if " << std::endl;
         }
 
-        // nfdata_.Nup_.Resize(INTERS, INTERS);
-        // nfdata_.Ndown_.Resize(INTERS, INTERS);
+        nfdata_.Nup_.Resize(INTERS, INTERS);
+        nfdata_.Ndown_.Resize(INTERS, INTERS);
 
-        // nfdata_.FVup_.resize(INTERS);
-        // nfdata_.FVdown_.resize(INTERS);
-        // dataCT_->vertices_.Resize(INTERS);
+        nfdata_.FVup_.resize(INTERS);
+        nfdata_.FVdown_.resize(INTERS);
+        dataCT_->vertices_.Resize(INTERS);
 
         // verticesToRemove_.clear();
         // verticesInsertable_.clear();

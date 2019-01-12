@@ -25,6 +25,10 @@ const size_t INVALID = 999;
 class VertexPart
 {
   public:
+    VertexPart(){};
+
+    VertexPart(const VertexPart &vp) = default;
+
     VertexPart(const VertexType vtype, const Tau_t &tau, const Site_t &site, const FermionSpin_t &spin,
                const size_t &orbital, const AuxSpin_t &aux) : vtype_(vtype),
                                                               tau_(tau),
@@ -32,7 +36,9 @@ class VertexPart
                                                               spin_(spin),
                                                               orbital_(orbital),
                                                               superSite_{site, orbital},
-                                                              aux_(aux) {}
+                                                              aux_(aux)
+    {
+    }
 
     VertexPart &operator=(const VertexPart &vpart) = default;
 
@@ -258,17 +264,17 @@ class Vertices
         std::iter_swap(indexPartDownVec_.begin() + pp, indexPartDownVec_.begin() + ii);
     }
 
-    // void Resize(const size_t &ss)
-    // {
-    //     data_.resize(ss);
-    //     verticesKeysVec_.resize(ss);
+    void Resize(const size_t &ss)
+    {
+        //     data_.resize(ss);
+        verticesKeysVec_.resize(ss);
 
-    //     vPartUpVec_.resize(ss);
-    //     vPartDownVec_.resize(ss);
+        vPartUpVec_.resize(ss);
+        //     vPartDownVec_.resize(ss);
 
-    //     indexPartUpVec_.resize(ss);
-    //     indexPartDownVec_.resize(ss);
-    // }
+        indexPartUpVec_.resize(ss);
+        indexPartDownVec_.resize(ss);
+    }
 
     void PopBackVertexPart(const FermionSpin_t &spin)
     {
