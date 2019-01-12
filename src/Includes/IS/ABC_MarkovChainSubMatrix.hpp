@@ -147,7 +147,7 @@ class ABC_MarkovChainSubMatrix
     }
 
     virtual double gammaSubMatrix(const VertexPart &vpTo, const VertexPart &vpFrom) const = 0;
-    // virtual double KAux() = 0;
+    // virtual double KAux_ = 0;
     virtual double FAux(const VertexPart &vPart) const = 0;
 
     void DoStep()
@@ -229,95 +229,99 @@ class ABC_MarkovChainSubMatrix
 
     void RemoveVertexSubMatrix()
     {
-        // if (vertices0_.size() && verticesRemovable_.size())
-        // {
-        //     updStats_["Removes"][0]++;
-        //     const size_t ii = static_cast<int>(urng_() * verticesRemovable_.size());
-        //     const size_t vertexIndex = verticesRemovable_.at(ii);
+        if (vertices0_.size() && verticesRemovable_.size())
+        {
+            updStats_["Removes"][0]++;
+            const size_t ii = static_cast<int>(urng_() * verticesRemovable_.size());
+            const size_t vertexIndex = verticesRemovable_.at(ii);
 
-        //     Vertex vertex = vertices0Tilde_.at(vertexIndex);
-        //     if (vertexIndex >= vertices0_.size())
-        //     {
-        //         RemovePreviouslyInserted(vertexIndex);
-        //     }
-        //     else
-        //     {
+            Vertex vertex = vertices0Tilde_.at(vertexIndex);
+            if (vertexIndex >= vertices0_.size())
+            {
+                RemovePreviouslyInserted(vertexIndex);
+            }
+            else
+            {
 
-        //         vertex.SetAux(AuxSpin_t::Zero);
+                vertex.SetAux(AuxSpin_t::Zero);
 
-        //         double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
-        //         double probAcc = double(nPhyscialVertices_) * ratio / KAux();
-        //         probAcc *= PROBINSERT / PROBREMOVE;
+                double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
+                double probAcc = double(nPhyscialVertices_) * ratio / KAux_;
+                probAcc *= PROBINSERT / PROBREMOVE;
 
-        //         if (urng_() < std::abs(probAcc))
-        //         {
-        //             updStats_["Removes"][1]++;
-        //             verticesUpdated_.push_back(vertexIndex);
-        //             verticesToRemove_.push_back(vertexIndex);
-        //             verticesRemovable_.erase(verticesRemovable_.begin() + ii);
-        //             dataCT_->vertices_.at(vertexIndex) = vertex;
-        //             nPhyscialVertices_ -= 1;
-        //             nfdata_.FVup_(vertexIndex) = 1.0;
-        //             nfdata_.FVdown_(vertexIndex) = 1.0;
+                if (urng_() < std::abs(probAcc))
+                {
+                    updStats_["Removes"][1]++;
+                    verticesUpdated_.push_back(vertexIndex);
+                    verticesToRemove_.push_back(vertexIndex);
+                    verticesRemovable_.erase(verticesRemovable_.begin() + ii);
+                    dataCT_->vertices_.at(vertexIndex) = vertex;
+                    nPhyscialVertices_ -= 1;
+                    nfdata_.FVup_(vertexIndex) = 1.0;
+                    nfdata_.FVdown_(vertexIndex) = 1.0;
 
-        //             AcceptMove(probAcc);
-        //         }
-        //     }
-        // }
+                    AcceptMove(probAcc);
+                }
+            }
+        }
         // // std::cout << "after remove " << std::endl;
     }
 
-    //    void RemovePreviouslyInserted(const size_t &vertexIndex) //vertexIndex which is in cTilde
-    //    {
-    // using itType_t = std::vector<size_t>::const_iterator;
-    // const itType_t ppit = std::find<itType_t, size_t>(verticesUpdated_.begin(), verticesUpdated_.end(), vertexIndex);
-    // if (ppit == verticesUpdated_.end())
-    // {
-    //     throw std::runtime_error("Bad index in find vertexIndex in verticesUpdated_!");
-    // }
+    void RemovePreviouslyInserted(const size_t &vertexIndex) //vertexIndex which is in cTilde
+    {
+        using itType_t = std::vector<size_t>::const_iterator;
+        const itType_t ppit = std::find<itType_t, size_t>(verticesUpdated_.begin(), verticesUpdated_.end(), vertexIndex);
+        if (ppit == verticesUpdated_.end())
+        {
+            throw std::runtime_error("Bad index in find vertexIndex in verticesUpdated_!");
+        }
 
-    // const size_t pp = std::distance<itType_t>(verticesUpdated_.begin(), ppit); //the index of the updated vertex in the gammaSigma Matrices
+        const size_t pp = std::distance<itType_t>(verticesUpdated_.begin(), ppit); //the index of the updated vertex in the gammaSigma Matrices
 
-    // const AuxSpin_t auxFrom = dataCT_->vertices_.at(vertexIndex).aux();
-    // assert(auxFrom != AuxSpin_t::Zero); //we are about to remove a vertex that has been inserted !
-    // const double gammappupI = -1.0 / gammaUpSubMatrix(auxFrom, AuxSpin_t::Zero);
-    // const double gammappdownI = -1.0 / gammaDownSubMatrix(auxFrom, AuxSpin_t::Zero);
-    // const double ratio = gammappupI * gammappdownI * gammadata_.gammaUpI_(pp, pp) * gammadata_.gammaDownI_(pp, pp);
-    // const double probAcc = PROBINSERT / PROBREMOVE * double(nPhyscialVertices_) * ratio / KAux();
+        const Vertex vFrom = dataCT_->vertices_.at(vertexIndex);
+        assert(vFrom.vStart().aux() != AuxSpin_t::Zero); //we are about to remove a vertex that has been inserted !
+        VertexPart vpTo;
+        vpTo.SetAux(AuxSpin_t::Zero);
+        vpTo.SetSpin(FermionSpin_t::Up);
+        const double gammappupI = -1.0 / gammaSubMatrix(vFrom.vStart(), vpTo);
+        vpTo.SetSpin(FermionSpin_t::Down);
+        const double gammappdownI = -1.0 / gammaSubMatrix(vFrom.vEnd(), vpTo);
+        const double ratio = gammappupI * gammappdownI * gammadata_.gammaUpI_(pp, pp) * gammadata_.gammaDownI_(pp, pp);
+        const double probAcc = PROBINSERT / PROBREMOVE * double(nPhyscialVertices_) * ratio / KAux_;
 
-    // if (urng_() < std::abs(probAcc))
-    // {
-    //     nPhyscialVertices_--;
-    //     if (probAcc < 0.0)
-    //     {
-    //         dataCT_->sign_ *= -1;
-    //     }
+        if (urng_() < std::abs(probAcc))
+        {
+            nPhyscialVertices_--;
+            if (probAcc < 0.0)
+            {
+                dataCT_->sign_ *= -1;
+            }
 
-    //     updStats_["Removes"][1]++;
-    //     LinAlg::BlockRankOneDowngrade(gammadata_.gammaUpI_, pp);
-    //     LinAlg::BlockRankOneDowngrade(gammadata_.gammaDownI_, pp);
+            updStats_["Removes"][1]++;
+            LinAlg::BlockRankOneDowngrade(gammadata_.gammaUpI_, pp);
+            LinAlg::BlockRankOneDowngrade(gammadata_.gammaDownI_, pp);
 
-    //     const size_t kkm1 = verticesUpdated_.size() - 1;
-    //     std::iter_swap(verticesUpdated_.begin() + pp, verticesUpdated_.begin() + kkm1);
-    //     verticesUpdated_.pop_back();
+            const size_t kkm1 = verticesUpdated_.size() - 1;
+            std::iter_swap(verticesUpdated_.begin() + pp, verticesUpdated_.begin() + kkm1);
+            verticesUpdated_.pop_back();
 
-    //     //Taken from : https://stackoverflow.com/questions/39912/how-do-i-remove-an-item-from-a-stl-vector-with-a-certain-value
-    //     verticesRemovable_.erase(std::remove(verticesRemovable_.begin(), verticesRemovable_.end(), vertexIndex), verticesRemovable_.end());
+            //Taken from : https://stackoverflow.com/questions/39912/how-do-i-remove-an-item-from-a-stl-vector-with-a-certain-value
+            verticesRemovable_.erase(std::remove(verticesRemovable_.begin(), verticesRemovable_.end(), vertexIndex), verticesRemovable_.end());
 
-    //     //just a check, make sure that the vertex is not in the verticesToRemove just yet
-    //     const itType_t rrit = std::find<itType_t, size_t>(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex);
-    //     if (rrit != verticesToRemove_.end())
-    //     {
-    //         throw std::runtime_error("Bad index in find vertexIndex in verticesToRemove_!");
-    //     }
-    //     //end of check
-    //     verticesToRemove_.push_back(vertexIndex);
+            //just a check, make sure that the vertex is not in the verticesToRemove just yet
+            const itType_t rrit = std::find<itType_t, size_t>(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex);
+            if (rrit != verticesToRemove_.end())
+            {
+                throw std::runtime_error("Bad index in find vertexIndex in verticesToRemove_!");
+            }
+            //end of check
+            verticesToRemove_.push_back(vertexIndex);
 
-    //     nfdata_.FVup_(vertexIndex) = 1.0;
-    //     nfdata_.FVdown_(vertexIndex) = 1.0;
-    //     dataCT_->vertices_.at(vertexIndex).SetAux(AuxSpin_t::Zero);
-    // }
-    //    }
+            nfdata_.FVup_(vertexIndex) = 1.0;
+            nfdata_.FVdown_(vertexIndex) = 1.0;
+            dataCT_->vertices_.at(vertexIndex).SetAux(AuxSpin_t::Zero);
+        }
+    }
 
     void InsertVertexSubMatrix()
     {
@@ -739,13 +743,13 @@ class ABC_MarkovChainSubMatrix
         nfdata_.FVdown_.resize(INTERS);
         dataCT_->vertices_.Resize(INTERS);
 
-        // verticesToRemove_.clear();
-        // verticesInsertable_.clear();
-        // verticesUpdated_.clear();
+        verticesToRemove_.clear();
+        verticesInsertable_.clear();
+        verticesUpdated_.clear();
 
-        // assert(nfdata_.Ndown_.n_rows() == dataCT_->vertices_.size());
-        // verticesRemovable_.clear();
-        // AssertSanity();
+        assert(nfdata_.Ndown_.n_rows() == dataCT_->vertices_.size());
+        verticesRemovable_.clear();
+        AssertSanity();
         // std::cout << "after remvovenoninteractEfficient " << std::endl;
     }
 
@@ -776,7 +780,7 @@ class ABC_MarkovChainSubMatrix
 
     void AssertSanity()
     {
-        // assert(gammadata_.gammaDownI_.n_rows() == gammadata_.gammaUpI_.n_cols());
+        assert(gammadata_.gammaDownI_.n_rows() == gammadata_.gammaUpI_.n_cols());
 
         // for (size_t i = 0; i < dataCT_->vertices_.size(); i++)
         // {

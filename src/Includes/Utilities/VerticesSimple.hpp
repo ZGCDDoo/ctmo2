@@ -63,6 +63,11 @@ class VertexPart
         aux_ = aux;
     }
 
+    void SetSpin(const FermionSpin_t &spin)
+    {
+        spin_ = spin;
+    }
+
   private:
     VertexType vtype_;
     Tau_t tau_;
