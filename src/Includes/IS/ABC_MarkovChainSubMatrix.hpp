@@ -100,7 +100,8 @@ class ABC_MarkovChainSubMatrix
                                                                               modelPtr_)),
                                                                       obs_(dataCT_, jjSim),
                                                                       vertexBuilder_(jjSim, modelPtr_->Nc()),
-                                                                      KMAX_UPD_(jjSim["KMAX_UPD"].get<double>())
+                                                                      KMAX_UPD_(jjSim["KMAX_UPD"].get<double>()),
+                                                                      KAux_(0.0)
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -205,27 +206,26 @@ class ABC_MarkovChainSubMatrix
         return ratio;
     }
 
-    //    void AcceptMove(const double &probAcc)
-    //    {
-    // if (probAcc < 0.0)
-    // {
-    //     dataCT_->sign_ *= -1;
-    // }
+    void AcceptMove(const double &probAcc)
+    {
+        if (probAcc < 0.0)
+        {
+            dataCT_->sign_ *= -1;
+        }
 
-    // if (gammadata_.gammaUpI_.n_rows())
-    // {
-    //     LinAlg::BlockRankOneUpgrade(gammadata_.gammaUpI_, upddata_.gammaUpIYup_, upddata_.xup_, 1.0 / upddata_.dTildeUpI_);
-    //     LinAlg::BlockRankOneUpgrade(gammadata_.gammaDownI_, upddata_.gammaDownIYdown_, upddata_.xdown_, 1.0 / upddata_.dTildeDownI_);
-    // }
-    // else
-    // {
-    //     gammadata_.gammaUpI_ = Matrix_t(1, 1);
-    //     gammadata_.gammaUpI_(0, 0) = 1.0 / upddata_.dup_;
-    //     gammadata_.gammaDownI_ = Matrix_t(1, 1);
-    //     gammadata_.gammaDownI_(0, 0) = 1.0 / upddata_.ddown_;
-    // }
-
-    // }
+        if (gammadata_.gammaUpI_.n_rows())
+        {
+            LinAlg::BlockRankOneUpgrade(gammadata_.gammaUpI_, upddata_.gammaUpIYup_, upddata_.xup_, 1.0 / upddata_.dTildeUpI_);
+            LinAlg::BlockRankOneUpgrade(gammadata_.gammaDownI_, upddata_.gammaDownIYdown_, upddata_.xdown_, 1.0 / upddata_.dTildeDownI_);
+        }
+        else
+        {
+            gammadata_.gammaUpI_ = Matrix_t(1, 1);
+            gammadata_.gammaUpI_(0, 0) = 1.0 / upddata_.dup_;
+            gammadata_.gammaDownI_ = Matrix_t(1, 1);
+            gammadata_.gammaDownI_(0, 0) = 1.0 / upddata_.ddown_;
+        }
+    }
 
     void RemoveVertexSubMatrix()
     {
@@ -330,140 +330,152 @@ class ABC_MarkovChainSubMatrix
 
             vertex.SetAux(urng_() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down);
             double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
-            ratio += 0.0;
-            // const size_t kknew = nPhyscialVertices_ + 1;
+            const size_t kknew = nPhyscialVertices_ + 1;
 
-            //     double probAcc = KAux() / static_cast<double>(kknew) * ratio;
-            //     probAcc *= PROBREMOVE / PROBINSERT;
+            double probAcc = KAux_ / static_cast<double>(kknew) * ratio;
+            probAcc *= PROBREMOVE / PROBINSERT;
 
-            //     //dont propose to insert the same vertex, even if update rejected.
-            //     verticesInsertable_.erase(verticesInsertable_.begin() + ii);
+            //dont propose to insert the same vertex, even if update rejected.
+            verticesInsertable_.erase(verticesInsertable_.begin() + ii);
 
-            //     if (urng_() < std::abs(probAcc))
-            //     {
+            if (urng_() < std::abs(probAcc))
+            {
 
-            //         updStats_["Inserts"][1]++;
-            //         verticesUpdated_.push_back(vertexIndex);
-            //         dataCT_->vertices_.at(vertexIndex) = vertex;
-            //         verticesToRemove_.erase(std::remove(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex), verticesToRemove_.end());
-            //         verticesRemovable_.push_back(vertexIndex);
-            //         nPhyscialVertices_ += 1;
-            //         nfdata_.FVup_(vertexIndex) = FAuxUp(vertex.aux());
-            //         nfdata_.FVdown_(vertexIndex) = FAuxDown(vertex.aux());
+                updStats_["Inserts"][1]++;
+                verticesUpdated_.push_back(vertexIndex);
+                dataCT_->vertices_.at(vertexIndex) = vertex;
+                verticesToRemove_.erase(std::remove(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex), verticesToRemove_.end());
+                verticesRemovable_.push_back(vertexIndex);
+                nPhyscialVertices_ += 1;
+                nfdata_.FVup_(vertexIndex) = FAux(vertex.vStart());
+                nfdata_.FVdown_(vertexIndex) = FAux(vertex.vEnd());
 
-            //         AcceptMove(probAcc);
-            //     }
+                AcceptMove(probAcc);
+            }
         }
     }
 
     void CleanUpdate()
     {
-        // //Logging::Info("Cleaning, sign, k =  " + std::to_string(dataCT_->sign_) + ",  " + std::to_string(dataCT_->vertices_.size()));
-        // const size_t kk = dataCT_->vertices_.size();
-        // if (kk == 0)
-        // {
-        //     return;
-        // }
-        // AssertSizes();
-        // for (size_t i = 0; i < kk; i++)
-        // {
-        //     for (size_t j = 0; j < kk; j++)
-        //     {
+        AssertSizes();
 
-        //         nfdata_.Nup_(i, j) = -GetGreenTau0Up(dataCT_->vertices_[i], dataCT_->vertices_[j]) * (nfdata_.FVup_(j) - 1.0);
-        //         nfdata_.Ndown_(i, j) = -GetGreenTau0Down(dataCT_->vertices_[i], dataCT_->vertices_[j]) * (nfdata_.FVdown_(j) - 1.0);
+        const size_t kkup = dataCT_->vertices_.NUp();
+        const size_t kkdown = dataCT_->vertices_.NDown();
 
-        //         if (i == j)
-        //         {
-        //             nfdata_.Nup_(i, i) += nfdata_.FVup_(i);
-        //             nfdata_.Ndown_(i, i) += nfdata_.FVdown_(i);
-        //         }
-        //     }
-        // }
-        // AssertSizes();
+        if (kkup != 0)
+        {
 
-        // nfdata_.Nup_.Inverse();
-        // nfdata_.Ndown_.Inverse();
+            for (size_t iUp = 0; iUp < kkup; iUp++)
+            {
+                for (size_t jUp = 0; jUp < kkup; jUp++)
+                {
+
+                    nfdata_.Nup_(iUp, jUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
+
+                    if (iUp == jUp)
+                    {
+                        nfdata_.Nup_(iUp, iUp) -= nfdata_.FVup_(iUp);
+                    }
+                }
+            }
+            nfdata_.Nup_.Inverse();
+        }
+
+        if (kkdown != 0)
+        {
+            for (size_t iDown = 0; iDown < kkdown; iDown++)
+            {
+                for (size_t jDown = 0; jDown < kkdown; jDown++)
+                {
+
+                    nfdata_.Ndown_(iDown, jDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
+
+                    if (iDown == jDown)
+                    {
+                        nfdata_.Ndown_(iDown, iDown) -= nfdata_.FVdown_(iDown);
+                    }
+                }
+            }
+            nfdata_.Ndown_.Inverse();
+        }
     }
 
-    //    double GetGreenTau0Up(const Vertex &vertexI, const Vertex &vertexJ) const
-    //    {
-    //        // return (dataCT_->green0CachedUp_(vertexI.site(), vertexJ.site(), vertexI.tau() - (vertexJ.tau() + 1e-12)));
-    //    }
-
-    //    double GetGreenTau0Down(const Vertex &vertexI, const Vertex &vertexJ) const
-    //    {
-    //
-    //        // #ifndef AFM
-    //        //         return GetGreenTau0Up(vertexI, vertexJ);
-    //        // #endif
-    //
-    //        // #ifdef AFM
-    //        //         const double delta = 1e-12;
-    //        //         // 1e-20;
-    //        //         Tau_t tauDiff = vertexI.tau() - (vertexJ.tau() + delta);
-    //        //         Site_t s1 = vertexI.site(); //model_.indepSites().at(ll).first;
-    //        //         Site_t s2 = vertexJ.site(); //model_.indepSites().at(ll).second;
-    //        //         return (dataCT_->green0CachedDown_(s1, s2, tauDiff));
-    //        // #endif
-    //    }
+    double GetGreenTau0(const VertexPart &x, const VertexPart &y) const
+    {
+        assert(x.spin() == y.spin());
+        if (x.spin() == FermionSpin_t::Up)
+        {
+            return (dataCT_->green0CachedUp_(x.superSite(), y.superSite(), x.tau() - y.tau()));
+        }
+        else
+        {
+#ifdef AFM
+            return (dataCT_->green0CachedDown_(x.superSite(), y.superSite(), x.tau() - y.tau()));
+#else
+            return (dataCT_->green0CachedUp_(x.superSite(), y.superSite(), x.tau() - y.tau()));
+#endif
+        }
+    }
 
     void Measure()
     {
-        // AssertSizes();
-        // const SiteVector_t FVupM1 = -(nfdata_.FVup_ - 1.0);
-        // const SiteVector_t FVdownM1 = -(nfdata_.FVdown_ - 1.0);
-        // DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
-        // DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
-        // obs_.Measure();
-        // AssertSizes();
+        AssertSizes();
+        const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
+        const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
+        DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
+        DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
+        obs_.Measure();
     }
 
     void SaveMeas()
     {
 
-        // obs_.Save();
-        // mpiUt::SaveConfig(dataCT_->vertices_);
-        // SaveUpd("upd.meas");
+        obs_.Save();
+        Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
+        SaveUpd("Measurements");
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
+        {
+            dataCT_->vertices_.SaveConfig("Config.dat");
+        }
+        Logging::Info("Finished Saving MarkovChain.");
     }
 
     void SaveTherm()
     {
 
-        // SaveUpd("upd.therm");
-        // for (UpdStats_t::iterator it = updStats_.begin(); it != updStats_.end(); ++it)
-        // {
-        //     std::string key = it->first;
-        //     updStats_[key] = 0.0;
-        // }
+        SaveUpd("Thermalization");
+        for (UpdStats_t::iterator it = updStats_.begin(); it != updStats_.end(); ++it)
+        {
+            std::string key = it->first;
+            updStats_[key] = 0.0;
+        }
     }
 
-    //    void SaveUpd(const std::string fname)
-    //    {
-    //         std::vector<UpdStats_t> updStatsVec;
-    // #ifdef HAVEMPI
+    void SaveUpd(const std::string &updType)
+    {
+        std::vector<UpdStats_t> updStatsVec;
+#ifdef HAVEMPI
 
-    //         mpi::communicator world;
-    //         if (mpiUt::Rank() == mpiUt::master)
-    //         {
-    //             mpi::gather(world, updStats_, updStatsVec, mpiUt::master);
-    //         }
-    //         else
-    //         {
-    //             mpi::gather(world, updStats_, mpiUt::master);
-    //         }
-    //         if (mpiUt::Rank() == mpiUt::master)
-    //         {
-    //             mpiUt::SaveUpdStats(fname, updStatsVec);
-    //         }
+        mpi::communicator world;
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
+        {
+            mpi::gather(world, updStats_, updStatsVec, mpiUt::Tools::master);
+        }
+        else
+        {
+            mpi::gather(world, updStats_, mpiUt::Tools::master);
+        }
+        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
+        {
+            Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
+        }
 
-    // #else
-    //         updStatsVec.push_back(updStats_);
-    //         mpiUt::SaveUpdStats(fname, updStatsVec);
-    // #endif
+#else
+        updStatsVec.push_back(updStats_);
+        Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
 
-    //         Logging::Info("Finished Saving MarkovChain.");
-    //    }
+#endif
+    }
 
     void PreparationSteps()
     {
@@ -806,6 +818,7 @@ class ABC_MarkovChainSubMatrix
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
 
     const size_t KMAX_UPD_;
+    const size_t KAux_;
 
     size_t nPhyscialVertices_;
     size_t updatesProposed_;

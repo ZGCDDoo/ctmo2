@@ -19,7 +19,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jjSim, const size_
     if (jjSim["solver"]["IsOneOrbitalOptimized"].get<bool>())
     {
         using Model_t = Models::ABC_Model_2D;
-        //        using MarkovIntSub_t = MarkovSub::MarkovChainSub;
+        using MarkovIntSub_t = MarkovSub::MarkovChainSub;
 
         //Init a dummy model just to be sure that all files are present:
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
@@ -30,8 +30,8 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jjSim, const size_
         world.barrier();
 #endif
 
-        return NULL;
-        //return std::make_unique<MC::MonteCarlo<MarkovIntSub_t>>(std::make_shared<MarkovIntSub_t>(jjSim, seed), jjSim);
+        // return NULL;
+        return std::make_unique<MC::MonteCarlo<MarkovIntSub_t>>(std::make_shared<MarkovIntSub_t>(jjSim, seed), jjSim);
     }
     else
     {
