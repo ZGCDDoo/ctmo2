@@ -444,6 +444,22 @@ class VertexBuilder
     {
     }
 
+    Vertex BuildVertexHubbardIntra(Utilities::UniformRngMt19937_t &urng) const
+    {
+        assert(NOrb_ == 1);
+        const Tau_t tau = urng() * beta_;
+        const Site_t site = urng() * Nc_;
+        const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
+        const Orbital_t o1 = 0;
+        const Orbital_t o2 = 0;
+        const VertexType vertextype = VertexType::HubbardIntra;
+
+        const VertexPart vStart(vertextype, tau, site, FermionSpin_t::Up, o1, aux);
+        const VertexPart vEnd(vertextype, tau, site, FermionSpin_t::Down, o2, aux);
+
+        return Vertex(vertextype, vStart, vEnd, GetProbProb(vStart, vEnd));
+    }
+
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng) const
     {
         const Tau_t tau = urng() * beta_;

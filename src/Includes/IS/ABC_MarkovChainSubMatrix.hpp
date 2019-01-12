@@ -100,8 +100,13 @@ class ABC_MarkovChainSubMatrix
                                                                               modelPtr_)),
                                                                       obs_(dataCT_, jjSim),
                                                                       vertexBuilder_(jjSim, modelPtr_->Nc()),
-                                                                      KMAX_UPD_(jjSim["KMAX_UPD"].get<double>()),
-                                                                      KAux_(0.0)
+                                                                      KMAX_UPD_(jjSim["solver"]["kmax_upd"].get<double>()),
+                                                                      KAux_(
+                                                                          -jjSim["model"]["U"].get<double>() * dataCT_->beta_ * modelPtr_->Nc() /
+                                                                          (((1.0 + jjSim["model"]["delta"].get<double>()) / jjSim["model"]["delta"].get<double>() - 1.0) *
+                                                                           (jjSim["model"]["delta"].get<double>() / (1.0 + jjSim["model"]["delta"].get<double>()) - 1.0))
+
+                                                                      )
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -264,7 +269,7 @@ class ABC_MarkovChainSubMatrix
                 }
             }
         }
-        // // std::cout << "after remove " << std::endl;
+        // std::cout << "after remove " << std::endl;
     }
 
     void RemovePreviouslyInserted(const size_t &vertexIndex) //vertexIndex which is in cTilde
@@ -689,7 +694,7 @@ class ABC_MarkovChainSubMatrix
         verticesInsertable_.clear();
         verticesUpdated_.clear();
 
-        //assert(nfdata_.Ndown_.n_rows == dataCT_->vertices_.size());
+        assert(nfdata_.Ndown_.n_rows() == dataCT_->vertices_.size());
         verticesRemovable_.clear();
         AssertSanity();
         // std::cout << "after remvovenoninteract " << std::endl;
@@ -755,14 +760,17 @@ class ABC_MarkovChainSubMatrix
 
     void InsertNonInteractVertices()
     {
-        // //AssertSanity();
+        AssertSanity();
         vertices0_ = dataCT_->vertices_;
         const size_t N0 = dataCT_->vertices_.size();
         assert(N0 == nfdata_.Nup_.n_rows());
 
         for (size_t i = 0; i < KMAX_UPD_; i++)
         {
-            Vertex vertex = vertexBuilder_.BuildVertex(urng_);
+            Vertex vertex = vertexBuilder_.BuildVertexHubbardIntra(urng_);
+            assert(vertex.vStart().spin() == FermionSpin_t::Up);
+            assert(vertex.vEnd().spin() == FermionSpin_t::Down);
+
             vertex.SetAux(AuxSpin_t::Zero);
             dataCT_->vertices_.AppendVertex(vertex);
 
@@ -782,15 +790,15 @@ class ABC_MarkovChainSubMatrix
     {
         assert(gammadata_.gammaDownI_.n_rows() == gammadata_.gammaUpI_.n_cols());
 
-        // for (size_t i = 0; i < dataCT_->vertices_.size(); i++)
-        // {
-        //     // std::cout << "i = " << i << std::endl;
-        //     AuxSpin_t aux = dataCT_->vertices_.at(i).aux();
-        //     // std::cout << "FAuxUp(aux),  nfdata_.FVup_(i)= " << FAuxUp(aux) << ", " << nfdata_.FVup_(i) << std::endl;
-        //     assert(aux != AuxSpin_t::Zero);
-        //     assert(std::abs(FAuxUp(aux) - nfdata_.FVup_(i)) < 1e-10);
-        //     assert(std::abs(FAuxDown(aux) - nfdata_.FVdown_(i)) < 1e-10);
-        // }
+        for (size_t i = 0; i < dataCT_->vertices_.size(); i++)
+        {
+            // std::cout << "i = " << i << std::endl;
+            AuxSpin_t aux = dataCT_->vertices_.at(i).vStart().aux();
+            // std::cout << "FAuxUp(aux),  nfdata_.FVup_(i)= " << FAuxUp(aux) << ", " << nfdata_.FVup_(i) << std::endl;
+            assert(aux != AuxSpin_t::Zero);
+            assert(std::abs(FAux(dataCT_->vertices_.at(i).vStart()) - nfdata_.FVup_(i)) < 1e-10);
+            assert(std::abs(FAux(dataCT_->vertices_.at(i).vEnd()) - nfdata_.FVdown_(i)) < 1e-10);
+        }
     }
 
     void PrintVector(std::vector<size_t> v)
@@ -830,6 +838,6 @@ class ABC_MarkovChainSubMatrix
 
     size_t nPhyscialVertices_;
     size_t updatesProposed_;
-}; // namespace MarkovSub
+};
 
 } // namespace MarkovSub
