@@ -77,6 +77,9 @@ class Vertex
 {
 
   public:
+    Vertex(){};
+    Vertex(const Vertex &vp) = default;
+
     Vertex(const VertexType &vtype, const VertexPart &vStart, const VertexPart &vEnd,
            const double &probProb) : vtype_(vtype),
                                      vStart_(vStart),
@@ -121,6 +124,8 @@ class Vertices
 
   public:
     Vertices() : key_(0){};
+
+    Vertices(const Vertices &vp) = default;
 
     Vertices &operator=(const Vertices &vertices) = default;
 
@@ -266,11 +271,11 @@ class Vertices
 
     void Resize(const size_t &ss)
     {
-        //     data_.resize(ss);
+        data_.resize(ss);
         verticesKeysVec_.resize(ss);
 
         vPartUpVec_.resize(ss);
-        //     vPartDownVec_.resize(ss);
+        vPartDownVec_.resize(ss);
 
         indexPartUpVec_.resize(ss);
         indexPartDownVec_.resize(ss);
