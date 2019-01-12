@@ -7,14 +7,15 @@ using namespace LinAlg;
 using Markov_t = MarkovSub::MarkovChainSub;
 
 const double DELTA = 2e-9;
-const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
-
+const std::string FNAME = "../test/data/cdmft_triangle/testtriangle.json";
 Markov_t BuildMarkovChain()
 {
     std::ifstream fin(FNAME);
     Json jj;
     fin >> jj;
-    jj["model"]["beta"] = 200;
+    jj["model"]["beta"] = 100;
+    jj["solver"]["kmax_upd"] = 100;
+
     fin.close();
     std::cout << "Reading in Json in BuildMarkovChain() " << std::endl;
     const size_t seed = 10224;

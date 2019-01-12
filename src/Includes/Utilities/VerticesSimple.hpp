@@ -395,7 +395,14 @@ class AuxHelper
         }
         else
         {
-            return (auxValue(vp.spin(), vp.aux()) / (auxValue(vp.spin(), vp.aux()) - 1.0));
+            if (vp.aux() == AuxSpin_t::Zero)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return (auxValue(vp.spin(), vp.aux()) / (auxValue(vp.spin(), vp.aux()) - 1.0));
+            }
         }
     }
 

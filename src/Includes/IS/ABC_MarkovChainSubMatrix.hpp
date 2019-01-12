@@ -146,6 +146,8 @@ class ABC_MarkovChainSubMatrix
     {
         const size_t kk = dataCT_->vertices_.size();
         assert(kk == nfdata_.Nup_.n_rows());
+        assert(dataCT_->vertices_.NUp() == kk);
+        assert(dataCT_->vertices_.NDown() == kk);
         assert(kk == nfdata_.Nup_.n_cols());
         assert(kk == nfdata_.Ndown_.n_rows());
         assert(kk == nfdata_.Ndown_.n_cols());
@@ -251,7 +253,7 @@ class ABC_MarkovChainSubMatrix
                 vertex.SetAux(AuxSpin_t::Zero);
 
                 double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
-                double probAcc = double(nPhyscialVertices_) * ratio / KAux_;
+                double probAcc = static_cast<double>(nPhyscialVertices_) * ratio / KAux_;
                 probAcc *= PROBINSERT / PROBREMOVE;
 
                 if (urng_() < std::abs(probAcc))
@@ -645,11 +647,11 @@ class ABC_MarkovChainSubMatrix
         for (size_t j = 0; j < N0; j++)
         {
 
-            double factup = 1.0 / (nfdata_.FVup_(j) - 1.0);
+            const double factup = 1.0 / (nfdata_.FVup_(j) - 1.0);
             greendata_.greenInteractUp_.MultCol(j, nfdata_.FVup_(j) * factup);
             greendata_.greenInteractUp_(j, j) -= factup;
 
-            double factdown = 1.0 / (nfdata_.FVdown_(j) - 1.0);
+            const double factdown = 1.0 / (nfdata_.FVdown_(j) - 1.0);
             greendata_.greenInteractDown_.MultCol(j, nfdata_.FVdown_(j) * factdown);
             greendata_.greenInteractDown_(j, j) -= factdown;
         }
