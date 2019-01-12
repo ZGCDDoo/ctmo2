@@ -2,25 +2,23 @@
 
 #include "ABC_MarkovChainSubMatrix.hpp"
 
-namespace Markov
+namespace MarkovSub
 {
 
-template <typename TIOModel, typename TModel>
-class MarkovChainSub : public ABC_MarkovChainSubMatrix<TIOModel, TModel>
+class MarkovChainSub : public ABC_MarkovChainSubMatrix
 {
 
-  public:
-    MarkovChainSub(const Json &jj, const size_t &seed) : ABC_MarkovChainSubMatrix<TIOModel, TModel>(jj, seed){};
+public:
+  MarkovChainSub(const Json &jj, const size_t &seed) : ABC_MarkovChainSubMatrix(jj, seed){};
 
-    ~MarkovChainSub(){};
+  ~MarkovChainSub(){};
 
-    //Overriding
-    double gammaUpSubMatrix(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->model_.gammaUp(auxTo, auxFrom)); }
-    double gammaDownSubMatrix(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->model_.gammaDown(auxTo, auxFrom)); }
-    double KAux() override { return (this->model_.KAux()); }
-    double FAuxUp(const AuxSpin_t &aux) override { return (this->model_.FAuxUp(aux)); }
-    double FAuxDown(const AuxSpin_t &aux) override { return (this->model_.FAuxDown(aux)); }
-
-  private:
+  // //Overriding
+  // double gammaUpSubMatrix(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->model_.gammaUp(auxTo, auxFrom)); }
+  // double gammaDownSubMatrix(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->model_.gammaDown(auxTo, auxFrom)); }
+  // double FAux(const VertexPart &vp) override
+  // {
+  //   return 0.0; //return (auxH_.FAux(vp));
+  // }
 };
-}
+} // namespace Markov

@@ -17,7 +17,7 @@ class MarkovChain : public ABC_MarkovChain
 public:
   MarkovChain(const Json &jjSim, const size_t &seed) : ABC_MarkovChain(jjSim, seed), auxH_(jjSim["model"]["delta"].get<double>()){};
 
-  ~MarkovChain(){};
+  ~MarkovChain() override = default;
 
   //Overriding
   // double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }

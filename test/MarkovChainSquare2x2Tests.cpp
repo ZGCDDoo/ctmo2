@@ -6,7 +6,7 @@ using namespace LinAlg;
 
 using Markov_t = Markov::MarkovChain;
 
-const double DELTA = 1e-9;
+const double DELTA = 2e-9;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
 
 Markov_t BuildMarkovChain()

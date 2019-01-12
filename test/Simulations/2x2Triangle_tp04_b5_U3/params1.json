@@ -59,6 +59,7 @@
         "isOrbitalDiagonal": true,
         "n_tau_sampling": 5,
         "ntau": 5000,
-        "updatesMeas": 50
+        "updatesMeas": 50,
+        "IsOneOrbitalOptimized": false
     }
 }

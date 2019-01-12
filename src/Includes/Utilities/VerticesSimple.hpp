@@ -373,7 +373,7 @@ class VertexBuilder
     {
     }
 
-    Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng)
+    Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng) const
     {
         const Tau_t tau = urng() * beta_;
         const Site_t site = urng() * Nc_;
@@ -452,7 +452,7 @@ class VertexBuilder
         throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
     }
 
-    double GetProbProb(const VertexPart &x, const VertexPart &y)
+    double GetProbProb(const VertexPart &x, const VertexPart &y) const
     {
         assert(x.aux() == y.aux());
         assert(x.vtype() == y.vtype());
@@ -514,11 +514,16 @@ class VertexBuilder
 
 #else
         //factor of 2 for Ising Spin
-        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_) * factXi_ * 2.0 / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
+        return (2.0 * factXi_ * KAux(U_xio1o2));
 #endif
     }
 
-    double PhononPropagator(const double &tauIn)
+    double KAux(const double &U_xio1o2) const
+    {
+        return (-U_xio1o2 * beta_ * static_cast<double>(Nc_) / (((1.0 + delta_) / delta_ - 1.0) * (delta_ / (1.0 + delta_) - 1.0)));
+    }
+
+    double PhononPropagator(const double &tauIn) const
     {
         double tau = tauIn;
         if (tau < 0.0)
@@ -531,7 +536,7 @@ class VertexBuilder
         return (-0.5 * w0 * (std::cosh((tau - beta_ / 2.0) * w0) / std::sinh(beta_ * w0 / 2.0)));
     }
 
-    double GetDeltaTauPhonon(const double &u)
+    double GetDeltaTauPhonon(const double &u) const
     {
 
         const double w0 = Utensor.w0Phonon();

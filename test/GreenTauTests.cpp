@@ -9,7 +9,6 @@ const double DELTANONINTERAC = 2e-5;
 const double BETA = 10.1;
 const double EPS = 1e-12;
 const double MU = 2.94;
-const size_t NTAU = 100000;
 const size_t Nc = 4;
 const double t = 0.9;
 const double xi1 = -MU + 2.0 * t;
