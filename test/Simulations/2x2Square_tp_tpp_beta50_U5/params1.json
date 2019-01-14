@@ -49,8 +49,7 @@
         "isOrbitalDiagonal": true,
         "eCutGreen": 100,
         "ntau": 5000,
-        "n_tau_sampling": 5,
-        "IsOneOrbitalOptimized": false
+        "n_tau_sampling": 5
     },
     "selfCon": {
         "eCutSelfCon": 200,

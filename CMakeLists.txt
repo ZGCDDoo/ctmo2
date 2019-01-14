@@ -201,7 +201,6 @@ if (${TEST})
     SelfConsistencyTests
     MarkovChainTests
     MarkovChainSquare2x2Tests
-    MarkovChainSubMatrixSquare2x2Tests
     MatrixTests
     ObservablesTests
     UTensorSimpleTests

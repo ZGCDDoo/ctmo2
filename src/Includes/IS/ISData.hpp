@@ -5,11 +5,6 @@
 #include "../Models/ABC_Model.hpp"
 #include "../Utilities/VerticesSimple.hpp"
 
-namespace MarkovSub
-{
-class ABC_MarkovChainSubMatrix;
-}
-
 namespace Markov
 {
 
@@ -62,7 +57,6 @@ private:
   friend class Markov::Obs::GreenBinning;
   friend class Markov::Obs::FillingAndDocc;
 
-  friend class MarkovSub::ABC_MarkovChainSubMatrix;
   friend class Markov::ABC_MarkovChain;
 
   std::shared_ptr<Models::ABC_Model_2D> modelPtr_;

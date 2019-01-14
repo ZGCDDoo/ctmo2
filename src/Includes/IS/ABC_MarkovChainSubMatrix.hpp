@@ -258,11 +258,12 @@ class ABC_MarkovChainSubMatrix
             const size_t vertexIndex = verticesRemovable_.at(ii);
 
             Vertex vertex = vertices0Tilde_.at(vertexIndex);
+            std::cout << "vertexIndex in remove = " << vertexIndex << std::endl;
             assert(vertex.vStart().aux() != AuxSpin_t::Zero);
 
             if (vertexIndex >= vertices0_.size())
             {
-                RemovePreviouslyInserted(vertexIndex);
+                // RemovePreviouslyInserted(vertexIndex);
             }
             else
             {
@@ -275,6 +276,7 @@ class ABC_MarkovChainSubMatrix
 
                 if (urng_() < std::abs(probAcc))
                 {
+                    std::cout << "remove accepted" << std::endl;
                     updStats_["Removes"][1]++;
                     verticesUpdated_.push_back(vertexIndex);
                     verticesToRemove_.push_back(vertexIndex);
@@ -368,6 +370,7 @@ class ABC_MarkovChainSubMatrix
             const size_t vertexIndex = verticesInsertable_.at(ii);
             Vertex vertex = vertices0Tilde_.at(vertexIndex);
             // assert(false);
+            std::cout << "vertexIndex in insert = " << vertexIndex << std::endl;
 
             assert(vertex.vStart().aux() == AuxSpin_t::Zero);
             assert(vertex.vEnd().aux() == AuxSpin_t::Zero);
@@ -393,6 +396,8 @@ class ABC_MarkovChainSubMatrix
 
             if (urng_() < std::abs(probAcc))
             {
+
+                std::cout << "insert accepted" << std::endl;
 
                 updStats_["Inserts"][1]++;
                 verticesUpdated_.push_back(vertexIndex);
