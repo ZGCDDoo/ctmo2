@@ -280,6 +280,9 @@ class ABC_MarkovChainSubMatrix
                     verticesToRemove_.push_back(vertexIndex);
                     verticesRemovable_.erase(verticesRemovable_.begin() + ii);
                     dataCT_->vertices_.at(vertexIndex) = vertex;
+                    assert(vertex.vStart() == dataCT_->vertices_.at(vertexIndex).vStart());
+                    assert(vertex.vEnd() == dataCT_->vertices_.at(vertexIndex).vEnd());
+
                     nPhyscialVertices_ -= 1;
                     nfdata_.FVup_(vertexIndex) = 1.0;
                     nfdata_.FVdown_(vertexIndex) = 1.0;
@@ -394,6 +397,7 @@ class ABC_MarkovChainSubMatrix
                 updStats_["Inserts"][1]++;
                 verticesUpdated_.push_back(vertexIndex);
                 dataCT_->vertices_.at(vertexIndex) = vertex;
+                assert(dataCT_->vertices_.at(vertexIndex).vStart() == vertex.vStart());
                 // assert(false);
                 // dataCT_->vertices_.at(vertexIndex).SetAux(vertex.vStart().aux());
                 // dataCT_->vertices_.at(vertexIndex).vStart() = vertex.vStart();
@@ -878,9 +882,9 @@ class ABC_MarkovChainSubMatrix
             }
 
             std::cout << "FAuxUp(aux),  nfdata_.FVup_(i)= " << FAux(vp) << ", " << nfdata_.FVup_(i) << std::endl;
-            // assert(aux != AuxSpin_t::Zero);
-            // assert(std::abs(FAux(dataCT_->vertices_.at(i).vStart()) - nfdata_.FVup_(i)) < 1e-10);
-            // assert(std::abs(FAux(dataCT_->vertices_.at(i).vEnd()) - nfdata_.FVdown_(i)) < 1e-10);
+            assert(vp.aux() != AuxSpin_t::Zero);
+            assert(std::abs(FAux(dataCT_->vertices_.at(i).vStart()) - nfdata_.FVup_(i)) < 1e-10);
+            assert(std::abs(FAux(dataCT_->vertices_.at(i).vEnd()) - nfdata_.FVdown_(i)) < 1e-10);
         }
 
         Logging::Trace("End AssertSanity. ");

@@ -123,8 +123,8 @@ class Vertex
     // Getters
     VertexType vtype() const { return vtype_; }
     double probProb() const { return probProb_; }
-    VertexPart vStart() const { return vStart_; }
-    VertexPart vEnd() const { return vEnd_; }
+    const VertexPart vStart() const { return vStart_; }
+    const VertexPart vEnd() const { return vEnd_; }
     AuxSpin_t aux() const { return vStart_.aux(); }
 
     //Setters
@@ -159,7 +159,6 @@ class Vertices
         if (vertex.vStart().spin() == vertex.vEnd().spin())
         {
             key_++;
-            assert(false);
         }
 
         AppendVertexPart(vertex.vEnd());
@@ -329,19 +328,22 @@ class Vertices
         }
     }
 
-    //Getters
+    //Getters and setters
     size_t size() const
     {
         return data_.size();
     };
+
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
-    std::vector<UInt64_t> verticesKeysVec() const { return verticesKeysVec_; }; // Each vertex has a unqique key identifying it
 
-    Vertex at(const size_t &i) const { return data_.at(i); };
+    const std::vector<UInt64_t> verticesKeysVec() const { return verticesKeysVec_; }; // Each vertex has a unqique key identifying it
 
-    VertexPart atUp(const size_t &i) { return vPartUpVec_.at(i); };
-    VertexPart atDown(const size_t &i) { return vPartDownVec_.at(i); };
+    const Vertex at(const size_t &i) const { return data_.at(i); };
+    Vertex &at(const size_t &i) { return data_.at(i); };
+
+    const VertexPart atUp(const size_t &i) const { return vPartUpVec_.at(i); };
+    const VertexPart atDown(const size_t &i) const { return vPartDownVec_.at(i); };
 
     void Clear()
     {
