@@ -159,6 +159,7 @@ class ABC_MarkovChainSubMatrix
 
     void DoStep()
     {
+        Logging::Trace("Start of DoStep.");
         PreparationSteps();
 
         for (size_t kk = 0; kk < KMAX_UPD_; kk++)
@@ -168,15 +169,22 @@ class ABC_MarkovChainSubMatrix
         }
 
         UpdateSteps();
+
+        Logging::Trace("End of DoStep.");
     }
 
     void DoInnerStep()
     {
+        Logging::Trace("Start of DoInnerStep.");
         urng_() < PROBINSERT ? InsertVertexSubMatrix() : RemoveVertexSubMatrix();
+        Logging::Trace("Start of DoInnerStep.");
     }
 
     double CalculateDeterminantRatio(const Vertex &vertexTo, const Vertex &vertexFrom, const size_t &vertexIndex)
     {
+        Logging::Trace("Start of CalculateDeterminantRatio.");
+        assert(vertexTo.vStart().aux() == vertexTo.vEnd().aux());
+        assert(vertexTo.vStart().aux() != vertexFrom.vEnd().aux());
 
         const double gammakup = gammaSubMatrix(vertexTo.vStart(), vertexFrom.vStart()); //Remeber that for spin diagonal interactions start==up and end==down
         const double gammakdown = gammaSubMatrix(vertexTo.vEnd(), vertexFrom.vEnd());
@@ -210,11 +218,14 @@ class ABC_MarkovChainSubMatrix
         {
             ratio = gammakup * gammakdown * upddata_.dup_ * upddata_.ddown_;
         }
+
+        Logging::Trace("End of CalculateDeterminantRatio.");
         return ratio;
     }
 
     void AcceptMove(const double &probAcc)
     {
+        Logging::Trace("Start of AcceptMove.");
         if (probAcc < 0.0)
         {
             dataCT_->sign_ *= -1;
@@ -232,10 +243,14 @@ class ABC_MarkovChainSubMatrix
             gammadata_.gammaDownI_ = Matrix_t(1, 1);
             gammadata_.gammaDownI_(0, 0) = 1.0 / upddata_.ddown_;
         }
+
+        Logging::Trace("Start of AcceptMove.");
     }
 
     void RemoveVertexSubMatrix()
     {
+        Logging::Trace("Start of RemoveVertexSubMatrix.");
+
         if (vertices0_.size() && verticesRemovable_.size())
         {
             updStats_["Removes"][0]++;
@@ -243,6 +258,8 @@ class ABC_MarkovChainSubMatrix
             const size_t vertexIndex = verticesRemovable_.at(ii);
 
             Vertex vertex = vertices0Tilde_.at(vertexIndex);
+            assert(vertex.vStart().aux() != AuxSpin_t::Zero);
+
             if (vertexIndex >= vertices0_.size())
             {
                 RemovePreviouslyInserted(vertexIndex);
@@ -271,11 +288,14 @@ class ABC_MarkovChainSubMatrix
                 }
             }
         }
-        // std::cout << "after remove " << std::endl;
+
+        Logging::Trace("Start of RemoveVertexSubMatrix.");
     }
 
     void RemovePreviouslyInserted(const size_t &vertexIndex) //vertexIndex which is in cTilde
     {
+        Logging::Trace("Start of RemovePreviouslyInserted.");
+
         using itType_t = std::vector<size_t>::const_iterator;
         const itType_t ppit = std::find<itType_t, size_t>(verticesUpdated_.begin(), verticesUpdated_.end(), vertexIndex);
         if (ppit == verticesUpdated_.end())
@@ -328,23 +348,42 @@ class ABC_MarkovChainSubMatrix
             nfdata_.FVdown_(vertexIndex) = 1.0;
             dataCT_->vertices_.at(vertexIndex).SetAux(AuxSpin_t::Zero);
         }
+
+        Logging::Trace("Start of RemovePreviouslyInserted.");
     }
 
     void InsertVertexSubMatrix()
     {
+
+        Logging::Trace("Start of InsertVertexSubMatrix.");
+
         if (verticesInsertable_.size())
         {
             updStats_["Inserts"][0]++;
             const size_t ii = static_cast<Site_t>(verticesInsertable_.size() * urng_());
+            std::cout << "ii = " << ii << std::endl;
             const size_t vertexIndex = verticesInsertable_.at(ii);
             Vertex vertex = vertices0Tilde_.at(vertexIndex);
+            // assert(false);
 
+            assert(vertex.vStart().aux() == AuxSpin_t::Zero);
+            assert(vertex.vEnd().aux() == AuxSpin_t::Zero);
+
+            // assert(false);
             vertex.SetAux(urng_() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down);
-            double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
+            Vertex vertextest = vertex;
+
+            assert(vertex.vStart() == vertextest.vStart());
+            std::cout << "Here bitch " << std::endl;
+
+            assert(vertex.vStart().aux() != AuxSpin_t::Zero);
+            assert(vertex.vEnd().aux() != AuxSpin_t::Zero);
+            // assert(false);
+
+            const double ratio = CalculateDeterminantRatio(vertex, vertices0Tilde_.at(vertexIndex), vertexIndex);
             const size_t kknew = nPhyscialVertices_ + 1;
 
-            double probAcc = KAux_ / static_cast<double>(kknew) * ratio;
-            probAcc *= PROBREMOVE / PROBINSERT;
+            const double probAcc = PROBREMOVE / PROBINSERT * KAux_ / static_cast<double>(kknew) * ratio;
 
             //dont propose to insert the same vertex, even if update rejected.
             verticesInsertable_.erase(verticesInsertable_.begin() + ii);
@@ -355,6 +394,17 @@ class ABC_MarkovChainSubMatrix
                 updStats_["Inserts"][1]++;
                 verticesUpdated_.push_back(vertexIndex);
                 dataCT_->vertices_.at(vertexIndex) = vertex;
+                // assert(false);
+                // dataCT_->vertices_.at(vertexIndex).SetAux(vertex.vStart().aux());
+                // dataCT_->vertices_.at(vertexIndex).vStart() = vertex.vStart();
+                // dataCT_->vertices_.at(vertexIndex).vEnd() = vertex.vEnd();
+
+                // std::cout << int(dataCT_->vertices_.at(vertexIndex).aux()) << std::endl;
+
+                assert(vertex.vStart().aux() != AuxSpin_t::Zero);
+                // assert(vertex.vStart() == dataCT_->vertices_.at(vertexIndex).vStart());
+
+                assert(dataCT_->vertices_.at(vertexIndex).vStart().aux() != AuxSpin_t::Zero);
                 verticesToRemove_.erase(std::remove(verticesToRemove_.begin(), verticesToRemove_.end(), vertexIndex), verticesToRemove_.end());
                 verticesRemovable_.push_back(vertexIndex);
                 nPhyscialVertices_ += 1;
@@ -364,10 +414,15 @@ class ABC_MarkovChainSubMatrix
                 AcceptMove(probAcc);
             }
         }
+
+        Logging::Trace("Start of InsertVertexSubMatrix.");
     }
 
     void CleanUpdate()
     {
+
+        Logging::Trace("Start of CleanUpdate.");
+
         AssertSizes();
 
         const size_t kkup = dataCT_->vertices_.NUp();
@@ -409,6 +464,8 @@ class ABC_MarkovChainSubMatrix
             }
             nfdata_.Ndown_.Inverse();
         }
+
+        Logging::Trace("Start of CleanUpdate.");
     }
 
     double GetGreenTau0(const VertexPart &x, const VertexPart &y) const
@@ -430,12 +487,17 @@ class ABC_MarkovChainSubMatrix
 
     void Measure()
     {
+
+        Logging::Trace("Start of Measure.");
+
         AssertSizes();
         const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
         const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
         DDMGMM(FVupM1, nfdata_.Nup_, *(dataCT_->MupPtr_));
         DDMGMM(FVdownM1, nfdata_.Ndown_, *(dataCT_->MdownPtr_));
         obs_.Measure();
+
+        Logging::Trace("End of CleanUpdate.");
     }
 
     void SaveMeas()
@@ -490,26 +552,32 @@ class ABC_MarkovChainSubMatrix
 
     void PreparationSteps()
     {
-        // std::cout << "in preparation steps " << std::endl;
+
+        Logging::Trace("Start of PreparationSteps.");
+
         nPhyscialVertices_ = dataCT_->vertices_.size();
         InsertNonInteractVertices();
         EnlargeN();
         UpdateGreenInteract();
 
-        // std::cout << "after preparation steps " << std::endl;
+        Logging::Trace("End of PreparationSteps.");
     }
 
     void UpdateSteps()
     {
-        // std::cout << "in update steps " << std::endl;
+        Logging::Trace("Start of UpdateSteps.");
+
         UpdateN();
-        dataCT_->vertices_.size() > verticesToRemove_.size() ? RemoveNonInteractEfficient() : RemoveNonInteract();
-        // std::cout << "after update steps " << std::endl;
+        RemoveNonInteract();
+        // dataCT_->vertices_.size() > verticesToRemove_.size() ? RemoveNonInteractEfficient() : RemoveNonInteract();
+
+        Logging::Trace("Start of UpdateSteps.");
     }
 
     void UpdateN()
     {
-        // std::cout << "in updatN " << std::endl;
+        Logging::Trace("Start of UpdateN.");
+
         if (verticesUpdated_.size())
         {
             const size_t NN = vertices0Tilde_.size();
@@ -560,15 +628,14 @@ class ABC_MarkovChainSubMatrix
 
             gammadata_.gammaUpI_.Clear();
             gammadata_.gammaDownI_.Clear();
-            // std::cout << "After clear " << std::endl;
         }
-
-        // std::cout << "After updateN " << std::endl;
+        Logging::Trace("End of UpdateN.");
     }
 
     void EnlargeN()
     {
-        // std::cout << "in EnlargeN " << std::endl;
+        Logging::Trace("Start of EnlargeN.");
+
         //build the B matrices
         const size_t N0 = vertices0_.size(); //here vertices0 is the same as vertices withouth the non-interacting spins
         if (N0)
@@ -628,16 +695,18 @@ class ABC_MarkovChainSubMatrix
             nfdata_.FVup_ = SiteVector_t(KMAX_UPD_).ones();
             nfdata_.FVdown_ = SiteVector_t(KMAX_UPD_).ones();
         }
-        // std::cout << "after EnlargeN " << std::endl;
+
+        Logging::Trace("End of EnlargeN.");
     }
 
     void UpdateGreenInteract()
     {
 
-        // std::cout << "in greeninteract " << std::endl;
+        Logging::Trace("Start of UpdateGreenInteract.");
+
         const size_t N0 = vertices0_.size();
         const size_t NN = N0 + KMAX_UPD_;
-        //assert(NN == vertices0Tilde_.size());
+        assert(NN == vertices0Tilde_.size());
         Matrix_t green0up(NN, KMAX_UPD_);
         Matrix_t green0down(NN, KMAX_UPD_);
 
@@ -669,12 +738,12 @@ class ABC_MarkovChainSubMatrix
         LinAlg::DGEMM(1.0, 0.0, nfdata_.Nup_, green0up, greendata_.greenInteractUp_, N0);
         LinAlg::DGEMM(1.0, 0.0, nfdata_.Ndown_, green0down, greendata_.greenInteractDown_, N0);
 
-        // std::cout << "after greeninteract " << std::endl;
+        Logging::Trace("Start of UpdateGreenInteract.");
     }
 
     void RemoveNonInteract()
     {
-        // std::cout << "in removenoninteract " << std::endl;
+        Logging::Trace("in removenoninteract ");
         std::sort(verticesToRemove_.begin(), verticesToRemove_.end());
 
         for (size_t i = 0; i < verticesToRemove_.size(); i++)
@@ -699,16 +768,15 @@ class ABC_MarkovChainSubMatrix
         assert(nfdata_.Ndown_.n_rows() == dataCT_->vertices_.size());
         verticesRemovable_.clear();
         AssertSanity();
-        // std::cout << "after remvovenoninteract " << std::endl;
+        Logging::Trace("in removenoninteract ");
     }
 
     void RemoveNonInteractEfficient()
     {
-        // std::cout << "in removenoninteractEfficient " << std::endl;
+        Logging::Trace("in RemovenonInteractEfficient ");
+
         std::sort(verticesToRemove_.begin(), verticesToRemove_.end());
         std::vector<size_t> verticesInteracting;
-        // std::cout << "vertices.size() = " << dataCT_->vertices_.size() << std::endl;
-        // std::cout << "verticesToRemove.size() = " << verticesToRemove_.size() << std::endl;
         for (size_t ii = 0; ii < vertices0Tilde_.size(); ii++)
         {
             verticesInteracting.push_back(ii);
@@ -734,13 +802,12 @@ class ABC_MarkovChainSubMatrix
             {
                 nfdata_.Nup_.SwapRowsAndCols(indexToRemove, indexInteracting);
                 nfdata_.Ndown_.SwapRowsAndCols(indexToRemove, indexInteracting);
-                // std::cout << "in if " << std::endl;
                 nfdata_.FVup_.swap_rows(indexToRemove, indexInteracting);
                 nfdata_.FVdown_.swap_rows(indexToRemove, indexInteracting);
 
-                dataCT_->vertices_.SwapVertexOneOrbital(indexToRemove, indexInteracting);
+                dataCT_->vertices_.EraseVertexOneOrbital(indexToRemove);
+                // dataCT_->vertices_.SwapVertexOneOrbital(indexToRemove, indexInteracting);
             }
-            // std::cout << "After if " << std::endl;
         }
 
         nfdata_.Nup_.Resize(INTERS, INTERS);
@@ -748,7 +815,7 @@ class ABC_MarkovChainSubMatrix
 
         nfdata_.FVup_.resize(INTERS);
         nfdata_.FVdown_.resize(INTERS);
-        dataCT_->vertices_.Resize(INTERS);
+        // dataCT_->vertices_.Resize(INTERS);
 
         verticesToRemove_.clear();
         verticesInsertable_.clear();
@@ -757,12 +824,16 @@ class ABC_MarkovChainSubMatrix
         assert(nfdata_.Ndown_.n_rows() == dataCT_->vertices_.size());
         verticesRemovable_.clear();
         AssertSanity();
-        // std::cout << "after remvovenoninteractEfficient " << std::endl;
+
+        Logging::Trace("End RemovenonInteractEfficient ");
     }
 
     void InsertNonInteractVertices()
     {
-        AssertSanity();
+
+        Logging::Trace("Start InsertNonInteractVertices. ");
+
+        // AssertSanity();
         vertices0_ = dataCT_->vertices_;
         const size_t N0 = dataCT_->vertices_.size();
         assert(N0 == nfdata_.Nup_.n_rows());
@@ -786,21 +857,33 @@ class ABC_MarkovChainSubMatrix
         }
 
         vertices0Tilde_ = dataCT_->vertices_;
+
+        Logging::Trace("End InsertNonInteractVertices. ");
     }
 
     void AssertSanity()
     {
+        Logging::Trace("Start AssertSanity. ");
+
         assert(gammadata_.gammaDownI_.n_rows() == gammadata_.gammaUpI_.n_cols());
+        Logging::Trace("expansion order = " + std::to_string(dataCT_->vertices_.size()));
 
         for (size_t i = 0; i < dataCT_->vertices_.size(); i++)
         {
-            // std::cout << "i = " << i << std::endl;
-            AuxSpin_t aux = dataCT_->vertices_.at(i).vStart().aux();
-            // std::cout << "FAuxUp(aux),  nfdata_.FVup_(i)= " << FAuxUp(aux) << ", " << nfdata_.FVup_(i) << std::endl;
-            assert(aux != AuxSpin_t::Zero);
-            assert(std::abs(FAux(dataCT_->vertices_.at(i).vStart()) - nfdata_.FVup_(i)) < 1e-10);
-            assert(std::abs(FAux(dataCT_->vertices_.at(i).vEnd()) - nfdata_.FVdown_(i)) < 1e-10);
+            std::cout << "i = " << i << std::endl;
+            const auto vp = dataCT_->vertices_.at(i).vStart();
+            if (vp.aux() == AuxSpin_t::Zero)
+            {
+                std::cout << "aux is 0 !" << std::endl;
+            }
+
+            std::cout << "FAuxUp(aux),  nfdata_.FVup_(i)= " << FAux(vp) << ", " << nfdata_.FVup_(i) << std::endl;
+            // assert(aux != AuxSpin_t::Zero);
+            // assert(std::abs(FAux(dataCT_->vertices_.at(i).vStart()) - nfdata_.FVup_(i)) < 1e-10);
+            // assert(std::abs(FAux(dataCT_->vertices_.at(i).vEnd()) - nfdata_.FVdown_(i)) < 1e-10);
         }
+
+        Logging::Trace("End AssertSanity. ");
     }
 
     void PrintVector(std::vector<size_t> v)

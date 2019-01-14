@@ -27,7 +27,10 @@ class VertexPart
   public:
     VertexPart(){};
 
+    ~VertexPart() = default;
+
     VertexPart(const VertexPart &vp) = default;
+    VertexPart &operator=(const VertexPart &vp) = default;
 
     VertexPart(const VertexType vtype, const Tau_t &tau, const Site_t &site, const FermionSpin_t &spin,
                const size_t &orbital, const AuxSpin_t &aux) : vtype_(vtype),
@@ -40,8 +43,6 @@ class VertexPart
     {
     }
 
-    VertexPart &operator=(const VertexPart &vpart) = default;
-
     //Getters
     VertexType vtype() const { return vtype_; };
     Tau_t tau() const { return tau_; };
@@ -53,6 +54,12 @@ class VertexPart
 
     bool operator==(const VertexPart &x) const
     {
+        assert(x.spin() == spin_);
+        assert(x.tau() == tau_);
+        assert(x.orbital() == orbital_);
+        assert(x.site() == site_);
+        assert(x.aux() == aux_);
+
         return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) && (x.superSite() == superSite_) && (x.aux() == aux_));
     }
 
@@ -69,21 +76,24 @@ class VertexPart
     }
 
   private:
-    VertexType vtype_;
-    Tau_t tau_;
-    Site_t site_;
-    FermionSpin_t spin_;
-    Orbital_t orbital_;
-    SuperSite_t superSite_;
-    AuxSpin_t aux_;
+    VertexType vtype_{VertexType::Invalid};
+    Tau_t tau_{-9999.0};
+    Site_t site_{9999};
+    FermionSpin_t spin_{FermionSpin_t::Up};
+    Orbital_t orbital_{9999};
+    SuperSite_t superSite_{9999, 9999};
+    AuxSpin_t aux_{AuxSpin_t::Up};
 };
 
 class Vertex
 {
 
   public:
-    Vertex(){};
-    Vertex(const Vertex &vp) = default;
+    Vertex() = default;
+
+    Vertex(const Vertex &v) = default;
+
+    ~Vertex() = default;
 
     Vertex(const VertexType &vtype, const VertexPart &vStart, const VertexPart &vEnd,
            const double &probProb) : vtype_(vtype),
@@ -94,7 +104,7 @@ class Vertex
     {
     }
 
-    Vertex &operator=(const Vertex &vertex) = default;
+    Vertex &operator=(const Vertex &v) = default;
 
     void FlipAux()
     {
@@ -106,6 +116,8 @@ class Vertex
     {
         vStart_.SetAux(aux);
         vEnd_.SetAux(aux);
+        assert(vStart_.aux() == aux);
+        assert(vEnd_.aux() == aux);
     }
 
     // Getters
@@ -118,10 +130,10 @@ class Vertex
     //Setters
 
   private:
-    VertexType vtype_;
+    VertexType vtype_{VertexType::Invalid};
     VertexPart vStart_;
     VertexPart vEnd_;
-    double probProb_;
+    double probProb_{0.0};
 };
 
 class Vertices
@@ -129,6 +141,7 @@ class Vertices
 
   public:
     Vertices() : key_(0){};
+    ~Vertices() = default;
 
     Vertices(const Vertices &vp) = default;
 
@@ -146,7 +159,7 @@ class Vertices
         if (vertex.vStart().spin() == vertex.vEnd().spin())
         {
             key_++;
-            // assert(false);
+            assert(false);
         }
 
         AppendVertexPart(vertex.vEnd());
