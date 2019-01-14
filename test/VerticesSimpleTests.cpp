@@ -147,6 +147,16 @@ TEST(VerticesTests, VertexInit)
 
     //test assigment operator
 
+    VertexPart vStart2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Up, 3, AuxSpin_t::Up);
+    VertexPart vEnd2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Down, 3, AuxSpin_t::Up);
+
+    Vertex v2(vStart.vtype(), vStart, vEnd, 2.31);
+    v1 = v2;
+
+    ASSERT_TRUE( (v1.vStart() == v2.vStart()) ) ;
+    ASSERT_TRUE( (v1.vEnd() == v2.vEnd()) ) ;
+    ASSERT_EQ(v1.aux(), v2.aux());
+    ASSERT_FALSE( (v1.vStart() == v_null.vStart()) ) ;
 
 
 
