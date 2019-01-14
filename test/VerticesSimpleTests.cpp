@@ -147,23 +147,46 @@ TEST(VerticesTests, VertexInit)
 
     //test assigment operator
 
-    VertexPart vStart2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Up, 3, AuxSpin_t::Up);
-    VertexPart vEnd2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Down, 3, AuxSpin_t::Up);
+    const VertexPart vStart2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Up, 3, AuxSpin_t::Up);
+    const VertexPart vEnd2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Down, 3, AuxSpin_t::Up);
 
-    Vertex v2(vStart.vtype(), vStart, vEnd, 2.31);
+    Vertex v2(vStart.vtype(), vStart2, vEnd2, 2.31);
     v1 = v2;
 
+    ASSERT_DOUBLE_EQ(vStart2.tau(), 0.33);
     ASSERT_TRUE( (v1.vStart() == v2.vStart()) ) ;
     ASSERT_TRUE( (v1.vEnd() == v2.vEnd()) ) ;
     ASSERT_EQ(v1.aux(), v2.aux());
     ASSERT_FALSE( (v1.vStart() == v_null.vStart()) ) ;
+    ASSERT_TRUE(v1.vEnd() == vEnd2);
 
 
+    //test assignement with vector
+
+    std::vector<Vertex> vecVertex;
+    vecVertex.push_back(v_null);
+    vecVertex.at(0) = v2;
+
+    ASSERT_TRUE( (vecVertex.at(0).vStart() == v2.vStart()) ) ;
+    ASSERT_TRUE( (vecVertex.at(0).vEnd() == v2.vEnd()) ) ;
+    ASSERT_EQ(vecVertex.at(0).aux(), v2.aux());
+    ASSERT_FALSE( (vecVertex.at(0).vStart() == v_null.vStart()) ) ;
+
+    ASSERT_DOUBLE_EQ(vStart2.tau(), vecVertex.at(0).vStart().tau() );
+    ASSERT_EQ(vecVertex.at(0).aux(), AuxSpin_t::Up);
+    ASSERT_EQ(vecVertex.at(0).vStart().aux(), AuxSpin_t::Up);
+
+    vecVertex.push_back(v1);
+    v2.SetAux(AuxSpin_t::Zero);
+    vecVertex.at(1) = v2;
+
+    ASSERT_DOUBLE_EQ(vecVertex.at(1).vStart().tau(), 0.33);
+    ASSERT_EQ(vecVertex.at(1).vStart().aux(), AuxSpin_t::Zero);
+    ASSERT_TRUE((vecVertex.at(1).vStart() == v2.vStart()) ) ;
 
 
-
-    
 }
+
 
 
 // TEST(Vertices2DTest, InitVertices)
