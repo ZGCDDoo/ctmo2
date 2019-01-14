@@ -54,11 +54,11 @@ class VertexPart
 
     bool operator==(const VertexPart &x) const
     {
-        assert(x.spin() == spin_);
-        assert(x.tau() == tau_);
-        assert(x.orbital() == orbital_);
-        assert(x.site() == site_);
-        assert(x.aux() == aux_);
+        // assert(x.spin() == spin_);
+        // assert(x.tau() == tau_);
+        // assert(x.orbital() == orbital_);
+        // assert(x.site() == site_);
+        // assert(x.aux() == aux_);
 
         return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) && (x.superSite() == superSite_) && (x.aux() == aux_));
     }

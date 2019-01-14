@@ -97,6 +97,7 @@ TEST(VerticesTests, VertexPartInit)
     std::vector<VertexPart> vecVp;
     vecVp.push_back(vp2);
     vecVp.at(0) = vp0;
+
     ASSERT_EQ(vp0.vtype(), VertexType::Phonon);
     ASSERT_DOUBLE_EQ(vp0.tau(), 0.22);
     ASSERT_EQ(vp0.site(), 100);
@@ -105,6 +106,55 @@ TEST(VerticesTests, VertexPartInit)
     ASSERT_TRUE((vp0.superSite() == std::make_pair<size_t, size_t>(100, 9)));
     ASSERT_EQ(vp0.aux(), AuxSpin_t::Up);
 }
+
+
+
+TEST(VerticesTests, VertexInit)
+{
+    using namespace Diagrammatic;
+    Vertex v_null;
+
+    VertexPart vStart(VertexType::HubbardIntra, 0.1, 1, FermionSpin_t::Up, 2, AuxSpin_t::Down);
+    VertexPart vEnd(VertexType::HubbardIntra, 0.1, 1, FermionSpin_t::Down, 2, AuxSpin_t::Down);
+
+    Vertex v0(vStart.vtype(), vStart, vEnd, 1.11);
+
+    ASSERT_EQ(v0.vtype(), VertexType::HubbardIntra);
+    ASSERT_DOUBLE_EQ(v0.vStart().tau(), 0.1);
+    ASSERT_EQ(v0.vStart().site(), 1);
+    ASSERT_EQ(v0.vStart().spin(), FermionSpin_t::Up);
+    ASSERT_EQ(v0.vEnd().spin(), FermionSpin_t::Down);
+    ASSERT_EQ(v0.aux(), AuxSpin_t::Down);
+
+    v0.SetAux(AuxSpin_t::Up);
+    ASSERT_EQ(v0.aux(), AuxSpin_t::Up);
+    ASSERT_EQ(v0.vStart().aux(), AuxSpin_t::Up);
+    ASSERT_EQ(v0.vEnd().aux(), AuxSpin_t::Up);
+
+    v0.FlipAux();
+    ASSERT_EQ(v0.aux(), AuxSpin_t::Down);
+    ASSERT_EQ(v0.vStart().aux(), AuxSpin_t::Down);
+    ASSERT_EQ(v0.vEnd().aux(), AuxSpin_t::Down);
+
+
+    //test copy constructor;
+    Vertex v1(v0);
+    ASSERT_TRUE( (v1.vStart() == v0.vStart()) ) ;
+    ASSERT_TRUE( (v1.vEnd() == v0.vEnd()) ) ;
+    ASSERT_EQ(v1.aux(), v0.aux());
+    ASSERT_FALSE( (v1.vStart() == v_null.vStart()) ) ;
+
+
+    //test assigment operator
+
+
+
+
+
+
+    
+}
+
 
 // TEST(Vertices2DTest, InitVertices)
 // {
