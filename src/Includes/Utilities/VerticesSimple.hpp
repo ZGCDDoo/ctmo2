@@ -450,20 +450,32 @@ class AuxHelper
 class VertexBuilder
 {
   public:
+    const double EPSILON = 1e-10;
     //must hold the alphas, the values of the U, U' and (U-J_H)
-    VertexBuilder(const Json &jj, const size_t &Nc) : Utensor(jj),
+    VertexBuilder(const Json &jj, const size_t &Nc) : uTensor_(jj),
                                                       auxHelper_(jj["model"]["delta"].get<double>()),
                                                       delta_(jj["model"]["delta"].get<double>()),
                                                       beta_(jj["model"]["beta"].get<double>()),
                                                       Nc_(Nc),
                                                       NOrb_(jj["model"]["nOrb"].get<size_t>()),
-                                                      probU_(0.5),
-                                                      factXi_(
-                                                          1.0 / probU_ * (NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_) // Pauli principale and dont double count pairs
-                                                          ),
+                                                      probU_(0.5), //If there is no electron-phonon coupling, then always insert a hubbard-type vertex.
+                                                      factXi_(1.0),
                                                       isOrbitalDiagonal_(jj["solver"]["isOrbitalDiagonal"].get<bool>())
 
     {
+        //If there is no electron-phonon coupling, then probU is one:
+        if (std::abs(uTensor_.gPhonon()) < EPSILON)
+        {
+            Logging::Warn("There is no Electron-phonon coupling. gPhonon is set to 0.0 in the params file.");
+            probU_ = 1.0;
+        }
+        else if (std::abs(uTensor_.U()) < EPSILON)
+        {
+            Logging::Warn("There is no Electron-Electron Interaction. U is set to 0.0 in the params file.");
+            probU_ = 0.0;
+        }
+
+        factXi_ = 1.0 / probU_ * (NOrb_ * NOrb_ * 2 * 2 / 2 - NOrb_); // Pauli principale and dont double count pairs
     }
 
     Vertex BuildVertexHubbardIntra(Utilities::UniformRngMt19937_t &urng) const
@@ -484,6 +496,12 @@ class VertexBuilder
 
     Vertex BuildVertex(Utilities::UniformRngMt19937_t &urng) const
     {
+
+        if ((NOrb_ == 1) && (std::abs(uTensor_.gPhonon()) < 1e-10))
+        {
+            return BuildVertexHubbardIntra(urng);
+        }
+
         const Tau_t tau = urng() * beta_;
         const Site_t site = urng() * Nc_;
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
@@ -572,11 +590,11 @@ class VertexBuilder
 
         if (vtype == VertexType::HubbardIntra)
         {
-            U_xio1o2 = Utensor.U() / 2.0;
+            U_xio1o2 = uTensor_.U() / 2.0;
         }
         else if (vtype == VertexType::HubbardInter)
         {
-            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : Utensor.UPrime() / 2.0;
+            U_xio1o2 = isOrbitalDiagonal_ ? 0.0 : uTensor_.UPrime() / 2.0;
         }
         else if (vtype == VertexType::HubbardInterSpin)
         {
@@ -584,26 +602,26 @@ class VertexBuilder
             {
                 U_xio1o2 = 0.0;
             }
-            else if (std::abs(Utensor.JH()) < 1e-10)
+            else if (std::abs(uTensor_.JH()) < 1e-10)
             {
                 U_xio1o2 = 0.0;
             }
             else
             {
-                U_xio1o2 = (Utensor.UPrime() - Utensor.JH()) / 2.0;
+                U_xio1o2 = (uTensor_.UPrime() - uTensor_.JH()) / 2.0;
             }
         }
         else if (vtype == VertexType::Phonon)
         {
-            const double w0 = Utensor.w0Phonon();
-            if ((std::abs(w0) < 1e-10) || (std::abs(Utensor.gPhonon()) < 1e-10))
+            const double w0 = uTensor_.w0Phonon();
+            if ((std::abs(w0) < 1e-10) || (std::abs(uTensor_.gPhonon()) < EPSILON))
             {
                 return 0.0;
             }
 
             //Big M is = 1.0
-            U_xio1o2 = Utensor.gPhonon() * Utensor.gPhonon() / (4.0 * w0 * w0);
-            const double factPh = 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0;
+            U_xio1o2 = uTensor_.gPhonon() * uTensor_.gPhonon() / (4.0 * w0 * w0);
+            const double factPh = (probU_ < 1.0 - EPSILON) ? 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0 : 0.0; //Just to make sure we dont divide by zero;
 
 #ifdef GREEN_STYLE
             const double gtauPH = PhononPropagator(x.tau() - y.tau());
@@ -640,7 +658,7 @@ class VertexBuilder
             tau += beta_;
         }
 
-        const double w0 = Utensor.w0Phonon();
+        const double w0 = uTensor_.w0Phonon();
 
         return (-0.5 * w0 * (std::cosh((tau - beta_ / 2.0) * w0) / std::sinh(beta_ * w0 / 2.0)));
     }
@@ -648,8 +666,8 @@ class VertexBuilder
     double GetDeltaTauPhonon(const double &u) const
     {
 
-        const double w0 = Utensor.w0Phonon();
-        if ((std::abs(w0) < 1e-10) || (std::abs(Utensor.gPhonon()) < 1e-10))
+        const double w0 = uTensor_.w0Phonon();
+        if ((std::abs(w0) < 1e-10) || (std::abs(uTensor_.gPhonon()) < 1e-10))
         {
             return 1e-14;
         }
@@ -680,14 +698,14 @@ class VertexBuilder
     }
 
   private:
-    const Models::UTensor Utensor; // the interaction tensor in xi=vertextype and orbital1 and orbital2 indices
+    const Models::UTensor uTensor_; // the interaction tensor in xi=vertextype and orbital1 and orbital2 indices
     const AuxHelper auxHelper_;
     const double delta_;
     const double beta_;
     const size_t Nc_;
     const size_t NOrb_;
-    const double probU_;
-    const double factXi_;
+    double probU_;
+    double factXi_;
     const bool isOrbitalDiagonal_;
 
     std::vector<double> deltaTauVec_;
