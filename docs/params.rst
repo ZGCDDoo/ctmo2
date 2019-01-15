@@ -16,20 +16,29 @@ monteCarlo
 
 The parameters in this sub-json specify the monte carlo specific details:
 
-    measurementTime: float
+.. describe:: measurementTime (float)
+
         The time in minutes each processor measures.
 
-    thermalizationTime: float
+
+.. describe:: thermalizationTime (float)
+
         The time in minutes for which each processor will thermalize. 
         It is difficult to give a good optimal value. I would say, ~10% of the measurement time.
 
-    seed: int
+.. describe:: seed (int)
+
         The seed for the random number generator.
 
-    thermalizeFromConfig: bool
+.. describe:: thermalizeFromConfig (bool)
+
         Should the program thermalize or simply start measuring format the previously saved configuraion. 
         If true thermalizes from the previously saved configuration.
 
 
 model
 -----
+
+
+
+ 
