@@ -39,6 +39,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
         selfEnergy_.resize(Nc_, Nc_, NSelfCon);
         selfEnergy_.zeros();
+        hybridization_.PatchHF(NSelfCon, model_.beta());
 
         //0.) Extraire la self jusqu'a NGreen
         for (size_t nn = 0; nn < NGreen; nn++)
@@ -159,6 +160,9 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
         const size_t nnStart = mpiUt::Tools::Rank() == mpiUt::Tools::master ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * mpiUt::Tools::Rank();
         const size_t nnEnd = nnStart + NSelfConRank;
+
+        Logging::Trace("Just before loops");
+
         for (size_t KIndex = 0; KIndex < h0_.KWaveVectors().size(); KIndex++)
         {
 
@@ -188,6 +192,8 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
             }
         }
 
+        Logging::Trace("After loops");
+
         std::vector<std::vector<cd_t>> tmpMemGImpVec;
         std::vector<std::vector<cd_t>> tmpMemHybNextVec;
         std::vector<cd_t> tmpMemGImp = mpiUt::Tools::CubeCDToVecCD(gImpUpNextRank);
@@ -211,10 +217,14 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
             hybNext_.resize(Nc_, Nc_, NSelfCon);
             hybNext_.zeros();
 
+            Logging::Trace("Before merge.");
+
             for (size_t ii = 0; ii < static_cast<size_t>(mpiUt::Tools::NWorkers()); ii++)
             {
                 ClusterCubeCD_t tmpGImpNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc_, Nc_, tmpMemGImpVec.at(ii).size() / (Nc_ * Nc_));
                 ClusterCubeCD_t tmpHybNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc_, Nc_, tmpMemHybNextVec.at(ii).size() / (Nc_ * Nc_));
+
+                Logging::Trace("In Loop.");
 
                 const size_t jjStart = ii == 0 ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * ii;
                 const size_t jjEnd = jjStart + tmpGImpNextRank.n_slices;
@@ -224,6 +234,8 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
                     hybNext_.slice(jj) = tmpHybNextRank.slice(jj - jjStart);
                 }
             }
+
+            Logging::Trace("After merge.");
 
             hybNext_ *= (1.0 - weights_);
             hybNext_ += weights_ * hybridization_.data();

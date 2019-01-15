@@ -21,11 +21,11 @@ std::unique_ptr<ABC_SelfConsistency> SelfConsistencyBuilder(const Json &jjSim, c
 
     if (spin == FermionSpin_t::Up)
     {
-        greenImpurity = ioModel.ReadGreenKDat("greenUp.dat", NOrb);
+        greenImpurity = ioModel.ReadGreenDat("greenUp.dat", NOrb);
     }
     else if (spin == FermionSpin_t::Down)
     {
-        greenImpurity = ioModel.ReadGreenKDat("greenDown.dat", NOrb);
+        greenImpurity = ioModel.ReadGreenDat("greenDown.dat", NOrb);
     }
 
     using SelfCon_t = SelfCon::SelfConsistencyDCA;
