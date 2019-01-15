@@ -5,12 +5,12 @@ namespace SelfCon
 
 class ABC_SelfConsistency
 {
-public:
-  ABC_SelfConsistency(){};
-  virtual ~ABC_SelfConsistency() = 0;
-  virtual void DoSCGrid() = 0;
+  public:
+    ABC_SelfConsistency(){};
+    virtual ~ABC_SelfConsistency() = 0;
+    virtual void DoSCGrid() = 0;
 
-private:
+  private:
 }; // class ABC_SelfConsistency
 
 ABC_SelfConsistency::~ABC_SelfConsistency() {} //destructors must exist
