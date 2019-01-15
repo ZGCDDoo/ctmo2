@@ -14,6 +14,7 @@ Welcome to ctmo's documentation!
    installation
    tutorial
    params
+   params-example
 
 
 

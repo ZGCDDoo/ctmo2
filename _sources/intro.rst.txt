@@ -29,11 +29,11 @@ Hamiltonian
 ^^^^^^^^^^^^
 The hamiltonian is a density-density type hamiltonian with phonon coupling (**Notice the + sign for the hopping term**):
 
-.. .. math::
+.. math::
 
-..    H & = & \sum_{\rho \rho' \sigma} t_{\rho \rho'} c^\dagger_{\rho\sigma} c_{\rho'\sigma} + \sum_{r, \nu} U_{\nu, \nu} n_{r \nu \uparrow} n_{r \nu \downarrow} + \sum_{r \sigma, \nu < \nu'} U'_{\nu, \nu'} n_{r \nu \sigma} n_{r \nu' \bar{\sigma}}  + 
-..    \\
-..    & & \sum_{r \sigma, \nu < \nu'} \left( U'_{\nu, \nu'} - J^H_{\nu, \nu'} \right) n_{r \nu \sigma} n_{r \nu' \sigma}  + H_{\text{Phonons} }
+    H  =  \sum_{\rho \rho' \sigma} t_{\rho \rho'} c^\dagger_{\rho\sigma} c_{\rho'\sigma} + \sum_{r, \nu} U_{\nu, \nu} n_{r \nu \uparrow} n_{r \nu \downarrow} + \sum_{r \sigma, \nu < \nu'} U'_{\nu, \nu'} n_{r \nu \sigma} n_{r \nu' \bar{\sigma}}  + 
+    \\
+    \sum_{r \sigma, \nu < \nu'} \left( U'_{\nu, \nu'} - J^H_{\nu, \nu'} \right) n_{r \nu \sigma} n_{r \nu' \sigma}  + H_{\text{Phonons} }
 
 
 
