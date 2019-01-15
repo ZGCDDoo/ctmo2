@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Integrator.hpp"
-#include "Utilities.hpp"
 #include "MPITools.hpp"
-#include "GreenMat.hpp"
 #include "ABC_SelfConsistency.hpp"
+#include "../Models/ABC_Model.hpp"
 #include "Fourier_DCA.hpp"
 
 namespace SelfCon
@@ -12,66 +11,40 @@ namespace SelfCon
 
 using Utilities::GetSpinName;
 
-template <typename TH0>
-struct GreenLattice
+class SelfConsistencyDCA : public ABC_SelfConsistency
 {
 
-  public:
-    static const size_t Nc;
-    static const ClusterMatrixCD_t II;
-
-    GreenLattice(cd_t zz, ClusterMatrixCD_t selfEnergy, TH0 h0) : zz_(zz), selfEnergy_(selfEnergy), h0_(h0){};
-
-    ClusterMatrixCD_t operator()(const double &kx, const double &ky)
-    {
-        return ((zz_ * II - h0_(kx, ky) - selfEnergy_).i());
-    }
-
-  private:
-    const cd_t zz_;
-    ClusterMatrixCD_t selfEnergy_;
-    TH0 h0_;
-};
-template <typename TH0>
-const ClusterMatrixCD_t GreenLattice<TH0>::II = ClusterMatrixCD_t(TH0::Nc, TH0::Nc).eye();
-
-template <typename TH0>
-const size_t GreenLattice<TH0>::Nc = TH0::Nc;
-
-template <typename TIOModel, typename TModel, typename TH0>
-class SelfConsistency : public ABC_SelfConsistency
-{
+    using Model_t = Models::ABC_Model_2D;
+    using IOModel_t = IO::Base_IOModel;
 
   public:
-    static const size_t Nc;
-    static const ClusterMatrixCD_t II;
-    static const double factNSelfCon;
-    const size_t hybSavePrecision = 14;
+    const size_t hybSavePrecision = 12;
 
-    SelfConsistency(const Json &jj, const TModel &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
-                                                                                                                            ioModel_(TIOModel()),
-                                                                                                                            h0_(model_.h0()),
-                                                                                                                            greenImpurity_(FourierDCA::RtoK(greenImpurity, h0_.RSites(), h0_.KWaveVectors())),
-                                                                                                                            hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
-                                                                                                                            selfEnergy_(),
-                                                                                                                            hybNext_(),
-                                                                                                                            spin_(spin),
-                                                                                                                            weights_(cd_t(jj["WEIGHTSR"].get<double>(), jj["WEIGHTSI"].get<double>())),
-                                                                                                                            NOrb_(jj["NOrb"].get<size_t>())
+    SelfConsistencyDCA(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
+                                                                                                                                   ioModel_(jjSim),
+                                                                                                                                   h0_(model_.h0()),
+                                                                                                                                   greenImpurity_(FourierDCA::RtoK(greenImpurity, h0_.RSites(), h0_.KWaveVectors())),
+                                                                                                                                   hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
+                                                                                                                                   selfEnergy_(),
+                                                                                                                                   hybNext_(),
+                                                                                                                                   spin_(spin),
+                                                                                                                                   weights_(jjSim["selfCon"]["weightsR"].get<double>(), jjSim["selfCon"]["weightsI"].get<double>()),
+                                                                                                                                   NOrb_(model.NOrb()),
+                                                                                                                                   Nc_(ioModel_.Nc)
     {
-        Logging::Debug("Start of SC constructor");
+        Logging::Debug("Start of SC constructor.");
 
         const size_t NGreen = greenImpurity_.n_slices;
         const size_t NSelfCon = NGreen;
 
-        selfEnergy_.resize(Nc, Nc, NSelfCon);
+        selfEnergy_.resize(Nc_, Nc_, NSelfCon);
         selfEnergy_.zeros();
 
         //0.) Extraire la self jusqu'a NGreen
         for (size_t nn = 0; nn < NGreen; nn++)
         {
             const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-            selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(Nc, Nc).eye() - model_.tLoc() - hybridization_.slice(nn);
+            selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(Nc_, Nc_).eye() - model_.tLoc() - hybridization_.slice(nn);
         }
 
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
@@ -80,7 +53,7 @@ class SelfConsistency : public ABC_SelfConsistency
             std::cout << "In Selfonsistency constructor, after save selfenery " << std::endl;
         }
 
-        Logging::Debug("After SC constructor");
+        Logging::Debug("After SC constructor.");
     }
 
     void DoSCGrid() override
@@ -96,11 +69,11 @@ class SelfConsistency : public ABC_SelfConsistency
     {
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            std::cout << "In Selfonsistency DOSC serial" << std::endl;
+            Logging::Info("In Selfonsistency DOSC serial.");
             const size_t NSelfCon = selfEnergy_.n_slices;
             const size_t NKPTS = h0_.NKPTS();
-            ClusterCubeCD_t gImpUpNext(Nc, Nc, NSelfCon);
-            assert(Nc == h0_.KWaveVectors().size());
+            ClusterCubeCD_t gImpUpNext(Nc_, Nc_, NSelfCon);
+            assert(Nc_ == h0_.KWaveVectors().size());
             gImpUpNext.zeros();
             hybNext_ = gImpUpNext;
 
@@ -121,16 +94,16 @@ class SelfConsistency : public ABC_SelfConsistency
                 for (size_t nn = 0; nn < NSelfCon; nn++)
                 {
                     const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-                    for (size_t kxindex = 0; kxindex < NKPTS; kxindex++)
+                    for (size_t kxindex = 0; kxindex < kxtildepts; kxindex++)
                     {
                         const double kx = (Kx - kxCenter) + static_cast<double>(kxindex) / static_cast<double>(NKPTS - 1) * 2.0 * kxCenter;
-                        for (size_t kyindex = 0; kyindex < NKPTS; kyindex++)
+                        for (size_t kyindex = 0; kyindex < kytildepts; kyindex++)
                         {
                             const double ky = (Ky - kyCenter) + static_cast<double>(kyindex) / static_cast<double>(NKPTS - 1) * 2.0 * kyCenter;
-                            for (size_t kzindex = 0; kzindex < NKPTS; kzindex++)
+                            for (size_t kzindex = 0; kzindex < kztildepts; kzindex++)
                             {
                                 const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
-                                gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz) - selfEnergy_(KIndex, KIndex, nn));
+                                gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz, 0) - selfEnergy_(KIndex, KIndex, nn));
                             }
                         }
                     }
@@ -143,12 +116,12 @@ class SelfConsistency : public ABC_SelfConsistency
             for (size_t nn = 0; nn < gImpUpNext.n_slices; nn++)
             {
                 const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-                hybNext_.slice(nn) = -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(Nc, Nc).eye() - model_.tLoc();
+                hybNext_.slice(nn) = -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(Nc_, Nc_).eye() - model_.tLoc();
             }
 
             ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);
 
-            std::cout << "After Selfonsistency DOSC serial" << std::endl;
+            Logging::Info("After Selfonsistency DOSC serial.");
         }
     }
 
@@ -169,9 +142,9 @@ class SelfConsistency : public ABC_SelfConsistency
 
         const size_t NSelfConRank = mpiUt::Tools::Rank() == mpiUt::Tools::master ? (NSelfCon / mpiUt::Tools::NWorkers() + NSelfCon % mpiUt::Tools::NWorkers()) : NSelfCon / mpiUt::Tools::NWorkers();
 
-        ClusterCubeCD_t gImpUpNextRank(Nc, Nc, NSelfConRank);
+        ClusterCubeCD_t gImpUpNextRank(Nc_, Nc_, NSelfConRank);
         gImpUpNextRank.zeros();
-        ClusterCubeCD_t hybNextRank(Nc, Nc, NSelfConRank);
+        ClusterCubeCD_t hybNextRank(Nc_, Nc_, NSelfConRank);
         hybNextRank.zeros();
 
         const double kxCenter = M_PI / static_cast<double>(h0_.Nx);
@@ -226,15 +199,15 @@ class SelfConsistency : public ABC_SelfConsistency
 
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
-            ClusterCubeCD_t gImpUpNext(Nc, Nc, NSelfCon);
+            ClusterCubeCD_t gImpUpNext(Nc_, Nc_, NSelfCon);
             gImpUpNext.zeros();
-            hybNext_.resize(Nc, Nc, NSelfCon);
+            hybNext_.resize(Nc_, Nc_, NSelfCon);
             hybNext_.zeros();
 
             for (size_t ii = 0; ii < static_cast<size_t>(mpiUt::Tools::NWorkers()); ii++)
             {
-                ClusterCubeCD_t tmpGImpNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc, Nc, tmpMemGImpVec.at(ii).size() / (Nc * Nc));
-                ClusterCubeCD_t tmpHybNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc, Nc, tmpMemHybNextVec.at(ii).size() / (Nc * Nc));
+                ClusterCubeCD_t tmpGImpNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc_, Nc_, tmpMemGImpVec.at(ii).size() / (Nc_ * Nc_));
+                ClusterCubeCD_t tmpHybNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc_, Nc_, tmpMemHybNextVec.at(ii).size() / (Nc_ * Nc_));
 
                 const size_t jjStart = ii == 0 ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * ii;
                 const size_t jjEnd = jjStart + tmpGImpNextRank.n_slices;
@@ -262,9 +235,9 @@ class SelfConsistency : public ABC_SelfConsistency
     };
 
   private:
-    TModel model_;
-    TIOModel ioModel_;
-    TH0 h0_;
+    Model_t model_;
+    IOModel_t ioModel_;
+    Models::ABC_H0 h0_;
 
     const ClusterCubeCD_t greenImpurity_;
     GreenMat::HybridizationMat hybridization_;
@@ -273,14 +246,7 @@ class SelfConsistency : public ABC_SelfConsistency
     const FermionSpin_t spin_;
     const cd_t weights_;
     const size_t NOrb_;
+    const size_t Nc_;
 };
-template <typename TIOModel, typename TModel, typename TH0>
-const ClusterMatrixCD_t SelfConsistency<TIOModel, TModel, TH0>::II = ClusterMatrixCD_t(TH0::Nc, TH0::Nc).eye();
-
-template <typename TIOModel, typename TModel, typename TH0>
-const size_t SelfConsistency<TIOModel, TModel, TH0>::Nc = TH0::Nc;
-
-template <typename TIOModel, typename TModel, typename TH0>
-const double SelfConsistency<TIOModel, TModel, TH0>::factNSelfCon = 2;
 
 } // namespace SelfCon

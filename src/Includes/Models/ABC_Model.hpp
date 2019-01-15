@@ -30,7 +30,7 @@ class ABC_Model_2D
                 {
 
 #ifdef DCA
-                        HybFMAndTLoc<TH0>::CalculateHybFMAndTLoc(h0_);
+                        HybFMAndTLoc::CalculateHybFMAndTLoc(h0_);
 #else
                         h0_.SaveTKTildeAndHybFM();
 #endif

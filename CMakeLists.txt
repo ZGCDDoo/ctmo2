@@ -125,7 +125,7 @@ endif ()
 ################################
 set(EXECECUTABLES
     ctmo
-    #ctmo_DCA
+    ctmo_DCA
 )
 
 foreach(executable ${EXECECUTABLES})

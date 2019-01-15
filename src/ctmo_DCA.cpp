@@ -1,9 +1,10 @@
 #define DCA
 
-#include "Includes/IS/MonteCarloBuilder_DCA.hpp"
-#include "Includes/Utilities/SelfConsistencyBuilder_DCA.hpp"
+#include "Includes/IS/MonteCarloBuilder.hpp"
+#include "Includes/Utilities/SelfConsistencyBuilder.hpp"
 #include "Includes/Utilities/FS.hpp"
 #include "Includes/PrintVersion.hpp"
+#include "Includes/Utilities/Logging.hpp"
 
 int main(int argc, char **argv)
 {
@@ -21,64 +22,82 @@ int main(int argc, char **argv)
     const std::string paramsName = argv[1];
     const int ITER = atoi(argv[2]);
     const std::string fname_params = paramsName + std::to_string(ITER) + std::string(".json");
-    Json jj;
+    Json jjSim;
 
 #ifndef HAVEMPI
-    PrintVersion::PrintVersion();
     std::ifstream fin(fname_params);
-    fin >> jj;
+    fin >> jjSim;
     fin.close();
-    std::cout << "Iter = " << ITER << std::endl;
-    const size_t seed = jj["SEED"].get<size_t>();
+
+    Logging::Init(jjSim["logging"]);
+    Logging::Info(PrintVersion::GetVersion());
+    Logging::Info("Iteration " + std::to_string(ITER));
+    const size_t seed = jjSim["monteCarlo"]["seed"].get<size_t>();
 
     //init a model, to make sure all the files are present and that not all proc write to the same files
 
-    const std::unique_ptr<MC::ABC_MonteCarlo> monteCarloMachinePtr = MC::MonteCarloBuilder(jj, seed);
+    Logging::Trace("ABC_MonteCarlo Creation...");
+    const std::unique_ptr<MC::ABC_MonteCarlo> monteCarloMachinePtr = MC::MonteCarloBuilder(jjSim, seed);
+    Logging::Trace("ABC_MonteCarlo Created !");
 
     monteCarloMachinePtr->RunMonteCarlo();
 
-    const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jj, FermionSpin_t::Up);
+    Logging::Trace("ABC_SelfConsistency Creation...");
+    const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);
+    Logging::Trace("ABC_SelfConsistency Created...");
+
     selfconUpPtr->DoSCGrid();
 
+    Logging::Trace("PrepareNextIter...");
     IO::FS::PrepareNextIter(paramsName, ITER);
+    Logging::Trace("End PrepareNextIter...");
 
 #endif
 
 #ifdef HAVEMPI
 
-    std::string jjStr;
+    std::string jjSimStr;
 
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
-        PrintVersion::PrintVersion();
-        Logging::Info("ITER = " + std::to_string(ITER));
         std::ifstream fin(fname_params);
-        fin >> jj;
-        jjStr = jj.dump();
+        fin >> jjSim;
+        jjSimStr = jjSim.dump();
         fin.close();
     }
 
-    mpi::broadcast(world, jjStr, mpiUt::Tools::master);
-    jj = Json::parse(jjStr);
+    mpi::broadcast(world, jjSimStr, mpiUt::Tools::master);
+    jjSim = Json::parse(jjSimStr);
+
+    Logging::Init(jjSim["logging"]);
+    Logging::Info(PrintVersion::GetVersion());
+    Logging::Info("Iteration " + std::to_string(ITER));
     world.barrier();
     //wait_all
+
     const size_t rank = world.rank();
-    const size_t seed = jj["SEED"].get<size_t>() + 2797 * rank;
+    const size_t seed = jjSim["monteCarlo"]["seed"].get<size_t>() + 2797 * rank;
 
     {
-        std::unique_ptr<MC::ABC_MonteCarlo> monteCarloMachinePtr = MC::MonteCarloBuilder(jj, seed);
+        Logging::Trace("ABC_MonteCarlo Creation...");
+        std::unique_ptr<MC::ABC_MonteCarlo> monteCarloMachinePtr = MC::MonteCarloBuilder(jjSim, seed);
+        Logging::Trace("ABC_MonteCarlo Created...");
 
         monteCarloMachinePtr->RunMonteCarlo();
     }
 
     world.barrier();
 
-    const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jj, FermionSpin_t::Up);
+    Logging::Trace("ABC_SelfConsistency Creation...");
+    const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);
+    Logging::Trace("ABC_SelfConsistency Created...");
     selfconUpPtr->DoSCGrid();
 
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
+        Logging::Trace("PrepareNextIter...");
         IO::FS::PrepareNextIter(paramsName, ITER);
+        Logging::Trace("End PrepareNextIter...");
     }
 #endif
 
