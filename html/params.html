@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Parameter file &mdash; ctmo 2.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example Parameter file" href="params-example.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ctmo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Parameter file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#montecarlo">monteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model">model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solver">solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#selfcon">selfCon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging">logging</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="params-example.html">Example Parameter file</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ctmo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The Parameter file</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/params.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-parameter-file">
+<span id="params"></span><h1>The Parameter file<a class="headerlink" href="#the-parameter-file" title="Permalink to this headline">¶</a></h1>
+<p>The parameter files used to specify the details of the Monte Carlo simulations are in the json format.
+This file format is convinient, readable and also ubiquitous. While reading the following descriptions, please open up the file
+‘test/Simulations/holstein_DMFT_T0.3/params1.json’ to follow along. The name of the parameters follow the simple camelCase convention.</p>
+<p>You can also reference the parameter file here: <a class="reference internal" href="params-example.html#params-example"><span class="std std-ref">Example Parameter file</span></a></p>
+<div class="section" id="montecarlo">
+<h2>monteCarlo<a class="headerlink" href="#montecarlo" title="Permalink to this headline">¶</a></h2>
+<p>The parameters in this sub-json specify the monte carlo specific details:</p>
+<dl class="describe">
+<dt>
+<code class="descname">measurementTime (float)</code></dt>
+<dd><p>The time in minutes each processor measures.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">thermalizationTime (float)</code></dt>
+<dd><p>The time in minutes for which each processor will thermalize.
+It is difficult to give a good optimal value. I would say, ~10% of the measurement time.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">seed (int)</code></dt>
+<dd><p>The seed for the random number generator.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">thermalizeFromConfig (bool)</code></dt>
+<dd><p>Should the program thermalize or simply start measuring format the previously saved configuraion.
+If true thermalizes from the previously saved configuration.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="model">
+<h2>model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<dl class="describe">
+<dt>
+<code class="descname">beta (float)</code></dt>
+<dd><p>The inverse temperature in Hartree units.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">hybUpFile (string)</code></dt>
+<dd><p>The name of the hybridization file for the current iteration.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">modelFile (string)</code></dt>
+<dd><p>The name of the model file that states the symmetries for the green function.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">J_H (float)</code></dt>
+<dd><p>The interaction value for different orbitals and same spin.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">nkpts (int)</code></dt>
+<dd><p>The number of k points used in the selfconsistency and to calculate
+the local hopping matrix.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">nOrb (int)</code></dt>
+<dd><p>The number of orbitals.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">U (float)</code></dt>
+<dd><p>The interaction value for same orbitals but different spin.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">UPrime (float)</code></dt>
+<dd><p>The interaction value for different orbitals and different spin.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">delta (float)</code></dt>
+<dd><p>Mathematical value to avoid sign probelm. This value enters in the auxiliary Ising spin
+variables. Value should be near 0.01.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">gPhonon (float)</code></dt>
+<dd><p>The value for electron-phonon coupling.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">w0Phonon (float)</code></dt>
+<dd><p>The value for the phonon frequency.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">mu (float)</code></dt>
+<dd><p>The value of the chemical potentiel.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">cluster (List[int])</code></dt>
+<dd><ul class="simple">
+<li>Nx: Cluster lenght in x.</li>
+<li>Ny: Cluster lenght in y.</li>
+<li>Nz: Cluster lenght in z.</li>
+</ul>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">tParameters (List[List[float]])</code></dt>
+<dd><p>For each independant orbital, one should specify the hopping matrix.
+For an example with one orbital, please refer to the <a class="reference internal" href="params-example.html#params-example"><span class="std std-ref">Example Parameter file</span></a>.
+For an example with two orbitals, please refer to test/Simulations/2x2Sqaure_2Orb’.</p>
+<ul class="simple">
+<li>tx: hopping nearest-neighbor in x.</li>
+<li>t2x: hopping second neighbor in x.</li>
+<li>t3: Third nearest-neighbor hopping.</li>
+<li>tx=y: hopping along x = y diagonal</li>
+<li>tx=-y: hopping along x = -y diagonal</li>
+<li>etc.</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="solver">
+<h2>solver<a class="headerlink" href="#solver" title="Permalink to this headline">¶</a></h2>
+<dl class="describe">
+<dt>
+<code class="descname">cleanUpdate (int)</code></dt>
+<dd><p>The number of updates before calculating the Green matrixs from scratch.
+A good value is around 20000-50000.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">updateMeas (int)</code></dt>
+<dd><p>The number of updates before performing a measurement.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">averageOrbitals (bool)</code></dt>
+<dd><p>true if the orbitals are “identical”, you then want to average the results over
+the orbitals. If the orbitals are different, then set to false</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">isOrbitalDiagonal (bool)</code></dt>
+<dd><p>true if orbitals don’t interact bewteen one another.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">eCutGreen (int)</code></dt>
+<dd><p>Cut-off energy for the measurement of the green function.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">ntau (int)</code></dt>
+<dd><p>The number of tau points for the green function entering in the solver.
+A minimal value is taken by default if the value given here is too small.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">n_tau_sampling (int)</code></dt>
+<dd><p>The number of time-translational invariant configurations to take for each measurement.
+The value of 5 seems optimal in many cases.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="selfcon">
+<h2>selfCon<a class="headerlink" href="#selfcon" title="Permalink to this headline">¶</a></h2>
+<dl class="describe">
+<dt>
+<code class="descname">eCutSelfCon (int)</code></dt>
+<dd><p>The cut-off energy to use in the selfconsistency (not used for now).</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">weightsR (int)</code></dt>
+<dd><p>The mixing value used for the selfconsistency for the real part of the hybridization.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">weightsI (int)</code></dt>
+<dd><p>The mixing value used for the selfconsistency for the imaginary part of the hybridization.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="logging">
+<h2>logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<dl class="describe">
+<dt>
+<code class="descname">level (string)</code></dt>
+<dd><p>The logging level of the program. The options are as follows, with increasing verbosity:</p>
+<ul class="simple">
+<li>warn  # the less verbose</li>
+<li>info</li>
+<li>debug</li>
+<li>trace # The most verbose</li>
+</ul>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">logToFile (bool)</code></dt>
+<dd><p>true if the program should log to a file.</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<code class="descname">file (string)</code></dt>
+<dd><p>The name of the file to log to.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="params-example.html" class="btn btn-neutral float-right" title="Example Parameter file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Charles-David Hebert, Maxime Charlebois, Patrick Semon
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
