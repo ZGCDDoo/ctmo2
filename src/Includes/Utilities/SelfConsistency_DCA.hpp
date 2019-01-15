@@ -107,7 +107,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
                             }
                         }
                     }
-                    gImpUpNext(KIndex, KIndex, nn) /= static_cast<double>(NKPTS * NKPTS);
+                    gImpUpNext(KIndex, KIndex, nn) /= static_cast<double>(kxtildepts * kytildepts * kztildepts);
                 }
             }
 
@@ -147,6 +147,8 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
         ClusterCubeCD_t hybNextRank(Nc_, Nc_, NSelfConRank);
         hybNextRank.zeros();
 
+        const size_t NKPTS = h0_.NKPTS();
+
         const double kxCenter = M_PI / static_cast<double>(h0_.Nx);
         const double kyCenter = M_PI / static_cast<double>(h0_.Ny);
         const double kzCenter = M_PI / static_cast<double>(h0_.Nz);
@@ -167,16 +169,21 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
             for (size_t nn = nnStart; nn < nnEnd; nn++)
             {
                 const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-                for (size_t kxindex = 0; kxindex < NKPTS; kxindex++)
+                for (size_t kxindex = 0; kxindex < kxtildepts; kxindex++)
                 {
                     const double kx = (Kx - kxCenter) + static_cast<double>(kxindex) / static_cast<double>(NKPTS - 1) * 2.0 * kxCenter;
-                    for (size_t kyindex = 0; kyindex < NKPTS; kyindex++)
+                    for (size_t kyindex = 0; kyindex < kytildepts; kyindex++)
                     {
                         const double ky = (Ky - kyCenter) + static_cast<double>(kyindex) / static_cast<double>(NKPTS - 1) * 2.0 * kyCenter;
-                        gImpUpNextRank(KIndex, KIndex, nn - nnStart) += 1.0 / (zz - h0_.Eps0k(kx, ky) - selfEnergy_(KIndex, KIndex, nn));
+
+                        for (size_t kzindex = 0; kzindex < kztildepts; kzindex++)
+                        {
+                            const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
+                            gImpUpNextRank(KIndex, KIndex, nn - nnStart) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz, 0) - selfEnergy_(KIndex, KIndex, nn));
+                        }
                     }
                 }
-                gImpUpNextRank(KIndex, KIndex, nn - nnStart) /= static_cast<double>(NKPTS * NKPTS);
+                gImpUpNextRank(KIndex, KIndex, nn - nnStart) /= static_cast<double>(kxtildepts * kytildepts * kztildepts);
                 hybNextRank(KIndex, KIndex, nn - nnStart) = -1.0 / gImpUpNextRank(KIndex, KIndex, nn - nnStart) - selfEnergy_(KIndex, KIndex, nn) + zz - model_.tLoc()(KIndex, KIndex);
             }
         }
