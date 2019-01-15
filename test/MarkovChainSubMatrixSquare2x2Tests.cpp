@@ -1,19 +1,21 @@
 #include <gtest/gtest.h>
 
-#include "../src/Includes/IS/MarkovChain.hpp"
+#include "../src/Includes/IS/MarkovChainSubMatrix.hpp"
 
 using namespace LinAlg;
 
-using Markov_t = Markov::MarkovChain;
+using Markov_t = MarkovSub::MarkovChainSub;
 
 const double DELTA = 2e-9;
-const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
-
+const std::string FNAME = "../test/data/cdmft_triangle/testtriangle.json";
 Markov_t BuildMarkovChain()
 {
     std::ifstream fin(FNAME);
     Json jj;
     fin >> jj;
+    jj["model"]["beta"] = 100;
+    jj["solver"]["kmax_upd"] = 100;
+
     fin.close();
     std::cout << "Reading in Json in BuildMarkovChain() " << std::endl;
     const size_t seed = 10224;
@@ -22,12 +24,12 @@ Markov_t BuildMarkovChain()
     return markovchain;
 }
 
-TEST(MarkovChainSquare2x2Tests, Init)
+TEST(MarkovChainSubMatrixSquare2x2Tests, Init)
 {
     Markov_t mc = BuildMarkovChain();
 }
 
-TEST(MarkovChainSquare2x2Tests, DoStep)
+TEST(MarkovChainSubMatrixSquare2x2Tests, DoStep)
 {
     Markov_t mc = BuildMarkovChain();
 
@@ -37,13 +39,13 @@ TEST(MarkovChainSquare2x2Tests, DoStep)
     }
     mc.CleanUpdate();
 
-    for (size_t ii = 0; ii < 10000; ii++)
+    for (size_t ii = 0; ii < 10; ii++)
     {
         mc.DoStep();
     }
 
     mc.CleanUpdate();
-    for (size_t ii = 0; ii < 10000; ii++)
+    for (size_t ii = 0; ii < 10; ii++)
     {
         mc.DoStep();
     }

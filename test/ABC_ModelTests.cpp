@@ -3,14 +3,6 @@
 #include "../src/Includes/Models/ABC_Model.hpp"
 #include "TestTools.hpp"
 
-const double DELTA = 1e-7;
-// const double DELTA_SMALL = 1e-11;
-const size_t Nc = 4;
-const size_t Nx = 2;
-const size_t Ny = 2;
-const size_t NOrb = 2;
-const double INTRA = -0.01;
-
 Json BuildJson()
 {
     Json jj = R"(

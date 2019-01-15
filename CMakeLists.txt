@@ -2,7 +2,7 @@
 #           https://github.com/misaka-10032/boost-mpi-examples
 
 cmake_minimum_required(VERSION 2.8.2)
-set(PROJECT_NAME ctmo1.0)
+set(PROJECT_NAME ctmo)
 
 
 option(TEST "Build all tests." ON) # Makes boolean 'test' available.
@@ -11,12 +11,16 @@ option(MAC "mac build" OFF)
 option(GRAHAM "graham build" OFF)
 option(MP2 "mp2 build" OFF)
 option(MPI_BUILD "build with mpi" OFF)
+option(CLANG_BUILD "build with clang" OFF)
+
 
 
 if (${MP2})
     SET(CMAKE_CXX_COMPILER g++)
 elseif (${MPI_BUILD})
     SET(CMAKE_CXX_COMPILER mpic++)
+elseif (${CLANG_BUILD})
+    SET(CMAKE_CXX_COMPILER clang++)
 else ()
     SET(CMAKE_CXX_COMPILER g++)
 endif()

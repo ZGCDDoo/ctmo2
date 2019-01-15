@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Utilities/Utilities.hpp"
 #include "../Utilities/MPITools.hpp"
 #include "../Utilities/Logging.hpp"
 #include "ABC_MonteCarlo.hpp"

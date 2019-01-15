@@ -1,5 +1,4 @@
 
-#include "Utilities.hpp"
 #include "Logging.hpp"
 
 namespace IO

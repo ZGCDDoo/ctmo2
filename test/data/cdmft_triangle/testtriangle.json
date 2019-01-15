@@ -7,8 +7,8 @@
     },
     "model": {
         "beta": 33.3333333,
-        "hybUpFile": "hyb_obs66.dat",
-        "modelFile": "Triangle2x2.model",
+        "hybUpFile": "../test/data/cdmft_triangle/hyb_obs66.dat",
+        "modelFile": "../data/Triangle2x2.model",
         "J_H": 0.0,
         "nkpts": 60,
         "nOrb": 1,
@@ -19,8 +19,8 @@
         "w0Phonon": 0.08,
         "mu": 1.8941850792671628,
         "cluster": {
-            "Nx": 1,
-            "Ny": 1,
+            "Nx": 2,
+            "Ny": 2,
             "Nz": 1
         },
         "tParameters": {
@@ -57,6 +57,6 @@
         "weightsI": 0.2
     },
     "logging": {
-        "level": "debug"
+        "level": "trace"
     }
 }
