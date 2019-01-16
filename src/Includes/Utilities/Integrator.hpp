@@ -6,8 +6,8 @@
 
 namespace Integrator
 {
-const size_t MAXEVALS = 100000;
-const size_t KXPTS = 64;
+const size_t MAXEVALS = 2000000;
+const size_t KXPTS = 128;
 
 template <typename TFct>
 ClusterMatrixCD_t GridKTilde(TFct fct, size_t kxpts = KXPTS)
@@ -127,7 +127,7 @@ int IntegrandCubatureDCA(unsigned ndim, const double *x, void *fdata, unsigned f
 }
 
 template <typename TFct>
-ClusterMatrixCD_t CubatureDCA(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-6, double relError = 1.49e-6)
+ClusterMatrixCD_t CubatureDCA(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-8, double relError = 1.49e-8)
 {
     const unsigned nelem = fct.n_rows(); //We only evaluate the diagonal parts, because diagonal in big K
     double *val = new double[2 * nelem]; //for complex values
