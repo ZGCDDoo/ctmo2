@@ -47,7 +47,7 @@ class ABC_MarkovChain
 
   public:
     const double PROBFLIP = 0.2;
-    const double PROBINSERT = 0.333;
+    const double PROBINSERT = 0.3333333333;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
     ABC_MarkovChain(const Json &jj, const size_t &seed) : modelPtr_(new Model_t(jj)),
@@ -295,7 +295,7 @@ class ABC_MarkovChain
             AssertSizes();
 
             updStats_["Inserts"][1]++;
-            if (ratioAcc < .0)
+            if (ratioAcc < 0.0)
             {
                 dataCT_->sign_ *= -1;
             }

@@ -58,7 +58,7 @@ class IOResult
         }
         //greenUp.print();
         //greenDown.print();
-        const size_t PRECISION_OUT = 10;
+        const size_t PRECISION_OUT = 14;
 
         SaveTabular("greenUp", greenUp, beta, PRECISION_OUT, false);
 
@@ -146,7 +146,6 @@ class IOResult
 
     static void SaveFillingMatrixs(std::valarray<double> &fillingResultUp, std::valarray<double> &fillingResultDown, const IO::Base_IOModel &ioModel)
     {
-        std::cout << "Just before saving NMatrix " << std::endl;
         ClusterMatrix_t nUpMatrix(ioModel.Nc, ioModel.Nc);
         nUpMatrix.zeros();
         ClusterMatrix_t nDownMatrix = nUpMatrix;

@@ -18,7 +18,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
     using IOModel_t = IO::Base_IOModel;
 
   public:
-    const size_t hybSavePrecision = 12;
+    const size_t hybSavePrecision = 14;
 
     SelfConsistencyDCA(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
                                                                                                                                    ioModel_(jjSim),
@@ -51,7 +51,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             ioModel_.SaveK("self" + GetSpinName(spin_), selfEnergy_, model_.beta(), NOrb_, hybSavePrecision);
-            std::cout << "In Selfonsistency constructor, after save selfenery " << std::endl;
+            Logging::Debug("In Selfonsistency constructor, after save selfenery. ");
         }
 
         Logging::Debug("After SC constructor.");
