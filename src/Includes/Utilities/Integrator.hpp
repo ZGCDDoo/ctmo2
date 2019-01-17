@@ -49,12 +49,12 @@ int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim
 
     TFct fct = *((TFct *)fdata);
 
-    ClusterMatrixCD_t tmpMat;
+    ClusterMatrixCD_t tmpMat = fct(x[0], x[1], x[2]);
+
     for (size_t i = 0; i < fct.n_rows(); i++)
     {
         for (size_t j = 0; j < fct.n_cols(); j++)
         {
-            tmpMat = fct(x[0], x[1], x[2]);
             fval[i + fct.n_rows() * j] = tmpMat(i, j).real();
             fval[i + fct.n_rows() * (fct.n_cols() + j)] = tmpMat(i, j).imag();
         }
@@ -115,10 +115,9 @@ int IntegrandCubatureDCA(unsigned ndim, const double *x, void *fdata, unsigned f
 
     TFct fct = *((TFct *)fdata);
 
-    ClusterMatrixCD_t tmpMat;
+    ClusterMatrixCD_t tmpMat = fct(x[0], x[1], x[2]);
     for (size_t i = 0; i < fct.n_rows(); i++)
     {
-        tmpMat = fct(x[0], x[1], x[2]);
         fval[2 * i] = tmpMat(i, i).real();
         fval[2 * i + 1] = tmpMat(i, i).imag();
     }

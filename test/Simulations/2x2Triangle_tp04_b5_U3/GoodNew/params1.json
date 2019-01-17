@@ -2,7 +2,7 @@
     "logging": {
         "file": "ctmo_log.log",
         "level": "debug",
-        "logToFile": true
+        "logToFile": false
     },
     "model": {
         "J_H": 0.0,
@@ -42,7 +42,7 @@
         "w0Phonon": 0.0
     },
     "monteCarlo": {
-        "measurementTime": 5.0,
+        "measurementTime": 10.0,
         "seed": 62373338,
         "thermFromConfig": false,
         "thermalizationTime": 0.50

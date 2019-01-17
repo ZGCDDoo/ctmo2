@@ -99,6 +99,14 @@ TEST(ABC_H0_Tests, Init)
         ASSERT_DOUBLE_EQ(h0.tx_yVec().at(ii), tx_yVec.at(ii));
         ASSERT_DOUBLE_EQ(h0.t2xVec().at(ii), t2xVec.at(ii));
         ASSERT_DOUBLE_EQ(h0.t2yVec().at(ii), t2yVec.at(ii));
+
+        ASSERT_DOUBLE_EQ(h0.tzVec().at(ii), 0.0);
+        ASSERT_DOUBLE_EQ(h0.txzVec().at(ii), 0.0);
+        ASSERT_DOUBLE_EQ(h0.tx_zVec().at(ii), 0.0);
+        ASSERT_DOUBLE_EQ(h0.tyzVec().at(ii), 0.0);
+        ASSERT_DOUBLE_EQ(h0.ty_zVec().at(ii), 0.0);
+        ASSERT_DOUBLE_EQ(h0.t2zVec().at(ii), 0.0);
+        ASSERT_DOUBLE_EQ(h0.t3Vec().at(ii), 0.0);
     }
 }
 

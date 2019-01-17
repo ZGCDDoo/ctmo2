@@ -102,7 +102,7 @@ class ABC_H0
         }
     }
 
-    double Eps0k(const double &kx, const double &ky, const double &kz, const size_t &NIndepOrbIndex)
+    double Eps0k(const double &kx, const double &ky, const double &kz = 0.0, const size_t &NIndepOrbIndex = 0)
     {
         const double eps0k =
 

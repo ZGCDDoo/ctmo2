@@ -42,10 +42,11 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
         hybridization_.PatchHF(NSelfCon, model_.beta());
 
         //0.) Extraire la self jusqu'a NGreen
+        const ClusterMatrixCD_t II = ClusterMatrixCD_t(Nc_, Nc_).eye();
         for (size_t nn = 0; nn < NGreen; nn++)
         {
             const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-            selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(Nc_, Nc_).eye() - model_.tLoc() - hybridization_.slice(nn);
+            selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * II - model_.tLoc() - hybridization_.slice(nn);
         }
 
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
@@ -59,11 +60,11 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
     void DoSCGrid() override
     {
-#ifdef HAVEMPI
-        DoSCGridParallel();
-#else
+        // #ifdef HAVEMPI
+        // DoSCGridParallel();
+        // #else
         DoSCGridSerial();
-#endif
+        // #endif
     }
 
     void DoSCGridSerial()
@@ -74,8 +75,8 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
             const size_t NSelfCon = selfEnergy_.n_slices;
             const size_t NKPTS = h0_.NKPTS();
             ClusterCubeCD_t gImpUpNext(Nc_, Nc_, NSelfCon);
-            assert(Nc_ == h0_.KWaveVectors().size());
             gImpUpNext.zeros();
+            assert(Nc_ == h0_.KWaveVectors().size());
             hybNext_ = gImpUpNext;
 
             const double kxCenter = M_PI / static_cast<double>(h0_.Nx);
@@ -104,7 +105,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
                             for (size_t kzindex = 0; kzindex < kztildepts; kzindex++)
                             {
                                 const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
-                                gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz, 0) - selfEnergy_(KIndex, KIndex, nn));
+                                gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz) - selfEnergy_(KIndex, KIndex, nn));
                             }
                         }
                     }
@@ -114,10 +115,11 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
             ioModel_.SaveK("green" + GetSpinName(spin_), gImpUpNext, model_.beta(), NOrb_, hybSavePrecision);
 
+            const ClusterMatrixCD_t II = ClusterMatrixCD_t(Nc_, Nc_).eye();
             for (size_t nn = 0; nn < gImpUpNext.n_slices; nn++)
             {
                 const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-                hybNext_.slice(nn) = -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(Nc_, Nc_).eye() - model_.tLoc();
+                hybNext_.slice(nn) = -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * II - model_.tLoc();
             }
 
             ioModel_.SaveK("hybNext" + GetSpinName(spin_), hybNext_, model_.beta(), NOrb_, hybSavePrecision);

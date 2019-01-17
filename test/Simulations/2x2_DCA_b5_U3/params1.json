@@ -3,47 +3,47 @@
         "measurementTime": 5.0,
         "thermalizationTime": 0.5,
         "thermFromConfig": false,
-        "seed": 1096954689
+        "seed": 4689
     },
     "model": {
-        "beta": 33.3333333,
+        "beta": 5,
         "hybUpFile": "hybUp1.dat",
-        "modelFile": "SIAM_Square.model",
+        "modelFile": "Square2x2.model",
         "J_H": 0.0,
-        "nkpts": 60,
+        "nkpts": 200,
         "nOrb": 1,
-        "U": 0.0,
+        "U": 3.0,
         "UPrime": 0.0,
         "delta": 0.01,
-        "gPhonon": 0.08,
-        "w0Phonon": 0.08,
-        "mu": 0.0,
+        "gPhonon": 0.0,
+        "w0Phonon": 0.0,
+        "mu": 1.5,
         "cluster": {
-            "Nx": 1,
-            "Ny": 1,
+            "Nx": 2,
+            "Ny": 2,
             "Nz": 1
         },
         "tParameters": {
             "00": {
+                "tIntra": 0.0,
+                "tx": -1.0,
+                "ty": -1.0,
+                "tz": 0.0,
+                "tx=y": 0.0,
+                "tx=-y": 0.0,
+                "tx=z": 0.0,
+                "tx=-z": 0.0,
+                "ty=z": 0.0,
+                "ty=-z": 0.0,
                 "t2x": 0.0,
                 "t2y": 0.0,
                 "t2z": 0.0,
-                "tIntra": 0.0,
-                "tx": -0.3926,
-                "tx=-y": 0.0,
-                "tx=-z": 0.0,
-                "tx=y": 0.0,
-                "tx=z": 0.0,
-                "ty": -0.3926,
-                "ty=-z": 0.0,
-                "ty=z": 0.0,
-                "tz": -0.3926,
                 "t3": 0.0
             }
         }
     },
     "solver": {
-        "cleanUpdate": 10000,
+        "cleanUpdate": 5000,
         "updatesMeas": 50,
         "averageOrbitals": true,
         "isOrbitalDiagonal": true,
@@ -57,8 +57,8 @@
         "weightsI": 0.2
     },
     "logging": {
-        "level": "debug",
+        "level": "trace",
         "logToFile": true,
-        "file": "ctmo.log"
+        "file": "ctmo_log.log"
     }
 }

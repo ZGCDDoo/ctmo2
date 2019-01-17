@@ -80,6 +80,8 @@
         "mutex": "cpp",
         "condition_variable": "cpp",
         "codecvt": "cpp",
-        "string_view": "cpp"
-    }
+        "string_view": "cpp",
+        "optional": "cpp"
+    },
+    "python.pythonPath": "/usr/local/bin/python3.7"
 }

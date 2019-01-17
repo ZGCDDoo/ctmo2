@@ -66,11 +66,11 @@ class SelfConsistency : public ABC_SelfConsistency
 
     void DoSCGrid() override
     {
-#ifdef HAVEMPI
-        DoSCGridParallel();
-#else
+        // #ifdef HAVEMPI
+        // DoSCGridParallel();
+        // #else
         DoSCGridSerial();
-#endif
+        // #endif
     }
 
 #ifdef HAVEMPI
