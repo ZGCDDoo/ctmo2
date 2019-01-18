@@ -25,8 +25,7 @@ class TestIntegration(unittest.TestCase):
         holstein_path = os.path.join(holstein_path, tmp_path)
         os.chdir(tmp_path)
 
-        mpi_cmd = "mpirun -np 1 ctmo params 1"
-        subprocess.run(mpi_cmd, shell=True)
+        subprocess.run(self.mpi_cmd, shell=True)
         good_result = np.loadtxt(
             os.path.join(tmp_path, "GoodReza/Region1_LocalGFn.dat")
         )
@@ -41,10 +40,13 @@ class TestIntegration(unittest.TestCase):
         np.testing.assert_allclose(
             result[:len_high],
             good_result[:len_high],
-            rtol=1e-2,
-            atol=1e-2,
+            rtol=1e-3,
+            atol=1e-3,
             verbose=True,
         )
+
+        # Test the first frequency imaginary part
+        self.assertAlmostEqual(result[0, 2], good_result[0, 2], places=2)
 
         # test the high frequencies which should be more precise
         # np.testing.assert_allclose(
@@ -64,15 +66,14 @@ class TestIntegration(unittest.TestCase):
         triangle_path = os.path.join(triangle_path, tmp_path)
         os.chdir(tmp_path)
 
-        mpi_cmd = "mpirun -np 1 ctmo params 1"
-        subprocess.run(mpi_cmd, shell=True)
+        subprocess.run(self.mpi_cmd, shell=True)
         good_result = np.loadtxt(os.path.join(tmp_path, "GoodNew/greenUp1.dat"))
         good_result_old = np.loadtxt(os.path.join(tmp_path, "GoodOld/greenUp1.dat"))
         result = np.loadtxt("greenUp.dat")
         os.chdir(base_path)
         # shutil.rmtree(tmp_path)
 
-        np.testing.assert_allclose(result, good_result, rtol=1e-2, atol=1e-2)
+        np.testing.assert_allclose(result, good_result, rtol=1e-3, atol=1e-3)
 
         len_result = result.shape[0]
 
@@ -101,16 +102,16 @@ class TestIntegration(unittest.TestCase):
             result, good_result_old[:len_result], rtol=1e-2, atol=1e-2
         )
 
-        np.testing.assert_allclose(
-            result[len_result - 20 :],
-            good_result_old[len_result - 20 : len_result],
-            rtol=1e-2,
-            atol=1e-2,
-        )
+        # np.testing.assert_allclose(
+        #     result[len_result - 20 :],
+        #     good_result_old[len_result - 20 : len_result],
+        #     rtol=1e-2,
+        #     atol=1e-2,
+        # )
 
         # the columns 3 and 5 should be zero (counting from zero)
-        # np.testing.assert_allclose(result[:, 3], result[:, 5], atol=1e-3)
-        # np.testing.assert_allclose(result[:, 3], np.zeros(len_result), atol=1e-9)
+        np.testing.assert_allclose(result[:, 3], result[:, 5], atol=1e-3)
+        np.testing.assert_allclose(result[:, 3], np.zeros(len_result), atol=1e-3)
 
 
 if __name__ == "__main__":
