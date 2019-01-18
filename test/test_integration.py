@@ -45,8 +45,13 @@ class TestIntegration(unittest.TestCase):
             verbose=True,
         )
 
-        # Test the first frequency imaginary part
-        self.assertAlmostEqual(result[0, 2], good_result[0, 2], places=2)
+        # Test the first few and last frequencies - imaginary part
+        np.testing.assert_allclose(
+            result[0:5, 2], good_result[0:5, 2], rtol=1e-3, atol=1e-3
+        )
+        np.testing.assert_allclose(
+            result[200:205, 2], good_result[200:205, 2], rtol=1e-3, atol=1e-3
+        )
 
         # test the high frequencies which should be more precise
         # np.testing.assert_allclose(
@@ -73,13 +78,13 @@ class TestIntegration(unittest.TestCase):
         os.chdir(base_path)
         # shutil.rmtree(tmp_path)
 
-        np.testing.assert_allclose(result, good_result, rtol=1e-3, atol=1e-3)
+        np.testing.assert_allclose(result, good_result, rtol=5e-4, atol=5e-4)
 
         len_result = result.shape[0]
 
         # only test the first green function, because order is not the same.
         np.testing.assert_allclose(
-            result[:, 0:3], good_result_old[:len_result, 0:3], rtol=1e-2, atol=1e-2
+            result[:, 0:3], good_result_old[:len_result, 0:3], rtol=1e-3, atol=1e-3
         )
 
     def test_dca2x2(self):
@@ -99,7 +104,7 @@ class TestIntegration(unittest.TestCase):
         len_result = result.shape[0]
 
         np.testing.assert_allclose(
-            result, good_result_old[:len_result], rtol=1e-2, atol=1e-2
+            result, good_result_old[:len_result], rtol=5e-3, atol=5e-3
         )
 
         # np.testing.assert_allclose(
@@ -110,8 +115,8 @@ class TestIntegration(unittest.TestCase):
         # )
 
         # the columns 3 and 5 should be zero (counting from zero)
-        np.testing.assert_allclose(result[:, 3], result[:, 5], atol=1e-3)
-        np.testing.assert_allclose(result[:, 3], np.zeros(len_result), atol=1e-3)
+        np.testing.assert_allclose(result[:, 3], result[:, 5], atol=1e-4)
+        np.testing.assert_allclose(result[:, 3], np.zeros(len_result), atol=1e-4)
 
 
 if __name__ == "__main__":
