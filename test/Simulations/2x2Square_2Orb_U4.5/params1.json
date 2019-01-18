@@ -75,8 +75,8 @@
         }
     },
     "solver": {
-        "cleanUpdate": 100000,
-        "updatesMeas": 50,
+        "cleanUpdate": 10000,
+        "updatesMeas": 200,
         "averageOrbitals": true,
         "isOrbitalDiagonal": false,
         "eCutGreen": 100,
@@ -90,7 +90,7 @@
     },
     "logging": {
         "level": "debug",
-        "logToFile": false,
+        "logToFile": true,
         "file": "ctmo_log.log"
     }
 }
