@@ -47,10 +47,14 @@ class TestIntegration(unittest.TestCase):
 
         # Test the first few and last frequencies - imaginary part
         np.testing.assert_allclose(
-            result[0:5, 2], good_result[0:5, 2], rtol=1e-3, atol=1e-3
+            result[0:5, 2], good_result[0:5, 2], rtol=1e-3, atol=5e-4
         )
         np.testing.assert_allclose(
             result[200:205, 2], good_result[200:205, 2], rtol=1e-3, atol=1e-3
+        )
+
+        np.testing.assert_allclose(
+            result[500:520, 2], good_result[500:520, 2], rtol=1e-3, atol=1e-3
         )
 
         # test the high frequencies which should be more precise
