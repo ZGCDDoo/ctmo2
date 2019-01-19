@@ -9,16 +9,20 @@ before_install:
   - sudo apt-get install -y liblapack-dev clang-6.0 build-essential cmake
                             libarmadillo-dev libboost-all-dev libopenmpi-dev
                             python3-numpy
-script:
-  - cd $TRAVIS_BUILD_DIR && mkdir build_mpi && cd build_mpi && cmake -DMPI_BUILD=ON .. && make install
-  - cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make
 after_success:
 notifications:
   email: true
-
+stages:
+  - Compile
+  - Tests
 
 jobs:
   include:
+  - stage: "Compile"
+    name: "Compile Serial"
+    script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4
+  - script: cd $TRAVIS_BUILD_DIR && mkdir build_mpi && cd build_mpi && cmake -DMPI_BUILD=ON .. && make -j 4 install
+    name : "Install MPI"
   - stage: "Tests"
     name: "Unit Tests"
     script: cd $TRAVIS_BUILD_DIR && cd build && make test
