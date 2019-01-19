@@ -26,5 +26,5 @@ jobs:
   - stage: "Tests"
     name: "Unit Tests"
     script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4 && make test
-  - script: ./install-mpi-travis.sh && cd $TRAVIS_BUILD_DIR && travis_wait 65 python3 test/test_integration.py -v
+  - script: ./test-integration-travis.sh
     name: "Integration Tests"

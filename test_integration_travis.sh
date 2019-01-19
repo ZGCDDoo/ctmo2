@@ -8,4 +8,5 @@ make -j 4 install
 sudo cp deps/cubature/libcubature.so /usr/lib/ 
 sudo cp ctmo* /usr/bin/
 
-
+cd $TRAVIS_BUILD_DIR
+python test/test_integration.py -v TestIntegration.test_holstein_dmft
