@@ -1,6 +1,6 @@
 {
     "monteCarlo": {
-        "measurementTime": 5.0,
+        "measurementTime": 10.0,
         "thermalizationTime": 0.5,
         "thermFromConfig": false,
         "seed": 1096954689
