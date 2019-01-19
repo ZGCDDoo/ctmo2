@@ -31,7 +31,7 @@ class TestIntegration(unittest.TestCase):
         good_result = np.loadtxt(
             os.path.join(tmp_path, "GoodReza/Region1_LocalGFn.dat")
         )
-        result = np.loadtxt("greenUp.dat")
+        result = np.loadtxt("greenUp1.dat")
         os.chdir(base_path)
         # shutil.rmtree(tmp_path)
 
@@ -74,7 +74,7 @@ class TestIntegration(unittest.TestCase):
         subprocess.run(self.mpi_cmd, shell=True)
         good_result = np.loadtxt(os.path.join(tmp_path, "GoodNew/greenUp1.dat"))
         good_result_old = np.loadtxt(os.path.join(tmp_path, "GoodOld/greenUp1.dat"))
-        result = np.loadtxt("greenUp.dat")
+        result = np.loadtxt("greenUp1.dat")
         os.chdir(base_path)
         # shutil.rmtree(tmp_path)
 
@@ -117,7 +117,7 @@ class TestIntegration(unittest.TestCase):
 
         subprocess.run(self.mpi_dca_cmd, shell=True)
         good_result_old = np.loadtxt(os.path.join(tmp_path, "GoodOld/greenUp1.dat"))
-        result = np.loadtxt("greenUp.dat")
+        result = np.loadtxt("greenUp1.dat")
         os.chdir(base_path)
         # shutil.rmtree(tmp_path)
 
@@ -151,8 +151,49 @@ class TestIntegration(unittest.TestCase):
             )
 
     def test_dca4x4(self):
-        print("Test dca_4x4 not yet implemented.")
-        pass
+        base_path = os.getcwd()
+        dca4x4_path = os.path.join(base_path, "test/Simulations/4x4_DCA_b10_U3")
+        tmp_path = os.path.join(base_path, "tmp/4x4_DCA_b10_U3")
+        shutil.rmtree(tmp_path, ignore_errors=True)
+
+        shutil.copytree(dca4x4_path, tmp_path)
+        dca4x4_path = os.path.join(dca4x4_path, tmp_path)
+        os.chdir(tmp_path)
+
+        subprocess.run(self.mpi_dca_cmd, shell=True)
+        good_result_old = np.loadtxt(os.path.join(tmp_path, "Good/greenUp1.dat"))
+        result = np.loadtxt("greenUp1.dat")
+        os.chdir(base_path)
+        # shutil.rmtree(tmp_path)
+
+        len_result = result.shape[0]
+
+        # test all
+        np.testing.assert_allclose(
+            result, good_result_old[:len_result], rtol=1e-2, atol=1e-3
+        )
+
+        # test the high frequencies
+        np.testing.assert_allclose(
+            result[70:75, 1::], good_result_old[70:75, 1::], rtol=1e-4, atol=1e-4
+        )
+
+        # the columns 3 and 5 should be zero (counting from zero)
+        np.testing.assert_allclose(result[:, 3], result[:, 5], atol=1e-8)
+        np.testing.assert_allclose(result[:, 3], np.zeros(len_result), atol=1e-9)
+
+        # now test the observables
+        with open(os.path.join(tmp_path, "Obs.json")) as fin:
+            jj_result = json.load(fin)
+
+        with open(os.path.join(tmp_path, "Good/Obs.json")) as fin:
+            jj_good = json.load(fin)
+
+        keys = ["docc", "n", "sign", "k"]
+        for key in keys:
+            np.testing.assert_allclose(
+                jj_result[key][0], jj_good[key][0], rtol=1e-3, atol=1e-3
+            )
 
     def test_square2x2_tp_tpp(self):
         base_path = os.getcwd()
@@ -168,7 +209,7 @@ class TestIntegration(unittest.TestCase):
 
         subprocess.run(self.mpi_cmd, shell=True)
         good_result = np.loadtxt(os.path.join(tmp_path, "StatsPat/green_moy.dat"))
-        result = np.loadtxt("greenUp.dat")
+        result = np.loadtxt("greenUp1.dat")
         os.chdir(base_path)
 
         # test the first few frequencies
@@ -190,7 +231,7 @@ class TestIntegration(unittest.TestCase):
         good_result_old = np.loadtxt(
             os.path.join(tmp_path, "Stats_Good/greenUp112.dat")
         )
-        result = np.loadtxt("greenUp.dat")
+        result = np.loadtxt("greenUp1.dat")
         os.chdir(base_path)
 
         len_result = result.shape[0]
