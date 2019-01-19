@@ -9,4 +9,5 @@ sudo cp deps/cubature/libcubature.so /usr/lib/
 sudo cp ctmo* /usr/bin/
 
 cd $TRAVIS_BUILD_DIR
-python test/test_integration.py -v TestIntegration.test_holstein_dmft
+python3 test/test_integration.py -v TestIntegration.test_holstein_dmft
+travis_wait python3 test/test_integration.py -v TestIntegration.test_triangle2x2
