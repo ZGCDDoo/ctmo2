@@ -8,7 +8,7 @@ os:
 before_install:
   - sudo apt-get install -y liblapack-dev clang-6.0 build-essential cmake
                             libarmadillo-dev libboost-all-dev libopenmpi-dev
-                            python3-numpy
+                            python3-numpy tree
 after_success:
 notifications:
   email: true
@@ -26,5 +26,5 @@ jobs:
   - stage: "Tests"
     name: "Unit Tests"
     script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4 && make test
-  - script: ./install-mpi-travis.sh && cd $TRAVIS_BUILD_DIR && travis_wait 65 python3 test/integration_test.py -v
+  - script: ./install-mpi-travis.sh && cd $TRAVIS_BUILD_DIR && tree && travis_wait 65 python3 test/test_integration.py -v
     name: "Integration Tests"
