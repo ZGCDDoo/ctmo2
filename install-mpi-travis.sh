@@ -5,6 +5,6 @@ mkdir build_mpi
 cd build_mpi
 cmake -DMPI_BUILD=ON .. 
 make -j 4 install
-cp deps/cubature/lib/libcubature.so /usr/lib/
-cp ctmo* /usr/bin/
+sudo cp deps/cubature/libcubature.so /usr/lib/ 
+sudo cp ctmo* /usr/bin/
 
