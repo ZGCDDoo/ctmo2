@@ -21,10 +21,10 @@ jobs:
   - stage: "Compile"
     name: "Compile Serial"
     script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4
-  - script: cd $TRAVIS_BUILD_DIR && mkdir build_mpi && cd build_mpi && cmake -DMPI_BUILD=ON .. && make -j 4 install
+  - script: ./install-mpi-travis.sh 
     name : "Install MPI"
   - stage: "Tests"
     name: "Unit Tests"
-    script: cd $TRAVIS_BUILD_DIR && cd build && make test
-  - script: cd $TRAVIS_BUILD_DIR && travis_wait python3 test/integration_test.py -v
+    script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4 && make test
+  - script: ./install-mpi-travis.sh && cd $TRAVIS_BUILD_DIR && travis_wait python3 test/integration_test.py -v
     name: "Integration Tests"
