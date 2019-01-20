@@ -1,6 +1,6 @@
 {
     "monteCarlo": {
-        "measurementTime": 5.0,
+        "measurementTime": 30.0,
         "thermalizationTime": 0.50,
         "thermFromConfig": false,
         "seed": 4689
@@ -58,7 +58,7 @@
     },
     "logging": {
         "level": "trace",
-        "logToFile": false,
+        "logToFile": true,
         "file": "ctmo_log.log"
     }
 }
