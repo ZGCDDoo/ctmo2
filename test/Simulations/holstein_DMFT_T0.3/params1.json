@@ -1,6 +1,6 @@
 {
     "monteCarlo": {
-        "measurementTime": 5.0,
+        "measurementTime": 10.0,
         "thermalizationTime": 0.5,
         "thermFromConfig": false,
         "seed": 1096954689
@@ -43,7 +43,7 @@
         }
     },
     "solver": {
-        "cleanUpdate": 100000,
+        "cleanUpdate": 10000,
         "updatesMeas": 50,
         "averageOrbitals": true,
         "isOrbitalDiagonal": true,
@@ -58,7 +58,7 @@
     },
     "logging": {
         "level": "debug",
-        "logToFile": false,
+        "logToFile": true,
         "file": "ctmo.log"
     }
 }

@@ -39,15 +39,15 @@ using SuperSite_t = std::pair<size_t, size_t>; //site, then orbital number
 
 enum class AuxSpin_t
 {
-	Up,
-	Down,
-	Zero
+    Up,
+    Down,
+    Zero
 };
 
 enum class FermionSpin_t
 {
-	Up,
-	Down
+    Up,
+    Down
 };
 
 using SiteVectorCD_t = arma::cx_vec;
@@ -78,34 +78,34 @@ typedef boost::variate_generator<EngineTypeFibonacci3217_t &, UniformDistributio
 
 std::string GetSpinName(const FermionSpin_t &spin)
 {
-	return (spin == FermionSpin_t::Up ? "Up" : "Down");
+    return (spin == FermionSpin_t::Up ? "Up" : "Down");
 }
 
 size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NOrb)
 {
 
-	assert(o1 < NOrb);
-	assert(o2 < NOrb);
+    assert(o1 < NOrb);
+    assert(o2 < NOrb);
 
-	size_t indepOrbitalIndex = 0;
-	const std::pair<size_t, size_t> pairTarget = o1 < o2 ? std::make_pair(o1, o2) : std::make_pair(o2, o1);
+    size_t indepOrbitalIndex = 0;
+    const std::pair<size_t, size_t> pairTarget = o1 < o2 ? std::make_pair(o1, o2) : std::make_pair(o2, o1);
 
-	for (Orbital_t nu1 = 0; nu1 < NOrb; nu1++)
-	{
-		for (Orbital_t nu2 = nu1; nu2 < NOrb; nu2++)
-		{
+    for (Orbital_t nu1 = 0; nu1 < NOrb; nu1++)
+    {
+        for (Orbital_t nu2 = nu1; nu2 < NOrb; nu2++)
+        {
 
-			if (pairTarget == std::make_pair(nu1, nu2))
-			{
-				return indepOrbitalIndex;
-			}
-			indepOrbitalIndex++;
-		}
-	}
+            if (pairTarget == std::make_pair(nu1, nu2))
+            {
+                return indepOrbitalIndex;
+            }
+            indepOrbitalIndex++;
+        }
+    }
 
-	assert(o1 == 0);
-	assert(o2 == 0);
-	return 0;
+    assert(o1 == 0);
+    assert(o2 == 0);
+    return 0;
 }
 
 } // namespace Utilities

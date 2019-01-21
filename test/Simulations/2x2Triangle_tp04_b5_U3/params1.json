@@ -1,8 +1,8 @@
 {
     "logging": {
+        "file": "ctmo_log.log",
         "level": "debug",
-        "logToFile": false,
-        "file": "ctmo_log.log"
+        "logToFile": true
     },
     "model": {
         "J_H": 0.0,
@@ -20,7 +20,7 @@
         "modelFile": "Triangle2x2.model",
         "mu": 1.07544290488366,
         "nOrb": 1,
-        "nkpts": 100,
+        "nkpts": 349,
         "tParameters": {
             "00": {
                 "t2x": 0.0,
@@ -42,10 +42,10 @@
         "w0Phonon": 0.0
     },
     "monteCarlo": {
-        "measurementTime": 10.0,
-        "seed": 519881395,
+        "measurementTime": 30.0,
+        "seed": 62373338,
         "thermFromConfig": false,
-        "thermalizationTime": 0.5
+        "thermalizationTime": 0.50
     },
     "selfCon": {
         "eCutSelfCon": 200,
@@ -54,8 +54,8 @@
     },
     "solver": {
         "averageOrbitals": true,
-        "cleanUpdate": 100000,
-        "eCutGreen": 60,
+        "cleanUpdate": 10000,
+        "eCutGreen": 100,
         "isOrbitalDiagonal": true,
         "n_tau_sampling": 5,
         "ntau": 5000,

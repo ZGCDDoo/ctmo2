@@ -107,8 +107,6 @@ TEST(VerticesTests, VertexPartInit)
     ASSERT_EQ(vp0.aux(), AuxSpin_t::Up);
 }
 
-
-
 TEST(VerticesTests, VertexInit)
 {
     using namespace Diagrammatic;
@@ -136,14 +134,12 @@ TEST(VerticesTests, VertexInit)
     ASSERT_EQ(v0.vStart().aux(), AuxSpin_t::Down);
     ASSERT_EQ(v0.vEnd().aux(), AuxSpin_t::Down);
 
-
     //test copy constructor;
     Vertex v1(v0);
-    ASSERT_TRUE( (v1.vStart() == v0.vStart()) ) ;
-    ASSERT_TRUE( (v1.vEnd() == v0.vEnd()) ) ;
+    ASSERT_TRUE((v1.vStart() == v0.vStart()));
+    ASSERT_TRUE((v1.vEnd() == v0.vEnd()));
     ASSERT_EQ(v1.aux(), v0.aux());
-    ASSERT_FALSE( (v1.vStart() == v_null.vStart()) ) ;
-
+    ASSERT_FALSE((v1.vStart() == v_null.vStart()));
 
     //test assigment operator
 
@@ -154,12 +150,11 @@ TEST(VerticesTests, VertexInit)
     v1 = v2;
 
     ASSERT_DOUBLE_EQ(vStart2.tau(), 0.33);
-    ASSERT_TRUE( (v1.vStart() == v2.vStart()) ) ;
-    ASSERT_TRUE( (v1.vEnd() == v2.vEnd()) ) ;
+    ASSERT_TRUE((v1.vStart() == v2.vStart()));
+    ASSERT_TRUE((v1.vEnd() == v2.vEnd()));
     ASSERT_EQ(v1.aux(), v2.aux());
-    ASSERT_FALSE( (v1.vStart() == v_null.vStart()) ) ;
+    ASSERT_FALSE((v1.vStart() == v_null.vStart()));
     ASSERT_TRUE(v1.vEnd() == vEnd2);
-
 
     //test assignement with vector
 
@@ -167,12 +162,12 @@ TEST(VerticesTests, VertexInit)
     vecVertex.push_back(v_null);
     vecVertex.at(0) = v2;
 
-    ASSERT_TRUE( (vecVertex.at(0).vStart() == v2.vStart()) ) ;
-    ASSERT_TRUE( (vecVertex.at(0).vEnd() == v2.vEnd()) ) ;
+    ASSERT_TRUE((vecVertex.at(0).vStart() == v2.vStart()));
+    ASSERT_TRUE((vecVertex.at(0).vEnd() == v2.vEnd()));
     ASSERT_EQ(vecVertex.at(0).aux(), v2.aux());
-    ASSERT_FALSE( (vecVertex.at(0).vStart() == v_null.vStart()) ) ;
+    ASSERT_FALSE((vecVertex.at(0).vStart() == v_null.vStart()));
 
-    ASSERT_DOUBLE_EQ(vStart2.tau(), vecVertex.at(0).vStart().tau() );
+    ASSERT_DOUBLE_EQ(vStart2.tau(), vecVertex.at(0).vStart().tau());
     ASSERT_EQ(vecVertex.at(0).aux(), AuxSpin_t::Up);
     ASSERT_EQ(vecVertex.at(0).vStart().aux(), AuxSpin_t::Up);
 
@@ -182,12 +177,8 @@ TEST(VerticesTests, VertexInit)
 
     ASSERT_DOUBLE_EQ(vecVertex.at(1).vStart().tau(), 0.33);
     ASSERT_EQ(vecVertex.at(1).vStart().aux(), AuxSpin_t::Zero);
-    ASSERT_TRUE((vecVertex.at(1).vStart() == v2.vStart()) ) ;
-
-
+    ASSERT_TRUE((vecVertex.at(1).vStart() == v2.vStart()));
 }
-
-
 
 // TEST(Vertices2DTest, InitVertices)
 // {

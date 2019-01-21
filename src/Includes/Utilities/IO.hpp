@@ -18,18 +18,7 @@ class Base_IOModel
     //get the number of indep orbitals
     static size_t GetNOrbIndep(const size_t &NOrb)
     {
-        // size_t NOrbIndep = 0;
-        // for (Orbital_t o1 = 0; o1 < NOrb; ++o1)
-        // {
-        //     for (Orbital_t o2 = o1; o2 < NOrb; ++o2)
-        //     {
-        //         NOrbIndep++;
-        //     }
-        // }
 
-        //The number of indep orbitals should be equal to the number of elements in a triangular matrix, i.e:
-        // assert(NOrbIndep == NOrb * (NOrb + 1) / 2);
-        // return NOrbIndep;
         return (NOrb * (NOrb + 1) / 2);
     }
 

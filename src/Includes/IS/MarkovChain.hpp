@@ -14,55 +14,55 @@ namespace Markov
 class MarkovChain : public ABC_MarkovChain
 {
 
-public:
-  MarkovChain(const Json &jjSim, const size_t &seed) : ABC_MarkovChain(jjSim, seed), auxH_(jjSim["model"]["delta"].get<double>()){};
+  public:
+    MarkovChain(const Json &jjSim, const size_t &seed) : ABC_MarkovChain(jjSim, seed), auxH_(jjSim["model"]["delta"].get<double>()){};
 
-  ~MarkovChain() override = default;
+    ~MarkovChain() override = default;
 
-  //Overriding
-  // double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
+    //Overriding
+    // double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
 
 #ifdef GREEN_STYLE
-  double FAux(const VertexPart &vp) override
-  {
-    if (vp.vtype() == Diagrammatic::VertexType::Phonon)
+    double FAux(const VertexPart &vp) override
     {
-      return (auxH_.auxPh(vp.aux()));
+        if (vp.vtype() == Diagrammatic::VertexType::Phonon)
+        {
+            return (auxH_.auxPh(vp.aux()));
+        }
+        else
+        {
+            return (auxH_.auxValue(vp.spin(), vp.aux()));
+        }
     }
-    else
-    {
-      return (auxH_.auxValue(vp.spin(), vp.aux()));
-    }
-  }
 
-  double FAuxBar(const VertexPart &vp) override
-  {
-    if (vp.vtype() == Diagrammatic::VertexType::Phonon)
+    double FAuxBar(const VertexPart &vp) override
     {
-      return (auxH_.auxPh(vp.aux()));
+        if (vp.vtype() == Diagrammatic::VertexType::Phonon)
+        {
+            return (auxH_.auxPh(vp.aux()));
+        }
+        else
+        {
+            return (auxH_.auxValueBar(vp.spin(), vp.aux()));
+        }
     }
-    else
-    {
-      return (auxH_.auxValueBar(vp.spin(), vp.aux()));
-    }
-  }
 
 #else
-  double FAux(const VertexPart &vp) override
-  {
-    return (auxH_.FAux(vp));
-  }
+    double FAux(const VertexPart &vp) override
+    {
+        return (auxH_.FAux(vp));
+    }
 
-  double FAuxBar(const VertexPart &vp) override
-  {
-    return (auxH_.FAuxBar(vp));
-  }
+    double FAuxBar(const VertexPart &vp) override
+    {
+        return (auxH_.FAuxBar(vp));
+    }
 
-  // double gammaUpTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaUp(auxTo, auxFrom)); }
-  // double gammaDownTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaDown(auxTo, auxFrom)); }
+    // double gammaUpTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaUp(auxTo, auxFrom)); }
+    // double gammaDownTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaDown(auxTo, auxFrom)); }
 #endif
 
-private:
-  Diagrammatic::AuxHelper auxH_;
+  private:
+    Diagrammatic::AuxHelper auxH_;
 };
 } // namespace Markov

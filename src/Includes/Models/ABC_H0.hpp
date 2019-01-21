@@ -24,15 +24,16 @@ class ABC_H0
                                 NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
 
     {
+
         Logging::Debug("Start ABC_H0 Constructor. ");
-        for (size_t i = 0; i < Nx; i++)
+        for (size_t k = 0; k < Nz; k++)
         {
             for (size_t j = 0; j < Ny; j++)
             {
-                for (size_t k = 0; k < Nz; k++)
+                for (size_t i = 0; i < Nx; i++)
                 {
 
-                    const size_t index = i + Ny * j + Nz * k;
+                    const size_t index = i + Nx * j + (Nx * Ny) * k;
                     RSites_.at(index) = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(k)};
                     KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx), static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny), static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
                 }
@@ -102,7 +103,7 @@ class ABC_H0
         }
     }
 
-    double Eps0k(const double &kx, const double &ky, const double &kz, const size_t &NIndepOrbIndex)
+    double Eps0k(const double &kx, const double &ky, const double &kz = 0.0, const size_t &NIndepOrbIndex = 0)
     {
         const double eps0k =
 
@@ -135,6 +136,7 @@ class ABC_H0
 
     ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) //return t(ktilde)
     {
+
         const cd_t im = cd_t(0.0, 1.0);
         const SiteVector_t ktilde = {kTildeX, kTildeY, kTildeZ};
         const size_t NS = Nc * NOrb_;

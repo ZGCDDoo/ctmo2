@@ -30,7 +30,7 @@ class SelfConsistency : public ABC_SelfConsistency
 
     {
 
-        Logging::Debug("Start of SC constructor");
+        Logging::Debug("Start of SC constructor.");
 
         const size_t NGreen = greenImpurity_.n_slices;
         size_t NSelfConTmp = std::max<double>(0.5 * (jjSim["selfCon"]["eCutSelfCon"].get<double>() * model_.beta() / M_PI - 1.0),
@@ -66,11 +66,11 @@ class SelfConsistency : public ABC_SelfConsistency
 
     void DoSCGrid() override
     {
-#ifdef HAVEMPI
-        DoSCGridParallel();
-#else
+        // #ifdef HAVEMPI
+        // DoSCGridParallel();
+        // #else
         DoSCGridSerial();
-#endif
+        // #endif
     }
 
 #ifdef HAVEMPI
