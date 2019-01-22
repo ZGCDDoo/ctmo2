@@ -38,8 +38,10 @@ TEST(VerticesTests, AuxHelper)
     ASSERT_NEAR(auxHelper.FAux(vp_downup), (delta) / (1.0 + delta), DELTA_SMALL);
 
     ASSERT_NEAR(auxHelper.gamma(vp_upup, vp_upup), 0.0, DELTA_SMALL);
-    ASSERT_NEAR(auxHelper.gamma(vp_downdown, vp_downdown), 0.0, DELTA_SMALL);
     ASSERT_NEAR(auxHelper.gamma(vp_upup, vp_updown), (auxHelper.FAux(vp_upup) - auxHelper.FAux(vp_updown)) / (auxHelper.FAux(vp_updown)), DELTA_SMALL);
+    ASSERT_NEAR(auxHelper.gamma(vp_updown, vp_upup), (auxHelper.FAux(vp_updown) - auxHelper.FAux(vp_upup)) / (auxHelper.FAux(vp_upup)), DELTA_SMALL);
+
+    ASSERT_NEAR(auxHelper.gamma(vp_downdown, vp_downdown), 0.0, DELTA_SMALL);
     ASSERT_NEAR(auxHelper.gamma(vp_downup, vp_downdown), (auxHelper.FAux(vp_downup) - auxHelper.FAux(vp_downdown)) / (auxHelper.FAux(vp_downdown)), DELTA_SMALL);
 }
 

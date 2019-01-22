@@ -12,6 +12,7 @@ option(GRAHAM "graham build" OFF)
 option(MP2 "mp2 build" OFF)
 option(MPI_BUILD "build with mpi" OFF)
 option(CLANG_BUILD "build with clang" OFF)
+option(OPTIMIZE "turn on all optimizations" OFF)
 
 
 
@@ -67,7 +68,11 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 #-------------------------------------------------------------------------------------------------------------
 
 
-set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer -Ofast") 
+set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer -Ofast")
+if(${OPTIMIZE})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARMA_NO_DEBUG")
+endif()
+
 if(${MPI_BUILD})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVEMPI")
     set(TEST OFF)
@@ -201,6 +206,7 @@ if (${TEST})
     SelfConsistencyTests
     MarkovChainTests
     MarkovChainSquare2x2Tests
+    MarkovChainTriangle2x2Tests
     MatrixTests
     ObservablesTests
     UTensorSimpleTests

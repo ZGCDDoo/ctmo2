@@ -19,11 +19,8 @@ class MarkovChain : public ABC_MarkovChain
 
     ~MarkovChain() override = default;
 
-    //Overriding
-    // double gammaTrad(const FermionSpin_t &spin, const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (auxH_.gamma(spin, auxTo, auxFrom)); }
-
 #ifdef GREEN_STYLE
-    double FAux(const VertexPart &vp) override
+    double FAux(const VertexPart &vp) const override
     {
         if (vp.vtype() == Diagrammatic::VertexType::Phonon)
         {
@@ -35,7 +32,7 @@ class MarkovChain : public ABC_MarkovChain
         }
     }
 
-    double FAuxBar(const VertexPart &vp) override
+    double FAuxBar(const VertexPart &vp) const override
     {
         if (vp.vtype() == Diagrammatic::VertexType::Phonon)
         {
@@ -48,18 +45,21 @@ class MarkovChain : public ABC_MarkovChain
     }
 
 #else
-    double FAux(const VertexPart &vp) override
+    double FAux(const VertexPart &vp) const override
     {
         return (auxH_.FAux(vp));
     }
 
-    double FAuxBar(const VertexPart &vp) override
+    double FAuxBar(const VertexPart &vp) const override
     {
         return (auxH_.FAuxBar(vp));
     }
 
-    // double gammaUpTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaUp(auxTo, auxFrom)); }
-    // double gammaDownTrad(const AuxSpin_t &auxTo, const AuxSpin_t &auxFrom) override { return (this->modelPtr_->gammaDown(auxTo, auxFrom)); }
+    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const override
+    {
+        return auxH_.gamma(vpI, vpJ);
+    }
+
 #endif
 
   private:

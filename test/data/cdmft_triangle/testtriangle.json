@@ -15,8 +15,8 @@
         "U": 3.0,
         "UPrime": 0.0,
         "delta": 0.01,
-        "gPhonon": 0.08,
-        "w0Phonon": 0.08,
+        "gPhonon": 0.0,
+        "w0Phonon": 0.0,
         "mu": 1.8941850792671628,
         "cluster": {
             "Nx": 2,
@@ -49,7 +49,8 @@
         "isOrbitalDiagonal": true,
         "eCutGreen": 100,
         "ntau": 5000,
-        "n_tau_sampling": 5
+        "n_tau_sampling": 5,
+        "isOneOrbitalOptimized": true
     },
     "selfCon": {
         "eCutSelfCon": 200,

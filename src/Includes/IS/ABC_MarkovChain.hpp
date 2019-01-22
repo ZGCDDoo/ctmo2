@@ -46,7 +46,7 @@ class ABC_MarkovChain
     using Model_t = Models::ABC_Model_2D;
 
   public:
-    const double PROBFLIP = 0.2;
+    const double PROBFLIP = 0.00;
     const double PROBINSERT = 0.3333333333;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
@@ -61,7 +61,9 @@ class ABC_MarkovChain
                                                                   modelPtr_)),
                                                           obs_(dataCT_, jj),
                                                           vertexBuilder_(jj, modelPtr_->Nc()),
-                                                          updsamespin_(0)
+                                                          updsamespin_(0),
+                                                          isOneOrbitalOptimized_(
+                                                              jj["solver"]["isOneOrbitalOptimized"].get<bool>())
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -69,6 +71,10 @@ class ABC_MarkovChain
         updStats_["Flips"] = zeroPair;
         updatesProposed_ = 0;
 
+        if (isOneOrbitalOptimized_)
+        {
+            Logging::Trace("Optimized for one orbital and will crash if not One-band Hubbard Model.");
+        }
         Logging::Debug("MarkovChain Created.");
     }
 
@@ -97,8 +103,9 @@ class ABC_MarkovChain
         return dataCT_->beta_;
     };
 
-    virtual double FAux(const VertexPart &vPart) = 0;
-    virtual double FAuxBar(const VertexPart &vPart) = 0;
+    virtual double FAux(const VertexPart &vPart) const = 0;
+    virtual double FAuxBar(const VertexPart &vPart) const = 0;
+    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const = 0; //little gamma
 
     void DoStep()
     {
@@ -126,89 +133,92 @@ class ABC_MarkovChain
         assert(dataCT_->vertices_.NDown() == nfdata_.Ndown_.n_rows());
     }
 
-    void FlipAux()
-    {
+    // void FlipAux()
+    // {
 
-        // if (dataCT_->vertices_.size())
-        // {
-        //     updStats_["Flips"][0]++;
-        //     const size_t p = static_cast<size_t>(dataCT_->vertices_.size() * urng_());
-        //     Vertex vertex = dataCT_->vertices_.at(p);
-        //     const VertexPart x = vertex.vStart();
-        //     const VertexPart y = vertex.vEnd();
+    //     if (dataCT_->vertices_.size())
+    //     {
+    //         updStats_["Flips"][0]++;
+    //         const size_t p = static_cast<size_t>(dataCT_->vertices_.size() * urng_());
+    //         Vertex vertex = dataCT_->vertices_.at(p);
+    //         const VertexPart x = vertex.vStart();
+    //         const VertexPart y = vertex.vEnd();
 
-        //     if (x.spin() == y.spin())
-        //     { //We only flip if the vertex is diagonal in spin indices
-        //         return;
-        //     }
+    //         if (!isOneOrbitalOptimized_)
+    //         {
+    //             //We only flip if we have one orbital and no phonons !
+    //             return;
+    //         }
 
-        //     vertex.FlipAux();
-        // AuxSpin_t auxTo = vertex.aux();
-        // AuxSpin_t auxFrom = dataCT_->vertices_.at(p).aux();
+    //         vertex.FlipAux();
+    //         assert(x.aux() != vertex.vStart().aux());
+    //         assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
+    //         assert(x.tau() == y.tau());
 
-        // const double fauxup = nfdata_.FVup_(p);
-        // const double fauxdown = nfdata_.FVdown_(p);
-        // const double fauxupM1 = fauxup - 1.0;
-        // const double fauxdownM1 = fauxdown - 1.0;
-        // const double gammakup = gammaUpTrad(auxTo, auxFrom);
-        // const double gammakdown = gammaDownTrad(auxTo, auxFrom);
+    //         const double fauxup = nfdata_.FVup_(p);
+    //         const double fauxdown = nfdata_.FVdown_(p);
+    //         const double fauxupM1 = fauxup - 1.0;
+    //         const double fauxdownM1 = fauxdown - 1.0;
+    //         const double gammakup = gamma(vertex.vStart(), x);
+    //         const double gammakdown = gamma(vertex.vEnd(), y);
 
-        //     const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
-        //     const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
+    //         const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
+    //         const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
 
-        //     const double ratioAcc = ratioUp * ratioDown;
+    //         const double ratioAcc = ratioUp * ratioDown;
 
-        //     if (urng_() < std::abs(ratioAcc))
-        //     {
-        //         updStats_["Flips"][1]++;
-        //         if (ratioAcc < 0.0)
-        //         {
-        //             dataCT_->sign_ *= -1;
-        //         }
+    //         if (urng_() < std::abs(ratioAcc))
+    //         {
+    //             updStats_["Flips"][1]++;
+    //             if (ratioAcc < 0.0)
+    //             {
+    //                 dataCT_->sign_ *= -1;
+    //             }
 
-        //         //AssertSizes();
-        //         const size_t kk = dataCT_->vertices_.size();
-        //         const double lambdaUp = gammakup / ratioUp;
-        //         const double lambdaDown = gammakdown / ratioDown;
+    //             const size_t kk = dataCT_->vertices_.size();
+    //             const double lambdaUp = gammakup / ratioUp;
+    //             const double lambdaDown = gammakdown / ratioDown;
 
-        //         SiteVector_t rowpUp;
-        //         SiteVector_t colpUp;
-        //         LinAlg::ExtractRow(p, rowpUp, nfdata_.Nup_);
-        //         LinAlg::ExtractCol(p, colpUp, nfdata_.Nup_);
+    //             SiteVector_t rowpUp;
+    //             SiteVector_t colpUp;
+    //             LinAlg::ExtractRow(p, rowpUp, nfdata_.Nup_);
+    //             LinAlg::ExtractCol(p, colpUp, nfdata_.Nup_);
 
-        //         SiteVector_t rowpDown;
-        //         SiteVector_t colpDown;
-        //         LinAlg::ExtractRow(p, rowpDown, nfdata_.Ndown_);
-        //         LinAlg::ExtractCol(p, colpDown, nfdata_.Ndown_);
+    //             SiteVector_t rowpDown;
+    //             SiteVector_t colpDown;
+    //             LinAlg::ExtractRow(p, rowpDown, nfdata_.Ndown_);
+    //             LinAlg::ExtractCol(p, colpDown, nfdata_.Ndown_);
 
-        //         for (size_t j = 0; j < kk; j++)
-        //         {
-        //             for (size_t i = 0; i < kk; i++)
-        //             {
-        //                 if (i != p)
-        //                 {
-        //                     nfdata_.Nup_(i, j) += (colpUp(i) * fauxup / fauxupM1) * lambdaUp * rowpUp(j);
-        //                     nfdata_.Ndown_(i, j) += (colpDown(i) * fauxdown / fauxdownM1) * lambdaDown * rowpDown(j);
-        //                 }
-        //                 else
-        //                 {
-        //                     nfdata_.Nup_(i, j) += (((colpUp(i) * fauxup - 1.0) / fauxupM1) - 1.0) * lambdaUp * rowpUp(j);
-        //                     nfdata_.Ndown_(i, j) += (((colpDown(i) * fauxdown - 1.0) / fauxdownM1) - 1.0) * lambdaDown * rowpDown(j);
-        //                 }
-        //             }
-        //         }
+    //             for (size_t j = 0; j < kk; j++)
+    //             {
+    //                 for (size_t i = 0; i < kk; i++)
+    //                 {
+    //                     if (i != p)
+    //                     {
+    //                         nfdata_.Nup_(i, j) += (colpUp(i) * fauxup / fauxupM1) * lambdaUp * rowpUp(j);
+    //                         nfdata_.Ndown_(i, j) += (colpDown(i) * fauxdown / fauxdownM1) * lambdaDown * rowpDown(j);
+    //                     }
+    //                     else
+    //                     {
+    //                         nfdata_.Nup_(i, j) += (((colpUp(i) * fauxup - 1.0) / fauxupM1) - 1.0) * lambdaUp * rowpUp(j);
+    //                         nfdata_.Ndown_(i, j) += (((colpDown(i) * fauxdown - 1.0) / fauxdownM1) - 1.0) * lambdaDown * rowpDown(j);
+    //                     }
+    //                 }
+    //             }
 
-        //         dataCT_->vertices_.at(p) = vertex;
-        //         nfdata_.FVup_(p) = fauxdown;
-        //         nfdata_.FVdown_(p) = fauxup;
-
-        //         //AssertSizes();
-        //     }
-        // }
-    }
+    //             dataCT_->vertices_.at(p) = vertex;
+    //             nfdata_.FVup_(p) = fauxdown;
+    //             nfdata_.FVdown_(p) = fauxup;
+    //             assert(dataCT_->vertices_.at(p).vStart().aux() == vertex.vStart().aux());
+    //             const auto x2 = dataCT_->vertices_.at(p).vStart();
+    //             assert(x2.aux() == vertex.vEnd().aux());
+    //         }
+    //     }
+    // }
 
     void InsertVertex()
     {
+        AssertSizes();
         updStats_["Inserts"][0]++;
         const Vertex vertex = vertexBuilder_.BuildVertex(urng_);
         const VertexPart x = vertex.vStart();
@@ -432,7 +442,7 @@ class ABC_MarkovChain
 
     void RemoveVertex()
     {
-
+        AssertSizes();
         const size_t kk = dataCT_->vertices_.size();
         if (kk)
         {
@@ -458,10 +468,18 @@ class ABC_MarkovChain
     {
 
         const Vertex vertex = dataCT_->vertices_.at(pp);
-        const UInt64_t vertexKey = dataCT_->vertices_.GetKey(pp);
-        const size_t ppUp = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Up);
-        const size_t ppDown = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Down);
+        size_t ppUp = pp;
+        size_t ppDown = pp;
+
+        if (!isOneOrbitalOptimized_)
+        {
+            const UInt64_t vertexKey = dataCT_->vertices_.GetKey(pp);
+            ppUp = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Up);
+            ppDown = dataCT_->vertices_.GetKeyIndex(vertexKey, FermionSpin_t::Down);
+        }
+
         const auto x = dataCT_->vertices_.atUp(ppUp);
+
         const auto y = dataCT_->vertices_.atDown(ppDown);
         assert(x.spin() == FermionSpin_t::Up);
         assert(y.spin() == FermionSpin_t::Down);
@@ -701,6 +719,8 @@ class ABC_MarkovChain
 
     size_t updatesProposed_;
     size_t updsamespin_;
-}; // namespace Markov
+
+    const bool isOneOrbitalOptimized_;
+};
 
 } // namespace Markov

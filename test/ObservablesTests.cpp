@@ -1,4 +1,3 @@
-#define SUBMATRIX
 
 #include <gtest/gtest.h>
 

@@ -56,6 +56,19 @@
             }
         },
         {
+            "label": "install MPI OPTIMIZE",
+            "type": "shell",
+            "command": "rm -rf build_mpi && mkdir build_mpi && cd build_mpi && cmake -DMPI_BUILD=ON -DTEST=OFF -DOPTIMIZE=ON .. && make -j 4 install",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
             "label": "test default",
             "type": "shell",
             "command": "cd build && rm *arma *json *dat ; cmake .. && bash ../test.sh",
