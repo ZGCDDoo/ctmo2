@@ -2,7 +2,7 @@
  CTMO : Continuous time multi-orbital
 ==========================================================================
 
-:Authors: Charles-David Hébert, Maxime Charlebois, Patrick Sémon 
+:Authors: Charles-David Hébert
 :Date: $Date: 2018-09-07 $
 :Revision: $Revision: 2.0.0 $
 :Description: Description
@@ -36,6 +36,11 @@ g++ and icpc (mpic++)
 * module load cmake/3.6.1  gcc/6.1.0  intel64/17.4  boost64/1.65.1_intel17 openmpi/1.8.4_intel17  armadillo/8.300.0
 * mkdir build && cd build && cmake -DHOME=OFF -DMP2=ON -DMPI_BUILD=ON .. && make
 
-
+Aknowledgements and special thanks
+----------------------------------
+- **Maxime Charlebois:**
+    Help with performance testing and testing the correctness of the results.
+- **Patrick Sémon:**
+    The binning of the green function in imaginary time is implemented with the details given in his PhD thesis.
 
     
