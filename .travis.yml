@@ -28,4 +28,4 @@ jobs:
     - stage: "compile clang"
       name: "compile serial"
       script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
-              cmake -DCLANG_BUILD .. && make -j 4 && make test
+              cmake -DCLANG_BUILD=ON .. && make -j 4 && make test
