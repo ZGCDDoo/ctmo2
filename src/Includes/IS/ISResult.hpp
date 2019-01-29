@@ -78,8 +78,8 @@ class ISResult
     }
 
     std::map<std::string, double> obsScal_;
-    size_t n_rows_; //=NMat
-    size_t n_cols_; //=Number of independant green functions of the model at hand.
+    size_t n_rows_{0}; //=NMat
+    size_t n_cols_{0}; //=Number of independant green functions of the model at hand.
 
     std::valarray<std::complex<double>> greenTabUp_; //the green in tabular form
                                                      //corresponding to the independant values, in vector form.

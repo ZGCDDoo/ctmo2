@@ -33,12 +33,12 @@ class SelfConsistency : public ABC_SelfConsistency
         Logging::Debug("Start of SC constructor.");
 
         const size_t NGreen = greenImpurity_.n_slices;
-        size_t NSelfConTmp = std::max<double>(0.5 * (jjSim["selfCon"]["eCutSelfCon"].get<double>() * model_.beta() / M_PI - 1.0),
-                                              0.5 * (200.0 * model_.beta() / M_PI - 1.0));
-        if (NGreen >= NSelfConTmp)
-        {
-            NSelfConTmp = factNSelfCon_ * static_cast<double>(NGreen);
-        }
+        // size_t NSelfConTmp = std::max<double>(0.5 * (jjSim["selfCon"]["eCutSelfCon"].get<double>() * model_.beta() / M_PI - 1.0),
+        //                                       0.5 * (200.0 * model_.beta() / M_PI - 1.0));
+        // if (NGreen >= NSelfConTmp)
+        // {
+        //     NSelfConTmp = factNSelfCon_ * static_cast<double>(NGreen);
+        // }
         const size_t NSelfCon = NGreen; //NSelfConTmp;
         assert(NSelfCon >= NGreen);
         //Patcher la hyb si necessaire
@@ -214,8 +214,8 @@ class SelfConsistency : public ABC_SelfConsistency
     const size_t NOrb_;
     const size_t NSS_; //Number of super-sites : (orbital and sites)
 
-    const double factNSelfCon_ = 2;
-    const size_t hybSavePrecision_ = 14;
+    //    const double factNSelfCon_{2};
+    const size_t hybSavePrecision_{14};
 };
 
 } // namespace SelfCon

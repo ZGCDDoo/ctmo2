@@ -22,10 +22,10 @@ class Base_IOModel
         return (NOrb * (NOrb + 1) / 2);
     }
 
-    Base_IOModel(const Json &jjSim) : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
-                                      Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
-                                      Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
-                                      Nc(Nx * Ny * Nz)
+    explicit Base_IOModel(const Json &jjSim) : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
+                                               Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
+                                               Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
+                                               Nc(Nx * Ny * Nz)
     {
         Logging::Trace("Start Base_IOModel construction. ");
         GreenSites_ = BuildGreenSites(jjSim["model"]["modelFile"].get<std::string>());
@@ -222,7 +222,7 @@ class Base_IOModel
         if (!boost::filesystem::exists("outPutConvention.dat"))
         {
             fout.open("outPutConvention.dat", std::ios::out);
-            for (Site_t ii = 0; ii < this->indepSites_.size(); ii++)
+            for (Site_t ii = 0; ii < this->indepSites_.size(); ++ii)
             {
                 const Site_t s1 = this->indepSites_.at(ii).first;
                 const Site_t s2 = this->indepSites_.at(ii).second;
@@ -313,7 +313,7 @@ class Base_IOModel
         return {sites.first + o1 * Nc, sites.second + o2 * Nc};
     }
 
-    std::pair<size_t, size_t> GetIndicesOrbital(const size_t &indepOrbitalIndex, const size_t &NOrb) const
+    static std::pair<size_t, size_t> GetIndicesOrbital(const size_t &indepOrbitalIndex, const size_t &NOrb)
     {
         size_t tmp = 0;
         for (size_t o1 = 0; o1 < NOrb; ++o1)
@@ -415,7 +415,7 @@ class Base_IOModel
         }
     }
 
-    ClusterCubeCD_t AverageOrbitals(const ClusterCubeCD_t green) const
+    ClusterCubeCD_t AverageOrbitals(const ClusterCubeCD_t &green) const
     {
         //For now only averages the diagonal blocks.
         const size_t n_rows = green.n_rows;

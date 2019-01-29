@@ -45,7 +45,7 @@ void InitFile(const Json &jjLog, const std::string &loggerName = ROOT)
     }
 }
 
-void InitStdout(const Json &jjLog, const std::string loggerName = ROOT)
+void InitStdout(const Json &jjLog, const std::string &loggerName = ROOT)
 {
     const std::string logLevel = jjLog["level"].get<std::string>();
 

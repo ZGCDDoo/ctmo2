@@ -19,7 +19,7 @@ typedef LinAlg::Matrix_t Matrix_t;
 struct UpdData
 {
 
-    UpdData() : NQUp_(), NQDown_(), newLastRowUp_(), newLastRowDown_(){};
+    UpdData() : NQUp_(), NQDown_(), newLastRowUp_(), newLastRowDown_(), sTildeUpI_(0.0), sTildeDownI_(0.0){};
     SiteVector_t NQUp_;
     SiteVector_t NQDown_;
     SiteVector_t newLastRowUp_;
@@ -78,7 +78,7 @@ class ABC_MarkovChain
         Logging::Debug("MarkovChain Created.");
     }
 
-    virtual ~ABC_MarkovChain(){};
+    virtual ~ABC_MarkovChain() = default;
 
     //Getters
     Model_t model() const
@@ -448,7 +448,7 @@ class ABC_MarkovChain
         {
             updStats_["Removes"][0]++;
 
-            const size_t pp = static_cast<int>(urng_() * dataCT_->vertices_.size());
+            const size_t pp = static_cast<size_t>(urng_() * dataCT_->vertices_.size());
             const Vertex vertex = dataCT_->vertices_.at(pp);
             const VertexPart x = vertex.vStart();
             const VertexPart y = vertex.vEnd();
@@ -630,21 +630,22 @@ class ABC_MarkovChain
     double GetGreenTau0(const VertexPart &x, const VertexPart &y) const
     {
         assert(x.spin() == y.spin());
+#ifndef AFM
+        return (dataCT_->green0CachedUp_(x.superSite(), y.superSite(), x.tau() - y.tau()));
+#else
         if (x.spin() == FermionSpin_t::Up)
         {
             return (dataCT_->green0CachedUp_(x.superSite(), y.superSite(), x.tau() - y.tau()));
         }
         else
         {
-#ifdef AFM
             return (dataCT_->green0CachedDown_(x.superSite(), y.superSite(), x.tau() - y.tau()));
-#else
-            return (dataCT_->green0CachedUp_(x.superSite(), y.superSite(), x.tau() - y.tau()));
-#endif
         }
+#endif
     }
 
-    void Measure()
+    void
+    Measure()
     {
         AssertSizes();
         const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
@@ -671,10 +672,10 @@ class ABC_MarkovChain
     {
 
         SaveUpd("Thermalization");
-        for (UpdStats_t::iterator it = updStats_.begin(); it != updStats_.end(); ++it)
+        for (auto it = updStats_.begin(); it != updStats_.end(); ++it)
         {
             std::string key = it->first;
-            updStats_[key] = 0.0;
+            updStats_[key] = 0;
         }
     }
 
@@ -721,6 +722,6 @@ class ABC_MarkovChain
     size_t updsamespin_;
 
     const bool isOneOrbitalOptimized_;
-};
+}; // namespace Markov
 
 } // namespace Markov

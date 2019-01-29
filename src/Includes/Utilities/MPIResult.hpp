@@ -125,7 +125,7 @@ class IOResult
             const double iwn = (2.0 * nn + 1.0) * M_PI / beta;
             fout << std::setprecision(precision) << iwn << " ";
 
-            for (Site_t ii = 0; ii < greenTab.n_cols; ii++)
+            for (Site_t ii = 0; ii < greenTab.n_cols; ++ii)
             {
 
                 fout << std::setprecision(precision) << greenTab(nn, ii).real()

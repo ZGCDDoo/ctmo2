@@ -17,10 +17,10 @@ class FillingAndDocc
 
   public:
     FillingAndDocc(const std::shared_ptr<ISDataCT> &dataCT,
-                   std::shared_ptr<Utilities::UniformRngFibonacci3217_t> urngPtr, const size_t &N_T_INV) : dataCT_(dataCT),
-                                                                                                           ioModelPtr_((dataCT_->modelPtr_)->ioModelPtr()),
-                                                                                                           urngPtr_(urngPtr),
-                                                                                                           N_T_INV_(N_T_INV)
+                   std::shared_ptr<Utilities::UniformRngFibonacci3217_t> &urngPtr, const size_t &N_T_INV) : dataCT_(dataCT),
+                                                                                                            ioModelPtr_((dataCT_->modelPtr_)->ioModelPtr()),
+                                                                                                            urngPtr_(urngPtr),
+                                                                                                            N_T_INV_(N_T_INV)
     {
         const size_t LL = dataCT_->NOrb_ * ioModelPtr_->fillingSites().size();
 
@@ -125,7 +125,7 @@ class FillingAndDocc
 
         for (size_t oIndex = 0; oIndex < dataCT_->NOrb_; oIndex++)
         {
-            for (Site_t ii = 0; ii < fillingSize; ii++)
+            for (Site_t ii = 0; ii < fillingSize; ++ii)
             {
                 const size_t index = oIndex * fillingSize + ii;
 

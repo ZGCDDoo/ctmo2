@@ -11,13 +11,14 @@ namespace MC
 
 struct Timer
 {
+    Timer() = default;
     void Start(double duration)
     {
         duration_ = duration;
         start_ = std::chrono::steady_clock::now();
     };
 
-    void PrintTime()
+    static void PrintTime()
     {
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
@@ -58,7 +59,6 @@ class MonteCarlo : public ABC_MonteCarlo
 
     void RunMonteCarlo()
     {
-        auto time = std::chrono::system_clock::now();
         Timer timer;
 
         // if (thermFromConfig_)
@@ -68,7 +68,6 @@ class MonteCarlo : public ABC_MonteCarlo
         // else
         // {
 
-        time = std::chrono::system_clock::now();
         Logging::Info("Start Thermalization. ");
 
         timer.Start(60.0 * thermalizationTime_);

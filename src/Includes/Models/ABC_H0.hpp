@@ -14,14 +14,15 @@ class ABC_H0
     const size_t Nc;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
-    ABC_H0(const Json &jjSim) : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
-                                Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
-                                Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
-                                Nc(Nx * Ny * Nz),
-                                RSites_(Nc),
-                                KWaveVectors_(Nc),
-                                NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
-                                NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
+    explicit ABC_H0(const Json &jjSim)
+        : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
+          Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
+          Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
+          Nc(Nx * Ny * Nz),
+          RSites_(Nc),
+          KWaveVectors_(Nc),
+          NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+          NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
 
     {
 

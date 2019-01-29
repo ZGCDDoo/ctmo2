@@ -6,24 +6,26 @@
       <config projectName="ctmo" targetName="SelfConsistencyTests" />
       <config projectName="ctmo" targetName="UTensorSimpleTests" />
       <config projectName="ctmo" targetName="ABC_ModelTests" />
-      <config projectName="ctmo" targetName="IOTests" />
       <config projectName="ctmo" targetName="FourierTests" />
+      <config projectName="ctmo" targetName="IOTests" />
       <config projectName="ctmo" targetName="UtilitiesTests" />
       <config projectName="ctmo" targetName="gtest" />
       <config projectName="ctmo" targetName="cubature" />
       <config projectName="ctmo" targetName="MarkovChainTests" />
       <config projectName="ctmo" targetName="gtest_main" />
+      <config projectName="ctmo" targetName="ctmo_DCA" />
       <config projectName="ctmo" targetName="Fourier_DCATests" />
       <config projectName="ctmo" targetName="HybFMAndTLocTests" />
       <config projectName="ctmo" targetName="gmock_main" />
-      <config projectName="ctmo" targetName="MatrixTests" />
       <config projectName="ctmo" targetName="FillingAndDoccTests" />
+      <config projectName="ctmo" targetName="MatrixTests" />
       <config projectName="ctmo" targetName="IntegratorTests" />
       <config projectName="ctmo" targetName="GreenTauTests" />
       <config projectName="ctmo" targetName="VerticesSimpleTests" />
-      <config projectName="ctmo" targetName="ObservablesTests" />
+      <config projectName="ctmo" targetName="MarkovChainTriangle2x2Tests" />
       <config projectName="ctmo" targetName="ABC_H0Tests" />
       <config projectName="ctmo" targetName="GreenBinningTests" />
+      <config projectName="ctmo" targetName="ObservablesTests" />
       <config projectName="ctmo" targetName="gmock" />
       <config projectName="ctmo" targetName="ctmo" />
       <config projectName="ctmo" targetName="MarkovChainSquare2x2Tests" />
@@ -36,23 +38,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/cttg5.2.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/heber.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cppcheck.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output_cppcheck.dat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/ISData.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/ISData.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/MarkovChain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/MarkovChain.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/MarkovChainSubMatrix.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/MarkovChainSubMatrix.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/IS/ISResult.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/ISResult.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/IS/MonteCarlo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/MonteCarlo.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Models/UTensorSimple.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/UTensorSimple.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/GreenMat.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/GreenMat.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/IO.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/IO.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/IOConstruct.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/IOConstruct.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/Logging.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/Logging.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/MPIResult.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/MPIResult.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/Matrix.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/Matrix.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/Utilities.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/Utilities.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ctmo_afm.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/GreenTauTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/GreenTauTests.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/IntegratorTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/IntegratorTests.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/UtilitiesTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/UtilitiesTests.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/VerticesSimpleTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/VerticesSimpleTests.cpp" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,67 +76,14 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10823">
-              <caret line="788" column="37" selection-start-line="788" selection-start-column="37" selection-end-line="788" selection-end-column="37" />
-              <folding>
-                <element signature="e#14#48#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/MarkovChainSubMatrix.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="21" column="42" selection-start-line="21" selection-start-column="42" selection-end-line="21" selection-end-column="42" />
-              <folding>
-                <element signature="e#719#735#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="71" column="31" selection-start-line="71" selection-start-column="31" selection-end-line="71" selection-end-column="31" />
-              <folding>
-                <element signature="e#14#48#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/MarkovChain.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="16" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
       <find>model</find>
       <find>dataCT_</find>
+      <find>factNSelfCon</find>
+      <find>energy</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -136,13 +98,19 @@
         <option value="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp" />
         <option value="$PROJECT_DIR$/test/ABC_ModelTests.cpp" />
         <option value="$PROJECT_DIR$/test/ABC_H0Tests.cpp" />
-        <option value="$PROJECT_DIR$/test/GreenTauTests.cpp" />
-        <option value="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" />
         <option value="$PROJECT_DIR$/src/Includes/IS/MarkovChain.hpp" />
+        <option value="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" />
+        <option value="$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" />
+        <option value="$PROJECT_DIR$/test/GreenTauTests.cpp" />
+        <option value="$PROJECT_DIR$/test/VerticesSimpleTests.cpp" />
+        <option value="$PROJECT_DIR$/test/IntegratorTests.cpp" />
+        <option value="$PROJECT_DIR$/test/UtilitiesTests.cpp" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="2206" />
     <option name="width" value="1390" />
     <option name="height" value="1001" />
@@ -153,49 +121,55 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Includes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Includes" type="462c0819:PsiDirectoryNode" />
-              <item name="IS" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Includes" type="462c0819:PsiDirectoryNode" />
               <item name="IS" type="462c0819:PsiDirectoryNode" />
-              <item name="Obs" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Includes" type="462c0819:PsiDirectoryNode" />
+              <item name="Models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="Includes" type="462c0819:PsiDirectoryNode" />
+              <item name="Utilities" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_bak" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -279,6 +253,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MarkovChainTriangle2x2Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MarkovChainTriangle2x2Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MarkovChainTriangle2x2Tests">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MatrixTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MatrixTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MatrixTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -314,6 +293,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ctmo_DCA" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ctmo_DCA" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ctmo_DCA">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cubature" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="cubature" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -343,6 +327,7 @@
       <item itemvalue="Application.ABC_H0Tests" />
       <item itemvalue="Application.ABC_ModelTests" />
       <item itemvalue="Application.ctmo" />
+      <item itemvalue="Application.ctmo_DCA" />
       <item itemvalue="Application.FillingAndDoccTests" />
       <item itemvalue="Application.Fourier_DCATests" />
       <item itemvalue="Application.FourierTests" />
@@ -354,6 +339,7 @@
       <item itemvalue="Application.IOTests" />
       <item itemvalue="Application.MarkovChainSquare2x2Tests" />
       <item itemvalue="Application.MarkovChainTests" />
+      <item itemvalue="Application.MarkovChainTriangle2x2Tests" />
       <item itemvalue="Application.MatrixTests" />
       <item itemvalue="Application.ObservablesTests" />
       <item itemvalue="Application.SelfConsistencyTests" />
@@ -379,20 +365,21 @@
       <updated>1547302738143</updated>
       <workItem from="1547302741107" duration="99000" />
       <workItem from="1547302855245" duration="2114000" />
+      <workItem from="1548793017708" duration="2250000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="2213000" />
+    <option name="totallyTimeSpent" value="4463000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2206" y="0" width="1390" height="1001" extended-state="0" />
+    <frame x="1914" y="0" width="1932" height="1086" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25297618" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1826923" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.3290735" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -402,7 +389,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info active="true" anchor="bottom" id="CMake" order="11" visible="true" weight="0.326062" />
+      <window_info anchor="bottom" id="CMake" order="11" weight="0.2971246" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -434,26 +421,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder_AFM.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MarkovChainSubMatrix.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10823">
-          <caret line="788" column="37" selection-start-line="788" selection-start-column="37" selection-end-line="788" selection-end-column="37" />
-          <folding>
-            <element signature="e#14#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder_AFM.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MarkovChainSubMatrix.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp" />
     <entry file="file://$PROJECT_DIR$/test/ABC_ModelTests.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -468,35 +438,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/GreenTauTests.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="23" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="21" column="42" selection-start-line="21" selection-start-column="42" selection-end-line="21" selection-end-column="42" />
-          <folding>
-            <element signature="e#719#735#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.local/share/applications/jetbrains-clion.desktop">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="71" column="31" selection-start-line="71" selection-start-column="31" selection-end-line="71" selection-end-column="31" />
+        <state relative-caret-position="399">
+          <caret line="21" column="42" selection-start-line="21" selection-start-column="42" selection-end-line="21" selection-end-column="42" />
           <folding>
-            <element signature="e#14#48#0" expanded="true" />
+            <element signature="e#719#735#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -506,6 +456,91 @@
         <state relative-caret-position="285">
           <caret line="19" column="16" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Matrix.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4369" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="671" column="5" lean-forward="true" selection-start-line="671" selection-start-column="5" selection-end-line="671" selection-end-column="5" />
+          <folding>
+            <element signature="e#14#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="217" column="36" selection-start-line="217" selection-start-column="36" selection-end-line="217" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+          <folding>
+            <element signature="e#14#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+          <folding>
+            <element signature="e#14#48#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/GreenTauTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2004">
+          <caret line="104" column="5" selection-start-line="104" selection-start-column="5" selection-end-line="104" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/VerticesSimpleTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/UtilitiesTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="111">
+          <caret line="419" column="25" selection-start-line="419" selection-start-column="25" selection-end-line="419" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/IntegratorTests.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1349">
+          <caret line="71" column="74" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-91" />
       </provider>
     </entry>
   </component>

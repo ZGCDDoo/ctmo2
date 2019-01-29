@@ -417,15 +417,15 @@ TEST(UtilitiesTest, DDMGMM)
     SiteVector_t v1(k);
     v1.randu();
     ClusterMatrix_t Good = arma::diagmat(v1) * A;
-    Matrix_t Test;
-    DDMGMM(v1, AMatrix, Test);
+    Matrix_t TestMatrix;
+    DDMGMM(v1, AMatrix, TestMatrix);
 
-    for (size_t i = 0; i < Test.n_rows(); i++)
+    for (size_t i = 0; i < TestMatrix.n_rows(); i++)
     {
-        for (size_t j = 0; j < Test.n_cols(); j++)
+        for (size_t j = 0; j < TestMatrix.n_cols(); j++)
         {
             // std::cout << "i, j " << i << ", " << j << std::endl;
-            ASSERT_NEAR(Test(i, j), Good(i, j), DELTA);
+            ASSERT_NEAR(TestMatrix(i, j), Good(i, j), DELTA);
         }
     }
 }

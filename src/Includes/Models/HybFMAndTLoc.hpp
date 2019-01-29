@@ -53,7 +53,7 @@ class HybFMAndTLoc
     struct TKTildeK
     {
 
-        TKTildeK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
+        explicit TKTildeK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
         size_t n_rows() const { return h0_.n_rows(); };
         size_t n_cols() const { return h0_.n_cols(); };
 
@@ -72,7 +72,7 @@ class HybFMAndTLoc
     struct TKTildeSquaredK
     {
 
-        TKTildeSquaredK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
+        explicit TKTildeSquaredK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
         size_t n_rows() const { return h0_.n_rows(); };
         size_t n_cols() const { return h0_.n_cols(); };
 

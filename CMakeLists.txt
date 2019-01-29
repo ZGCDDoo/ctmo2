@@ -13,6 +13,7 @@ option(MP2 "mp2 build" OFF)
 option(MPI_BUILD "build with mpi" OFF)
 option(CLANG_BUILD "build with clang" OFF)
 option(OPTIMIZE "turn on all optimizations" OFF)
+option(STD14 "use -std=c++14" OFF)
 
 
 
@@ -68,7 +69,13 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 #-------------------------------------------------------------------------------------------------------------
 
 
-set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -std=c++1z -pipe -fomit-frame-pointer -Ofast")
+set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -Wshadow -Wnon-virtual-dtor  -pipe -fomit-frame-pointer -Ofast")
+if(${STD14})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+endif()
+
 if(${OPTIMIZE})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARMA_NO_DEBUG")
 endif()
@@ -77,10 +84,7 @@ if(${MPI_BUILD})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVEMPI")
     set(TEST OFF)
 endif()
-if(${MPI_BUILD} AND ${HOME})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-    set(TEST OFF)
-endif()
+
 
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/src/Includes)
 add_subdirectory(${PROJECT_SOURCE_DIR}/deps/cubature)

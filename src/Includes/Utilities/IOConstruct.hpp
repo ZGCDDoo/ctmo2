@@ -29,7 +29,6 @@ GreenSites_t BuildGreenSites(const std::string &fname)
     Logging::Trace("greensites = ");
     for (size_t i = 0; i < inGreen.n_rows; ++i)
     {
-        std::vector<std::pair<size_t, size_t>> tmpvec;
         for (size_t j = 0; j < inGreen.n_rows; ++j)
         {
             Logging::Trace(std::to_string(greenSites.at(i).at(j).first) + ", " + std::to_string(greenSites.at(i).at(j).second));

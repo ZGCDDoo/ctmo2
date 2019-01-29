@@ -36,7 +36,7 @@ class HybridizationMat
         return data_.slice(n);
     }
 
-    const HybridizationMat &operator=(const HybridizationMat &hyb)
+    HybridizationMat &operator=(const HybridizationMat &hyb)
     {
         if (this == &hyb)
             return *this; //évite les boucles infinies
@@ -140,7 +140,7 @@ class GreenCluster0Mat
         tm_ = FourierDCA::KtoR(tm_, RSites, KWaveVectors);
     }
 
-    const GreenCluster0Mat &operator=(const GreenCluster0Mat &gf)
+    GreenCluster0Mat &operator=(const GreenCluster0Mat &gf)
     {
         if (this == &gf)
             return *this; //évite les boucles infinies

@@ -19,14 +19,14 @@ class ABC_Model_2D
 {
 
   public:
-    ABC_Model_2D(const Json &jjSim) : ioModelPtr_(new IO::Base_IOModel(jjSim)),
-                                      h0_(jjSim),
-                                      hybFM_(),
-                                      tLoc_(),
-                                      beta_(jjSim["model"]["beta"].get<double>()),
-                                      mu_(jjSim["model"]["mu"].get<double>()),
-                                      NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
-                                      Nc_(h0_.Nc)
+    explicit ABC_Model_2D(const Json &jjSim) : ioModelPtr_(new IO::Base_IOModel(jjSim)),
+                                               h0_(jjSim),
+                                               hybFM_(),
+                                               tLoc_(),
+                                               beta_(jjSim["model"]["beta"].get<double>()),
+                                               mu_(jjSim["model"]["mu"].get<double>()),
+                                               NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
+                                               Nc_(h0_.Nc)
     {
         Logging::Debug("Start ABC_Model Constructor. ");
 

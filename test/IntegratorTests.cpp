@@ -15,8 +15,6 @@ const double t_offdiag = -1.02;
 const double tp_offdiag = 0.230;
 
 const size_t Nc = 4;
-const size_t Nx = 2;
-const size_t Ny = 2;
 const size_t NOrb = 2;
 const double INTRA = -0.01;
 

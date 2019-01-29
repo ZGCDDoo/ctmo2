@@ -158,7 +158,7 @@ class Vertices
         //VertexParts differ by one for their id if spins are the same
         if (vertex.vStart().spin() == vertex.vEnd().spin())
         {
-            key_++;
+            ++key_;
         }
 
         AppendVertexPart(vertex.vEnd());

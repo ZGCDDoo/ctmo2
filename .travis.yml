@@ -1,3 +1,4 @@
+---
 language: cpp
 sudo: required
 dist: xenial
@@ -13,18 +14,18 @@ after_success:
 notifications:
   email: true
 stages:
-  - Compile
-  - Tests
+  - compile gcc
+  - compile clang
 
 jobs:
   include:
-  - stage: "Compile"
-    name: "Compile Serial"
-    script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4
-  - script: ./install-mpi-travis.sh 
-    name : "Install MPI"
-  - stage: "Tests"
-    name: "Unit Tests"
-    script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build && cmake .. && make -j 4 && make test
-  # - script: ./test-integration-travis.sh
-  #   name: "Integration Tests"
+    - stage: "compile gcc"
+      name: "compile serial"
+      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
+              cmake .. && make -j 4 && make test
+    - script: ./install-mpi-travis.sh
+      name: "install mpi"
+    - stage: "compile clang"
+      name: "compile serial"
+      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
+              cmake -DCLANG_BUILD .. && make -j 4 && make test

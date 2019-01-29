@@ -4,13 +4,8 @@
 #include "../src/Includes/Utilities/VerticesSimple.hpp"
 #include "TestTools.hpp"
 
-// const double DELTA = 1e-7;
 const double DELTA_SMALL = 1e-11;
 const double delta = 0.01;
-// const double U = 3.0;
-// const double Beta = 10.0;
-// const double mu = 1.8941850792671628;
-const size_t Nc = 4;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
 
 TEST(VerticesTests, AuxHelper)

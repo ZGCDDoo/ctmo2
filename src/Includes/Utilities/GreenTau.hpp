@@ -19,8 +19,6 @@ class GreenCluster0Tau
     const double EPS = 1e-13;
     const double deltaTau = 0.008;
 
-    // GreenCluster0Tau() : gfMatCluster_(), beta_(), NTau_(){};
-
     GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const std::shared_ptr<IO::Base_IOModel> &ioModelPtr, const size_t &NTau) : ioModelPtr_(ioModelPtr),
                                                                                                                                       gfMatCluster_(gfMatCluster),
                                                                                                                                       beta_(gfMatCluster.beta()),
@@ -46,6 +44,8 @@ class GreenCluster0Tau
         gfMatCluster_.clear();
         Logging::Debug("gtau Created");
     };
+
+    GreenCluster0Tau(const GreenCluster0Tau &gf) = default;
 
     Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) //return g_i(tau)
     {
@@ -152,11 +152,12 @@ class GreenCluster0Tau
         return greentau0;
     }
 
-    const GreenCluster0Tau &operator=(const GreenCluster0Tau &gf)
+    GreenCluster0Tau &operator=(const GreenCluster0Tau &gf)
     {
         if (this == &gf)
             return *this; //évite les boucles infinies
         gfMatCluster_ = gf.gfMatCluster_;
+        ioModelPtr_ = gf.ioModelPtr_;
         NTau_ = gf.NTau_;
         beta_ = gf.beta_;
         NOrb_ = gf.NOrb_;

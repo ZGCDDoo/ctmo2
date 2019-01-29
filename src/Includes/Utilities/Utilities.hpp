@@ -90,9 +90,9 @@ size_t GetIndepOrbitalIndex(const size_t &o1, const size_t &o2, const size_t &NO
     size_t indepOrbitalIndex = 0;
     const std::pair<size_t, size_t> pairTarget = o1 < o2 ? std::make_pair(o1, o2) : std::make_pair(o2, o1);
 
-    for (Orbital_t nu1 = 0; nu1 < NOrb; nu1++)
+    for (Orbital_t nu1 = 0; nu1 < NOrb; ++nu1)
     {
-        for (Orbital_t nu2 = nu1; nu2 < NOrb; nu2++)
+        for (Orbital_t nu2 = nu1; nu2 < NOrb; ++nu2)
         {
 
             if (pairTarget == std::make_pair(nu1, nu2))

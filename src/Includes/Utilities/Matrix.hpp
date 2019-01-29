@@ -42,24 +42,19 @@ class Matrix
     static const size_t INIT_SIZE;
 
     Matrix() : n_rows_(0), n_cols_(0), mat_(INIT_SIZE, INIT_SIZE){};
-    Matrix(const size_t &n_rows, const size_t &n_cols) : n_rows_(n_rows), n_cols_(n_cols), mat_(n_rows, n_cols){};
-
-    Matrix(const arma::Mat<T> &m1)
+    Matrix(const size_t &n_rows, const size_t &n_cols) : n_rows_(n_rows), n_cols_(n_cols), mat_(n_rows, n_cols)
     {
-        n_rows_ = m1.n_rows;
-        n_cols_ = m1.n_cols;
-        mat_ = m1;
     }
+
+    Matrix(const arma::Mat<T> &m1) : n_rows_(m1.n_rows), n_cols_(m1.n_cols), mat_(m1)
+    {
+    }
+
+    Matrix(const Matrix<T> &m1) = default;
 
     Matrix(const arma::Mat<double> &m1, const arma::Mat<double> &m2);
 
-    inline const Matrix<T> &operator=(const Matrix<T> &m1)
-    {
-        n_rows_ = m1.n_rows_;
-        n_cols_ = m1.n_cols_;
-        mat_ = m1.mat_;
-        return *this;
-    }
+    Matrix<T> &operator=(const Matrix<T> &m1) = default;
 
     Matrix(std::initializer_list<std::initializer_list<T>> initListofLists) : Matrix(arma::Mat<T>(initListofLists)) {}
 
@@ -161,7 +156,7 @@ class Matrix
         n_cols_ = n_cols;
     }
 
-    Matrix<T> Transpose()
+    Matrix<T> Transpose() const
     {
         Matrix tmp = *this;
         tmp.mat_.t();
@@ -412,7 +407,7 @@ template <>
 void Matrix<double>::Inverse()
 {
     assert(n_rows_ == n_cols_);
-    Matrix<double> tmp = *this;
+    Matrix<double> tmp(*this);
     *this = DiagMat(n_rows_, 1.0);
 
     const unsigned int dim = n_rows_;
