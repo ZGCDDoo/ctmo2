@@ -2,33 +2,34 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="ctmo" targetName="MarkovChainSquare2x2Tests" />
-      <config projectName="ctmo" targetName="gtest_main" />
-      <config projectName="ctmo" targetName="GreenTauTests" />
-      <config projectName="ctmo" targetName="gtest" />
-      <config projectName="ctmo" targetName="gmock" />
-      <config projectName="ctmo" targetName="MatrixTests" />
-      <config projectName="ctmo" targetName="ObservablesTests" />
-      <config projectName="ctmo" targetName="UTensorSimpleTests" />
-      <config projectName="ctmo" targetName="MarkovChainTriangle2x2Tests" />
-      <config projectName="ctmo" targetName="UtilitiesTests" />
-      <config projectName="ctmo" targetName="ABC_H0Tests" />
-      <config projectName="ctmo" targetName="gmock_main" />
-      <config projectName="ctmo" targetName="FourierTests" />
-      <config projectName="ctmo" targetName="ABC_ModelTests" />
-      <config projectName="ctmo" targetName="SelfConsistencyTests" />
-      <config projectName="ctmo" targetName="VerticesSimpleTests" />
-      <config projectName="ctmo" targetName="GreenBinningTests" />
-      <config projectName="ctmo" targetName="FillingAndDoccTests" />
-      <config projectName="ctmo" targetName="cubature" />
       <config projectName="ctmo" targetName="GreenMatTests" />
+      <config projectName="ctmo" targetName="UTensorSimpleTests" />
+      <config projectName="ctmo" targetName="SelfConsistencyTests" />
+      <config projectName="ctmo" targetName="ABC_ModelTests" />
+      <config projectName="ctmo" targetName="FourierTests" />
       <config projectName="ctmo" targetName="IOTests" />
-      <config projectName="ctmo" targetName="IntegratorTests" />
+      <config projectName="ctmo" targetName="UtilitiesTests" />
+      <config projectName="ctmo" targetName="gtest" />
+      <config projectName="ctmo" targetName="cubature" />
       <config projectName="ctmo" targetName="MarkovChainTests" />
+      <config projectName="ctmo" targetName="gtest_main" />
       <config projectName="ctmo" targetName="Fourier_DCATests" />
-      <config projectName="ctmo" targetName="ctmo" />
-      <config projectName="ctmo" targetName="HybFMAndTLocTests" />
       <config projectName="ctmo" targetName="ctmo_DCA" />
+      <config projectName="ctmo" targetName="gmock_main" />
+      <config projectName="ctmo" targetName="HybFMAndTLocTests" />
+      <config projectName="ctmo" targetName="MatrixTests" />
+      <config projectName="ctmo" targetName="FillingAndDoccTests" />
+      <config projectName="ctmo" targetName="IntegratorTests" />
+      <config projectName="ctmo" targetName="ctmo_slmc" />
+      <config projectName="ctmo" targetName="GreenTauTests" />
+      <config projectName="ctmo" targetName="VerticesSimpleTests" />
+      <config projectName="ctmo" targetName="MarkovChainTriangle2x2Tests" />
+      <config projectName="ctmo" targetName="GreenBinningTests" />
+      <config projectName="ctmo" targetName="ABC_H0Tests" />
+      <config projectName="ctmo" targetName="ObservablesTests" />
+      <config projectName="ctmo" targetName="gmock" />
+      <config projectName="ctmo" targetName="ctmo" />
+      <config projectName="ctmo" targetName="MarkovChainSquare2x2Tests" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -38,7 +39,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/ctmo_slmc.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -49,20 +54,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
-              <caret line="48" column="85" selection-start-line="48" selection-start-column="85" selection-end-line="48" selection-end-column="85" />
-              <folding>
-                <element signature="e#109#128#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -70,6 +62,10 @@
       <find>dataCT_</find>
       <find>factNSelfCon</find>
       <find>energy</find>
+      <find>measure</find>
+      <find>configpar</find>
+      <find>configp</find>
+      <find>ctmo_</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -85,8 +81,6 @@
         <option value="$PROJECT_DIR$/test/ABC_ModelTests.cpp" />
         <option value="$PROJECT_DIR$/test/ABC_H0Tests.cpp" />
         <option value="$PROJECT_DIR$/src/Includes/IS/MarkovChain.hpp" />
-        <option value="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" />
         <option value="$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" />
         <option value="$PROJECT_DIR$/test/GreenTauTests.cpp" />
@@ -94,6 +88,9 @@
         <option value="$PROJECT_DIR$/test/IntegratorTests.cpp" />
         <option value="$PROJECT_DIR$/test/UtilitiesTests.cpp" />
         <option value="$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp" />
+        <option value="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" />
+        <option value="$PROJECT_DIR$/src/ctmo_slmc.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
       </list>
     </option>
   </component>
@@ -131,7 +128,7 @@
               <item name="ctmo" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Includes" type="462c0819:PsiDirectoryNode" />
-              <item name="Utilities" type="462c0819:PsiDirectoryNode" />
+              <item name="IS" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -141,6 +138,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -154,7 +152,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ABC_H0Tests">
+  <component name="RunManager" selected="Application.MarkovChainTests">
     <configuration name="ABC_H0Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ABC_H0Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ABC_H0Tests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -265,6 +263,11 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ctmo_slmc" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ctmo_slmc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ctmo_slmc">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cubature" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="cubature" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -295,6 +298,7 @@
       <item itemvalue="Application.ABC_ModelTests" />
       <item itemvalue="Application.ctmo" />
       <item itemvalue="Application.ctmo_DCA" />
+      <item itemvalue="Application.ctmo_slmc" />
       <item itemvalue="Application.FillingAndDoccTests" />
       <item itemvalue="Application.Fourier_DCATests" />
       <item itemvalue="Application.FourierTests" />
@@ -334,22 +338,23 @@
       <workItem from="1547302855245" duration="2114000" />
       <workItem from="1548793017708" duration="2250000" />
       <workItem from="1548812800797" duration="923000" />
+      <workItem from="1548858403085" duration="2745000" />
+      <workItem from="1548863600195" duration="92000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5386000" />
+    <option name="totallyTimeSpent" value="8223000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18482906" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18910256" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.3290735" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32890365" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -358,7 +363,8 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="CMake" order="11" visible="true" weight="0.2978959" />
+      <window_info anchor="bottom" id="CMake" order="11" visible="true" weight="0.30011073" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32890365" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -432,16 +438,6 @@
         <state relative-caret-position="-4369" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="671" column="5" lean-forward="true" selection-start-line="671" selection-start-column="5" selection-end-line="671" selection-end-column="5" />
-          <folding>
-            <element signature="e#14#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
@@ -500,25 +496,62 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1349">
-          <caret line="71" column="74" selection-start-line="71" selection-start-column="74" selection-end-line="71" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-91" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+          <folding>
+            <element signature="e#49#93#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ctmo.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="13" column="6" lean-forward="true" selection-end-line="104" />
+          <folding>
+            <element signature="e#1#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+          <folding>
+            <element signature="e#14#48#0" expanded="true" />
+            <element signature="e#135#175#0" expanded="true" />
+            <element signature="e#183#213#0" expanded="true" />
+            <element signature="e#2345#2361#0" expanded="true" />
+            <element signature="e#25872#26181#0" expanded="true" />
+            <element signature="e#26292#26337#0" expanded="true" />
+            <element signature="e#27448#27979#0" expanded="true" />
+            <element signature="e#28573#28614#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="48" column="85" selection-start-line="48" selection-start-column="85" selection-end-line="48" selection-end-column="85" />
+        <state relative-caret-position="1254">
+          <caret line="66" column="1" lean-forward="true" selection-start-line="66" selection-start-column="1" selection-end-line="66" selection-end-column="1" />
           <folding>
             <element signature="e#109#128#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="128" column="4" selection-start-line="128" selection-start-column="4" selection-end-line="128" selection-end-column="4" />
         </state>
       </provider>
     </entry>
