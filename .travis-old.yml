@@ -1,0 +1,31 @@
+---
+language: cpp
+sudo: required
+dist: xenial
+compiler:
+  - gcc
+os:
+  - linux
+before_install:
+  - sudo apt-get install -y liblapack-dev clang-6.0 build-essential cmake
+                            libarmadillo-dev libboost-all-dev libopenmpi-dev
+                            python3-numpy tree libsnappy-dev
+after_success:
+notifications:
+  email: true
+stages:
+  - compile gcc
+  - compile clang
+
+jobs:
+  include:
+    - stage: "compile gcc"
+      name: "compile serial"
+      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
+              cmake .. && make -j 4 && make test
+    - script: ./install-mpi-travis.sh
+      name: "install mpi"
+    - stage: "compile clang"
+      name: "compile serial"
+      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
+              cmake -DCLANG_BUILD=ON .. && make -j 4 && make test
