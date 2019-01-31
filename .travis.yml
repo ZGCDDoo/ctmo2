@@ -7,4 +7,4 @@ os:
   - linux
   - osx
 
-install: ./.install-travis.sh
+install: ./.travis/install-travis.sh
