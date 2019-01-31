@@ -1,10 +1,11 @@
 ---
 language: cpp
 sudo: required
+dist: xenial
 
 matrix:
   include:
-    - dist: xenial
+    - os: linux
       addons:
         apt:
           sources:
