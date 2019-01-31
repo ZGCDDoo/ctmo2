@@ -3,7 +3,7 @@
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     
     cd $TRAVIS_BUILD_DIR
-    mkdir build_mpi
+    mkdir build
     cd build
     cmake -DCLANG_BUILD=ON .. && make
     make test
