@@ -26,4 +26,4 @@ before_install:
 
 install:
   - ./.travis/install.sh
-  - ./.travis/install_mpi.sh
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./.travis/install_mpi.sh ; fi
