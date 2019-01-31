@@ -1,34 +1,12 @@
 ---
 language: cpp
 sudo: required
-# dist: xenial
 
-matrix:
-  include:
-    # - os: linux
-    #   dist: trusty
-    #   addons:
-    #     apt:
-    #       sources:
-    #       - ubuntu-toolchain-r-test
-    #       - llvm-toolchain-trusty-6.0
-    #       packages:
-    #       - g++-7 clang-6.0
-    - os: osx
-      osx_image: xcode10.1
-    - os: osx
-      osx_image: xcode9.4
+
+os:
+  - linux 
+  - osx
 
 
 install:
   - ./.travis/install-travis.sh
-
-stages:
-  - compile clang
-
-jobs:
-  include:
-    - stage: "compile clang"
-      name: "compile serial"
-      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
-              cmake -DCLANG_BUILD=ON .. && make -j 4 && make test
