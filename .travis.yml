@@ -2,9 +2,25 @@
 language: cpp
 sudo: required
 dist: xenial
+compiler:
+  - gcc
 
 os:
   - linux
   - osx
 
-install: ./.travis/install-travis.sh
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then     brew update &&
+                                                  brew install armadillo &&
+                                                  brew install boost &&
+                                                  brew install boost-mpi &&
+                                                  brew install snappy
+                                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y liblapack-dev
+                                                clang-6.0 build-essential cmake
+                                                libarmadillo-dev libboost-all-dev
+                                                libopenmpi-dev
+                                                python3-numpy tree libsnappy-dev
+                                          ; fi
+
+# install: ./.travis/install-travis.sh
