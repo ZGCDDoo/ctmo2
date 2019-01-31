@@ -8,8 +8,8 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     brew install snappy 
 else
 
-    sudo update-alternatives --remove-all g++
-    sudo update-alternatives --remove-all clang++
+    # sudo update-alternatives --remove-all g++
+    # sudo update-alternatives --remove-all clang++
     sudo apt-get install g++-7 clang-6.0
 
     sudo apt-get install -y build-essential liblapack-dev cmake \
