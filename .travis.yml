@@ -22,7 +22,9 @@ before_install:
                                                 python3-numpy tree libsnappy-dev
                                           ; fi
 
+# skip this step
+install: true
 
-install:
+script:
   - ./.travis/install.sh
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./.travis/install_mpi.sh ; fi
