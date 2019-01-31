@@ -6,7 +6,13 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     mkdir build
     cd build
     cmake -DCLANG_BUILD=ON .. && make
-    make test
+
+    ./SelfConsistencyTests
+    ./MarkovChainTests
+    ./MarkovChainTriangle2x2Tests
+    ./MarkovChainSquare2x2Tests
+    ./GreenTauTests
+    ./UtilitiesTests
 
 else
 
