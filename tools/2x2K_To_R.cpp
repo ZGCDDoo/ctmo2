@@ -11,7 +11,7 @@
 #include <cassert>
 #include <vector>
 #include <string>
-#include <ccomplex>
+#include <complex>
 
 //External Libraries
 #include <armadillo>
