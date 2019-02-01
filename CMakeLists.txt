@@ -27,6 +27,7 @@ else ()
 endif ()
 
 
+
 project("${PROJECT_NAME}")
 
 
@@ -64,13 +65,15 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 
 
 #-------------------------------------------------------------------------------------------------------------
-
+message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 
 set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -Wshadow -Wnon-virtual-dtor  -pipe -fomit-frame-pointer -Ofast")
 if (${STD14})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    message(STATUS "Compiling with -std=c++14 standard. ")
 else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+    message(STATUS "Compiling with -std=c++1z standard. ")
 endif ()
 
 if (${OPTIMIZE})
@@ -79,6 +82,7 @@ endif ()
 
 if (${MPI_BUILD})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVEMPI")
+    message(STATUS "Compiling with Open MPI. ")
     set(TEST OFF)
 endif ()
 
@@ -92,8 +96,13 @@ find_package(LAPACK REQUIRED)
 #-------------HOME--------------------------------------------------
 if (${HOME})
     find_package(Boost REQUIRED mpi serialization filesystem system program_options)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo cubature)
+   
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        message(STATUS "Compiling with GNU, setting '-Werror' flag. ")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+    endif ()
+
 endif ()
 #-------------HOME--------------------------------------------------
 
