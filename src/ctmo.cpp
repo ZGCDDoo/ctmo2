@@ -14,17 +14,24 @@ int main(int argc, char **argv)
     mpi::communicator world;
 #endif
 
-    const CMDParser::CMDInfo cmdInfo = CMDParser::GetProgramOptions(argc, argv);
+    CMDParser::CMDInfo cmdInfo;
+    if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
+    {
+        cmdInfo = CMDParser::GetProgramOptions(argc, argv);
+    }
+
+    int ITER = cmdInfo.iter();
+    bool exitFromCMD = cmdInfo.exitFromCMD();
+    std::string fnameParams = cmdInfo.fileName();
+    Json jjSim;
+
+#ifndef HAVEMPI
+
     if (cmdInfo.exitFromCMD())
     {
         return EXIT_SUCCESS;
     }
 
-    const int ITER = cmdInfo.iter();
-    const std::string fnameParams = cmdInfo.fileName();
-    Json jjSim;
-
-#ifndef HAVEMPI
     std::ifstream fin(fnameParams);
     fin >> jjSim;
     fin.close();
@@ -59,10 +66,21 @@ int main(int argc, char **argv)
 
 #ifdef HAVEMPI
 
+    mpi::broadcast(world, exitFromCMD, mpiUt::Tools::master);
+    if (exitFromCMD)
+    {
+        return EXIT_SUCCESS;
+    }
+
+    std::cout << "rank = " << mpiUt::Tools::Rank() << std::endl;
+
     std::string jjSimStr;
+    bool doSC = true;
 
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
+        doSC = cmdInfo.doSC();
+
         std::ifstream fin(fnameParams);
         fin >> jjSim;
         jjSimStr = jjSim.dump();
@@ -70,6 +88,9 @@ int main(int argc, char **argv)
     }
 
     mpi::broadcast(world, jjSimStr, mpiUt::Tools::master);
+    mpi::broadcast(world, ITER, mpiUt::Tools::master);
+    mpi::broadcast(world, doSC, mpiUt::Tools::master);
+
     jjSim = Json::parse(jjSimStr);
 
     Logging::Init(jjSim["logging"]);
@@ -89,7 +110,7 @@ int main(int argc, char **argv)
 
     world.barrier();
 
-    if (cmdInfo.doSC())
+    if (doSC)
     {
         Logging::Trace("ABC_SelfConsistency Creation...");
         const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);
