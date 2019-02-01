@@ -4,28 +4,27 @@ sudo: required
 dist: xenial
 compiler:
   - gcc
+
 os:
   - linux
-before_install:
-  - sudo apt-get install -y liblapack-dev clang-6.0 build-essential cmake
-                            libarmadillo-dev libboost-all-dev libopenmpi-dev
-                            python3-numpy tree libsnappy-dev
-after_success:
-notifications:
-  email: true
-stages:
-  - compile gcc
-  - compile clang
+  - osx
 
-jobs:
-  include:
-    - stage: "compile gcc"
-      name: "compile serial"
-      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
-              cmake .. && make -j 4 && make test
-    - script: ./install-mpi-travis.sh
-      name: "install mpi"
-    - stage: "compile clang"
-      name: "compile serial"
-      script: cd $TRAVIS_BUILD_DIR && mkdir build && cd build &&
-              cmake -DCLANG_BUILD=ON .. && make -j 4 && make test
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then     brew update &&
+                                                  brew install armadillo &&
+                                                  brew install boost-mpi &&
+                                                  brew install snappy
+                                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y liblapack-dev
+                                                clang-6.0 build-essential cmake
+                                                libarmadillo-dev libboost-all-dev
+                                                libopenmpi-dev
+                                                python3-numpy tree libsnappy-dev
+                                          ; fi
+
+# skip this step
+install: true
+
+script:
+  - ./.travis/install.sh
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./.travis/install_mpi.sh ; fi
