@@ -12,7 +12,6 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     ./MarkovChainTriangle2x2Tests
     ./MarkovChainSquare2x2Tests
     ./GreenTauTests
-    ./UtilitiesTests
 
 else
 

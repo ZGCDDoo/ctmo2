@@ -18,7 +18,7 @@
 #include <valarray>
 #include <vector>
 #include <string>
-#include <complex>
+#include <ccomplex>
 
 //External Libraries
 #include <armadillo>
