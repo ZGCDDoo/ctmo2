@@ -1,3 +1,4 @@
+#define DCA
 
 #include "Includes/IS/MonteCarloBuilder.hpp"
 #include "Includes/Utilities/SelfConsistencyBuilder.hpp"

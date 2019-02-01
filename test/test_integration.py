@@ -10,8 +10,8 @@ import json
 
 class TestIntegration(unittest.TestCase):
 
-    mpi_cmd = "mpirun -np 4 ctmo params 1"
-    mpi_dca_cmd = "mpirun -np 4 ctmo_DCA params 1"
+    mpi_cmd = "mpirun -np 4 ctmo params1.json"
+    mpi_dca_cmd = "mpirun -np 4 ctmo_dca params1.json"
 
     @classmethod
     def setUpClass(cls):

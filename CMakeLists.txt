@@ -92,6 +92,7 @@ find_package(LAPACK REQUIRED)
 #-------------HOME--------------------------------------------------
 if (${HOME})
     find_package(Boost REQUIRED mpi serialization filesystem system program_options)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo cubature)
 endif ()
 #-------------HOME--------------------------------------------------
@@ -128,8 +129,8 @@ endif ()
 ################################
 set(EXECECUTABLES
         ctmo
-        #ctmo_DCA
-        #ctmo_slmc
+        ctmo_dca
+        ctmo_slmc
         )
 
 foreach (executable ${EXECECUTABLES})
