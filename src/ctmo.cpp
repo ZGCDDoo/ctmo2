@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 
     world.barrier();
 
-    if (CMDInfo.doSC())
+    if (cmdInfo.doSC())
     {
         Logging::Trace("ABC_SelfConsistency Creation...");
         const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);

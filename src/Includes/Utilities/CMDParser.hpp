@@ -73,17 +73,18 @@ CMDInfo GetProgramOptions(int argc, char **argv)
 
         po::notify(vm); // throws on error, so do after help in case
                         // there are any problems
-        cmdInfo.doSC_ = !vm.count("no-sc");
     }
     catch (po::error &e)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cerr << desc << std::endl;
         cmdInfo.exitFromCMD_ = true;
+        return cmdInfo;
     }
 
+    cmdInfo.doSC_ = !vm.count("no-sc");
     const std::string jsonFileName = vm["fname"].as<std::string>();
-    std::cout << "jsonFileName = " << jsonFileName << std::endl;
+    // std::cout << "jsonFileName = " << jsonFileName << std::endl;
 
     std::regex numberRegex("\\d+");
 
@@ -93,17 +94,17 @@ CMDInfo GetProgramOptions(int argc, char **argv)
     std::string suffix;
     if (std::regex_search(jsonFileName, numberMatch, numberRegex))
     {
-        std::cout << "Prefix: '" << numberMatch.prefix() << "'\n";
+        // std::cout << "Prefix: '" << numberMatch.prefix() << "'\n";
         prefix = numberMatch.prefix().str();
-        std::cout << "Suffix: '" << numberMatch.suffix() << "\'\n\n";
+        // std::cout << "Suffix: '" << numberMatch.suffix() << "\'\n\n";
         iter = std::stoi(numberMatch[0]);
-        std::cout << "iter = " << iter << std::endl;
+        // std::cout << "iter = " << iter << std::endl;
         suffix = numberMatch.suffix();
     }
 
     CMDInfo cmdInfoResult(prefix, iter, suffix, cmdInfo.doSC(), cmdInfo.exitFromCMD());
 
-    std::cout << cmdInfoResult.fileName() << std::endl;
+    // std::cout << cmdInfoResult.fileName() << std::endl;
 
     // check if the params filename exists, else exit:
     using boost::filesystem::exists;

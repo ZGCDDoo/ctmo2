@@ -63,7 +63,8 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
     const std::string iterStr = std::to_string(iter);
 
     const path path_hyb(nameCon.at("hybUpFile"));
-    copy_file(nameCon.at("hybUpFile"), path_hyb.stem().string() + std::to_string(iter + 1) + path_hyb.extension().string());
+    const std::string newHybUpName = path_hyb.stem().string() + std::to_string(iter + 1) + path_hyb.extension().string();
+    copy_file(nameCon.at("hybUpFile"), newHybUpName);
     const std::vector<std::string> filePaths = {nameCon.at("greenUpFile"),
                                                 nameCon.at("selfUpFile")};
     for (const auto &filePath : filePaths)
@@ -88,7 +89,8 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
 
 #ifdef AFM
     const path path_hybDown(nameCon.at("hybDownFile"));
-    copy_file(nameCon.at("hybDownFile"), path_hybDown.stem().string() + std::to_string(iter + 1) + path_hybDown.extension().string());
+    const std::string newHybDownName = path_hybDown.stem().string() + std::to_string(iter + 1) + path_hybDown.extension().string();
+    copy_file(nameCon.at("hybDownFile"), newHybDownName);
     const std::vector<std::string> filePathsDown = {nameCon.at("greenDownFile"),
                                                     nameCon.at("selfDownFile")};
     for (const auto &filePath : filePathsDown)
@@ -118,10 +120,10 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
     size_t nextSeed = CalculateNextSeed();
     params["monteCarlo"]["seed"] = static_cast<size_t>(nextSeed);
 
-    params["model"]["hybUpFile"] = std::string("hybUp") + std::to_string(iter + 1) + datExt;
+    params["model"]["hybUpFile"] = newHybUpName;
 
 #ifdef AFM
-    params["model"]["hybDownFile"] = std::string("hybDown") + std::to_string(iter + 1) + datExt;
+    params["model"]["hybDownFile"] = newHybDownName;
 #endif
 
     if (params["model"].find("n") != params["model"].end())
