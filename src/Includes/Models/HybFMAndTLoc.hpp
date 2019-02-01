@@ -18,8 +18,8 @@ class HybFMAndTLoc
         Logging::Debug("Start of CalculateHybFMAndTLoc: This should only be for DCA ! ");
 
         Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
-        const std::string tlocFName = mapNames["tlocFile"]; //tloc File Name
-        const std::string hybFMFName = mapNames["hybFMFile"];
+        const std::string tlocFName = mapNames.at("tlocFile"); //tloc File Name
+        const std::string hybFMFName = mapNames.at("hybFMFile");
 
         using boost::filesystem::exists;
         if ((exists(tlocFName)) && exists(hybFMFName))

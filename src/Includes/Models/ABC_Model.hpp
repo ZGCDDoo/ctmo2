@@ -44,8 +44,8 @@ class ABC_Model_2D
 
         Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
 
-        assert(tLoc_.load(mapNames["tlocFile"]));
-        assert(hybFM_.load(mapNames["hybFMFile"]));
+        assert(tLoc_.load(mapNames.at("tlocFile")));
+        assert(hybFM_.load(mapNames.at("hybFMFile")));
 
         FinishConstructor(jjSim);
         Logging::Debug(" End of ABC_Model Constructor. ");
