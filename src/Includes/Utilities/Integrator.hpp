@@ -9,8 +9,7 @@ namespace Integrator
 const size_t MAXEVALS = 2000000;
 const size_t KXPTS = 128;
 
-template <typename TFct>
-ClusterMatrixCD_t GridKTilde(TFct fct, size_t kxpts = KXPTS)
+template <typename TFct> ClusterMatrixCD_t GridKTilde(TFct fct, size_t kxpts = KXPTS)
 {
     const double fact = 1.0 / (static_cast<double>(kxpts * kxpts * kxpts));
     ClusterMatrixCD_t integral(fct.n_rows(), fct.n_cols());
@@ -35,16 +34,15 @@ ClusterMatrixCD_t GridKTilde(TFct fct, size_t kxpts = KXPTS)
 }
 
 //===========================================================================
-//Cubature, general integration for full matrix functions in three dimensions
+// Cubature, general integration for full matrix functions in three dimensions
 //===========================================================================
 
-//By default, the integration is done in three dimensions.
-template <typename TFct>
-int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fval)
+// By default, the integration is done in three dimensions.
+template <typename TFct> int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fval)
 {
     // TFct est un struct ou une classe qui implémente les éléments suivants:
     // TFct fct: fct(x, y), appelle a la fct, fct.n_cols, fct.n_rows, la dimensionalité est de 3
-    size_t tmp_to_shutup_warning = fdim + ndim; //to shutup unused variable.
+    size_t tmp_to_shutup_warning = fdim + ndim; // to shutup unused variable.
     tmp_to_shutup_warning++;
 
     TFct fct = *((TFct *)fdata);
@@ -64,10 +62,11 @@ int IntegrandCubature(unsigned ndim, const double *x, void *fdata, unsigned fdim
 }
 
 template <typename TFct>
-ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-6, double relError = 1.49e-6)
+ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-6,
+                           double relError = 1.49e-6)
 {
     const unsigned nelem = fct.n_rows() * fct.n_cols();
-    double *val = new double[2 * nelem]; //for complex values
+    double *val = new double[2 * nelem]; // for complex values
     double *err = new double[2 * nelem];
 
     hcubature(2 * nelem, IntegrandCubature<TFct>, &fct, 3, xmin, xmax, maxevals, absError, relError, ERROR_INDIVIDUAL, val, err);
@@ -87,8 +86,7 @@ ClusterMatrixCD_t Cubature(TFct fct, double *xmin, double *xmax, size_t maxevals
     return result;
 }
 
-template <typename TFct>
-ClusterMatrixCD_t CubatureKTilde(TFct fct, size_t maxevals = MAXEVALS)
+template <typename TFct> ClusterMatrixCD_t CubatureKTilde(TFct fct, size_t maxevals = MAXEVALS)
 {
 
     assert(fct.n_rows() == fct.n_cols());
@@ -104,13 +102,12 @@ ClusterMatrixCD_t CubatureKTilde(TFct fct, size_t maxevals = MAXEVALS)
 //   For DCA, do diagonal integration.
 //========================================
 
-//By default, the integration is done in three dimensions.
-template <typename TFct>
-int IntegrandCubatureDCA(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fval)
+// By default, the integration is done in three dimensions.
+template <typename TFct> int IntegrandCubatureDCA(unsigned ndim, const double *x, void *fdata, unsigned fdim, double *fval)
 {
     // TFct est un struct ou une classe qui implémente les éléments suivants:
     // TFct fct: fct(x, y), appelle a la fct, fct.n_cols, fct.n_rows, la dimensionalité est de 3
-    size_t tmp_to_shutup_warning = fdim + ndim; //to shutup unused variable.
+    size_t tmp_to_shutup_warning = fdim + ndim; // to shutup unused variable.
     tmp_to_shutup_warning++;
 
     TFct fct = *((TFct *)fdata);
@@ -126,10 +123,11 @@ int IntegrandCubatureDCA(unsigned ndim, const double *x, void *fdata, unsigned f
 }
 
 template <typename TFct>
-ClusterMatrixCD_t CubatureDCA(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-8, double relError = 1.49e-8)
+ClusterMatrixCD_t CubatureDCA(TFct fct, double *xmin, double *xmax, size_t maxevals = MAXEVALS, double absError = 1.49e-8,
+                              double relError = 1.49e-8)
 {
-    const unsigned nelem = fct.n_rows(); //We only evaluate the diagonal parts, because diagonal in big K
-    double *val = new double[2 * nelem]; //for complex values
+    const unsigned nelem = fct.n_rows(); // We only evaluate the diagonal parts, because diagonal in big K
+    double *val = new double[2 * nelem]; // for complex values
     double *err = new double[2 * nelem];
 
     hcubature(2 * nelem, IntegrandCubatureDCA<TFct>, &fct, 3, xmin, xmax, maxevals, absError, relError, ERROR_INDIVIDUAL, val, err);
@@ -147,8 +145,7 @@ ClusterMatrixCD_t CubatureDCA(TFct fct, double *xmin, double *xmax, size_t maxev
     return result;
 }
 
-template <typename TFct>
-ClusterMatrixCD_t CubatureKTildeDCA(TFct fct, size_t maxevals = MAXEVALS)
+template <typename TFct> ClusterMatrixCD_t CubatureKTildeDCA(TFct fct, size_t maxevals = MAXEVALS)
 {
 
     assert(fct.n_rows() == fct.n_cols());

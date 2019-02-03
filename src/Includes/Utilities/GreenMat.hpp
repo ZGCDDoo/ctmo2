@@ -13,10 +13,10 @@ class HybridizationMat
     HybridizationMat(const HybridizationMat &hyb) : data_(hyb.data_), fm_(hyb.fm_){};
     ~HybridizationMat()
     {
-        //delete data_;
-        //delete fm_;
+        // delete data_;
+        // delete fm_;
     }
-    //definit par les moments, et le data qui est determine de facon auto-coherente.
+    // definit par les moments, et le data qui est determine de facon auto-coherente.
     ClusterMatrixCD_t fm() const { return fm_; };
     ClusterCubeCD_t data() const { return data_; };
 
@@ -26,15 +26,9 @@ class HybridizationMat
         fm_.clear();
     }
 
-    size_t n_slices() const
-    {
-        return data_.n_slices;
-    }
+    size_t n_slices() const { return data_.n_slices; }
 
-    ClusterMatrixCD_t slice(const size_t &n)
-    {
-        return data_.slice(n);
-    }
+    ClusterMatrixCD_t slice(const size_t &n) { return data_.slice(n); }
 
     HybridizationMat &operator=(const HybridizationMat &hyb)
     {
@@ -65,28 +59,17 @@ class HybridizationMat
 
 class GreenCluster0Mat
 {
-    //definit par la fct hyb, tloc, mu et beta
+    // definit par la fct hyb, tloc, mu et beta
 
   public:
-    GreenCluster0Mat() : hyb_(),
-                         data_(),
-                         zm_(), fm_(), sm_(), tm_(),
-                         tLoc_(),
-                         mu_(),
-                         beta_(){};
+    GreenCluster0Mat() : hyb_(), data_(), zm_(), fm_(), sm_(), tm_(), tLoc_(), mu_(), beta_(){};
 
-    GreenCluster0Mat(const GreenCluster0Mat &gf) : hyb_(gf.hyb_),
-                                                   data_(gf.data_),
-                                                   zm_(gf.zm_), fm_(gf.fm_), sm_(gf.sm_), tm_(gf.tm_),
-                                                   tLoc_(gf.tLoc_),
-                                                   mu_(gf.mu_),
-                                                   beta_(gf.beta_){};
+    GreenCluster0Mat(const GreenCluster0Mat &gf)
+        : hyb_(gf.hyb_), data_(gf.data_), zm_(gf.zm_), fm_(gf.fm_), sm_(gf.sm_), tm_(gf.tm_), tLoc_(gf.tLoc_), mu_(gf.mu_),
+          beta_(gf.beta_){};
 
-    GreenCluster0Mat(const HybridizationMat &hyb, const ClusterMatrixCD_t &tLoc, const double &mu, const double &beta) : hyb_(hyb),
-                                                                                                                         data_(),
-                                                                                                                         tLoc_(tLoc),
-                                                                                                                         mu_(mu),
-                                                                                                                         beta_(beta)
+    GreenCluster0Mat(const HybridizationMat &hyb, const ClusterMatrixCD_t &tLoc, const double &mu, const double &beta)
+        : hyb_(hyb), data_(), tLoc_(tLoc), mu_(mu), beta_(beta)
     {
         assert(tLoc_.n_rows == hyb.data().n_rows);
         const size_t NS = hyb_.data().n_rows;
@@ -125,14 +108,12 @@ class GreenCluster0Mat
         hyb_.clear();
     }
 
-    ~GreenCluster0Mat()
-    {
-    }
+    ~GreenCluster0Mat() {}
 
     void FourierTransform(const ClusterSites_t &RSites, const ClusterSites_t &KWaveVectors)
     {
 
-        //Watch OUT!!! hyb and tloc not fouriertransformed
+        // Watch OUT!!! hyb and tloc not fouriertransformed
         data_ = FourierDCA::KtoR(data_, RSites, KWaveVectors);
         zm_ = FourierDCA::KtoR(zm_, RSites, KWaveVectors);
         fm_ = FourierDCA::KtoR(fm_, RSites, KWaveVectors);

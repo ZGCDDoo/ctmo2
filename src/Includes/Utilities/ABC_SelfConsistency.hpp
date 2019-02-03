@@ -13,5 +13,5 @@ class ABC_SelfConsistency
   private:
 }; // class ABC_SelfConsistency
 
-ABC_SelfConsistency::~ABC_SelfConsistency() {} //destructors must exist
+ABC_SelfConsistency::~ABC_SelfConsistency() {} // destructors must exist
 } // namespace SelfCon

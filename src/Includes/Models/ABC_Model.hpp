@@ -19,14 +19,9 @@ class ABC_Model_2D
 {
 
   public:
-    explicit ABC_Model_2D(const Json &jjSim) : ioModelPtr_(new IO::Base_IOModel(jjSim)),
-                                               h0_(jjSim),
-                                               hybFM_(),
-                                               tLoc_(),
-                                               beta_(jjSim["model"]["beta"].get<double>()),
-                                               mu_(jjSim["model"]["mu"].get<double>()),
-                                               NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
-                                               Nc_(h0_.Nc)
+    explicit ABC_Model_2D(const Json &jjSim)
+        : ioModelPtr_(new IO::Base_IOModel(jjSim)), h0_(jjSim), hybFM_(), tLoc_(), beta_(jjSim["model"]["beta"].get<double>()),
+          mu_(jjSim["model"]["mu"].get<double>()), NOrb_(jjSim["model"]["nOrb"].get<size_t>()), Nc_(h0_.Nc)
     {
         Logging::Debug("Start ABC_Model Constructor. ");
 
@@ -40,7 +35,7 @@ class ABC_Model_2D
 #endif
         }
 
-        //tLoc and hybFM should have been calculated by now.
+        // tLoc and hybFM should have been calculated by now.
 
         Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
 
@@ -67,8 +62,7 @@ class ABC_Model_2D
 
         const size_t NHyb = hybtmpUp.n_slices;
         const double factNHyb = 3.0;
-        const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb),
-                                                0.5 * (MIN_EHYB_ * beta_ / M_PI - 1.0));
+        const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb), 0.5 * (MIN_EHYB_ * beta_ / M_PI - 1.0));
         hybtmpUp.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
 #ifdef AFM
         hybtmpDown.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
@@ -88,13 +82,13 @@ class ABC_Model_2D
         this->hybridizationMatDown_ = GreenMat::HybridizationMat(hybtmpDown, this->hybFM_);
 #endif
 
-        //this is in fact greencluster tilde.
+        // this is in fact greencluster tilde.
         const UTensor ut(jjSim);
         this->greenCluster0MatUp_ = GreenMat::GreenCluster0Mat(this->hybridizationMatUp_, this->tLoc_, ut.auxMu(), this->beta_);
 #ifdef DCA
         greenCluster0MatUp_.FourierTransform(h0_.RSites(), h0_.KWaveVectors());
 #endif
-        //save green0mat
+        // save green0mat
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         {
             ioModelPtr_->SaveCube("giwn", this->greenCluster0MatUp_.data(), this->beta_, NOrb_);
@@ -109,7 +103,7 @@ class ABC_Model_2D
 
     ~ABC_Model_2D() = default;
 
-    //Getters
+    // Getters
     double mu() const { return mu_; }
     double beta() const { return beta_; }
     size_t NOrb() const { return NOrb_; }

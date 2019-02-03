@@ -25,7 +25,7 @@ void WriteToFile(const size_t &iter, double &value, const std::string &fname)
 
 void WriteToFile(const size_t &iter, const std::vector<double> &stats, const std::string &fname)
 {
-    assert(stats.size() == 2); //mean and stddev
+    assert(stats.size() == 2); // mean and stddev
     std::ofstream fout(fname, std::ios_base::out | std::ios_base::app);
     fout << iter << " " << stats[0] << " " << stats[1] << std::endl;
     fout.close();
@@ -65,8 +65,7 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
     const path path_hyb(nameCon.at("hybUpFile"));
     const std::string newHybUpName = path_hyb.stem().string() + std::to_string(iter + 1) + path_hyb.extension().string();
     copy_file(nameCon.at("hybUpFile"), newHybUpName);
-    const std::vector<std::string> filePaths = {nameCon.at("greenUpFile"),
-                                                nameCon.at("selfUpFile")};
+    const std::vector<std::string> filePaths = {nameCon.at("greenUpFile"), nameCon.at("selfUpFile")};
     for (const auto &filePath : filePaths)
     {
         const path path_tmp(filePath);
@@ -75,8 +74,7 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
 
     if (Logging::LevelIsTrace())
     {
-        const std::vector<std::string> filePathsTrace = {nameCon.at("obsJsonFile"),
-                                                         nameCon.at("gtauFile")};
+        const std::vector<std::string> filePathsTrace = {nameCon.at("obsJsonFile"), nameCon.at("gtauFile")};
         for (const auto &filePath : filePathsTrace)
         {
             if (exists(filePath))
@@ -91,8 +89,7 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
     const path path_hybDown(nameCon.at("hybDownFile"));
     const std::string newHybDownName = path_hybDown.stem().string() + std::to_string(iter + 1) + path_hybDown.extension().string();
     copy_file(nameCon.at("hybDownFile"), newHybDownName);
-    const std::vector<std::string> filePathsDown = {nameCon.at("greenDownFile"),
-                                                    nameCon.at("selfDownFile")};
+    const std::vector<std::string> filePathsDown = {nameCon.at("greenDownFile"), nameCon.at("selfDownFile")};
     for (const auto &filePath : filePathsDown)
     {
         const path path_tmp(filePath);
@@ -129,7 +126,7 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
     if (params["model"].find("n") != params["model"].end())
     {
         double nParams = params["model"]["n"];
-        double nResult = results["n"].at(0); //mean of n from simulation
+        double nResult = results["n"].at(0); // mean of n from simulation
         params["model"]["mu"] = double(params["model"]["mu"]) - double(params["solver"]["S"]) * (nResult - nParams);
     }
     std::ofstream fout(cmdInfo.fnamePrefix() + std::to_string(iter + 1) + cmdInfo.fnameSuffix());

@@ -10,7 +10,7 @@ using namespace LinAlg;
 const double DELTA = 1e-11;
 TEST(UtilitiesTest, DotVectors)
 {
-    //c for complex
+    // c for complex
     SiteVector_t v1 = {1.0, 11.1, 90.2, -1.999};
     SiteVectorCD_t v1c(v1, 0.88 * v1);
     SiteVector_t v2 = {-1.9760, 7.6, 0.0002, 1.299};
@@ -71,7 +71,7 @@ TEST(UtilitiesTest, VectorMatrixMult)
     SiteVectorCD_t resultBlasc(NN);
     SiteVector_t v1 = {1.0, 11.1, 90.2};
     SiteVectorCD_t v1c(v1, 2.1 * v1);
-    //SiteRowCD_t v1c(v1, v1;
+    // SiteRowCD_t v1c(v1, v1;
     ClusterMatrix_t A = {{-1.9760, 7.6, 0.0002}, {0.12, 1.299, -5.3}, {0.005, 0.02, 0.03}};
     ClusterMatrixCD_t Ac(A, 0.7 * A);
     double alpha = 1.1;
@@ -188,7 +188,7 @@ TEST(UtilitiesTest, TriangularSolve)
     }
 
     //=============Test inverse =====================
-    Matrix_t AupperInverse(arma::trimatu(Aupper).i()); //The good inverse matrixs
+    Matrix_t AupperInverse(arma::trimatu(Aupper).i()); // The good inverse matrixs
     Matrix_t AlowerInverse(arma::trimatl(Alower).i());
     Matrix_t AM(A);
     TriangularInverse('u', AM);
@@ -215,7 +215,7 @@ TEST(UtilitiesTest, LUExtractLUInverse)
     ClusterMatrix_t A = {{1.0, 2.0, 4.0}, {3, 2, 2}, {2, 1, 3}};
     ClusterMatrix_t Alower = arma::trimatl(A);
     ClusterMatrix_t Aupper = arma::trimatu(A);
-    //set Alower diagonal to one
+    // set Alower diagonal to one
     for (size_t ii = 0; ii < NN; ii++)
     {
 
@@ -251,26 +251,19 @@ TEST(UtilitiesTest, LUExtractLUInverse)
 
 TEST(UtilitiesTest, BlockRankOneUpgrade)
 {
-    //Now test the following: I have the matrix a1 2x2, its inverse is m1. I a1 update it so that it is 3x3 by adding a Row r1 and a Column c1.
-    //Now I want this new matrix a2 and its inverse m2. I can do this by twice the shermann morrison. Lets test that.
+    // Now test the following: I have the matrix a1 2x2, its inverse is m1. I a1 update it so that it is 3x3 by adding a Row r1 and a Column
+    // c1. Now I want this new matrix a2 and its inverse m2. I can do this by twice the shermann morrison. Lets test that.
 
     const size_t k = 3;
-    ClusterMatrix_t a1 = {
-        {0.19, 1.1, 2.17},
-        {-1.272, 3.0, 0.67},
-        {0.1, 0.22, 0.367}};
+    ClusterMatrix_t a1 = {{0.19, 1.1, 2.17}, {-1.272, 3.0, 0.67}, {0.1, 0.22, 0.367}};
 
     ClusterMatrix_t m1 = a1.i();
 
-    const SiteVector_t Q = {1.23, -0.221, -0.543}; //new col
-    const SiteVector_t R = {1.179, -2.31, 0.321};  //new row
+    const SiteVector_t Q = {1.23, -0.221, -0.543}; // new col
+    const SiteVector_t R = {1.179, -2.31, 0.321};  // new row
 
-    ClusterMatrix_t a2 = {
-        {0.19, 1.1, 2.17, 1.23},
-        {-1.272, 3.0, 0.67, -0.221},
-        {0.1, 0.22, 0.367, -0.543},
-        {1.179, -2.31, 0.321, -1.4}};
-    ClusterMatrix_t m2Good = a2.i(); //The good inverse calculated normally.
+    ClusterMatrix_t a2 = {{0.19, 1.1, 2.17, 1.23}, {-1.272, 3.0, 0.67, -0.221}, {0.1, 0.22, 0.367, -0.543}, {1.179, -2.31, 0.321, -1.4}};
+    ClusterMatrix_t m2Good = a2.i(); // The good inverse calculated normally.
 
     const double STildeGood = m2Good(k, k);
 
@@ -291,7 +284,7 @@ TEST(UtilitiesTest, BlockRankOneUpgrade)
     {
         for (size_t j = 0; j < m1Matrix.n_cols(); j++)
         {
-            //std::cout << "i ,j = " << i << " " << j << std::endl;
+            // std::cout << "i ,j = " << i << " " << j << std::endl;
             ASSERT_NEAR(m1Matrix(i, j), m2Good(i, j), DELTA);
         }
     }
@@ -301,25 +294,21 @@ TEST(UtilitiesTest, BlockRankTwoUpgrade)
 {
 
     const size_t k = 3;
-    ClusterMatrix_t a1 = {
-        {0.19, 1.1, 2.17},
-        {-1.272, 3.0, 0.67},
-        {0.1, 0.22, 0.367}};
+    ClusterMatrix_t a1 = {{0.19, 1.1, 2.17}, {-1.272, 3.0, 0.67}, {0.1, 0.22, 0.367}};
 
     ClusterMatrix_t m1 = a1.i();
 
-    Matrix_t Q = {{1.23, -1.17}, {-0.221, 1.17}, {-0.543, 2.99}}; //new cols
-    Matrix_t R = {{1.179, -2.31, 0.321}, {9.9, -0.0001, 4.5}};    //new rows
+    Matrix_t Q = {{1.23, -1.17}, {-0.221, 1.17}, {-0.543, 2.99}}; // new cols
+    Matrix_t R = {{1.179, -2.31, 0.321}, {9.9, -0.0001, 4.5}};    // new rows
     Matrix_t S = {{6.65, -6.66}, {0.99, 9.1}};
 
-    ClusterMatrix_t a2 = {
-        {0.19, 1.1, 2.17, 1.23, -1.17},
-        {-1.272, 3.0, 0.67, -0.221, 1.17},
-        {0.1, 0.22, 0.367, -0.543, 2.99},
-        {1.179, -2.31, 0.321, 6.55, -6.66},
-        {9.9, -0.0001, 4.5, 0.99, 9.1}};
+    ClusterMatrix_t a2 = {{0.19, 1.1, 2.17, 1.23, -1.17},
+                          {-1.272, 3.0, 0.67, -0.221, 1.17},
+                          {0.1, 0.22, 0.367, -0.543, 2.99},
+                          {1.179, -2.31, 0.321, 6.55, -6.66},
+                          {9.9, -0.0001, 4.5, 0.99, 9.1}};
 
-    ClusterMatrix_t m2Good = a2.i(); //The good inverse calculated normally.
+    ClusterMatrix_t m2Good = a2.i(); // The good inverse calculated normally.
 
     Matrix_t m1Matrix(m1);
     m1Matrix.Resize(100, 100);
@@ -350,17 +339,13 @@ TEST(UtilitiesTest, BlockRankTwoUpgrade)
 TEST(UtilitiesTest, ExtractRowAndCol)
 {
     const size_t k = 4;
-    ClusterMatrix_t a1 = {
-        {0.19, 1.1, 1.23, 0.79},
-        {-1.272, 3.0, -0.221, 0.51},
-        {1.179, -2.31, -1.4, 0.01},
-        {-0.15, 0.82, 0.35, -0.43}};
+    ClusterMatrix_t a1 = {{0.19, 1.1, 1.23, 0.79}, {-1.272, 3.0, -0.221, 0.51}, {1.179, -2.31, -1.4, 0.01}, {-0.15, 0.82, 0.35, -0.43}};
 
     SiteVector_t v1Col = a1.col(2);
     SiteVector_t v1Row = {-0.15, 0.82, 0.35, -0.43};
     SiteVector_t v1ColTest;
     SiteVector_t v1RowTest;
-    //SiteRow_t r1 = a1.row(2);
+    // SiteRow_t r1 = a1.row(2);
     Matrix_t a1Matrix(a1);
     a1Matrix.Resize(1000, 1000);
     a1Matrix.Resize(k, k);
@@ -382,14 +367,14 @@ TEST(UtilitiesTest, BlockRankOneDownGrade)
 
     ClusterMatrix_t m1 = a1.i();
     const size_t k = m1.n_rows;
-    //a2 is obtained from a1 by removing vertex 2 = col and row 2
+    // a2 is obtained from a1 by removing vertex 2 = col and row 2
     ClusterMatrix_t a2 = a1;
     a2.swap_rows(pp, k - 1);
     a2.swap_cols(pp, k - 1);
     a2.shed_row(k - 1);
     a2.shed_col(k - 1);
     ClusterMatrix_t m2Good = a2.i();
-    //I need to put the rows and cols to be removed at the end;
+    // I need to put the rows and cols to be removed at the end;
     Matrix_t m1Matrix(m1);
 
     BlockRankOneDowngrade(m1Matrix, pp);
@@ -476,10 +461,10 @@ TEST(UtilitiesTest, BlockRankDownGrade)
 
     BlockDowngrade(m1Matrix, 2, 2);
 
-    //std::cout << "m2Good " << std::endl;
-    //m2Good.print();
-    //std::cout << "m2Test " << std::endl;
-    //m1Matrix.Print();
+    // std::cout << "m2Good " << std::endl;
+    // m2Good.print();
+    // std::cout << "m2Test " << std::endl;
+    // m1Matrix.Print();
     for (size_t i = 0; i < m1Matrix.n_rows(); i++)
     {
         for (size_t j = 0; j < m1Matrix.n_rows(); j++)
@@ -518,10 +503,10 @@ TEST(UtilitiesTest, BlockRankTwoDownGrade)
 
     BlockRankTwoDowngrade(m1Matrix);
 
-    //std::cout << "m2Good " << std::endl;
-    //m2Good.print();
-    //std::cout << "m2Test " << std::endl;
-    //m1Matrix.Print();
+    // std::cout << "m2Good " << std::endl;
+    // m2Good.print();
+    // std::cout << "m2Test " << std::endl;
+    // m1Matrix.Print();
     for (size_t i = 0; i < m1Matrix.n_rows(); i++)
     {
         for (size_t j = 0; j < m1Matrix.n_rows(); j++)
@@ -558,10 +543,10 @@ TEST(UtilitiesTest, BlockRankDownGradeVers2)
 
     BlockDowngrade(m1Matrix, pp, nn);
 
-    //std::cout << "m2Good " << std::endl;
-    //m2Good.print();
-    //std::cout << "m2Test " << std::endl;
-    //m1Matrix.Print();
+    // std::cout << "m2Good " << std::endl;
+    // m2Good.print();
+    // std::cout << "m2Test " << std::endl;
+    // m1Matrix.Print();
     for (size_t i = 0; i < m1Matrix.n_rows(); i++)
     {
         for (size_t j = 0; j < m1Matrix.n_rows(); j++)

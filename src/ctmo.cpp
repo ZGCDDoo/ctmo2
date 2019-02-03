@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     Logging::Info("Iteration " + std::to_string(ITER));
     const size_t seed = jjSim["monteCarlo"]["seed"].get<size_t>();
 
-    //init a model, to make sure all the files are present and that not all proc write to the same files
+    // init a model, to make sure all the files are present and that not all proc write to the same files
 
     Logging::Trace("ABC_MonteCarlo Creation...");
     const std::unique_ptr<MC::ABC_MonteCarlo> monteCarloMachinePtr = MC::MonteCarloBuilder(jjSim, seed);
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     Logging::Info(PrintVersion::GetVersion());
     Logging::Info("Iteration " + std::to_string(ITER));
     world.barrier();
-    //wait_all
+    // wait_all
 
     const size_t rank = world.rank();
     const size_t seed = jjSim["monteCarlo"]["seed"].get<size_t>() + 2797 * rank;

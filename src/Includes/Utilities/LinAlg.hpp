@@ -137,10 +137,9 @@ std::complex<double> Dot(const SiteVectorCD_t &v1, const MatrixCD_t &A, const Si
     return DotVectors(v1, dummy);
 }
 
-void DGEMM(const double &alpha, const double &beta, const Matrix_t &A,
-           const Matrix_t &B, Matrix_t &C, const size_t &colNum = 0)
+void DGEMM(const double &alpha, const double &beta, const Matrix_t &A, const Matrix_t &B, Matrix_t &C, const size_t &colNum = 0)
 {
-    //performs: C = alpha*A*B + beta*C
+    // performs: C = alpha*A*B + beta*C
     // C is size n_rowsC x n_colsC
     assert(A.n_cols() == B.n_rows());
     assert(C.n_rows() == A.n_rows());
@@ -155,27 +154,26 @@ void DGEMM(const double &alpha, const double &beta, const Matrix_t &A,
     char no = 'n';
 
     const size_t elemNum = ld_C * colNum;
-    dgemm_(&no, &no, &n_rowsC, &n_colsC, &n_rowsB, &alpha, A.memptr(),
-           &ld_A, B.memptr(), &ld_B, &beta, &(C.memptr()[elemNum]), &ld_C);
+    dgemm_(&no, &no, &n_rowsC, &n_colsC, &n_rowsB, &alpha, A.memptr(), &ld_A, B.memptr(), &ld_B, &beta, &(C.memptr()[elemNum]), &ld_C);
     return;
 }
 
 Matrix_t DotRank2(const Matrix_t &m1, const Matrix_t &A, const Matrix_t &m2)
 {
-    //result = m1*A*m2
-    Matrix_t C(A.n_rows(), m2.n_cols()); //C = A*m2
+    // result = m1*A*m2
+    Matrix_t C(A.n_rows(), m2.n_cols()); // C = A*m2
     C.Zeros();
     DGEMM(1.0, 0.0, A, m2, C);
 
     Matrix_t result(m1.n_rows(), C.n_cols());
     result.Zeros();
-    DGEMM(1.0, 0.0, m1, C, result); //result = m1*C
+    DGEMM(1.0, 0.0, m1, C, result); // result = m1*C
     return result;
 }
 
 void TriangularSolve(const char &uplo, const char &trans, const Matrix_t &A, SiteVector_t &B)
 {
-    const char diag = uplo == 'l' ? 'u' : 'n'; //if lower triangular, diagonal  ones (1)
+    const char diag = uplo == 'l' ? 'u' : 'n'; // if lower triangular, diagonal  ones (1)
 
     const unsigned int N = A.n_cols();
     const unsigned int nrhs = 1;
@@ -212,7 +210,7 @@ void ExtractLU(const Matrix_t &LU, Matrix_t &L, Matrix_t &U)
 
 void TriangularInverse(const char &uplo, Matrix_t &A)
 {
-    const char diag = uplo == 'l' ? 'u' : 'n'; //if lower triangular, diagonal  ones (1)
+    const char diag = uplo == 'l' ? 'u' : 'n'; // if lower triangular, diagonal  ones (1)
 
     const unsigned int N = A.n_cols();
     const unsigned int ld_A = A.mem_n_rows();
@@ -235,7 +233,7 @@ void LUInverse(const double &alpha, Matrix_t &L, Matrix_t &U, const unsigned int
 
     TriangularInverse('u', U);
 
-    //Solve for A^-1:  A^-1*L=U^-1, where A=LU  M = n_rows=n_cols
+    // Solve for A^-1:  A^-1*L=U^-1, where A=LU  M = n_rows=n_cols
     const char side = 'r';
     const char uplo = 'l';
     const char trans = 'n';
@@ -245,10 +243,10 @@ void LUInverse(const double &alpha, Matrix_t &L, Matrix_t &U, const unsigned int
     return;
 }
 
-//Upgrade the matrix if the last element of the inverse is known (STilde)
+// Upgrade the matrix if the last element of the inverse is known (STilde)
 void BlockRankOneUpgrade(Matrix_t &mk, const SiteVector_t &mkQ, const SiteVector_t &R, const double &STilde)
 {
-    //mkQ = m^{k}*Q, needed to calculate STilde, see Gull CTQMC review
+    // mkQ = m^{k}*Q, needed to calculate STilde, see Gull CTQMC review
     const unsigned int k = mk.n_cols();
     const unsigned int kp1 = k + 1;
     const double one = 1.0;
@@ -276,7 +274,7 @@ void BlockRankOneUpgrade(Matrix_t &mk, const SiteVector_t &mkQ, const SiteVector
 // Upgrade the matrix if the last matrix element of the inverse is known (STilde)
 void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &mkQ, const Matrix_t &R, const Matrix_t &STilde)
 {
-    //mkQ is the matrix given by the multiplication of mk and Q
+    // mkQ is the matrix given by the multiplication of mk and Q
     const unsigned int k = mk.n_cols();
     const unsigned int kp2 = k + 2;
     const double one = 1.0;
@@ -320,7 +318,7 @@ void BlockRankTwoUpgrade(Matrix_t &mk, const Matrix_t &mkQ, const Matrix_t &R, c
     mk(k + 1, k + 1) = STilde(1, 1);
 }
 
-//pp row and col to remove
+// pp row and col to remove
 void BlockRankOneDowngrade(Matrix_t &m1, const size_t &pp)
 {
 
@@ -348,11 +346,11 @@ void BlockRankOneDowngrade(Matrix_t &m1, const size_t &pp)
     }
 }
 
-//pp row and col to remove
+// pp row and col to remove
 void BlockDowngrade(Matrix_t &m1, const size_t &pp, const size_t &nn)
 {
-    //pp = row and col number to start remove
-    //nn = number of rows and col to remove
+    // pp = row and col number to start remove
+    // nn = number of rows and col to remove
     // const unsigned int inc = 1;
     const unsigned int kk = m1.n_rows();
     assert(kk >= nn);
@@ -371,9 +369,9 @@ void BlockDowngrade(Matrix_t &m1, const size_t &pp, const size_t &nn)
             m1.SwapRowsAndCols(pp + cc, kk - 1 - ii);
         }
 
-        Matrix_t B; //right-upper block of m1, size = kkmnn x nn
-        Matrix_t C; //left-lower block of m1, size = nn x kkmnn
-        Matrix_t D; //lower-right block of m1, size = nn x nn
+        Matrix_t B; // right-upper block of m1, size = kkmnn x nn
+        Matrix_t C; // left-lower block of m1, size = nn x kkmnn
+        Matrix_t D; // lower-right block of m1, size = nn x nn
         B = GetSubMat(0, kkmnn, kkmnn, kk, m1);
         C = GetSubMat(kkmnn, 0, kk, kkmnn, m1);
         D = GetSubMat(kkmnn, kkmnn, kk, kk, m1);
@@ -396,8 +394,8 @@ void BlockDowngrade(Matrix_t &m1, const size_t &pp, const size_t &nn)
 void BlockRankTwoDowngrade(Matrix_t &m1)
 {
 
-    //pp = row and col number to start remove, is supposed here that it is the last two rows and columns.
-    //nn = number of rows and col to remove = 2
+    // pp = row and col number to start remove, is supposed here that it is the last two rows and columns.
+    // nn = number of rows and col to remove = 2
     // const unsigned int inc = 1;
     const unsigned int nn = 2;
     const unsigned int kk = m1.n_rows();
@@ -412,9 +410,9 @@ void BlockRankTwoDowngrade(Matrix_t &m1)
     else
     {
 
-        Matrix_t B; //right-upper block of m1, size = kkmnn x nn
-        Matrix_t C; //left-lower block of m1, size = nn x kkmnn
-        Matrix_t D; //lower-right block of m1, size = nn x nn
+        Matrix_t B; // right-upper block of m1, size = kkmnn x nn
+        Matrix_t C; // left-lower block of m1, size = nn x kkmnn
+        Matrix_t D; // lower-right block of m1, size = nn x nn
         B = GetSubMat(0, kkmnn, kkmnn, kk, m1);
         C = GetSubMat(kkmnn, 0, kk, kkmnn, m1);
         D = GetSubMat(kkmnn, kkmnn, kk, kk, m1);
@@ -434,8 +432,8 @@ void BlockRankTwoDowngrade(Matrix_t &m1)
     }
 }
 
-//double-diagonal matrix-general matrix multiplication
-//B = diag*A
+// double-diagonal matrix-general matrix multiplication
+// B = diag*A
 void DDMGMM(const SiteVector_t &diag, const Matrix_t &A, Matrix_t &B)
 {
     const unsigned int diag_size = diag.n_elem;
@@ -452,8 +450,8 @@ void DDMGMM(const SiteVector_t &diag, const Matrix_t &A, Matrix_t &B)
     }
 }
 
-//double-diagonal matrix-general matrix multiplication
-//A = diag*A
+// double-diagonal matrix-general matrix multiplication
+// A = diag*A
 void DDMGMM(const SiteVector_t &diag, Matrix_t &A)
 {
     const unsigned int diag_size = diag.n_elem;

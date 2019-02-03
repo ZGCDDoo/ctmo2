@@ -15,17 +15,12 @@ class Base_IOModel
     const size_t Nz;
     const size_t Nc;
 
-    //get the number of indep orbitals
-    static size_t GetNOrbIndep(const size_t &NOrb)
-    {
+    // get the number of indep orbitals
+    static size_t GetNOrbIndep(const size_t &NOrb) { return (NOrb * (NOrb + 1) / 2); }
 
-        return (NOrb * (NOrb + 1) / 2);
-    }
-
-    explicit Base_IOModel(const Json &jjSim) : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
-                                               Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
-                                               Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
-                                               Nc(Nx * Ny * Nz)
+    explicit Base_IOModel(const Json &jjSim)
+        : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()), Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
+          Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()), Nc(Nx * Ny * Nz)
     {
         Logging::Trace("Start Base_IOModel construction. ");
         GreenSites_ = BuildGreenSites(jjSim["model"]["modelFile"].get<std::string>());
@@ -59,7 +54,7 @@ class Base_IOModel
 
     void ConstructfullSiteToIndepSite()
     {
-        //construct equivalentSites_ also.
+        // construct equivalentSites_ also.
         equivalentSites_.clear();
         equivalentSites_.resize(indepSites_.size());
 
@@ -78,7 +73,7 @@ class Base_IOModel
                 std::vector<std::pair<size_t, size_t>>::iterator llit = std::find(indepSites_.begin(), indepSites_.end(), pairSites);
                 if (llit == indepSites_.end())
                 {
-                    //Try the pair with first and second exchanged:
+                    // Try the pair with first and second exchanged:
                     llit = std::find(indepSites_.begin(), indepSites_.end(), std::make_pair(pairSites.second, pairSites.first));
                     if (llit == indepSites_.end())
                     {
@@ -97,16 +92,14 @@ class Base_IOModel
         }
     }
 
-    size_t FindIndepSiteIndex(const Site_t &s1, const Site_t &s2) const
-    {
-        return fullSiteToIndepSite_.at(s1 * Nc + s2);
-    }
+    size_t FindIndepSiteIndex(const Site_t &s1, const Site_t &s2) const { return fullSiteToIndepSite_.at(s1 * Nc + s2); }
 
     size_t FindIndepSuperSiteIndex(const SuperSite_t &s1, const SuperSite_t &s2, const size_t &NOrb) const
     {
 
         const size_t NSitesIndep = indepSites_.size();
-        const size_t siteIndex = fullSiteToIndepSite_.at(s1.first * Nc + s2.first); //arranged by row major ordering here, one of the only places where this happens
+        const size_t siteIndex = fullSiteToIndepSite_.at(
+            s1.first * Nc + s2.first); // arranged by row major ordering here, one of the only places where this happens
         const size_t orbitalIndex = Utilities::GetIndepOrbitalIndex(s1.second, s2.second, NOrb);
         return (siteIndex + orbitalIndex * NSitesIndep);
     }
@@ -127,7 +120,7 @@ class Base_IOModel
     }
 
 #ifdef DCA
-    //read a green in .dat format.
+    // read a green in .dat format.
     ClusterCubeCD_t ReadGreenKDat(const std::string &filename, const size_t &NOrb) const
     {
         Logging::Trace("In IOModel ReadGreenKDat ");
@@ -161,7 +154,7 @@ class Base_IOModel
     }
 #endif
 
-    //Read green in .dat format.
+    // Read green in .dat format.
     ClusterCubeCD_t ReadGreenDat(const std::string &filename, const size_t &NOrb) const
     {
         Logging::Trace("In IOModel ReadGreenNDat ");
@@ -191,9 +184,11 @@ class Base_IOModel
                     {
                         for (size_t jj = 0; jj < Nc; ++jj)
                         {
-                            const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
-                            tmp(ii + o1 * Nc, jj + o2 * Nc) = cd_t(fileMat(n, 2 * indexIndepSuperSite), fileMat(n, 2 * indexIndepSuperSite + 1));
-                            tmp(jj + o2 * Nc, ii + o1 * Nc) = tmp(ii + o1 * Nc, jj + o2 * Nc); //symmetrize
+                            const size_t indexIndepSuperSite =
+                                FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
+                            tmp(ii + o1 * Nc, jj + o2 * Nc) =
+                                cd_t(fileMat(n, 2 * indexIndepSuperSite), fileMat(n, 2 * indexIndepSuperSite + 1));
+                            tmp(jj + o2 * Nc, ii + o1 * Nc) = tmp(ii + o1 * Nc, jj + o2 * Nc); // symmetrize
                         }
                     }
                 }
@@ -205,8 +200,8 @@ class Base_IOModel
         return cubetmp;
     }
 
-    void SaveCube(const std::string &fname, const ClusterCubeCD_t &green, const double &beta,
-                  const size_t &NOrb, const size_t &precision = 14, const bool &saveArma = false) const
+    void SaveCube(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb,
+                  const size_t &precision = 14, const bool &saveArma = false) const
     {
         assert(!green.has_nan());
         assert(!green.has_inf());
@@ -251,10 +246,7 @@ class Base_IOModel
                         const cd_t value = green(r1 + o1 * Nc, r2 + o2 * Nc, nn);
                         const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(r1, o1), std::make_pair(r2, o2), NOrb);
                         greenOut(nn, indexIndepSuperSite) = value;
-                        fout << std::setprecision(precision) << value.real()
-                             << " "
-                             << std::setprecision(precision) << value.imag()
-                             << " ";
+                        fout << std::setprecision(precision) << value.real() << " " << std::setprecision(precision) << value.imag() << " ";
                     }
                 }
             }
@@ -270,7 +262,8 @@ class Base_IOModel
     }
 
 #ifdef DCA
-    void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb, const size_t &precision = 14) const
+    void SaveK(const std::string &fname, const ClusterCubeCD_t &green, const double &beta, const size_t &NOrb,
+               const size_t &precision = 14) const
     {
         Logging::Warn("DCA is implemented for only one orbital");
         assert(NOrb == 1);
@@ -285,10 +278,8 @@ class Base_IOModel
             for (Site_t ii = 0; ii < Nc; ++ii)
             {
 
-                fout << std::setprecision(precision) << green(ii, ii, nn).real()
-                     << " "
-                     << std::setprecision(precision) << green(ii, ii, nn).imag()
-                     << " ";
+                fout << std::setprecision(precision) << green(ii, ii, nn).real() << " " << std::setprecision(precision)
+                     << green(ii, ii, nn).imag() << " ";
             }
             fout << "\n";
         }
@@ -331,13 +322,10 @@ class Base_IOModel
         throw std::runtime_error("Shit man");
     }
 
-    size_t GetNIndepSuperSites(const size_t &NOrb) const
-    {
-        return (indepSites_.size() * GetNOrbIndep(NOrb));
-    }
+    size_t GetNIndepSuperSites(const size_t &NOrb) const { return (indepSites_.size() * GetNOrbIndep(NOrb)); }
 
     template <typename T1_t, typename T2_t = ClusterMatrixCD_t>
-    T2_t IndepToFull(const T1_t &indepElements, const size_t &NOrb) const //in practice T1_t will be a Sitevector_t or SitevectorCD_t
+    T2_t IndepToFull(const T1_t &indepElements, const size_t &NOrb) const // in practice T1_t will be a Sitevector_t or SitevectorCD_t
     {
         assert(indepElements.n_elem == GetNOrbIndep(NOrb) * indepSites_.size());
         T2_t fullMatrix(NOrb * Nc, NOrb * Nc);
@@ -354,7 +342,7 @@ class Base_IOModel
 
                         const size_t indexIndepSuperSite = FindIndepSuperSiteIndex(std::make_pair(ii, o1), std::make_pair(jj, o2), NOrb);
                         fullMatrix(ii + o1 * Nc, jj + o2 * Nc) = indepElements(indexIndepSuperSite);
-                        fullMatrix(jj + o2 * Nc, ii + o1 * Nc) = fullMatrix(ii + o1 * Nc, jj + o2 * Nc); //symmetrize
+                        fullMatrix(jj + o2 * Nc, ii + o1 * Nc) = fullMatrix(ii + o1 * Nc, jj + o2 * Nc); // symmetrize
                     }
                 }
             }
@@ -363,9 +351,8 @@ class Base_IOModel
         return fullMatrix;
     }
 
-    //from th full cube return the independant in tabular form
-    template <typename T1_t>
-    ClusterMatrixCD_t FullCubeToIndep(const T1_t &greenCube) const //T1_t = {ClusterCube_t or ClustercubeCD_t}
+    // from th full cube return the independant in tabular form
+    template <typename T1_t> ClusterMatrixCD_t FullCubeToIndep(const T1_t &greenCube) const // T1_t = {ClusterCube_t or ClustercubeCD_t}
     {
         const size_t NOrb = greenCube.n_rows / Nc;
         const size_t NIndepSuperSites = GetNIndepSuperSites(NOrb);
@@ -398,10 +385,10 @@ class Base_IOModel
         }
         assert(sum == Nc);
 
-        //make sure fullSitetoIndepSite is ok
+        // make sure fullSitetoIndepSite is ok
         assert(fullSiteToIndepSite_.size() == Nc * Nc);
 
-        //make sure equivalentSites_ is ok
+        // make sure equivalentSites_ is ok
         assert(equivalentSites_.size() == indepSites_.size());
         for (size_t ii = 0; ii < equivalentSites_.size(); ++ii)
         {
@@ -417,7 +404,7 @@ class Base_IOModel
 
     ClusterCubeCD_t AverageOrbitals(const ClusterCubeCD_t &green) const
     {
-        //For now only averages the diagonal blocks.
+        // For now only averages the diagonal blocks.
         const size_t n_rows = green.n_rows;
         const size_t n_cols = green.n_cols;
         const size_t n_slices = green.n_slices;
@@ -432,13 +419,15 @@ class Base_IOModel
 
         for (size_t oo = 0; oo < NOrb; ++oo)
         {
-            result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1)) += green.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1));
+            result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1)) +=
+                green.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1));
         }
         result /= static_cast<double>(NOrb);
 
         for (size_t oo = 1; oo < NOrb; ++oo)
         {
-            result.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1)) = result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1));
+            result.subcube(span(Nc * oo, Ncm1 + Nc * oo), span(Nc * oo, Ncm1 + Nc * oo), span(0, n_slices - 1)) =
+                result.subcube(span(0, Ncm1), span(0, Ncm1), span(0, n_slices - 1));
         }
 
         return result;
@@ -452,44 +441,24 @@ class Base_IOModel
         return equivalentSites_.at(indepSiteIndex).at(intRng);
     }
 
-    //Getters
-    std::vector<std::pair<size_t, size_t>> const indepSites() const
-    {
-        return indepSites_;
-    };
-    std::vector<std::vector<std::pair<size_t, size_t>>> const GreenSites() const
-    {
-        return GreenSites_;
-    };
-    std::vector<std::vector<std::pair<size_t, size_t>>> const equivalentSites() const
-    {
-        return equivalentSites_;
-    };
-    std::vector<size_t> const nOfAssociatedSites() const
-    {
-        return nOfAssociatedSites_;
-    };
-    std::vector<size_t> const fillingSites() const
-    {
-        return fillingSites_;
-    };
-    std::vector<size_t> const fillingSitesIndex() const
-    {
-        return fillingSitesIndex_;
-    };
-    std::vector<size_t> const downEquivalentSites() const
-    {
-        return downEquivalentSites_;
-    };
+    // Getters
+    std::vector<std::pair<size_t, size_t>> const indepSites() const { return indepSites_; };
+    std::vector<std::vector<std::pair<size_t, size_t>>> const GreenSites() const { return GreenSites_; };
+    std::vector<std::vector<std::pair<size_t, size_t>>> const equivalentSites() const { return equivalentSites_; };
+    std::vector<size_t> const nOfAssociatedSites() const { return nOfAssociatedSites_; };
+    std::vector<size_t> const fillingSites() const { return fillingSites_; };
+    std::vector<size_t> const fillingSitesIndex() const { return fillingSitesIndex_; };
+    std::vector<size_t> const downEquivalentSites() const { return downEquivalentSites_; };
 
   protected:
     std::vector<std::pair<size_t, size_t>> indepSites_;
     std::vector<std::vector<std::pair<size_t, size_t>>> GreenSites_;
-    std::vector<std::vector<std::pair<size_t, size_t>>> equivalentSites_; // for example for square lattice equivalentsites.at(0) = {{0.0}, {1,1} , {2,2}, {3,3}}
+    std::vector<std::vector<std::pair<size_t, size_t>>>
+        equivalentSites_; // for example for square lattice equivalentsites.at(0) = {{0.0}, {1,1} , {2,2}, {3,3}}
     std::vector<size_t> nOfAssociatedSites_;
     std::vector<size_t> fullSiteToIndepSite_;
     std::vector<size_t> fillingSites_;
-    std::vector<size_t> fillingSitesIndex_; //the indexes of the fillingsites in the indepSites_
+    std::vector<size_t> fillingSitesIndex_; // the indexes of the fillingsites in the indepSites_
     std::vector<size_t> downEquivalentSites_;
 };
 

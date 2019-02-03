@@ -7,48 +7,49 @@ namespace LinAlg
 
 extern "C"
 {
-    //Vector-vector and vector-matrix operations
-    unsigned int dger_(unsigned int const *, unsigned int const *, double const *, double const *, unsigned int const *, double const *, unsigned int const *, double *, unsigned int const *);
+    // Vector-vector and vector-matrix operations
+    unsigned int dger_(unsigned int const *, unsigned int const *, double const *, double const *, unsigned int const *, double const *,
+                       unsigned int const *, double *, unsigned int const *);
     double ddot_(unsigned int const *, double const *, unsigned int const *, double const *, unsigned int const *);
     double _Complex zdotu_(unsigned int const *, cd_t const *, unsigned int const *, cd_t const *, unsigned int const *);
-    unsigned int dgemv_(char const *, unsigned int const *, unsigned int const *, double const *, double const *, unsigned int const *, double const *, unsigned int const *, double const *, double *, unsigned int const *);
-    unsigned int zgemv_(char const *, unsigned int const *, unsigned int const *, cd_t const *, cd_t const *, unsigned int const *, cd_t const *, unsigned int const *, cd_t const *, cd_t *, unsigned int const *);
+    unsigned int dgemv_(char const *, unsigned int const *, unsigned int const *, double const *, double const *, unsigned int const *,
+                        double const *, unsigned int const *, double const *, double *, unsigned int const *);
+    unsigned int zgemv_(char const *, unsigned int const *, unsigned int const *, cd_t const *, cd_t const *, unsigned int const *,
+                        cd_t const *, unsigned int const *, cd_t const *, cd_t *, unsigned int const *);
     unsigned int dcopy_(unsigned int const *, double const *, unsigned int const *, double *, unsigned int const *);
     unsigned int dscal_(unsigned int const *, double const *, double *, unsigned int const *);
 
-    //Matrix operations
-    unsigned int dlacpy_(char const *, unsigned int const *, unsigned int const *, double const *, unsigned int const *, double *, unsigned int const *);
-    unsigned int slacpy_(char const *, unsigned int const *, unsigned int const *, double const *, unsigned int const *, double *, unsigned int const *);
-    unsigned int dlaset_(char const *, unsigned int const *, unsigned int const *, double const *, double const *, double *, unsigned int const *);
-    unsigned int dgemm_(char const *, char const *, unsigned int const *, unsigned int const *, unsigned int const *,
-                        double const *, double const *, unsigned int const *, double const *,
-                        unsigned int const *, double const *, double *, unsigned int const *);
+    // Matrix operations
+    unsigned int dlacpy_(char const *, unsigned int const *, unsigned int const *, double const *, unsigned int const *, double *,
+                         unsigned int const *);
+    unsigned int slacpy_(char const *, unsigned int const *, unsigned int const *, double const *, unsigned int const *, double *,
+                         unsigned int const *);
+    unsigned int dlaset_(char const *, unsigned int const *, unsigned int const *, double const *, double const *, double *,
+                         unsigned int const *);
+    unsigned int dgemm_(char const *, char const *, unsigned int const *, unsigned int const *, unsigned int const *, double const *,
+                        double const *, unsigned int const *, double const *, unsigned int const *, double const *, double *,
+                        unsigned int const *);
 
     unsigned int dtrtrs_(char const *, char const *, char const *, unsigned int const *, unsigned int const *, double const *,
                          unsigned int const *, double *, unsigned int const *, unsigned int const *);
 
-    unsigned int dtrsm_(char const *, char const *, char const *, char const *, unsigned int const *, unsigned int const *,
-                        double const *, double const *, unsigned int const *, double *, unsigned int const *);
+    unsigned int dtrsm_(char const *, char const *, char const *, char const *, unsigned int const *, unsigned int const *, double const *,
+                        double const *, unsigned int const *, double *, unsigned int const *);
 
-    unsigned int dtrtri_(char const *, char const *, unsigned int const *, double *,
-                         unsigned int const *, unsigned int const *);
-    void dgesv_(const unsigned int *, const unsigned int *, double *, const unsigned int *, unsigned int *, double *, const unsigned int *, int *);
+    unsigned int dtrtri_(char const *, char const *, unsigned int const *, double *, unsigned int const *, unsigned int const *);
+    void dgesv_(const unsigned int *, const unsigned int *, double *, const unsigned int *, unsigned int *, double *, const unsigned int *,
+                int *);
 }
 
-template <typename T>
-class Matrix
+template <typename T> class Matrix
 {
   public:
     static const size_t INIT_SIZE;
 
     Matrix() : n_rows_(0), n_cols_(0), mat_(INIT_SIZE, INIT_SIZE){};
-    Matrix(const size_t &n_rows, const size_t &n_cols) : n_rows_(n_rows), n_cols_(n_cols), mat_(n_rows, n_cols)
-    {
-    }
+    Matrix(const size_t &n_rows, const size_t &n_cols) : n_rows_(n_rows), n_cols_(n_cols), mat_(n_rows, n_cols) {}
 
-    Matrix(const arma::Mat<T> &m1) : n_rows_(m1.n_rows), n_cols_(m1.n_cols), mat_(m1)
-    {
-    }
+    Matrix(const arma::Mat<T> &m1) : n_rows_(m1.n_rows), n_cols_(m1.n_cols), mat_(m1) {}
 
     Matrix(const Matrix<T> &m1) = default;
 
@@ -58,10 +59,7 @@ class Matrix
 
     Matrix(std::initializer_list<std::initializer_list<T>> initListofLists) : Matrix(arma::Mat<T>(initListofLists)) {}
 
-    static Matrix<T> DiagMat(const arma::Col<T> &v1)
-    {
-        return Matrix<T>(arma::diagmat(v1));
-    }
+    static Matrix<T> DiagMat(const arma::Col<T> &v1) { return Matrix<T>(arma::diagmat(v1)); }
 
     static Matrix<T> DiagMat(const size_t &size, const T &value)
     {
@@ -92,37 +90,17 @@ class Matrix
         return mat_(i, j);
     }
 
-    inline size_t n_rows() const
-    {
-        return n_rows_;
-    }
+    inline size_t n_rows() const { return n_rows_; }
 
-    inline size_t n_cols() const
-    {
-        return n_cols_;
-    }
+    inline size_t n_cols() const { return n_cols_; }
 
-    arma::Mat<T> mat() const
-    {
-        return mat_;
-    }
+    arma::Mat<T> mat() const { return mat_; }
 
-    inline size_t mem_n_rows() const
-    {
+    inline size_t mem_n_rows() const { return mat_.n_rows; }
 
-        return mat_.n_rows;
-    }
+    inline size_t mem_n_cols() const { return mat_.n_cols; }
 
-    inline size_t mem_n_cols() const
-    {
-
-        return mat_.n_cols;
-    }
-
-    T *memptr()
-    {
-        return mat_.memptr();
-    }
+    T *memptr() { return mat_.memptr(); }
 
     const T *memptr() const
     {
@@ -135,7 +113,7 @@ class Matrix
 
         if (n_rows > mem_n_rows() || n_cols > mem_n_cols())
         {
-            //Resize by ~20 % test this
+            // Resize by ~20 % test this
             mat_.resize(1.20 * (n_rows + 1), 1.20 * (n_cols + 1));
         }
 
@@ -148,7 +126,7 @@ class Matrix
 
         if (n_rows > mem_n_rows() || n_cols > mem_n_cols())
         {
-            //Resize by ~20 % test this
+            // Resize by ~20 % test this
             mat_.set_size(1.20 * (n_rows + 1), 1.20 * (n_cols + 1));
         }
 
@@ -170,28 +148,28 @@ class Matrix
     void SwapRows(const size_t &r1, const size_t &r2)
     {
         AssertSizes(r1, r2);
-        //Change this to use dswap_ of blas, not a priority
+        // Change this to use dswap_ of blas, not a priority
         mat_.swap_rows(r1, r2);
     }
 
     void SwapCols(const size_t &c1, const size_t &c2)
     {
         AssertSizes(c1, c2);
-        //Change this to use dswap_ of blas, not a priority
+        // Change this to use dswap_ of blas, not a priority
         mat_.swap_cols(c1, c2);
     }
 
     void SwapRowsAndCols(const size_t &c1, const size_t &c2)
     {
         AssertSizes(c1, c2);
-        //Change this to use dswap_ of blas, not a priority
+        // Change this to use dswap_ of blas, not a priority
         mat_.swap_cols(c1, c2);
         mat_.swap_rows(c1, c2);
     }
 
     void SwapToEnd(const size_t &pp)
     {
-        //Insert the row and col at index pp to the end of the matrix
+        // Insert the row and col at index pp to the end of the matrix
         AssertSizes(pp, pp);
 
         for (size_t ii = pp; ii < n_rows() - 1; ii++)
@@ -204,20 +182,11 @@ class Matrix
         }
     }
 
-    void Zeros()
-    {
-        mat_.zeros();
-    }
+    void Zeros() { mat_.zeros(); }
 
-    void Ones()
-    {
-        mat_.ones();
-    }
+    void Ones() { mat_.ones(); }
 
-    void Eye()
-    {
-        mat_.eye();
-    }
+    void Eye() { mat_.eye(); }
 
     void Clear(const size_t &n_rows = 0, const size_t &n_cols = 0)
     {
@@ -236,14 +205,11 @@ class Matrix
         dummy.n_rows_ = tmp_row;
     }
 
-    void MultCol(const size_t &j, const double &val)
-    {
-        mat_.col(j) *= val;
-    }
+    void MultCol(const size_t &j, const double &val) { mat_.col(j) *= val; }
 
     void SubMat(const size_t &r1, const size_t &c1, const size_t &r2, const size_t c2, Matrix<T> mIn)
     {
-        //copy all of the matrix  mIn to the current matrix
+        // copy all of the matrix  mIn to the current matrix
         mIn.mat_.resize(mIn.n_rows_, mIn.n_cols_);
         mat_.submat(r1, c1, r2, c2) = mIn.mat_;
     }
@@ -265,9 +231,8 @@ class Matrix
         n_rows_--;
         n_cols_--;
     }
-    //addition d'une matrice
-    template <typename S>
-    Matrix<T> &operator+=(const Matrix<S> &A)
+    // addition d'une matrice
+    template <typename S> Matrix<T> &operator+=(const Matrix<S> &A)
     {
         assert(A.n_rows() == n_rows() && A.n_cols() == n_cols());
 
@@ -281,15 +246,14 @@ class Matrix
         return *this;
     }
 
-    //soustraction d'une matrice
-    template <typename S>
-    Matrix<T> &operator-=(const Matrix<S> &A)
+    // soustraction d'une matrice
+    template <typename S> Matrix<T> &operator-=(const Matrix<S> &A)
     {
         mat_ -= A.mat_;
         return *this;
     }
 
-    //multiplication par un scalaire
+    // multiplication par un scalaire
     inline Matrix<T> operator*=(const T &a)
     {
         mat_ *= a;
@@ -309,10 +273,7 @@ class Matrix
     //     tmp.save(fname, arma::raw_ascii);
     // }
 
-    void Print() const
-    {
-        mat_.print();
-    }
+    void Print() const { mat_.print(); }
 
     void Inverse();
 
@@ -329,58 +290,51 @@ class Matrix
     }
 
   private:
-    size_t n_rows_; //the real size of the matrix
+    size_t n_rows_; // the real size of the matrix
     size_t n_cols_;
     arma::Mat<T> mat_; // a matrix bigger than neccessary
 };
 
-template <typename T>
-const size_t Matrix<T>::INIT_SIZE = 16;
+template <typename T> const size_t Matrix<T>::INIT_SIZE = 16;
 
-template <>
-Matrix<cd_t>::Matrix(const arma::Mat<double> &m1, const arma::Mat<double> &m2)
+template <> Matrix<cd_t>::Matrix(const arma::Mat<double> &m1, const arma::Mat<double> &m2)
 {
     n_rows_ = m1.n_rows;
     n_cols_ = m1.n_cols;
     mat_ = arma::Mat<cd_t>(m1, m2);
 }
 // addition(opérateur binaire)
-template <typename T>
-inline Matrix<T> operator+(const Matrix<T> &x, const Matrix<T> &y)
+template <typename T> inline Matrix<T> operator+(const Matrix<T> &x, const Matrix<T> &y)
 {
     Matrix<T> tmp(x);
     tmp += y;
     return tmp;
 }
 
-//soustraction (opérateur binaire)
-template <typename T>
-inline Matrix<T> operator-(const Matrix<T> &x, const Matrix<T> &y)
+// soustraction (opérateur binaire)
+template <typename T> inline Matrix<T> operator-(const Matrix<T> &x, const Matrix<T> &y)
 {
     Matrix<T> tmp(x);
     tmp -= y;
     return tmp;
 }
 
-//multiplication par un scalaire (opérateur binaire)
-template <typename T>
-inline Matrix<T> operator*(const Matrix<T> &x, const T &a)
+// multiplication par un scalaire (opérateur binaire)
+template <typename T> inline Matrix<T> operator*(const Matrix<T> &x, const T &a)
 {
     Matrix<T> tmp(x);
     tmp *= a;
     return tmp;
 }
 
-template <typename T>
-inline Matrix<T> operator*(const T &a, const Matrix<T> &x)
+template <typename T> inline Matrix<T> operator*(const T &a, const Matrix<T> &x)
 {
     Matrix<T> tmp(x);
     tmp *= a;
     return tmp;
 }
 
-template <>
-void Matrix<double>::CopyVectorInCol(arma::Col<double> &col, const size_t &p)
+template <> void Matrix<double>::CopyVectorInCol(arma::Col<double> &col, const size_t &p)
 {
     assert(col.n_elem == n_rows_);
     assert(p < n_cols_);
@@ -391,8 +345,7 @@ void Matrix<double>::CopyVectorInCol(arma::Col<double> &col, const size_t &p)
     dcopy_(&k, &(col.memptr()[0]), &inc, &(memptr()[mem_k * p]), &inc);
 }
 
-template <>
-void Matrix<double>::CopyVectorInRow(arma::Col<double> &row, const size_t &p)
+template <> void Matrix<double>::CopyVectorInRow(arma::Col<double> &row, const size_t &p)
 {
     assert(row.n_elem == n_cols_);
     assert(p < n_rows_);
@@ -403,8 +356,7 @@ void Matrix<double>::CopyVectorInRow(arma::Col<double> &row, const size_t &p)
     dcopy_(&k, &(row.memptr()[0]), &inc, &(memptr()[p]), &mem_k);
 }
 
-template <>
-void Matrix<double>::Inverse()
+template <> void Matrix<double>::Inverse()
 {
     assert(n_rows_ == n_cols_);
     Matrix<double> tmp(*this);
@@ -421,4 +373,4 @@ void Matrix<double>::Inverse()
     // return *this;
 }
 
-} //namespace LinAlg
+} // namespace LinAlg

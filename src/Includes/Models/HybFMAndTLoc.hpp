@@ -18,7 +18,7 @@ class HybFMAndTLoc
         Logging::Debug("Start of CalculateHybFMAndTLoc: This should only be for DCA ! ");
 
         Conventions::MapSS_t mapNames = Conventions::BuildFileNameConventions();
-        const std::string tlocFName = mapNames.at("tlocFile"); //tloc File Name
+        const std::string tlocFName = mapNames.at("tlocFile"); // tloc File Name
         const std::string hybFMFName = mapNames.at("hybFMFile");
 
         using boost::filesystem::exists;
@@ -32,13 +32,13 @@ class HybFMAndTLoc
             }
         }
 
-        //Get TLoc = Int[t(ktilde)]
+        // Get TLoc = Int[t(ktilde)]
         Logging::Warn("Calculating tLoc");
 
         TKTildeK tktildeK(h0);
         const ClusterMatrixCD_t tlocK = Integrator::CubatureKTildeDCA(tktildeK);
 
-        //Get Int[ t(ktilde)^2 ]
+        // Get Int[ t(ktilde)^2 ]
         Logging::Warn("Calculating hybFM");
         TKTildeSquaredK tktildesquaredK(h0);
         const ClusterMatrixCD_t tktildeSquaredKIntegrated = Integrator::CubatureKTildeDCA(tktildesquaredK);
@@ -63,7 +63,7 @@ class HybFMAndTLoc
         const size_t Nz;
         const size_t Nc;
 
-        ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) //return t(ktilde)^2
+        ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) // return t(ktilde)^2
         {
             return (FourierDCA::RtoK(h0_(kTildeX, kTildeY, kTildeZ), h0_.RSites(), h0_.KWaveVectors()));
         }
@@ -82,7 +82,7 @@ class HybFMAndTLoc
         const size_t Nz;
         const size_t Nc;
 
-        ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) //return t(ktilde)^2
+        ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) // return t(ktilde)^2
         {
             const ClusterMatrixCD_t tmp = h0_(kTildeX, kTildeY, kTildeZ);
             return (FourierDCA::RtoK(tmp * tmp, h0_.RSites(), h0_.KWaveVectors()));

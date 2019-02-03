@@ -4,7 +4,8 @@
 namespace Fourier
 {
 
-double MatToTau(const SiteVectorCD_t &greenMat, const double &tau, const double &beta) //Only for a "scalar green function, not a cluster green"
+double MatToTau(const SiteVectorCD_t &greenMat, const double &tau,
+                const double &beta) // Only for a "scalar green function, not a cluster green"
 {
     double greenTau = 0.0;
 
@@ -17,17 +18,18 @@ double MatToTau(const SiteVectorCD_t &greenMat, const double &tau, const double 
     return (2.0 * greenTau / beta);
 }
 
-double MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double &beta, const double &fm, const double &sm, const double &tm)
+double MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double &beta, const double &fm, const double &sm,
+                        const double &tm)
 {
 
     double result = 0.0;
 
-    //result+= les moments en tau calculés analytiquement
+    // result+= les moments en tau calculés analytiquement
     result += -0.5 * fm;
     result += (tau / 2.0 - beta / 4.0) * sm;
     result += -1.0 / 4.0 * (tau * (tau - beta)) * tm;
 
-    //On transforme la greenMat moins ses moments
+    // On transforme la greenMat moins ses moments
     for (size_t n = 0; n < greenMat.n_elem; n++)
     {
         const cd_t iwn(0.0, (2.0 * n + 1.0) * M_PI / beta);
@@ -47,12 +49,12 @@ ClusterMatrix_t MatToTauCluster(const GreenMat::GreenCluster0Mat &greenCluster0M
     ClusterMatrixCD_t result(dataMat.n_rows, dataMat.n_cols);
     result.zeros();
 
-    //result+= les moments en tau calculés analytiquement
+    // result+= les moments en tau calculés analytiquement
     result += -0.5 * greenCluster0Mat.fm();
     result += (tau / 2.0 - beta / 4.0) * greenCluster0Mat.sm();
     result += -1.0 / 4.0 * (tau * (tau - beta)) * greenCluster0Mat.tm();
 
-    //On transforme la greenMat moins ses moments
+    // On transforme la greenMat moins ses moments
     for (size_t n = 0; n < dataMat.n_slices; n++)
     {
         cd_t wn(0.0, (2.0 * n + 1.0) * M_PI / beta);

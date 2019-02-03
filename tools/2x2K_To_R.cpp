@@ -13,12 +13,12 @@
 #include <string>
 #include <ccomplex>
 
-//External Libraries
+// External Libraries
 #include <armadillo>
 #include "../src/Includes/Utilities/TransformSquare2x2.hpp"
 #include "../src/Includes/Utilities/IO.hpp"
 
-//Inspired by Patrick Sémon
+// Inspired by Patrick Sémon
 
 using SiteVectorCD_t = arma::cx_vec;
 using SiteRowCD_t = arma::cx_rowvec;
@@ -46,12 +46,12 @@ int main(int argc, char **argv)
     const double BETA = atof(argv[2]);
     std::cout << "BETA = " << BETA << std::endl;
     std::cout << "fname = " << fname_hyb << std::endl;
-    //0.) Read Patricks hyb.dat
+    // 0.) Read Patricks hyb.dat
     ClusterMatrix_t hybDatIrr;
     hybDatIrr.load(fname_hyb);
-    hybDatIrr.shed_col(0); //we dont want the matsubara frequencies;
+    hybDatIrr.shed_col(0); // we dont want the matsubara frequencies;
 
-    //1.) Convert it to ClusterCube
+    // 1.) Convert it to ClusterCube
     const size_t Nc = 4;
     ClusterCubeCD_t hybIrr(Nc, Nc, hybDatIrr.n_rows);
     hybIrr.zeros();
@@ -61,20 +61,20 @@ int main(int argc, char **argv)
         tmp.zeros();
         tmp(0, 0) = std::complex<double>(hybDatIrr(i, 0), hybDatIrr(i, 1));
         tmp(1, 1) = std::complex<double>(hybDatIrr(i, 2), hybDatIrr(i, 3));
-        tmp(3, 3) = tmp(1, 1); //std::complex<double>(hybDatIrr(i, 2), hybDatIrr(i, 3));
+        tmp(3, 3) = tmp(1, 1); // std::complex<double>(hybDatIrr(i, 2), hybDatIrr(i, 3));
         tmp(2, 2) = std::complex<double>(hybDatIrr(i, 4), hybDatIrr(i, 5));
         hybIrr.slice(i) = tmp;
     }
 
-    //2.)Convert it to hybReal;
+    // 2.)Convert it to hybReal;
     TransformSquare2x2::Transform transform;
     ClusterCubeCD_t hybReal = transform.KtoR(hybIrr);
 
-    //3.)convert it to .arma - CD matrix
+    // 3.)convert it to .arma - CD matrix
     using IOModel_t = IO::IOSquare2x2;
     IOModel_t ioModel;
 
-    //the file hybCD-out.arma is ok, but not the hybCD-out.dat, which is garbage.
+    // the file hybCD-out.arma is ok, but not the hybCD-out.dat, which is garbage.
     ioModel.SaveCube("2x2K_to_R_converted", hybReal, BETA, 10, true);
 
     return 0;

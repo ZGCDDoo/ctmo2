@@ -17,8 +17,8 @@ using Model_t = Models::ABC_Model_2D;
 ClusterCubeCD_t BuildGreenImpurity()
 {
 
-    //Green impurity given by gimp = inverse(iwn + mu - hyb - self)
-    //hyb = fm/iwn ; self given by
+    // Green impurity given by gimp = inverse(iwn + mu - hyb - self)
+    // hyb = fm/iwn ; self given by
     ClusterCubeCD_t greenImpurity(1, 1, NMAT);
     ClusterCubeCD_t hybMat(1, 1, NMAT);
     hybMat.zeros();
@@ -30,7 +30,7 @@ ClusterCubeCD_t BuildGreenImpurity()
         greenImpurity(0, 0, n) = 1.0 / (iwn + MU - hybMat(0, 0, n) - (hartree + fock / iwn));
     }
 
-    //hybMat.save(FNAME_HYB, arma::raw_ascii);
+    // hybMat.save(FNAME_HYB, arma::raw_ascii);
     return greenImpurity;
 }
 
@@ -46,7 +46,7 @@ TEST(SelfConsistencyTests, SelfConsistency)
     std::cout << "before greenImpurity" << std::endl;
     ClusterCubeCD_t greenImpurity = BuildGreenImpurity();
     Model_t model(jj);
-    //Build The dummy nmatrixSigma
+    // Build The dummy nmatrixSigma
     ClusterMatrix_t nSigma(1, 1);
     nSigma.zeros();
     nSigma.save("nUpMatrix.dat");

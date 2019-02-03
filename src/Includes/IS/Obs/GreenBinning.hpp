@@ -17,13 +17,10 @@ class GreenBinning
 {
 
   public:
-    GreenBinning(const std::shared_ptr<ISDataCT> &dataCT,
-                 const Json &jjSim, const FermionSpin_t &spin) : dataCT_(dataCT),
-                                                                 modelPtr_(dataCT_->modelPtr_),
-                                                                 ioModelPtr_(modelPtr_->ioModelPtr()),
-                                                                 NMat_(0.5 * (jjSim["solver"]["eCutGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0)),
-                                                                 spin_(spin),
-                                                                 NOrb_(jjSim["model"]["nOrb"].get<size_t>())
+    GreenBinning(const std::shared_ptr<ISDataCT> &dataCT, const Json &jjSim, const FermionSpin_t &spin)
+        : dataCT_(dataCT), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
+          NMat_(0.5 * (jjSim["solver"]["eCutGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0)), spin_(spin),
+          NOrb_(jjSim["model"]["nOrb"].get<size_t>())
     {
 
         const size_t LL = ioModelPtr_->GetNIndepSuperSites(NOrb_);
@@ -56,12 +53,15 @@ class GreenBinning
             {
                 for (size_t p2 = 0; p2 < kkSpin; ++p2)
                 {
-                    const SuperSite_t s1 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).superSite() : dataCT_->vertices_.atDown(p1).superSite();
-                    const SuperSite_t s2 = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p2).superSite() : dataCT_->vertices_.atDown(p2).superSite();
+                    const SuperSite_t s1 =
+                        (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).superSite() : dataCT_->vertices_.atDown(p1).superSite();
+                    const SuperSite_t s2 =
+                        (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p2).superSite() : dataCT_->vertices_.atDown(p2).superSite();
                     const size_t ll = ioModelPtr_->FindIndepSuperSiteIndex(s1, s2, NOrb_);
                     double temp = static_cast<double>(dataCT_->sign_) * Mmat(p1, p2);
 
-                    double tau = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau() : dataCT_->vertices_.atDown(p1).tau() - dataCT_->vertices_.atDown(p2).tau();
+                    double tau = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(p1).tau() - dataCT_->vertices_.atUp(p2).tau()
+                                                              : dataCT_->vertices_.atDown(p1).tau() - dataCT_->vertices_.atDown(p2).tau();
                     if (tau < 0.0)
                     {
                         temp *= -1.0;
@@ -89,7 +89,8 @@ class GreenBinning
 
         const double dTau = dataCT_->beta_ / N_BIN_TAU;
         SiteVectorCD_t indep_M_matsubara_sampled(ioModelPtr_->GetNIndepSuperSites(NOrb_));
-        const ClusterCubeCD_t green0CubeMatsubara = spin_ == FermionSpin_t::Up ? modelPtr_->greenCluster0MatUp().data() : modelPtr_->greenCluster0MatDown().data();
+        const ClusterCubeCD_t green0CubeMatsubara =
+            spin_ == FermionSpin_t::Up ? modelPtr_->greenCluster0MatUp().data() : modelPtr_->greenCluster0MatDown().data();
         ClusterCubeCD_t greenCube(NOrb_ * ioModelPtr_->Nc, NOrb_ * ioModelPtr_->Nc, NMat_);
         greenCube.zeros();
 
@@ -98,14 +99,16 @@ class GreenBinning
             const double omega_n = M_PI * (2.0 * n + 1.0) / dataCT_->beta_;
             const cd_t iomega_n(0.0, omega_n);
             const cd_t fact = std::exp(iomega_n * dTau);
-            const double lambda = 2.0 * std::sin(omega_n * dTau / 2.0) / (dTau * omega_n * (1.0 - omega_n * omega_n * dTau * dTau / 24.0) * NMeas);
+            const double lambda =
+                2.0 * std::sin(omega_n * dTau / 2.0) / (dTau * omega_n * (1.0 - omega_n * omega_n * dTau * dTau / 24.0) * NMeas);
 
             for (size_t ll = 0; ll < ioModelPtr_->GetNIndepSuperSites(NOrb_); ++ll)
             {
                 cd_t temp_matsubara = 0.0;
 
-                const size_t llSite = ll % ioModelPtr_->indepSites().size();                                                             // ll / ioModelPtr_->indepSites().size();
-                cd_t exp_factor = std::exp(iomega_n * dTau / 2.0) / (static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(llSite))); //watch out important factor!
+                const size_t llSite = ll % ioModelPtr_->indepSites().size(); // ll / ioModelPtr_->indepSites().size();
+                cd_t exp_factor = std::exp(iomega_n * dTau / 2.0) /
+                                  (static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(llSite))); // watch out important factor!
                 for (size_t ii = 0; ii < N_BIN_TAU; ii++)
                 {
                     cd_t coeff = lambda * exp_factor;
@@ -125,10 +128,10 @@ class GreenBinning
             greenCube.slice(n) = green0 - green0 * dummy1 * green0 / (dataCT_->beta_ * signMeas);
         }
 
-        greenCube_ = greenCube; //in case it is needed later on
+        greenCube_ = greenCube; // in case it is needed later on
 
         Logging::Debug("End of GreenBinning.FinalizeGreenBinning()");
-        return greenCube; //the  measured interacting green function
+        return greenCube; // the  measured interacting green function
     }
 
   private:

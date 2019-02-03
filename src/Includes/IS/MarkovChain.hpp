@@ -45,20 +45,11 @@ class MarkovChain : public ABC_MarkovChain
     }
 
 #else
-    double FAux(const VertexPart &vp) const override
-    {
-        return (auxH_.FAux(vp));
-    }
+    double FAux(const VertexPart &vp) const override { return (auxH_.FAux(vp)); }
 
-    double FAuxBar(const VertexPart &vp) const override
-    {
-        return (auxH_.FAuxBar(vp));
-    }
+    double FAuxBar(const VertexPart &vp) const override { return (auxH_.FAuxBar(vp)); }
 
-    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const override
-    {
-        return auxH_.gamma(vpI, vpJ);
-    }
+    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const override { return auxH_.gamma(vpI, vpJ); }
 
 #endif
 

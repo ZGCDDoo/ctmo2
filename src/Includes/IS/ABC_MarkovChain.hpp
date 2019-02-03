@@ -55,23 +55,13 @@ class ABC_MarkovChain
     const double PROBINSERT = 0.3333333333;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
-    ABC_MarkovChain(const Json &jj, const size_t &seed) : modelPtr_(new Model_t(jj)),
-                                                          rng_(seed),
-                                                          urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
-                                                          nfdata_(),
-                                                          upddata_(),
-                                                          dataCT_(
-                                                              new Obs::ISDataCT(
-                                                                  jj,
-                                                                  modelPtr_)),
-                                                          obs_(dataCT_, jj),
-                                                          vertexBuilder_(jj, modelPtr_->Nc()),
+    ABC_MarkovChain(const Json &jj, const size_t &seed)
+        : modelPtr_(new Model_t(jj)), rng_(seed), urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)), nfdata_(), upddata_(),
+          dataCT_(new Obs::ISDataCT(jj, modelPtr_)), obs_(dataCT_, jj), vertexBuilder_(jj, modelPtr_->Nc()),
 #ifdef SLMC
-                                                          configParser_(),
+          configParser_(),
 #endif
-                                                          updsamespin_(0),
-                                                          isOneOrbitalOptimized_(
-                                                              jj["solver"]["isOneOrbitalOptimized"].get<bool>())
+          updsamespin_(0), isOneOrbitalOptimized_(jj["solver"]["isOneOrbitalOptimized"].get<bool>())
     {
         const std::valarray<size_t> zeroPair = {0, 0};
         updStats_["Inserts"] = zeroPair;
@@ -88,37 +78,22 @@ class ABC_MarkovChain
 
     virtual ~ABC_MarkovChain() = default;
 
-    //Getters
-    Model_t model() const
-    {
-        return (*modelPtr_);
-    };
+    // Getters
+    Model_t model() const { return (*modelPtr_); };
 
-    Matrix_t Nup() const
-    {
-        return nfdata_.Nup_;
-    };
+    Matrix_t Nup() const { return nfdata_.Nup_; };
 
-    Matrix_t Ndown() const
-    {
-        return nfdata_.Ndown_;
-    };
+    Matrix_t Ndown() const { return nfdata_.Ndown_; };
 
-    size_t updatesProposed() const
-    {
-        return updatesProposed_;
-    }
+    size_t updatesProposed() const { return updatesProposed_; }
 
-    double beta() const
-    {
-        return dataCT_->beta_;
-    };
+    double beta() const { return dataCT_->beta_; };
 
     virtual double FAux(const VertexPart &vPart) const = 0;
 
     virtual double FAuxBar(const VertexPart &vPart) const = 0;
 
-    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const = 0; //little gamma
+    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const = 0; // little gamma
 
     void DoStep()
     {
@@ -266,8 +241,7 @@ class ABC_MarkovChain
 
                 for (size_t iUp = 0; iUp < dataCT_->vertices_.NUp(); iUp++)
                 {
-                    upddata_.newLastRowUp_(iUp) =
-                        GetGreenTau0(x, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
+                    upddata_.newLastRowUp_(iUp) = GetGreenTau0(x, dataCT_->vertices_.atUp(iUp)) * (nfdata_.FVup_(iUp) - 1.0);
                     newLastColUp_(iUp) = GetGreenTau0(dataCT_->vertices_.atUp(iUp), x) * fauxM1;
                 }
                 MatrixVectorMult(nfdata_.Nup_, newLastColUp_, 1.0, upddata_.NQUp_);
@@ -287,8 +261,7 @@ class ABC_MarkovChain
 
                 for (size_t iDown = 0; iDown < dataCT_->vertices_.NDown(); iDown++)
                 {
-                    upddata_.newLastRowDown_(iDown) =
-                        GetGreenTau0(x, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
+                    upddata_.newLastRowDown_(iDown) = GetGreenTau0(x, dataCT_->vertices_.atDown(iDown)) * (nfdata_.FVdown_(iDown) - 1.0);
                     newLastColDown_(iDown) = GetGreenTau0(dataCT_->vertices_.atDown(iDown), x) * fauxM1;
                 }
 
@@ -314,9 +287,7 @@ class ABC_MarkovChain
         CalculateUpdDataInsertDiffSpin(vertexPartDown);
 
         const double ratio = upddata_.sTildeUpI_ * upddata_.sTildeDownI_;
-        const double ratioAcc =
-            PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) *
-            ratio;
+        const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / static_cast<size_t>(dataCT_->vertices_.size() + 1) * ratio;
 
         if (urng_() < std::abs(ratioAcc))
         {
@@ -330,8 +301,7 @@ class ABC_MarkovChain
 
             if (nfdata_.Nup_.n_rows())
             {
-                LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, upddata_.NQUp_, upddata_.newLastRowUp_,
-                                            1.0 / upddata_.sTildeUpI_);
+                LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, upddata_.NQUp_, upddata_.newLastRowUp_, 1.0 / upddata_.sTildeUpI_);
                 nfdata_.FVup_.resize(kknewUp);
                 nfdata_.FVup_(kkoldUp) = fauxup;
             }
@@ -345,8 +315,7 @@ class ABC_MarkovChain
 
             if (nfdata_.Ndown_.n_rows())
             {
-                LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, upddata_.NQDown_, upddata_.newLastRowDown_,
-                                            1.0 / upddata_.sTildeDownI_);
+                LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, upddata_.NQDown_, upddata_.newLastRowDown_, 1.0 / upddata_.sTildeDownI_);
                 nfdata_.FVdown_.resize(kknewDown);
                 nfdata_.FVdown_(kkoldDown) = fauxdown;
             }
@@ -398,8 +367,7 @@ class ABC_MarkovChain
             for (size_t i = 0; i < kkoldspin; i++)
             {
 
-                const VertexPart vPartI = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(i)
-                                                                          : dataCT_->vertices_.atDown(i);
+                const VertexPart vPartI = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.atUp(i) : dataCT_->vertices_.atDown(i);
                 const double fauxIm1 = FVspin(i) - 1.0; // Faux_i - 1.0
                 Q_(i, 0) = GetGreenTau0(vPartI, x) * fauxM1;
                 Q_(i, 1) = GetGreenTau0(vPartI, y) * fauxM1Bar;
@@ -410,18 +378,16 @@ class ABC_MarkovChain
                 R_(1, i) = GetGreenTau0(y, vPartI) * fauxIm1;
             }
 
-            Matrix_t NQ_(kkoldspin, 2); //NQ = N*Q
+            Matrix_t NQ_(kkoldspin, 2); // NQ = N*Q
             NQ_.Zeros();
             DGEMM(1.0, 0.0, Nspin, Q_, NQ_);
 
             Matrix_t sTilde(2, 2);
             DGEMM(-1.0, 0.0, R_, NQ_, sTilde);
-            sTilde += Matrix_t({{s00, s01},
-                                {s10, s11}});
+            sTilde += Matrix_t({{s00, s01}, {s10, s11}});
             sTilde.Inverse();
 
-            const double ratioAcc =
-                PROBREMOVE / PROBINSERT * vertex.probProb() / kknew * 1.0 / sTilde.Determinant();
+            const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() / kknew * 1.0 / sTilde.Determinant();
             if (urng_() < std::abs(ratioAcc))
             {
                 AssertSizes();
@@ -442,8 +408,7 @@ class ABC_MarkovChain
         }
         else
         {
-            Matrix_t sTilde = Matrix_t({{s00, s01},
-                                        {s10, s11}});
+            Matrix_t sTilde = Matrix_t({{s00, s01}, {s10, s11}});
             sTilde.Inverse();
             const double ratioAcc = PROBREMOVE / PROBINSERT * vertex.probProb() * 1.0 / sTilde.Determinant();
             if (urng_() < std::abs(ratioAcc))
@@ -514,9 +479,8 @@ class ABC_MarkovChain
             assert(std::abs(x.tau() - y.tau()) < 1e-14);
         }
 
-        const double ratioAcc =
-            PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() *
-            nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
+        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() *
+                                nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
 
         if (urng_() < std::abs(ratioAcc))
         {
@@ -526,7 +490,7 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            //The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
+            // The update matrices of size k-1 x k-1 with the pp row and col deleted and the last row and col now at index pp
 
             const size_t kkUp = dataCT_->vertices_.NUp();
             const size_t kkUpm1 = kkUp - 1;
@@ -573,15 +537,13 @@ class ABC_MarkovChain
         const size_t pp1Spin = dataCT_->vertices_.GetKeyIndex(vertexKey, x.spin());
         const size_t pp2Spin = dataCT_->vertices_.GetKeyIndex(vertexKey + 1, y.spin());
         const size_t kk = dataCT_->vertices_.size();
-        const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp()
-                                                              : dataCT_->vertices_.NDown();
+        const size_t kkSpin = (x.spin() == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
         const size_t kkSpinm1 = kkSpin - 1;
         const size_t kkSpinm2 = kkSpin - 2;
 
         const ClusterMatrix_t STildeInverse = {{Nspin(pp1Spin, pp1Spin), Nspin(pp1Spin, pp2Spin)},
                                                {Nspin(pp2Spin, pp1Spin), Nspin(pp2Spin, pp2Spin)}};
-        const double ratioAcc =
-            PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
+        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(kk) / vertex.probProb() * arma::det(STildeInverse);
 
         if (urng_() < std::abs(ratioAcc))
         {
@@ -628,8 +590,7 @@ class ABC_MarkovChain
                 {
 
                     nfdata_.Nup_(iUp, jUp) =
-                        GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) *
-                        (nfdata_.FVup_(jUp) - 1.0);
+                        GetGreenTau0(dataCT_->vertices_.atUp(iUp), dataCT_->vertices_.atUp(jUp)) * (nfdata_.FVup_(jUp) - 1.0);
 
                     if (iUp == jUp)
                     {
@@ -648,8 +609,7 @@ class ABC_MarkovChain
                 {
 
                     nfdata_.Ndown_(iDown, jDown) =
-                        GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) *
-                        (nfdata_.FVdown_(jDown) - 1.0);
+                        GetGreenTau0(dataCT_->vertices_.atDown(iDown), dataCT_->vertices_.atDown(jDown)) * (nfdata_.FVdown_(jDown) - 1.0);
 
                     if (iDown == jDown)
                     {
@@ -678,8 +638,7 @@ class ABC_MarkovChain
 #endif
     }
 
-    void
-    Measure()
+    void Measure()
     {
         AssertSizes();
 #ifdef SLMC
@@ -738,14 +697,13 @@ class ABC_MarkovChain
 
 #else
         updStatsVec.push_back(updStats_);
-        Logging::Info(
-            "\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
+        Logging::Info("\n\n Statistics Updates of " + updType + ":\n" + mpiUt::Tools::SaveUpdStats(updStatsVec) + "\n\n");
 
 #endif
     }
 
   protected:
-    //attributes
+    // attributes
     std::shared_ptr<Model_t> modelPtr_;
     Utilities::EngineTypeMt19937_t rng_;
     Utilities::UniformRngMt19937_t urng_;

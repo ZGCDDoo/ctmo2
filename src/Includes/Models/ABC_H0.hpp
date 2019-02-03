@@ -15,14 +15,9 @@ class ABC_H0
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
     explicit ABC_H0(const Json &jjSim)
-        : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()),
-          Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
-          Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()),
-          Nc(Nx * Ny * Nz),
-          RSites_(Nc),
-          KWaveVectors_(Nc),
-          NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
-          NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
+        : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()), Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
+          Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()), Nc(Nx * Ny * Nz), RSites_(Nc), KWaveVectors_(Nc),
+          NOrb_(jjSim["model"]["nOrb"].get<size_t>()), NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
 
     {
 
@@ -36,7 +31,9 @@ class ABC_H0
 
                     const size_t index = i + Nx * j + (Nx * Ny) * k;
                     RSites_.at(index) = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(k)};
-                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx), static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny), static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
+                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx),
+                                               static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny),
+                                               static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
                 }
             }
         }
@@ -45,9 +42,7 @@ class ABC_H0
         Logging::Debug("ABC_H0 Constructed. ");
     }
 
-    ~ABC_H0()
-    {
-    }
+    ~ABC_H0() {}
 
     std::vector<double> tIntraOrbitalVec() const { return tIntraOrbitalVec_; };
     std::vector<double> txVec() const { return txVec_; };
@@ -111,31 +106,27 @@ class ABC_H0
             // On site energy
             tIntraOrbitalVec_.at(NIndepOrbIndex) +
 
-            //First neighbor hopping
-            2.0 * txVec_.at(NIndepOrbIndex) * std::cos(kx) +
-            2.0 * tyVec_.at(NIndepOrbIndex) * std::cos(ky) +
+            // First neighbor hopping
+            2.0 * txVec_.at(NIndepOrbIndex) * std::cos(kx) + 2.0 * tyVec_.at(NIndepOrbIndex) * std::cos(ky) +
             2.0 * tzVec_.at(NIndepOrbIndex) * std::cos(kz) +
 
-            //Second neigbor hopping in diagonal
-            2.0 * txyVec_.at(NIndepOrbIndex) * std::cos(kx + ky) +
-            2.0 * tx_yVec_.at(NIndepOrbIndex) * std::cos(kx - ky) +
-            2.0 * txzVec_.at(NIndepOrbIndex) * std::cos(kx + kz) +
-            2.0 * tx_zVec_.at(NIndepOrbIndex) * std::cos(kx - kz) +
-            2.0 * tyzVec_.at(NIndepOrbIndex) * std::cos(ky + kz) +
-            2.0 * ty_zVec_.at(NIndepOrbIndex) * std::cos(ky - kz) +
+            // Second neigbor hopping in diagonal
+            2.0 * txyVec_.at(NIndepOrbIndex) * std::cos(kx + ky) + 2.0 * tx_yVec_.at(NIndepOrbIndex) * std::cos(kx - ky) +
+            2.0 * txzVec_.at(NIndepOrbIndex) * std::cos(kx + kz) + 2.0 * tx_zVec_.at(NIndepOrbIndex) * std::cos(kx - kz) +
+            2.0 * tyzVec_.at(NIndepOrbIndex) * std::cos(ky + kz) + 2.0 * ty_zVec_.at(NIndepOrbIndex) * std::cos(ky - kz) +
 
-            //second neighbor hopping in straight line
-            2.0 * t2xVec_.at(NIndepOrbIndex) * std::cos(2.0 * kx) +
-            2.0 * t2yVec_.at(NIndepOrbIndex) * std::cos(2.0 * ky) +
+            // second neighbor hopping in straight line
+            2.0 * t2xVec_.at(NIndepOrbIndex) * std::cos(2.0 * kx) + 2.0 * t2yVec_.at(NIndepOrbIndex) * std::cos(2.0 * ky) +
             2.0 * t2zVec_.at(NIndepOrbIndex) * std::cos(2.0 * kz) +
 
-            //Third neihbor hopping
-            2.0 * t3Vec_.at(NIndepOrbIndex) * (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
+            // Third neihbor hopping
+            2.0 * t3Vec_.at(NIndepOrbIndex) *
+                (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
 
         return eps0k;
     }
 
-    ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) //return t(ktilde)
+    ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) // return t(ktilde)
     {
 
         const cd_t im = cd_t(0.0, 1.0);
@@ -156,10 +147,14 @@ class ABC_H0
                         for (const SiteVector_t &K : this->KWaveVectors_)
                         {
 #ifdef DCA
-                            HoppingKTilde(i + o1 * Nc, j + o2 * Nc) += std::exp(im * dot(K, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY, K(2) + kTildeZ, NIndepOrbIndex);
+                            HoppingKTilde(i + o1 * Nc, j + o2 * Nc) +=
+                                std::exp(im * dot(K, RSites_.at(i) - RSites_[j])) *
+                                Eps0k(K(0) + kTildeX, K(1) + kTildeY, K(2) + kTildeZ, NIndepOrbIndex);
 
 #else
-                            HoppingKTilde(i + o1 * Nc, j + o2 * Nc) += std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) * Eps0k(K(0) + kTildeX, K(1) + kTildeY, K(2) + kTildeZ, NIndepOrbIndex);
+                            HoppingKTilde(i + o1 * Nc, j + o2 * Nc) +=
+                                std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) *
+                                Eps0k(K(0) + kTildeX, K(1) + kTildeY, K(2) + kTildeZ, NIndepOrbIndex);
 #endif
                         }
                     }
@@ -172,7 +167,7 @@ class ABC_H0
 
     void SaveTKTildeAndHybFM()
     {
-        //check if  file exists:
+        // check if  file exists:
         using boost::filesystem::exists;
         if ((exists("tktilde.arma") && exists("tloc.arma")) && exists("hybFM.arma"))
         {
@@ -217,7 +212,7 @@ class ABC_H0
         tLoc /= static_cast<double>(tKTildeGrid.n_slices);
         tLoc.save("tloc.arma", arma::arma_ascii);
 
-        //First moment of hyb
+        // First moment of hyb
         ClusterMatrixCD_t hybFM(NS, NS);
         hybFM.zeros();
 
@@ -248,7 +243,7 @@ class ABC_H0
         AwMatrix.zeros();
         AwMatrix.col(0) = wvec;
 
-        //ii is the index of a local SuperSite (for a 2x2 cluster with 2 Orbitals, then there are 8 supersites)
+        // ii is the index of a local SuperSite (for a 2x2 cluster with 2 Orbitals, then there are 8 supersites)
         for (size_t ii = 0; ii < NOrb_ * Nc; ++ii)
         {
 
@@ -277,7 +272,7 @@ class ABC_H0
     std::vector<double> tyVec_;
     std::vector<double> tzVec_;
     std::vector<double> txyVec_;
-    std::vector<double> tx_yVec_; //along x=-y diagonal
+    std::vector<double> tx_yVec_; // along x=-y diagonal
     std::vector<double> txzVec_;
     std::vector<double> tx_zVec_;
     std::vector<double> tyzVec_;

@@ -24,33 +24,23 @@ class ISDataCT
     using GreenTau_t = GreenTau::GreenCluster0Tau;
 
   public:
-    ISDataCT(const Json &jjSim, const std::shared_ptr<Models::ABC_Model_2D> &modelPtr) : modelPtr_(modelPtr),
+    ISDataCT(const Json &jjSim, const std::shared_ptr<Models::ABC_Model_2D> &modelPtr)
+        : modelPtr_(modelPtr),
 #ifdef AFM
-                                                                                         green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
-                                                                                         green0CachedDown_(modelPtr->greenCluster0MatDown(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
+          green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
+          green0CachedDown_(modelPtr->greenCluster0MatDown(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
 #endif
 #ifndef AFM
-                                                                                         green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
+          green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
 #endif
-                                                                                         MupPtr_(new Matrix_t()),
-                                                                                         MdownPtr_(new Matrix_t()),
-                                                                                         vertices_(),
-                                                                                         beta_(modelPtr->beta()),
-                                                                                         NOrb_(modelPtr->NOrb()),
-                                                                                         sign_(1)
+          MupPtr_(new Matrix_t()), MdownPtr_(new Matrix_t()), vertices_(), beta_(modelPtr->beta()), NOrb_(modelPtr->NOrb()), sign_(1)
 
     {
         Logging::Trace("ISData Created. ");
     }
 
-    double beta() const
-    {
-        return beta_;
-    };
-    double NOrb() const
-    {
-        return NOrb_;
-    };
+    double beta() const { return beta_; };
+    double NOrb() const { return NOrb_; };
 
   private:
     friend class Markov::Obs::Observables;

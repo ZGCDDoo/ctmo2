@@ -20,17 +20,12 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
   public:
     const size_t hybSavePrecision = 14;
 
-    SelfConsistencyDCA(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
-                                                                                                                                   ioModel_(jjSim),
-                                                                                                                                   h0_(model_.h0()),
-                                                                                                                                   greenImpurity_(FourierDCA::RtoK(greenImpurity, h0_.RSites(), h0_.KWaveVectors())),
-                                                                                                                                   hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
-                                                                                                                                   selfEnergy_(),
-                                                                                                                                   hybNext_(),
-                                                                                                                                   spin_(spin),
-                                                                                                                                   weights_(jjSim["selfCon"]["weightsR"].get<double>(), jjSim["selfCon"]["weightsI"].get<double>()),
-                                                                                                                                   NOrb_(model.NOrb()),
-                                                                                                                                   Nc_(ioModel_.Nc)
+    SelfConsistencyDCA(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin)
+        : model_(model), ioModel_(jjSim), h0_(model_.h0()),
+          greenImpurity_(FourierDCA::RtoK(greenImpurity, h0_.RSites(), h0_.KWaveVectors())),
+          hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()), selfEnergy_(),
+          hybNext_(), spin_(spin), weights_(jjSim["selfCon"]["weightsR"].get<double>(), jjSim["selfCon"]["weightsI"].get<double>()),
+          NOrb_(model.NOrb()), Nc_(ioModel_.Nc)
     {
         Logging::Debug("Start of SC constructor.");
 
@@ -41,7 +36,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
         selfEnergy_.zeros();
         hybridization_.PatchHF(NSelfCon, model_.beta());
 
-        //0.) Extraire la self jusqu'a NGreen
+        // 0.) Extraire la self jusqu'a NGreen
         const ClusterMatrixCD_t II = ClusterMatrixCD_t(Nc_, Nc_).eye();
         for (size_t nn = 0; nn < NGreen; nn++)
         {
@@ -101,10 +96,12 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
                         const double kx = (Kx - kxCenter) + static_cast<double>(kxindex) / static_cast<double>(NKPTS - 1) * 2.0 * kxCenter;
                         for (size_t kyindex = 0; kyindex < kytildepts; kyindex++)
                         {
-                            const double ky = (Ky - kyCenter) + static_cast<double>(kyindex) / static_cast<double>(NKPTS - 1) * 2.0 * kyCenter;
+                            const double ky =
+                                (Ky - kyCenter) + static_cast<double>(kyindex) / static_cast<double>(NKPTS - 1) * 2.0 * kyCenter;
                             for (size_t kzindex = 0; kzindex < kztildepts; kzindex++)
                             {
-                                const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
+                                const double kz =
+                                    (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
                                 gImpUpNext(KIndex, KIndex, nn) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz) - selfEnergy_(KIndex, KIndex, nn));
                             }
                         }
@@ -143,7 +140,9 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
             return;
         }
 
-        const size_t NSelfConRank = mpiUt::Tools::Rank() == mpiUt::Tools::master ? (NSelfCon / mpiUt::Tools::NWorkers() + NSelfCon % mpiUt::Tools::NWorkers()) : NSelfCon / mpiUt::Tools::NWorkers();
+        const size_t NSelfConRank = mpiUt::Tools::Rank() == mpiUt::Tools::master
+                                        ? (NSelfCon / mpiUt::Tools::NWorkers() + NSelfCon % mpiUt::Tools::NWorkers())
+                                        : NSelfCon / mpiUt::Tools::NWorkers();
 
         ClusterCubeCD_t gImpUpNextRank(Nc_, Nc_, NSelfConRank);
         gImpUpNextRank.zeros();
@@ -160,7 +159,9 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
         const size_t kytildepts = (std::abs(h0_.tyVec().at(0)) < 1e-10) ? 1 : NKPTS;
         const size_t kztildepts = (std::abs(h0_.tzVec().at(0)) < 1e-10) ? 1 : NKPTS;
 
-        const size_t nnStart = mpiUt::Tools::Rank() == mpiUt::Tools::master ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * mpiUt::Tools::Rank();
+        const size_t nnStart = mpiUt::Tools::Rank() == mpiUt::Tools::master
+                                   ? 0
+                                   : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * mpiUt::Tools::Rank();
         const size_t nnEnd = nnStart + NSelfConRank;
 
         Logging::Trace("Just before loops");
@@ -184,13 +185,16 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
                         for (size_t kzindex = 0; kzindex < kztildepts; kzindex++)
                         {
-                            const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
-                            gImpUpNextRank(KIndex, KIndex, nn - nnStart) += 1.0 / (zz - h0_.Eps0k(kx, ky, kz, 0) - selfEnergy_(KIndex, KIndex, nn));
+                            const double kz =
+                                (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
+                            gImpUpNextRank(KIndex, KIndex, nn - nnStart) +=
+                                1.0 / (zz - h0_.Eps0k(kx, ky, kz, 0) - selfEnergy_(KIndex, KIndex, nn));
                         }
                     }
                 }
                 gImpUpNextRank(KIndex, KIndex, nn - nnStart) /= static_cast<double>(kxtildepts * kytildepts * kztildepts);
-                hybNextRank(KIndex, KIndex, nn - nnStart) = -1.0 / gImpUpNextRank(KIndex, KIndex, nn - nnStart) - selfEnergy_(KIndex, KIndex, nn) + zz - model_.tLoc()(KIndex, KIndex);
+                hybNextRank(KIndex, KIndex, nn - nnStart) = -1.0 / gImpUpNextRank(KIndex, KIndex, nn - nnStart) -
+                                                            selfEnergy_(KIndex, KIndex, nn) + zz - model_.tLoc()(KIndex, KIndex);
             }
         }
 
@@ -223,8 +227,10 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
             for (size_t ii = 0; ii < static_cast<size_t>(mpiUt::Tools::NWorkers()); ii++)
             {
-                ClusterCubeCD_t tmpGImpNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc_, Nc_, tmpMemGImpVec.at(ii).size() / (Nc_ * Nc_));
-                ClusterCubeCD_t tmpHybNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc_, Nc_, tmpMemHybNextVec.at(ii).size() / (Nc_ * Nc_));
+                ClusterCubeCD_t tmpGImpNextRank =
+                    mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), Nc_, Nc_, tmpMemGImpVec.at(ii).size() / (Nc_ * Nc_));
+                ClusterCubeCD_t tmpHybNextRank =
+                    mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), Nc_, Nc_, tmpMemHybNextVec.at(ii).size() / (Nc_ * Nc_));
 
                 Logging::Trace("In Loop.");
 
@@ -250,10 +256,7 @@ class SelfConsistencyDCA : public ABC_SelfConsistency
 
 #endif
 
-    ClusterCubeCD_t hybNext() const
-    {
-        return hybNext_;
-    };
+    ClusterCubeCD_t hybNext() const { return hybNext_; };
 
   private:
     Model_t model_;

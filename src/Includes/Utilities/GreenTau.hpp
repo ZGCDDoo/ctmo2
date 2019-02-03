@@ -13,17 +13,15 @@ using Data_t = std::vector<Vector_t>;
 
 class GreenCluster0Tau
 {
-    //definit par la fct hyb, tloc, mu et beta et un Nombre de slice de temps NTau
+    // definit par la fct hyb, tloc, mu et beta et un Nombre de slice de temps NTau
 
   public:
     const double EPS = 1e-13;
     const double deltaTau = 0.008;
 
-    GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const std::shared_ptr<IO::Base_IOModel> &ioModelPtr, const size_t &NTau) : ioModelPtr_(ioModelPtr),
-                                                                                                                                      gfMatCluster_(gfMatCluster),
-                                                                                                                                      beta_(gfMatCluster.beta()),
-                                                                                                                                      NTau_(std::max<double>(NTau, beta_ / deltaTau)),
-                                                                                                                                      NOrb_(gfMatCluster_.n_rows() / ioModelPtr_->Nc)
+    GreenCluster0Tau(const GreenCluster0Mat &gfMatCluster, const std::shared_ptr<IO::Base_IOModel> &ioModelPtr, const size_t &NTau)
+        : ioModelPtr_(ioModelPtr), gfMatCluster_(gfMatCluster), beta_(gfMatCluster.beta()), NTau_(std::max<double>(NTau, beta_ / deltaTau)),
+          NOrb_(gfMatCluster_.n_rows() / ioModelPtr_->Nc)
     {
         Logging::Debug("Creating gtau ");
         assert(NOrb_ >= 1);
@@ -47,7 +45,7 @@ class GreenCluster0Tau
 
     GreenCluster0Tau(const GreenCluster0Tau &gf) = default;
 
-    Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) //return g_i(tau)
+    Vector_t BuildOneGTau(const size_t &indepSuperSiteIndex) // return g_i(tau)
     {
         Vector_t result(NTau_ + 1);
         const std::pair<size_t, size_t> indices = ioModelPtr_->GetIndices(indepSuperSiteIndex, NOrb_);
@@ -107,7 +105,7 @@ class GreenCluster0Tau
             ii++;
         }
 
-        //There will be empty vectors, important not to count them here.
+        // There will be empty vectors, important not to count them here.
         size_t jj = 0;
         for (size_t ll = 0; ll < dataVec.size() && jj < ioModelPtr_->GetNIndepSuperSites(NOrb_); ll++)
         {

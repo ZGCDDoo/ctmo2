@@ -9,7 +9,7 @@ const std::string FNAME = "../test/data/DMFT/params1.json";
 using Model_t = Models::ABC_Model_2D;
 using IOModel_t = IO::Base_IOModel;
 
-Markov::MarkovChain BuildMarkovChain() //for SIAM_Square
+Markov::MarkovChain BuildMarkovChain() // for SIAM_Square
 {
     std::ifstream fin(FNAME);
     Json jj;
@@ -22,10 +22,7 @@ Markov::MarkovChain BuildMarkovChain() //for SIAM_Square
     return markovchain;
 }
 
-TEST(MarkovChainTests, Init)
-{
-    Markov::MarkovChain mc = BuildMarkovChain();
-}
+TEST(MarkovChainTests, Init) { Markov::MarkovChain mc = BuildMarkovChain(); }
 
 TEST(MonteCarloTest, DoStep)
 {

@@ -17,16 +17,11 @@ class SelfConsistency : public ABC_SelfConsistency
     using IOModel_t = IO::Base_IOModel;
 
   public:
-    SelfConsistency(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin) : model_(model),
-                                                                                                                                ioModel_(jjSim),
-                                                                                                                                greenImpurity_(greenImpurity),
-                                                                                                                                hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()),
-                                                                                                                                selfEnergy_(),
-                                                                                                                                hybNext_(),
-                                                                                                                                spin_(spin),
-                                                                                                                                weights_(jjSim["selfCon"]["weightsR"].get<double>(), jjSim["selfCon"]["weightsI"].get<double>()),
-                                                                                                                                NOrb_(model.NOrb()),
-                                                                                                                                NSS_(NOrb_ * ioModel_.Nc)
+    SelfConsistency(const Json &jjSim, const Model_t &model, const ClusterCubeCD_t &greenImpurity, const FermionSpin_t &spin)
+        : model_(model), ioModel_(jjSim), greenImpurity_(greenImpurity),
+          hybridization_(spin == FermionSpin_t::Up ? model_.hybridizationMatUp() : model_.hybridizationMatDown()), selfEnergy_(),
+          hybNext_(), spin_(spin), weights_(jjSim["selfCon"]["weightsR"].get<double>(), jjSim["selfCon"]["weightsI"].get<double>()),
+          NOrb_(model.NOrb()), NSS_(NOrb_ * ioModel_.Nc)
 
     {
 
@@ -39,20 +34,21 @@ class SelfConsistency : public ABC_SelfConsistency
         // {
         //     NSelfConTmp = factNSelfCon_ * static_cast<double>(NGreen);
         // }
-        const size_t NSelfCon = NGreen; //NSelfConTmp;
+        const size_t NSelfCon = NGreen; // NSelfConTmp;
         assert(NSelfCon >= NGreen);
-        //Patcher la hyb si necessaire
+        // Patcher la hyb si necessaire
         hybridization_.PatchHF(NSelfCon, model_.beta());
         const size_t NHyb = hybridization_.n_slices();
         assert(NHyb >= NSelfCon);
 
         selfEnergy_.resize(NSS_, NSS_, NSelfCon);
 
-        //0.) Extraire la self jusqu'a NGreen
+        // 0.) Extraire la self jusqu'a NGreen
         for (size_t nn = 0; nn < NGreen; ++nn)
         {
             const cd_t zz(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
-            selfEnergy_.slice(nn) = -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc() - hybridization_.slice(nn);
+            selfEnergy_.slice(nn) =
+                -greenImpurity_.slice(nn).i() + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc() - hybridization_.slice(nn);
         }
 
         if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
@@ -88,7 +84,9 @@ class SelfConsistency : public ABC_SelfConsistency
             return;
         }
 
-        const size_t NSelfConRank = mpiUt::Tools::Rank() == mpiUt::Tools::master ? (NSelfCon / mpiUt::Tools::NWorkers() + NSelfCon % mpiUt::Tools::NWorkers()) : NSelfCon / mpiUt::Tools::NWorkers();
+        const size_t NSelfConRank = mpiUt::Tools::Rank() == mpiUt::Tools::master
+                                        ? (NSelfCon / mpiUt::Tools::NWorkers() + NSelfCon % mpiUt::Tools::NWorkers())
+                                        : NSelfCon / mpiUt::Tools::NWorkers();
 
         ClusterCubeCD_t gImpUpNextRank(NSS_, NSS_, NSelfConRank);
         gImpUpNextRank.zeros();
@@ -99,17 +97,21 @@ class SelfConsistency : public ABC_SelfConsistency
         assert(tKTildeGrid.load("tktilde.arma"));
         const size_t ktildepts = tKTildeGrid.n_slices;
 
-        const size_t nnStart = mpiUt::Tools::Rank() == mpiUt::Tools::master ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * mpiUt::Tools::Rank();
+        const size_t nnStart = mpiUt::Tools::Rank() == mpiUt::Tools::master
+                                   ? 0
+                                   : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * mpiUt::Tools::Rank();
         const size_t nnEnd = nnStart + NSelfConRank;
         for (size_t nn = nnStart; nn < nnEnd; ++nn)
         {
             const cd_t zz = cd_t(model_.mu(), (2.0 * nn + 1.0) * M_PI / model_.beta());
             for (size_t ktildeindex = 0; ktildeindex < ktildepts; ++ktildeindex)
             {
-                gImpUpNextRank.slice(nn - nnStart) += (zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - tKTildeGrid.slice(ktildeindex) - selfEnergy_.slice(nn)).i();
+                gImpUpNextRank.slice(nn - nnStart) +=
+                    (zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - tKTildeGrid.slice(ktildeindex) - selfEnergy_.slice(nn)).i();
             }
             gImpUpNextRank.slice(nn - nnStart) /= static_cast<double>(ktildepts);
-            hybNextRank.slice(nn - nnStart) = -gImpUpNextRank.slice(nn - nnStart).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc();
+            hybNextRank.slice(nn - nnStart) =
+                -gImpUpNextRank.slice(nn - nnStart).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc();
         }
 
         std::vector<std::vector<cd_t>> tmpMemGImpVec;
@@ -137,8 +139,10 @@ class SelfConsistency : public ABC_SelfConsistency
 
             for (size_t ii = 0; ii < static_cast<size_t>(mpiUt::Tools::NWorkers()); ++ii)
             {
-                ClusterCubeCD_t tmpGImpNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), NSS_, NSS_, tmpMemGImpVec.at(ii).size() / (NSS_ * NSS_));
-                ClusterCubeCD_t tmpHybNextRank = mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), NSS_, NSS_, tmpMemHybNextVec.at(ii).size() / (NSS_ * NSS_));
+                ClusterCubeCD_t tmpGImpNextRank =
+                    mpiUt::Tools::VecCDToCubeCD(tmpMemGImpVec.at(ii), NSS_, NSS_, tmpMemGImpVec.at(ii).size() / (NSS_ * NSS_));
+                ClusterCubeCD_t tmpHybNextRank =
+                    mpiUt::Tools::VecCDToCubeCD(tmpMemHybNextVec.at(ii), NSS_, NSS_, tmpMemHybNextVec.at(ii).size() / (NSS_ * NSS_));
 
                 const size_t jjStart = ii == 0 ? 0 : NSelfCon % mpiUt::Tools::NWorkers() + (NSelfCon / mpiUt::Tools::NWorkers()) * ii;
                 const size_t jjEnd = jjStart + tmpGImpNextRank.n_slices;
@@ -180,10 +184,12 @@ class SelfConsistency : public ABC_SelfConsistency
                 const cd_t zz = cd_t(model_.mu(), (2.0 * static_cast<double>(nn) + 1.0) * M_PI / model_.beta());
                 for (size_t ktildeindex = 0; ktildeindex < ktildepts; ++ktildeindex)
                 {
-                    gImpUpNext.slice(nn) += (zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - tKTildeGrid.slice(ktildeindex) - selfEnergy_.slice(nn)).i();
+                    gImpUpNext.slice(nn) +=
+                        (zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - tKTildeGrid.slice(ktildeindex) - selfEnergy_.slice(nn)).i();
                 }
                 gImpUpNext.slice(nn) /= static_cast<double>(ktildepts);
-                hybNext_.slice(nn) = -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc();
+                hybNext_.slice(nn) =
+                    -gImpUpNext.slice(nn).i() - selfEnergy_.slice(nn) + zz * ClusterMatrixCD_t(NSS_, NSS_).eye() - model_.tLoc();
             }
 
             hybNext_ *= (1.0 - weights_);
@@ -195,11 +201,7 @@ class SelfConsistency : public ABC_SelfConsistency
         }
     }
 
-    ClusterCubeCD_t
-    hybNext() const
-    {
-        return hybNext_;
-    };
+    ClusterCubeCD_t hybNext() const { return hybNext_; };
 
   private:
     Model_t model_;
@@ -212,7 +214,7 @@ class SelfConsistency : public ABC_SelfConsistency
     const FermionSpin_t spin_;
     const cd_t weights_;
     const size_t NOrb_;
-    const size_t NSS_; //Number of super-sites : (orbital and sites)
+    const size_t NSS_; // Number of super-sites : (orbital and sites)
 
     //    const double factNSelfCon_{2};
     const size_t hybSavePrecision_{14};

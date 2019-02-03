@@ -20,18 +20,14 @@ class CMDInfo
     CMDInfo(const CMDInfo &cmdInfo) = default;
 
     CMDInfo(const std::string &prefixIn, const int &iterIn, const std::string &suffixIn, const bool &doSCIn = false,
-            const bool &exitFromCMDIn = false) : fnamePrefix_(prefixIn),
-                                                 iter_(iterIn),
-                                                 fnameSuffix_(suffixIn),
-                                                 doSC_(doSCIn),
-                                                 exitFromCMD_(exitFromCMDIn) {}
-
-    std::string fileName() const
+            const bool &exitFromCMDIn = false)
+        : fnamePrefix_(prefixIn), iter_(iterIn), fnameSuffix_(suffixIn), doSC_(doSCIn), exitFromCMD_(exitFromCMDIn)
     {
-        return (fnamePrefix_ + std::to_string(iter_) + fnameSuffix_);
     }
 
-    //setters
+    std::string fileName() const { return (fnamePrefix_ + std::to_string(iter_) + fnameSuffix_); }
+
+    // setters
     std::string fnamePrefix() const { return fnamePrefix_; }
     int iter() const { return iter_; }
     std::string fnameSuffix() const { return fnameSuffix_; }
@@ -53,7 +49,9 @@ CMDInfo GetProgramOptions(int argc, char **argv)
 
     namespace po = boost::program_options;
     po::options_description desc("Example usage: ctmo params1.json. \n\nAllowed Options:");
-    desc.add_options()("help,h", "Print help messages.")("fname,f", po::value<std::string>()->required(), "simulation filename (in json format).")("no-sc,n", "Don't perform the selfconsistency nor prepare the next iteration.");
+    desc.add_options()("help,h", "Print help messages.")("fname,f", po::value<std::string>()->required(),
+                                                         "simulation filename (in json format).")(
+        "no-sc,n", "Don't perform the selfconsistency nor prepare the next iteration.");
 
     po::positional_options_description positional;
     positional.add("fname", -1);

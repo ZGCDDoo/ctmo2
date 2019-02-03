@@ -50,7 +50,7 @@ GreenMat::GreenCluster0Mat BuildGreenMat()
     ClusterCubeCD_t hybdata(4, 4, 30);
     hybdata.zeros();
 
-    GreenMat::HybridizationMat hybMat(hybdata, fmhyb); //HYbridation nulle
+    GreenMat::HybridizationMat hybMat(hybdata, fmhyb); // HYbridation nulle
 
     GreenMat::GreenCluster0Mat greenCluster0Mat(hybMat, tLoc, MU, BETA);
     return greenCluster0Mat;
@@ -67,7 +67,7 @@ GreenMat::GreenCluster0Mat BuildGreenMatNonInteracting()
     ClusterCubeCD_t hybdata(4, 4, 30);
     hybdata.zeros();
 
-    GreenMat::HybridizationMat hybMat(hybdata, fmhyb); //HYbridation nulle
+    GreenMat::HybridizationMat hybMat(hybdata, fmhyb); // HYbridation nulle
 
     GreenMat::GreenCluster0Mat greenCluster0Mat(hybMat, tLoc, MU, BETA);
     return greenCluster0Mat;
@@ -91,10 +91,7 @@ GreenTau_t BuildGreenTauNonInteract()
     return greenCluster0Tau;
 }
 
-double Fermi(const double &beta, const double &xi)
-{
-    return (1.0 / (std::exp(beta * xi) + 1.0));
-}
+double Fermi(const double &beta, const double &xi) { return (1.0 / (std::exp(beta * xi) + 1.0)); }
 
 double greenTau0(const double &mu, const double &energy, const double &tau, const double &beta)
 {
@@ -114,8 +111,8 @@ double greenTau0(const double &mu, const double &energy, const double &tau, cons
 TEST(GreenTauTests, Init)
 {
 
-    //simple diagonal green function to test the fourier transform with the moments.
-    //G is 2x2 diagonal G_00 = (iwn + mu) => Tloc = hyb = 0
+    // simple diagonal green function to test the fourier transform with the moments.
+    // G is 2x2 diagonal G_00 = (iwn + mu) => Tloc = hyb = 0
 
     std::cout << "here  ! " << std::endl;
 
@@ -125,7 +122,7 @@ TEST(GreenTauTests, Init)
 
     std::cout << "here 3 ! " << std::endl;
 
-    //Test diagonal part
+    // Test diagonal part
     std::cout << "======Start Init======== " << std::endl;
     std::cout << "======     Start Diagonal part======== " << std::endl;
     std::cout << " greenCluster0Tau(0, 0, NTAU - 1) =  " << greenCluster0Tau({0, 0}, {0, 0}, BETA - EPS) << std::endl;
@@ -145,9 +142,10 @@ TEST(GreenTauTests, Init)
         ASSERT_TRUE(eps < DELTADIAG);
     }
 
-    //Test non-diagonal part
+    // Test non-diagonal part
     const double tau1 = BETA / 2.0;
-    double goodGreenTau1 = -(std::exp(xi1 * (BETA - tau1)) * Fermi(BETA, xi1) - std::exp(xi2 * (BETA - tau1)) * Fermi(BETA, xi2)) / 4.0; //out-of-diagonal, but not anti-diagonal
+    double goodGreenTau1 = -(std::exp(xi1 * (BETA - tau1)) * Fermi(BETA, xi1) - std::exp(xi2 * (BETA - tau1)) * Fermi(BETA, xi2)) /
+                           4.0; // out-of-diagonal, but not anti-diagonal
 
     std::cout << "======     Start Non-Diagonal part======== " << std::endl;
     std::cout << " greenCluster0Tau(0, 1, beta/2) =  " << greenCluster0Tau({0, 0}, {1, 0}, BETA / 2.0) << std::endl;
@@ -212,7 +210,8 @@ TEST(GreenTauTests, NonInteracting)
     eps = std::abs(1.0 - greenCluster0Tau({0, 0}, {0, 0}, tau3) / greenTau0(MU, ENERGY, tau3, BETA));
     ASSERT_TRUE(eps < DELTANONINTERAC);
 
-    std::cout << "first moment = " << -(greenCluster0Tau({0, 0}, {0, 0}, 1e-12) + greenCluster0Tau({0, 0}, {0, 0}, BETA - 1e-12)) << std::endl;
+    std::cout << "first moment = " << -(greenCluster0Tau({0, 0}, {0, 0}, 1e-12) + greenCluster0Tau({0, 0}, {0, 0}, BETA - 1e-12))
+              << std::endl;
 }
 
 TEST(GreenTauTests, Operator)

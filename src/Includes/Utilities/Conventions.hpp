@@ -14,7 +14,7 @@ MapSS_t BuildFileNameConventions()
 {
     MapSS_t nameCon;
 
-    //Extensions
+    // Extensions
     const std::string datExt = ".dat";
     nameCon["datExt"] = datExt;
 

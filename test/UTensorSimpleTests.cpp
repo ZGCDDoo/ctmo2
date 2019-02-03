@@ -24,7 +24,7 @@ TEST(UTensorSimple, Init)
 
     //======================  End Test for Diagonal Orbitals, with UPrime=JH=0  =============================
 
-    //Test with JH=0, but UPrime=3.21
+    // Test with JH=0, but UPrime=3.21
 
     jj["solver"]["isOrbitalDiagonal"] = false;
     jj["model"]["UPrime"] = 3.21;

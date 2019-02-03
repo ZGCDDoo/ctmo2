@@ -51,10 +51,8 @@ TEST(IntegratorTest, TestGridKTilde)
     Models::ABC_H0 h0(TestTools::BuildJson());
     ClusterMatrixCD_t tLocTest = GridKTilde(h0, 100);
 
-    ClusterMatrixCD_t diagonal_part = {{0.0, t_diag, t_diag, tp_diag},
-                                       {t_diag, 0.0, 0.0, t_diag},
-                                       {t_diag, 0.0, 0.0, t_diag},
-                                       {tp_diag, t_diag, t_diag, 0.0}};
+    ClusterMatrixCD_t diagonal_part = {
+        {0.0, t_diag, t_diag, tp_diag}, {t_diag, 0.0, 0.0, t_diag}, {t_diag, 0.0, 0.0, t_diag}, {tp_diag, t_diag, t_diag, 0.0}};
 
     ClusterMatrixCD_t off_diagonal = {{0.0, t_offdiag, t_offdiag, tp_offdiag},
                                       {t_offdiag, 0.0, tp_offdiag, t_offdiag},
