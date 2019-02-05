@@ -10,7 +10,7 @@ using Markov_t = Markov::MarkovChain;
 
 const double DELTA = 1e-10;
 const std::string FNAME = "../test/data/cdmft_triangle/testtriangle.json";
-const size_t NSTEPS = 10000;
+const size_t NSTEPS = 20000;
 
 Markov_t BuildMarkovChain()
 {
@@ -20,6 +20,9 @@ Markov_t BuildMarkovChain()
     fin.close();
     std::cout << "Reading in Json in BuildMarkovChain() " << std::endl;
     const size_t seed = 10224;
+    // set beta and U to small values so the determinants calculated from scratch dont explode.
+    jj["model"]["U"] = 3.0;
+    jj["model"]["beta"] = 20.0;
     Markov_t markovchain(jj, seed);
     std::cout << "After BuildMarkovChain() " << std::endl;
     return markovchain;
