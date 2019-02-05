@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include "../src/Includes/Utilities/GreenMat.hpp"
 
-//TO DO MOve greenMat and GreenTau tests to seperate files.
+// TO DO MOve greenMat and GreenTau tests to seperate files.
 
 const double DELTA = 1e-5;
 const double mu = 2.94;
@@ -17,7 +17,7 @@ GreenMat::GreenCluster0Mat BuildGreenMat()
     fmhyb.zeros();
 
     tLoc(0, 1) = tLoc(1, 0) = tLoc(1, 3) = tLoc(3, 1) = tLoc(2, 3) = tLoc(3, 2) = tLoc(0, 2) = tLoc(2, 0) = 0.90;
-    const double fm = 2.0 * 0.90; //Not right it should be 2.0*0.9^2, but unconsequential for testing purposes
+    const double fm = 2.0 * 0.90; // Not right it should be 2.0*0.9^2, but unconsequential for testing purposes
     fmhyb(0, 0) = fmhyb(1, 1) = fmhyb(2, 2) = fmhyb(3, 3) = fm;
     ClusterCubeCD_t hybdata(4, 4, 2);
     hybdata.zeros();
@@ -30,18 +30,18 @@ GreenMat::GreenCluster0Mat BuildGreenMat()
 
     GreenMat::HybridizationMat hybMat(hybdata, fmhyb);
 
-    //ClusterCube_t goodGreenMat = {}
+    // ClusterCube_t goodGreenMat = {}
     GreenMat::GreenCluster0Mat greenCluster0Mat(hybMat, tLoc, mu, Beta);
-    //greenCluster0Mat.data().print();
+    // greenCluster0Mat.data().print();
     return greenCluster0Mat;
 }
 
 TEST(GreenMatTest, Init)
 {
 
-    //ClusterCube_t goodGreenMat = {}
+    // ClusterCube_t goodGreenMat = {}
     GreenMat::GreenCluster0Mat greenCluster0Mat = BuildGreenMat();
-    //greenCluster0Mat.data().print();
+    // greenCluster0Mat.data().print();
 
     ClusterMatrixCD_t goodResult0 = {
         {cd_t(0.05934704, -0.13169938), cd_t(-0.01245951, -0.01405697), cd_t(-0.01245951, -0.01405697), cd_t(-0.00480552, 0.00136094)},
@@ -59,20 +59,20 @@ TEST(GreenMatTest, Init)
     for (size_t i = 0; i < goodResult0.n_rows; i++)
         for (size_t j = 0; j < goodResult0.n_cols; j++)
         {
-            //std::cout << "i,j = " << i << " " << j << " ";
+            // std::cout << "i,j = " << i << " " << j << " ";
             eps = 0.0;
             eps += std::abs(1.0 - goodResult0(i, j).real() / greenCluster0Mat.data()(i, j, 0).real());
             eps += std::abs(1.0 - goodResult1(i, j).real() / greenCluster0Mat.data()(i, j, 1).real());
             eps += std::abs(1.0 - goodResult0(i, j).imag() / greenCluster0Mat.data()(i, j, 0).imag());
             eps += std::abs(1.0 - goodResult1(i, j).imag() / greenCluster0Mat.data()(i, j, 1).imag());
-            //std::cout << "eps = " << eps << " ";
+            // std::cout << "eps = " << eps << " ";
             ASSERT_TRUE(DELTA > eps);
             ASSERT_NEAR(greenCluster0Mat.data()(i, j, 0).real(), goodResult0(i, j).real(), DELTA);
             ASSERT_NEAR(greenCluster0Mat.data()(i, j, 1).imag(), goodResult1(i, j).imag(), DELTA);
-            //std::cout << "eps = " << eps << std::endl;
+            // std::cout << "eps = " << eps << std::endl;
         }
 
-    //Test moments:
+    // Test moments:
     for (size_t i = 0; i < greenCluster0Mat.data().n_cols; i++)
     {
         for (size_t j = 0; j < greenCluster0Mat.data().n_rows; j++)
@@ -83,7 +83,7 @@ TEST(GreenMatTest, Init)
             if (i == j)
             {
                 ASSERT_DOUBLE_EQ(greenCluster0Mat.fm()(i, j).real(), 1.0);
-                //ASSERT_DOBULE_EQ(greenCluster0Mat.sm()(i, j).real(), )
+                // ASSERT_DOBULE_EQ(greenCluster0Mat.sm()(i, j).real(), )
             }
         }
     }

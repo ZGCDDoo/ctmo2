@@ -14,7 +14,7 @@ MapSS_t BuildFileNameConventions()
 {
     MapSS_t nameCon;
 
-    //Extensions
+    // Extensions
     const std::string datExt = ".dat";
     nameCon["datExt"] = datExt;
 
@@ -31,10 +31,12 @@ MapSS_t BuildFileNameConventions()
     nameCon["selfUpFile"] = "selfUp" + datExt;
     nameCon["selfDownFile"] = "selfDown" + datExt;
 
-    nameCon["hybUpFile"] = "hybNextUp" + datExt;
-    nameCon["hybDownFile"] = "hybNextDown" + datExt;
+    nameCon["hybUpFile"] = "hybUp" + datExt;
+    nameCon["hybDownFile"] = "hybDown" + datExt;
 
     nameCon["obsJsonFile"] = "Obs" + jsonExt;
+    nameCon["gtauFile"] = "gtau" + datExt;
+
     nameCon["updMeasJsonFile"] = "upd.meas" + jsonExt;
     nameCon["updThermJsonFile"] = "upd.therm" + jsonExt;
 

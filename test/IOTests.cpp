@@ -41,7 +41,8 @@ TEST(IOModelTests, IndepToFullAndBack)
         const ClusterMatrixCD_t matrixFull = ioModel.IndepToFull(greenIndep.row(nn), NOrb);
         assert(matrixFull.n_rows == greenCube.n_rows);
         assert(matrixFull.n_cols == greenCube.n_cols);
-        std::cout << "matrixFull.n_rows = " << matrixFull.n_rows << " ioModel.GetNIndepSuperSites(NOrb) = " << ioModel.GetNIndepSuperSites(NOrb) << std::endl;
+        std::cout << "matrixFull.n_rows = " << matrixFull.n_rows
+                  << " ioModel.GetNIndepSuperSites(NOrb) = " << ioModel.GetNIndepSuperSites(NOrb) << std::endl;
 
         assert(matrixFull.n_rows == NOrb * ioModel.Nc);
 

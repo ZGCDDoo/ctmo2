@@ -13,6 +13,6 @@ class ABC_MonteCarlo
     virtual void RunMonteCarlo() = 0;
 }; // class ABC_MonteCarlo
 
-ABC_MonteCarlo::~ABC_MonteCarlo() {} //destructors must exist
+ABC_MonteCarlo::~ABC_MonteCarlo() {} // destructors must exist
 
 } // namespace MC

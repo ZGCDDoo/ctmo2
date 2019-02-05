@@ -1,0 +1,48 @@
+name: ctmo
+version: "1.0.0"
+summary: ctmo
+description: ctmo is a continuos time quantum monte carlo solver
+confinement: strict
+grade: stable
+architectures:
+  - build-on: [amd64]
+    run-on: [amd64]
+
+apps:
+  ctmo:
+    command: ctmo
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/x86_64-linux-gnu:$SNAP/usr/lib/lapack:$SNAP/usr/lib/libblas:$SNAP_LIBRARY_PATH
+
+    plugs:
+      - home
+
+parts:
+  ctmo:
+    plugin: cmake
+    configflags:
+      - -DSNAP=ON
+    source: ./ctmo.tar.gz
+    source-type: tar
+    build-packages:
+      - build-essential
+      - make
+      - cmake
+      - liblapack-dev
+      - libboost-filesystem-dev
+      - libboost-mpi-dev
+      - libboost-system-dev
+      - libboost-program-options-dev
+      - libboost-serialization-dev
+      - libarmadillo-dev
+
+    stage-packages:
+      - liblapack-dev
+      - libboost-filesystem-dev
+      - libboost-mpi-dev
+      - libboost-system-dev
+      - libboost-program-options-dev
+      - libboost-serialization-dev
+      - libarmadillo-dev
+
+  

@@ -18,22 +18,18 @@ using cd_t = std::complex<double>;
 
 class ISResult
 {
-    //greenMatUp is the tabularform
+    // greenMatUp is the tabularform
   public:
     ISResult(){};
 
-    ISResult(const std::map<std::string, double> &obsScal, const ClusterMatrixCD_t &greenMatUp,
-             const ClusterMatrixCD_t &greenMatDown, const std::vector<double> &fillingUp,
-             const std::vector<double> &fillingDown) : obsScal_(obsScal),
-                                                       n_rows_(greenMatUp.n_rows),
-                                                       n_cols_(greenMatUp.n_cols),
-                                                       greenTabUp_(n_rows_ * n_cols_),
+    ISResult(const std::map<std::string, double> &obsScal, const ClusterMatrixCD_t &greenMatUp, const ClusterMatrixCD_t &greenMatDown,
+             const std::vector<double> &fillingUp, const std::vector<double> &fillingDown)
+        : obsScal_(obsScal), n_rows_(greenMatUp.n_rows), n_cols_(greenMatUp.n_cols), greenTabUp_(n_rows_ * n_cols_),
 #ifdef AFM
 
-                                                       greenTabDown_(n_rows_ * n_cols_),
+          greenTabDown_(n_rows_ * n_cols_),
 #endif
-                                                       fillingUp_(fillingUp.data(), fillingUp.size()),
-                                                       fillingDown_(fillingDown.data(), fillingDown.size())
+          fillingUp_(fillingUp.data(), fillingUp.size()), fillingDown_(fillingDown.data(), fillingDown.size())
     {
         assert(greenMatDown.n_rows == n_rows_);
 #ifdef AFM
@@ -52,16 +48,15 @@ class ISResult
     }
 
   private:
-    //From boost::mpi and boost::serialze tutorial
+    // From boost::mpi and boost::serialze tutorial
     friend class mpiUt::IOResult;
     friend class boost::serialization::access;
     // When the class Archive corresponds to an output archive, the
     // & operator is defined similar to <<.  Likewise, when the class Archive
     // is a type of input archive the & operator is defined similar to >>.
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int version)
+    template <class Archive> void serialize(Archive &ar, const unsigned int version)
     {
-        //Just to shutUp boost::serialize error for not using version
+        // Just to shutUp boost::serialize error for not using version
         size_t versionTmp = version + 1;
         versionTmp++;
         //-----------end of shut-up---------
@@ -81,9 +76,9 @@ class ISResult
     size_t n_rows_{0}; //=NMat
     size_t n_cols_{0}; //=Number of independant green functions of the model at hand.
 
-    std::valarray<std::complex<double>> greenTabUp_; //the green in tabular form
-                                                     //corresponding to the independant values, in vector form.
-                                                     //col .major ordering
+    std::valarray<std::complex<double>> greenTabUp_; // the green in tabular form
+                                                     // corresponding to the independant values, in vector form.
+                                                     // col .major ordering
 #ifdef AFM
     std::valarray<std::complex<double>> greenTabDown_;
 #endif

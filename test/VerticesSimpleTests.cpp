@@ -33,11 +33,14 @@ TEST(VerticesTests, AuxHelper)
     ASSERT_NEAR(auxHelper.FAux(vp_downup), (delta) / (1.0 + delta), DELTA_SMALL);
 
     ASSERT_NEAR(auxHelper.gamma(vp_upup, vp_upup), 0.0, DELTA_SMALL);
-    ASSERT_NEAR(auxHelper.gamma(vp_upup, vp_updown), (auxHelper.FAux(vp_upup) - auxHelper.FAux(vp_updown)) / (auxHelper.FAux(vp_updown)), DELTA_SMALL);
-    ASSERT_NEAR(auxHelper.gamma(vp_updown, vp_upup), (auxHelper.FAux(vp_updown) - auxHelper.FAux(vp_upup)) / (auxHelper.FAux(vp_upup)), DELTA_SMALL);
+    ASSERT_NEAR(auxHelper.gamma(vp_upup, vp_updown), (auxHelper.FAux(vp_upup) - auxHelper.FAux(vp_updown)) / (auxHelper.FAux(vp_updown)),
+                DELTA_SMALL);
+    ASSERT_NEAR(auxHelper.gamma(vp_updown, vp_upup), (auxHelper.FAux(vp_updown) - auxHelper.FAux(vp_upup)) / (auxHelper.FAux(vp_upup)),
+                DELTA_SMALL);
 
     ASSERT_NEAR(auxHelper.gamma(vp_downdown, vp_downdown), 0.0, DELTA_SMALL);
-    ASSERT_NEAR(auxHelper.gamma(vp_downup, vp_downdown), (auxHelper.FAux(vp_downup) - auxHelper.FAux(vp_downdown)) / (auxHelper.FAux(vp_downdown)), DELTA_SMALL);
+    ASSERT_NEAR(auxHelper.gamma(vp_downup, vp_downdown),
+                (auxHelper.FAux(vp_downup) - auxHelper.FAux(vp_downdown)) / (auxHelper.FAux(vp_downdown)), DELTA_SMALL);
 }
 
 TEST(VerticesTests, VertexPartInit)
@@ -54,7 +57,7 @@ TEST(VerticesTests, VertexPartInit)
     ASSERT_TRUE((vp0.superSite() == std::make_pair<size_t, size_t>(1, 2)));
     ASSERT_EQ(vp0.aux(), AuxSpin_t::Down);
 
-    //Copy constructor
+    // Copy constructor
     VertexPart vp1(vp0);
     ASSERT_EQ(vp1.vtype(), VertexType::Invalid);
     ASSERT_DOUBLE_EQ(vp1.tau(), 0.1);
@@ -64,7 +67,7 @@ TEST(VerticesTests, VertexPartInit)
     ASSERT_TRUE((vp1.superSite() == std::make_pair<size_t, size_t>(1, 2)));
     ASSERT_EQ(vp1.aux(), AuxSpin_t::Down);
 
-    //assignement operator
+    // assignement operator
     VertexPart vp2(VertexType::Phonon, 0.22, 100, FermionSpin_t::Up, 9, AuxSpin_t::Up);
     vp0 = vp2;
 
@@ -78,19 +81,19 @@ TEST(VerticesTests, VertexPartInit)
 
     ASSERT_TRUE((vp0 == vp2));
 
-    //FlipAux
+    // FlipAux
     vp2.FlipAux();
     ASSERT_EQ(vp2.aux(), AuxSpin_t::Down);
 
-    //SetAux
+    // SetAux
     vp2.SetAux(AuxSpin_t::Zero);
     ASSERT_EQ(vp2.aux(), AuxSpin_t::Zero);
 
-    //SetSpin
+    // SetSpin
     vp2.SetSpin(FermionSpin_t::Down);
     ASSERT_EQ(vp2.spin(), FermionSpin_t::Down);
 
-    //now try with a vector
+    // now try with a vector
     std::vector<VertexPart> vecVp;
     vecVp.push_back(vp2);
     vecVp.at(0) = vp0;
@@ -131,14 +134,14 @@ TEST(VerticesTests, VertexInit)
     ASSERT_EQ(v0.vStart().aux(), AuxSpin_t::Down);
     ASSERT_EQ(v0.vEnd().aux(), AuxSpin_t::Down);
 
-    //test copy constructor;
+    // test copy constructor;
     Vertex v1(v0);
     ASSERT_TRUE((v1.vStart() == v0.vStart()));
     ASSERT_TRUE((v1.vEnd() == v0.vEnd()));
     ASSERT_EQ(v1.aux(), v0.aux());
     ASSERT_FALSE((v1.vStart() == v_null.vStart()));
 
-    //test assigment operator
+    // test assigment operator
 
     const VertexPart vStart2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Up, 3, AuxSpin_t::Up);
     const VertexPart vEnd2(VertexType::HubbardIntra, 0.33, 10, FermionSpin_t::Down, 3, AuxSpin_t::Up);
@@ -153,7 +156,7 @@ TEST(VerticesTests, VertexInit)
     ASSERT_FALSE((v1.vStart() == v_null.vStart()));
     ASSERT_TRUE(v1.vEnd() == vEnd2);
 
-    //test assignement with vector
+    // test assignement with vector
 
     std::vector<Vertex> vecVertex;
     vecVertex.push_back(v_null);

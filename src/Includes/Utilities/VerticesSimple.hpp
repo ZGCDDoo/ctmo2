@@ -12,14 +12,14 @@ typedef LinAlg::Matrix_t Matrix_t;
 
 enum class VertexType
 {
-    HubbardIntra,     //Hubbard intraorbital
+    HubbardIntra,     // Hubbard intraorbital
     HubbardInter,     // Hubbard interorbital, different spins (U')
     HubbardInterSpin, // Hubbard interorbital same spin (U'-J_H)
     Phonon,
     Invalid
 };
 
-const size_t N_VERTEX_TYPES = 3; //for now, we dont do Phonon
+const size_t N_VERTEX_TYPES = 3; // for now, we dont do Phonon
 const size_t INVALID = 999;
 
 class VertexPart
@@ -32,18 +32,13 @@ class VertexPart
     VertexPart(const VertexPart &vp) = default;
     VertexPart &operator=(const VertexPart &vp) = default;
 
-    VertexPart(const VertexType vtype, const Tau_t &tau, const Site_t &site, const FermionSpin_t &spin,
-               const size_t &orbital, const AuxSpin_t &aux) : vtype_(vtype),
-                                                              tau_(tau),
-                                                              site_(site),
-                                                              spin_(spin),
-                                                              orbital_(orbital),
-                                                              superSite_{site, orbital},
-                                                              aux_(aux)
+    VertexPart(const VertexType vtype, const Tau_t &tau, const Site_t &site, const FermionSpin_t &spin, const size_t &orbital,
+               const AuxSpin_t &aux)
+        : vtype_(vtype), tau_(tau), site_(site), spin_(spin), orbital_(orbital), superSite_{site, orbital}, aux_(aux)
     {
     }
 
-    //Getters
+    // Getters
     VertexType vtype() const { return vtype_; };
     Tau_t tau() const { return tau_; };
     Site_t site() const { return site_; };
@@ -60,20 +55,15 @@ class VertexPart
         // assert(x.site() == site_);
         // assert(x.aux() == aux_);
 
-        return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) && (x.superSite() == superSite_) && (x.aux() == aux_));
+        return ((x.tau() == tau_) && (x.site() == site_) && (x.spin() == spin_) && (x.orbital() == orbital_) &&
+                (x.superSite() == superSite_) && (x.aux() == aux_));
     }
 
     void FlipAux() { aux_ == AuxSpin_t::Up ? aux_ = AuxSpin_t::Down : aux_ = AuxSpin_t::Up; };
 
-    void SetAux(const AuxSpin_t &aux)
-    {
-        aux_ = aux;
-    }
+    void SetAux(const AuxSpin_t &aux) { aux_ = aux; }
 
-    void SetSpin(const FermionSpin_t &spin)
-    {
-        spin_ = spin;
-    }
+    void SetSpin(const FermionSpin_t &spin) { spin_ = spin; }
 
   private:
     VertexType vtype_{VertexType::Invalid};
@@ -95,11 +85,8 @@ class Vertex
 
     ~Vertex() = default;
 
-    Vertex(const VertexType &vtype, const VertexPart &vStart, const VertexPart &vEnd,
-           const double &probProb) : vtype_(vtype),
-                                     vStart_(vStart),
-                                     vEnd_(vEnd),
-                                     probProb_(probProb)
+    Vertex(const VertexType &vtype, const VertexPart &vStart, const VertexPart &vEnd, const double &probProb)
+        : vtype_(vtype), vStart_(vStart), vEnd_(vEnd), probProb_(probProb)
 
     {
     }
@@ -127,7 +114,7 @@ class Vertex
     const VertexPart vEnd() const { return vEnd_; }
     AuxSpin_t aux() const { return vStart_.aux(); }
 
-    //Setters
+    // Setters
 
   private:
     VertexType vtype_{VertexType::Invalid};
@@ -155,7 +142,7 @@ class Vertices
         verticesKeysVec_.push_back(key_);
         AppendVertexPart(vertex.vStart());
 
-        //VertexParts differ by one for their id if spins are the same
+        // VertexParts differ by one for their id if spins are the same
         if (vertex.vStart().spin() == vertex.vEnd().spin())
         {
             ++key_;
@@ -163,7 +150,7 @@ class Vertices
 
         AppendVertexPart(vertex.vEnd());
 
-        //Update the id number once all the vertices parts have been inserted
+        // Update the id number once all the vertices parts have been inserted
         key_ += 3;
         AssertSizes();
     }
@@ -214,7 +201,7 @@ class Vertices
         std::vector<size_t> indices;
         if (spin == FermionSpin_t::Up)
         {
-            //Find in order the vertexParts corresponding to the same vertex
+            // Find in order the vertexParts corresponding to the same vertex
 
             auto iitt = std::find(indexPartUpVec_.begin(), indexPartUpVec_.end(), key);
             if (iitt != indexPartUpVec_.end())
@@ -249,15 +236,17 @@ class Vertices
         {
             const auto x = data_.at(ii).vStart();
             const auto y = data_.at(ii).vEnd();
-            fout << static_cast<int>(x.aux()) << " " << x.site() << " " << x.tau() << " " << static_cast<int>(x.spin()) << " " << static_cast<int>(y.spin()) << " " << x.orbital() << " " << y.orbital() << " " << std::endl;
+            fout << static_cast<int>(x.aux()) << " " << x.site() << " " << x.tau() << " " << static_cast<int>(x.spin()) << " "
+                 << static_cast<int>(y.spin()) << " " << x.orbital() << " " << y.orbital() << " " << std::endl;
         }
     }
 
     void RemoveVertex(const size_t &pp)
     {
         const size_t kkm1 = size() - 1;
-        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1);                       //swap the last vertex and the vertex pp in vertices.
-        std::iter_swap(verticesKeysVec_.begin() + pp, verticesKeysVec_.begin() + kkm1); //swap the last vertex and the vertex pp in vertices.
+        std::iter_swap(data_.begin() + pp, data_.begin() + kkm1); // swap the last vertex and the vertex pp in vertices.
+        std::iter_swap(verticesKeysVec_.begin() + pp,
+                       verticesKeysVec_.begin() + kkm1); // swap the last vertex and the vertex pp in vertices.
         data_.pop_back();
         verticesKeysVec_.pop_back();
     }
@@ -328,11 +317,8 @@ class Vertices
         }
     }
 
-    //Getters and setters
-    size_t size() const
-    {
-        return data_.size();
-    };
+    // Getters and setters
+    size_t size() const { return data_.size(); };
 
     size_t NUp() const { return vPartUpVec_.size(); };
     size_t NDown() const { return vPartDownVec_.size(); };
@@ -361,7 +347,8 @@ class Vertices
     std::vector<VertexPart> vPartUpVec_;
     std::vector<VertexPart> vPartDownVec_;
     std::vector<UInt64_t> indexPartUpVec_;
-    std::vector<UInt64_t> indexPartDownVec_; // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the id of indexPartDownVec_.at(0)
+    std::vector<UInt64_t> indexPartDownVec_; // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the
+                                             // id of indexPartDownVec_.at(0)
     std::vector<UInt64_t> verticesKeysVec_;  // Each vertex has a unqique key identifying it
     UInt64_t key_;
 
@@ -370,7 +357,7 @@ class Vertices
 class AuxHelper
 {
   public:
-    explicit AuxHelper(const double &delta) : delta_(delta){}; //in futur, alpha tensor in constructor
+    explicit AuxHelper(const double &delta) : delta_(delta){}; // in futur, alpha tensor in constructor
 
     double auxValue(const FermionSpin_t &spin, const AuxSpin_t &aux) const
     {
@@ -396,10 +383,7 @@ class AuxHelper
         }
     }
 
-    double auxPh(const AuxSpin_t &aux) const
-    {
-        return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_);
-    }
+    double auxPh(const AuxSpin_t &aux) const { return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_); }
 
     double FAux(const VertexPart &vp) const
     {
@@ -423,7 +407,7 @@ class AuxHelper
 
     double FAuxBar(const VertexPart &vp) const
     {
-        //return FAux_sigma(-s);
+        // return FAux_sigma(-s);
         if (vp.vtype() == VertexType::Phonon)
         {
             return FAux(vp);
@@ -435,7 +419,7 @@ class AuxHelper
         }
     }
 
-    double gamma(const VertexPart &vpI, const VertexPart &vpJ) const //little gamma
+    double gamma(const VertexPart &vpI, const VertexPart &vpJ) const // little gamma
     {
         const double fsJ = FAux(vpJ);
         return ((FAux(vpI) - fsJ) / fsJ);
@@ -451,19 +435,15 @@ class VertexBuilder
 {
   public:
     const double EPSILON = 1e-10;
-    //must hold the alphas, the values of the U, U' and (U-J_H)
-    VertexBuilder(const Json &jj, const size_t &Nc) : uTensor_(jj),
-                                                      auxHelper_(jj["model"]["delta"].get<double>()),
-                                                      delta_(jj["model"]["delta"].get<double>()),
-                                                      beta_(jj["model"]["beta"].get<double>()),
-                                                      Nc_(Nc),
-                                                      NOrb_(jj["model"]["nOrb"].get<size_t>()),
-                                                      probU_(0.5), //If there is no electron-phonon coupling, then always insert a hubbard-type vertex.
-                                                      factXi_(1.0),
-                                                      isOrbitalDiagonal_(jj["solver"]["isOrbitalDiagonal"].get<bool>())
+    // must hold the alphas, the values of the U, U' and (U-J_H)
+    VertexBuilder(const Json &jj, const size_t &Nc)
+        : uTensor_(jj), auxHelper_(jj["model"]["delta"].get<double>()), delta_(jj["model"]["delta"].get<double>()),
+          beta_(jj["model"]["beta"].get<double>()), Nc_(Nc), NOrb_(jj["model"]["nOrb"].get<size_t>()),
+          probU_(0.5), // If there is no electron-phonon coupling, then always insert a hubbard-type vertex.
+          factXi_(1.0), isOrbitalDiagonal_(jj["solver"]["isOrbitalDiagonal"].get<bool>())
 
     {
-        //If there is no electron-phonon coupling, then probU is one:
+        // If there is no electron-phonon coupling, then probU is one:
         if (std::abs(uTensor_.gPhonon()) < EPSILON)
         {
             Logging::Warn("There is no Electron-phonon coupling. gPhonon is set to 0.0 in the params file.");
@@ -513,7 +493,7 @@ class VertexBuilder
 
         VertexType vertextype = VertexType::Invalid;
 
-        if (urng() < probU_) //Then build Electron-Eletron vertex
+        if (urng() < probU_) // Then build Electron-Eletron vertex
         {
             while ((o1 == o2) && (spin1 == spin2))
             {
@@ -549,7 +529,7 @@ class VertexBuilder
                 throw std::runtime_error("Miseria, Error in Vertices. Stupido!");
             }
         }
-        else //Then build Electron-Phonon vertex
+        else // Then build Electron-Phonon vertex
         {
             vertextype = VertexType::Phonon;
             const double deltaTau = GetDeltaTauPhonon(urng());
@@ -565,7 +545,7 @@ class VertexBuilder
                 tauPrime -= beta_;
             }
 
-//Use completely random insertion for GREEN_STYLE, testing purpose: ctmo and ctmo_green should give the same results.
+// Use completely random insertion for GREEN_STYLE, testing purpose: ctmo and ctmo_green should give the same results.
 #ifdef GREEN_STYLE
             tau1 = urng() * beta_;
             tauPrime = urng() * beta_;
@@ -619,13 +599,15 @@ class VertexBuilder
                 return 0.0;
             }
 
-            //Big M is = 1.0
+            // Big M is = 1.0
             U_xio1o2 = uTensor_.gPhonon() * uTensor_.gPhonon() / (4.0 * w0 * w0);
-            const double factPh = (probU_ < 1.0 - EPSILON) ? 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0 : 0.0; //Just to make sure we dont divide by zero;
+            const double factPh = (probU_ < 1.0 - EPSILON) ? 1.0 / (1.0 - probU_) * NOrb_ * NOrb_ * 2.0 * 2.0
+                                                           : 0.0; // Just to make sure we dont divide by zero;
 
 #ifdef GREEN_STYLE
             const double gtauPH = PhononPropagator(x.tau() - y.tau());
-            return (-static_cast<double>(Nc_) * beta_ * beta_ * factPh * U_xio1o2 * 2.0 * gtauPH); //For testing purposes, green style is defined by sampling the two times uniformaly
+            return (-static_cast<double>(Nc_) * beta_ * beta_ * factPh * U_xio1o2 * 2.0 *
+                    gtauPH); // For testing purposes, green style is defined by sampling the two times uniformaly
 #else
             const double fact = 1.0 / (auxHelper_.FAux(x) - 1.0);
             return (static_cast<double>(Nc_) * beta_ * factPh * U_xio1o2 * fact * fact * 2.0);
@@ -640,7 +622,7 @@ class VertexBuilder
         return (-U_xio1o2 * beta_ * static_cast<double>(Nc_) * factXi_ * 2.0);
 
 #else
-        //factor of 2 for Ising Spin
+        // factor of 2 for Ising Spin
         return (2.0 * factXi_ * KAux(U_xio1o2));
 #endif
     }
@@ -680,7 +662,8 @@ class VertexBuilder
             const double coth = 1.0 / std::tanh(w0 * beta_ / 2.0);
             const double cothfact = 4.0 * coth * coth;
 
-            const double deltaTau = 1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
+            const double deltaTau =
+                1.0 / w0 * std::log((-2.0 + 4.0 * u + std::sqrt(16.0 * u * u + cothfact - 16.0 * u)) / (2.0 * coth - 2.0));
 
             if (deltaTau < 0.0)
             {

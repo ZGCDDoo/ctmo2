@@ -27,7 +27,7 @@ class IOResult
         std::valarray<double> fillingResultUp(0.0, fillingSize);
         std::valarray<double> fillingResultDown(0.0, fillingSize);
 
-        //Average the greens of matsubara, and the fillingsSigma_.
+        // Average the greens of matsubara, and the fillingsSigma_.
         for (int i = 0; i < nworkers; i++)
         {
             greenTabResultUp += isResultVec.at(i).greenTabUp_;
@@ -43,7 +43,7 @@ class IOResult
         greenTabResultDown /= double(nworkers);
         fillingResultUp /= double(nworkers);
         fillingResultDown /= double(nworkers);
-        //convert the greens to ClusterMatrixCD_t
+        // convert the greens to ClusterMatrixCD_t
         ClusterMatrixCD_t greenUp(n_rows, n_cols);
         ClusterMatrixCD_t greenDown(n_rows, n_cols);
         for (size_t j = 0; j < n_cols; j++)
@@ -56,15 +56,15 @@ class IOResult
 #endif
             }
         }
-        //greenUp.print();
-        //greenDown.print();
+        // greenUp.print();
+        // greenDown.print();
         const size_t PRECISION_OUT = 14;
 
         SaveTabular("greenUp", greenUp, beta, PRECISION_OUT, false);
 
         SaveTabular("greenDown", greenDown, beta, PRECISION_OUT, false);
 
-        //Average the obsScale_
+        // Average the obsScale_
         SaveFillingMatrixs(fillingResultUp, fillingResultDown, ioModel);
         StatsJsons(isResultVec);
     }
@@ -76,8 +76,8 @@ class IOResult
         const size_t nworkers = Tools::NWorkers();
         const size_t jjSize = jjResult.size();
 
-        //START STATS===================================================================
-        ClusterMatrix_t statsMat(nworkers, jjSize); //Each row contains the data for each jj
+        // START STATS===================================================================
+        ClusterMatrix_t statsMat(nworkers, jjSize); // Each row contains the data for each jj
         std::vector<std::string> keys;
 
         for (Json::iterator it = jjResult.begin(); it != jjResult.end(); ++it)
@@ -97,7 +97,7 @@ class IOResult
         ClusterMatrix_t stddevs = arma::stddev(statsMat, 1, 0); // size = 1 x statsMat.n_cols
         ClusterMatrix_t means = arma::mean(statsMat, 0);
 
-        //END STATS===================================================================
+        // END STATS===================================================================
 
         jjResult.clear();
         double sqrtNWorkers = std::sqrt(double(nworkers));
@@ -113,8 +113,8 @@ class IOResult
         fout.close();
     }
 
-    static void SaveTabular(const std::string &fname, const ClusterMatrixCD_t &greenTab, const double &beta,
-                            const size_t &precision = 10, const bool &saveArma = false)
+    static void SaveTabular(const std::string &fname, const ClusterMatrixCD_t &greenTab, const double &beta, const size_t &precision = 10,
+                            const bool &saveArma = false)
     {
 
         std::ofstream fout;
@@ -128,10 +128,8 @@ class IOResult
             for (Site_t ii = 0; ii < greenTab.n_cols; ++ii)
             {
 
-                fout << std::setprecision(precision) << greenTab(nn, ii).real()
-                     << " "
-                     << std::setprecision(precision) << greenTab(nn, ii).imag()
-                     << " ";
+                fout << std::setprecision(precision) << greenTab(nn, ii).real() << " " << std::setprecision(precision)
+                     << greenTab(nn, ii).imag() << " ";
             }
             fout << "\n";
         }
@@ -144,7 +142,8 @@ class IOResult
         }
     }
 
-    static void SaveFillingMatrixs(std::valarray<double> &fillingResultUp, std::valarray<double> &fillingResultDown, const IO::Base_IOModel &ioModel)
+    static void SaveFillingMatrixs(std::valarray<double> &fillingResultUp, std::valarray<double> &fillingResultDown,
+                                   const IO::Base_IOModel &ioModel)
     {
         ClusterMatrix_t nUpMatrix(ioModel.Nc, ioModel.Nc);
         nUpMatrix.zeros();
@@ -176,4 +175,4 @@ class IOResult
     }
 };
 
-} //namespace mpiUt
+} // namespace mpiUt

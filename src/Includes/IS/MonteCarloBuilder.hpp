@@ -18,7 +18,7 @@ std::unique_ptr<ABC_MonteCarlo> MonteCarloBuilder(const Json &jjSim, const size_
     using Model_t = Models::ABC_Model_2D;
     using MarkovInt_t = Markov::MarkovChain;
 
-    //Init a dummy model just to be sure that all files are present:
+    // Init a dummy model just to be sure that all files are present:
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
         const Model_t modelDummy(jjSim);

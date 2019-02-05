@@ -22,20 +22,13 @@ class Observables
 
   public:
     // Observables(){};
-    Observables(const std::shared_ptr<ISDataCT> &dataCT,
-                const Json &jjSim) : dataCT_(dataCT),
-                                     modelPtr_(dataCT_->modelPtr_),
-                                     ioModelPtr_(modelPtr_->ioModelPtr()),
-                                     rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Tools::Rank() * mpiUt::Tools::Rank()),
-                                     urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
-                                     greenBinningUp_(dataCT_, jjSim, FermionSpin_t::Up),
-                                     greenBinningDown_(dataCT_, jjSim, FermionSpin_t::Down),
-                                     fillingAndDocc_(dataCT_, urngPtr_, jjSim["solver"]["n_tau_sampling"].get<size_t>()),
-                                     signMeas_(0.0),
-                                     expOrder_(0.0),
-                                     NMeas_(0),
-                                     NOrb_(jjSim["model"]["nOrb"].get<size_t>()),
-                                     averageOrbitals_(jjSim["solver"]["averageOrbitals"].get<bool>())
+    Observables(const std::shared_ptr<ISDataCT> &dataCT, const Json &jjSim)
+        : dataCT_(dataCT), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
+          rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Tools::Rank() * mpiUt::Tools::Rank()),
+          urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
+          greenBinningUp_(dataCT_, jjSim, FermionSpin_t::Up), greenBinningDown_(dataCT_, jjSim, FermionSpin_t::Down),
+          fillingAndDocc_(dataCT_, urngPtr_, jjSim["solver"]["n_tau_sampling"].get<size_t>()), signMeas_(0.0), expOrder_(0.0), NMeas_(0),
+          NOrb_(jjSim["model"]["nOrb"].get<size_t>()), averageOrbitals_(jjSim["solver"]["averageOrbitals"].get<bool>())
     {
 
         Logging::Debug("In Obs constructor ");
@@ -43,7 +36,7 @@ class Observables
         Logging::Debug("After Obs  constructor ");
     }
 
-    //Getters
+    // Getters
     double signMeas() const { return signMeas_; };
     double expOrder() const { return expOrder_; };
 
@@ -73,14 +66,14 @@ class Observables
         obsScal["sign"] = signMeas_;
         obsScal["NMeas"] = NMeas_;
 
-        //dont forget that the following obs have not been finalized (multiplied by following factor)
+        // dont forget that the following obs have not been finalized (multiplied by following factor)
         const double fact = 1.0 / (NMeas_ * signMeas_);
         obsScal["k"] = fact * expOrder_;
 
         ClusterCubeCD_t greenCubeMatUp = greenBinningUp_.FinalizeGreenBinning(signMeas_, NMeas_);
         ClusterCubeCD_t greenCubeMatDown = greenBinningDown_.FinalizeGreenBinning(signMeas_, NMeas_);
 
-        //Average the green Functions if orbitals have the same parameters
+        // Average the green Functions if orbitals have the same parameters
         if (averageOrbitals_)
         {
             greenCubeMatUp = ioModelPtr_->AverageOrbitals(greenCubeMatUp);
@@ -90,13 +83,14 @@ class Observables
         ClusterMatrixCD_t greenMatsubaraUp = ioModelPtr_->FullCubeToIndep(greenCubeMatUp);
         ClusterMatrixCD_t greenMatsubaraDown = ioModelPtr_->FullCubeToIndep(greenCubeMatDown);
 
-//Gather and stats of all the results for all cores
+// Gather and stats of all the results for all cores
 #ifndef AFM
         greenMatsubaraUp = 0.5 * (greenMatsubaraUp + greenMatsubaraDown);
         greenMatsubaraDown = greenMatsubaraUp;
 #endif
 
-        Result::ISResult isResult(obsScal, greenMatsubaraUp, greenMatsubaraDown, fillingAndDocc_.fillingUp(), fillingAndDocc_.fillingDown());
+        Result::ISResult isResult(obsScal, greenMatsubaraUp, greenMatsubaraDown, fillingAndDocc_.fillingUp(),
+                                  fillingAndDocc_.fillingDown());
         std::vector<Result::ISResult> isResultVec;
 #ifdef HAVEMPI
 
@@ -120,8 +114,8 @@ class Observables
 #endif
 
         // Start: This should be in PostProcess.cpp ?
-        //Start of observables that are easier and ok to do once all has been saved (for exemples, depends only on final green function)
-        //Get KinecticEnergy
+        // Start of observables that are easier and ok to do once all has been saved (for exemples, depends only on final green function)
+        // Get KinecticEnergy
         // #ifndef DCA
         //                 if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
         //                 {
@@ -142,7 +136,7 @@ class Observables
 
         //                 //End: This should be in PostProcess.cpp ?
         // #endif
-        //ioModelPtr_->SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
+        // ioModelPtr_->SaveCube("greenUp.dat", modelPtr_->greenCluster0MatUp().data(), modelPtr_->beta());
         Logging::Info("End of Observables.Save()");
     }
 

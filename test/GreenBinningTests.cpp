@@ -11,7 +11,7 @@ using ISDataCT_t = Markov::Obs::ISDataCT;
 // const double DELTA = 1e-11;
 const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
 
-GreenBinning_t BuildGreenBinning() //for Square2x2
+GreenBinning_t BuildGreenBinning() // for Square2x2
 {
 
     std::ifstream fin(FNAME);
@@ -20,10 +20,7 @@ GreenBinning_t BuildGreenBinning() //for Square2x2
     fin.close();
     std::shared_ptr<Model_t> modelPtr(new Model_t(jj));
 
-    std::shared_ptr<ISDataCT_t> dataCT(
-        new ISDataCT_t(
-            jj,
-            modelPtr));
+    std::shared_ptr<ISDataCT_t> dataCT(new ISDataCT_t(jj, modelPtr));
 
     std::cout << "Here 1 " << std::endl;
     GreenBinning_t greenBinning(dataCT, jj, FermionSpin_t::Up);
@@ -32,10 +29,7 @@ GreenBinning_t BuildGreenBinning() //for Square2x2
     return greenBinning;
 }
 
-TEST(GreenBinningTests, Init)
-{
-    GreenBinning_t greenBinning = BuildGreenBinning();
-}
+TEST(GreenBinningTests, Init) { GreenBinning_t greenBinning = BuildGreenBinning(); }
 
 int main(int argc, char **argv)
 {

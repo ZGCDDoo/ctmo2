@@ -22,10 +22,7 @@ Markov_t BuildMarkovChain()
     return markovchain;
 }
 
-TEST(MarkovChainSquare2x2Tests, Init)
-{
-    Markov_t mc = BuildMarkovChain();
-}
+TEST(MarkovChainSquare2x2Tests, Init) { Markov_t mc = BuildMarkovChain(); }
 
 TEST(MarkovChainSquare2x2Tests, DoStep)
 {

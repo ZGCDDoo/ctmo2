@@ -17,9 +17,7 @@ class ConfigParser
     const size_t NUM_MAX_CONFIGS = 5000;
     const std::string NAME_PREFIX_BATCH = "configsBatch";
 
-    explicit ConfigParser() : configs_()
-    {
-    }
+    explicit ConfigParser() : configs_() {}
 
     void SaveConfig(const Vertices &vertices_)
     {
@@ -61,4 +59,4 @@ class ConfigParser
 };
 } // namespace Diagrammatic
 
-#endif //CTMO_CONFIGPARSER_HPP
+#endif // CTMO_CONFIGPARSER_HPP

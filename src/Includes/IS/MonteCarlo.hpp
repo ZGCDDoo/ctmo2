@@ -30,28 +30,21 @@ struct Timer
         return;
     }
 
-    bool End()
-    {
-        return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_).count() > duration_;
-    };
+    bool End() { return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_).count() > duration_; };
 
   private:
     double duration_;
     std::chrono::steady_clock::time_point start_;
 };
 
-template <typename TMarkovChain_t>
-class MonteCarlo : public ABC_MonteCarlo
+template <typename TMarkovChain_t> class MonteCarlo : public ABC_MonteCarlo
 {
   public:
-    MonteCarlo(const std::shared_ptr<TMarkovChain_t> &markovchainPtr, const Json &jj) : markovchainPtr_(markovchainPtr),
-                                                                                        thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
-                                                                                        measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()),
-                                                                                        updatesMeas_(jj["solver"]["updatesMeas"].get<size_t>()),
-                                                                                        cleanUpdate_(jj["solver"]["cleanUpdate"].get<size_t>()),
-                                                                                        NMeas_(0),
-                                                                                        NCleanUpdates_(0),
-                                                                                        thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
+    MonteCarlo(const std::shared_ptr<TMarkovChain_t> &markovchainPtr, const Json &jj)
+        : markovchainPtr_(markovchainPtr), thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
+          measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()), updatesMeas_(jj["solver"]["updatesMeas"].get<size_t>()),
+          cleanUpdate_(jj["solver"]["cleanUpdate"].get<size_t>()), NMeas_(0), NCleanUpdates_(0),
+          thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
     {
     }
 
@@ -99,7 +92,7 @@ class MonteCarlo : public ABC_MonteCarlo
 
         while (true)
         {
-            markovchainPtr_->DoStep(); //One simple sweep
+            markovchainPtr_->DoStep(); // One simple sweep
 
             if (markovchainPtr_->updatesProposed() % updatesMeas_ == 0)
             {
@@ -123,13 +116,13 @@ class MonteCarlo : public ABC_MonteCarlo
         markovchainPtr_->SaveMeas();
     }
 
-    //Getters
+    // Getters
     size_t NMeas() const { return NMeas_; }
     size_t NCleanUpdates() const { return NCleanUpdates_; }
     size_t updatesProposed() const { return markovchainPtr_->updatesProposed(); }
 
   private:
-    //attributes
+    // attributes
     const std::shared_ptr<TMarkovChain_t> markovchainPtr_;
     const double thermalizationTime_;
     const double measurementTime_;

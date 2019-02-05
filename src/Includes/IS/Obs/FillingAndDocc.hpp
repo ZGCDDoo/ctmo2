@@ -16,11 +16,9 @@ class FillingAndDocc
 {
 
   public:
-    FillingAndDocc(const std::shared_ptr<ISDataCT> &dataCT,
-                   std::shared_ptr<Utilities::UniformRngFibonacci3217_t> &urngPtr, const size_t &N_T_INV) : dataCT_(dataCT),
-                                                                                                            ioModelPtr_((dataCT_->modelPtr_)->ioModelPtr()),
-                                                                                                            urngPtr_(urngPtr),
-                                                                                                            N_T_INV_(N_T_INV)
+    FillingAndDocc(const std::shared_ptr<ISDataCT> &dataCT, std::shared_ptr<Utilities::UniformRngFibonacci3217_t> &urngPtr,
+                   const size_t &N_T_INV)
+        : dataCT_(dataCT), ioModelPtr_((dataCT_->modelPtr_)->ioModelPtr()), urngPtr_(urngPtr), N_T_INV_(N_T_INV)
     {
         const size_t LL = dataCT_->NOrb_ * ioModelPtr_->fillingSites().size();
 
@@ -53,7 +51,8 @@ class FillingAndDocc
             for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
-                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
+                const double factFilling =
+                    static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
                 fillingUpTotalCurrent += factFilling * fillingUpCurrent_[index];
                 index++;
             }
@@ -72,7 +71,8 @@ class FillingAndDocc
             for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
-                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
+                const double factFilling =
+                    static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
                 fillingDownTotalCurrent += factFilling * fillingDownCurrent_[index];
                 index++;
             }
@@ -88,7 +88,8 @@ class FillingAndDocc
             for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
-                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
+                const double factFilling =
+                    static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk)));
                 doccTotalCurrent += factFilling * doccCurrent_[index];
                 index++;
             }
@@ -230,7 +231,9 @@ class FillingAndDocc
                 nName = "Sz" + std::to_string(ioModelPtr_->fillingSites().at(kk)) + "_" + std::to_string(oIndex);
                 obsmap_[nName] = Sz_.at(index);
 
-                const double factFilling = static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk))) / static_cast<double>(ioModelPtr_->Nc);
+                const double factFilling =
+                    static_cast<double>(ioModelPtr_->nOfAssociatedSites().at(ioModelPtr_->fillingSitesIndex().at(kk))) /
+                    static_cast<double>(ioModelPtr_->Nc);
                 fillingTotal += factFilling * (fillingUp_.at(index) + fillingDown_.at(index));
                 doccTotal += factFilling * docc_.at(index);
                 SzTotal += factFilling * Sz_.at(index);
@@ -249,13 +252,13 @@ class FillingAndDocc
 
     std::map<std::string, double> obsmap_;
 
-    //current values for the current config
+    // current values for the current config
     std::valarray<double> fillingUpCurrent_;
     std::valarray<double> fillingDownCurrent_;
     std::valarray<double> doccCurrent_;
     std::valarray<double> SzCurrent_;
 
-    //values that are accumulated
+    // values that are accumulated
     std::vector<double> fillingUp_;
     std::vector<double> fillingDown_;
     std::vector<double> docc_;
