@@ -8,9 +8,9 @@ using namespace LinAlg;
 
 using Markov_t = Markov::MarkovChain;
 
-const double DELTA = 2e-9;
+const double DELTA = 1e-10;
 const std::string FNAME = "../test/data/cdmft_triangle/testtriangle.json";
-const size_t NSTEPS = 100;
+const size_t NSTEPS = 10000;
 
 Markov_t BuildMarkovChain()
 {
@@ -73,20 +73,24 @@ TEST(MarkovChainSquare2x2Tests, DoStep)
         }
     }
 
+    // assert that the ratio calculated in the ABC_MarkovChain is the same as the one calculated using the determinant.
+    // try for at least NSteps
+
+    for (size_t ii = 0; ii < NSTEPS; ii++)
+    {
+        mc.DoStep();
+        tmpUp = mc.Nup();
+        tmpDown = mc.Ndown();
+        const double goodDeterminant = std::log(std::abs(1.0 / tmpUp.Determinant() * 1.0 / tmpDown.Determinant()));
+        const double determinant = mc.logDeterminant();
+
+        ASSERT_NEAR(determinant, goodDeterminant, DELTA);
+    }
+
     ASSERT_EQ(tmpUp.n_cols(), mc.Nup().n_rows());
     ASSERT_EQ(tmpUp.n_cols(), tmpUp.n_rows());
     std::cout << "dims = " << tmpUp.n_cols() << std::endl;
     mc.SaveTherm();
-
-    // assert that the ratio calculated in the ABC_MarkovChain is the same as the one calculated using the determinant.
-
-    const double goodDeterminant = std::log(1.0 / tmpUp.Determinant() * 1.0 / tmpDown.Determinant());
-    const double determinant = mc.logDeterminant();
-
-    std::cout << "determinat = " << determinant << std::endl;
-    std::cout << "goodDeterminat = " << goodDeterminant << std::endl;
-
-    ASSERT_DOUBLE_EQ(determinant, goodDeterminant);
 }
 
 int main(int argc, char **argv)

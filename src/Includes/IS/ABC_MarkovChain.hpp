@@ -214,8 +214,8 @@ class ABC_MarkovChain
         {
             AssertSizes();
 #ifdef SLMC
-            logDeterminant_ += std::log(ratio);
-            std::cout << "logDeterminant = " << logDeterminant_ << std::endl;
+            logDeterminant_ += std::log(std::abs(ratio));
+
 #endif
             updStats_["Inserts"][1]++;
             if (ratioAcc < 0.0)
@@ -410,8 +410,7 @@ class ABC_MarkovChain
         {
 
 #ifdef SLMC
-            logDeterminant_ += std::log(ratio);
-            std::cout << "logDeterminant = " << logDeterminant_ << std::endl;
+            logDeterminant_ += std::log(std::abs(ratio));
 
 #endif
             updStats_["Removes"][1]++;
@@ -572,7 +571,7 @@ class ABC_MarkovChain
     {
         AssertSizes();
 #ifdef SLMC
-        configParser_.SaveConfig(dataCT_->vertices_, logDeterminant_);
+        configParser_.SaveConfig(dataCT_->vertices_, logDeterminant_, dataCT_->sign_);
 #else
         const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
         const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
