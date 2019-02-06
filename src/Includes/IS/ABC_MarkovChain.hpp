@@ -19,7 +19,7 @@ using Fourier::MatToTauCluster;
 using Vertex = Diagrammatic::Vertex;
 using VertexPart = Diagrammatic::VertexPart;
 
-typedef LinAlg::Matrix_t Matrix_t;
+using Matrix_t = LinAlg::Matrix_t;
 
 struct UpdData
 {
@@ -51,7 +51,6 @@ class ABC_MarkovChain
     using Model_t = Models::ABC_Model_2D;
 
   public:
-    const double PROBFLIP = 0.00;
     const double PROBINSERT = 0.3333333333;
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
@@ -59,7 +58,7 @@ class ABC_MarkovChain
         : modelPtr_(new Model_t(jj)), rng_(seed), urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)), nfdata_(), upddata_(),
           dataCT_(new Obs::ISDataCT(jj, modelPtr_)), obs_(dataCT_, jj), vertexBuilder_(jj, modelPtr_->Nc()),
 #ifdef SLMC
-          configParser_(),
+          configParser_(), logDeterminant_(0.0),
 #endif
           updsamespin_(0), isOneOrbitalOptimized_(jj["solver"]["isOneOrbitalOptimized"].get<bool>())
     {
@@ -69,6 +68,12 @@ class ABC_MarkovChain
         updStats_["Flips"] = zeroPair;
         updatesProposed_ = 0;
 
+#ifdef SLMC
+        if (!isOneOrbitalOptimized_)
+        {
+            throw std::runtime_error("Should be one Orbital optimized for SLMC.");
+        }
+#endif
         if (isOneOrbitalOptimized_)
         {
             Logging::Trace("Optimized for one orbital and will crash if not One-band Hubbard Model.");
@@ -79,16 +84,21 @@ class ABC_MarkovChain
     virtual ~ABC_MarkovChain() = default;
 
     // Getters
-    Model_t model() const { return (*modelPtr_); };
+    Model_t model() const { return (*modelPtr_); }
 
-    Matrix_t Nup() const { return nfdata_.Nup_; };
+    Matrix_t Nup() const { return nfdata_.Nup_; }
 
-    Matrix_t Ndown() const { return nfdata_.Ndown_; };
+    Matrix_t Ndown() const { return nfdata_.Ndown_; }
 
     size_t updatesProposed() const { return updatesProposed_; }
 
-    double beta() const { return dataCT_->beta_; };
+    double beta() const { return dataCT_->beta_; }
 
+#ifdef SLMC
+    double logDeterminant() const { return logDeterminant_; }
+#endif
+
+    // End Getters
     virtual double FAux(const VertexPart &vPart) const = 0;
 
     virtual double FAuxBar(const VertexPart &vPart) const = 0;
@@ -97,14 +107,8 @@ class ABC_MarkovChain
 
     void DoStep()
     {
-        // if (urng_() < PROBFLIP)
-        // {
-        //     FlipAux();
-        // }
-        // else
-        // {
+
         urng_() < PROBINSERT ? InsertVertex() : RemoveVertex();
-        // }
         updatesProposed_++;
     }
 
@@ -120,89 +124,6 @@ class ABC_MarkovChain
         assert(dataCT_->vertices_.NDown() == nfdata_.FVdown_.n_elem);
         assert(dataCT_->vertices_.NDown() == nfdata_.Ndown_.n_rows());
     }
-
-    // void FlipAux()
-    // {
-
-    //     if (dataCT_->vertices_.size())
-    //     {
-    //         updStats_["Flips"][0]++;
-    //         const size_t p = static_cast<size_t>(dataCT_->vertices_.size() * urng_());
-    //         Vertex vertex = dataCT_->vertices_.at(p);
-    //         const VertexPart x = vertex.vStart();
-    //         const VertexPart y = vertex.vEnd();
-
-    //         if (!isOneOrbitalOptimized_)
-    //         {
-    //             //We only flip if we have one orbital and no phonons !
-    //             return;
-    //         }
-
-    //         vertex.FlipAux();
-    //         assert(x.aux() != vertex.vStart().aux());
-    //         assert(dataCT_->vertices_.NUp() == dataCT_->vertices_.NDown());
-    //         assert(x.tau() == y.tau());
-
-    //         const double fauxup = nfdata_.FVup_(p);
-    //         const double fauxdown = nfdata_.FVdown_(p);
-    //         const double fauxupM1 = fauxup - 1.0;
-    //         const double fauxdownM1 = fauxdown - 1.0;
-    //         const double gammakup = gamma(vertex.vStart(), x);
-    //         const double gammakdown = gamma(vertex.vEnd(), y);
-
-    //         const double ratioUp = 1.0 + (1.0 - (nfdata_.Nup_(p, p) * fauxup - 1.0) / (fauxupM1)) * gammakup;
-    //         const double ratioDown = 1.0 + (1.0 - (nfdata_.Ndown_(p, p) * fauxdown - 1.0) / (fauxdownM1)) * gammakdown;
-
-    //         const double ratioAcc = ratioUp * ratioDown;
-
-    //         if (urng_() < std::abs(ratioAcc))
-    //         {
-    //             updStats_["Flips"][1]++;
-    //             if (ratioAcc < 0.0)
-    //             {
-    //                 dataCT_->sign_ *= -1;
-    //             }
-
-    //             const size_t kk = dataCT_->vertices_.size();
-    //             const double lambdaUp = gammakup / ratioUp;
-    //             const double lambdaDown = gammakdown / ratioDown;
-
-    //             SiteVector_t rowpUp;
-    //             SiteVector_t colpUp;
-    //             LinAlg::ExtractRow(p, rowpUp, nfdata_.Nup_);
-    //             LinAlg::ExtractCol(p, colpUp, nfdata_.Nup_);
-
-    //             SiteVector_t rowpDown;
-    //             SiteVector_t colpDown;
-    //             LinAlg::ExtractRow(p, rowpDown, nfdata_.Ndown_);
-    //             LinAlg::ExtractCol(p, colpDown, nfdata_.Ndown_);
-
-    //             for (size_t j = 0; j < kk; j++)
-    //             {
-    //                 for (size_t i = 0; i < kk; i++)
-    //                 {
-    //                     if (i != p)
-    //                     {
-    //                         nfdata_.Nup_(i, j) += (colpUp(i) * fauxup / fauxupM1) * lambdaUp * rowpUp(j);
-    //                         nfdata_.Ndown_(i, j) += (colpDown(i) * fauxdown / fauxdownM1) * lambdaDown * rowpDown(j);
-    //                     }
-    //                     else
-    //                     {
-    //                         nfdata_.Nup_(i, j) += (((colpUp(i) * fauxup - 1.0) / fauxupM1) - 1.0) * lambdaUp * rowpUp(j);
-    //                         nfdata_.Ndown_(i, j) += (((colpDown(i) * fauxdown - 1.0) / fauxdownM1) - 1.0) * lambdaDown * rowpDown(j);
-    //                     }
-    //                 }
-    //             }
-
-    //             dataCT_->vertices_.at(p) = vertex;
-    //             nfdata_.FVup_(p) = fauxdown;
-    //             nfdata_.FVdown_(p) = fauxup;
-    //             assert(dataCT_->vertices_.at(p).vStart().aux() == vertex.vStart().aux());
-    //             const auto x2 = dataCT_->vertices_.at(p).vStart();
-    //             assert(x2.aux() == vertex.vEnd().aux());
-    //         }
-    //     }
-    // }
 
     void InsertVertex()
     {
@@ -292,7 +213,10 @@ class ABC_MarkovChain
         if (urng_() < std::abs(ratioAcc))
         {
             AssertSizes();
+#ifdef SLMC
+            logDeterminant_ += std::log(std::abs(ratio));
 
+#endif
             updStats_["Inserts"][1]++;
             if (ratioAcc < 0.0)
             {
@@ -479,11 +403,16 @@ class ABC_MarkovChain
             assert(std::abs(x.tau() - y.tau()) < 1e-14);
         }
 
-        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() *
-                                nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
+        const double ratio = nfdata_.Nup_(ppUp, ppUp) * nfdata_.Ndown_(ppDown, ppDown);
+        const double ratioAcc = PROBINSERT / PROBREMOVE * static_cast<double>(dataCT_->vertices_.size()) / vertex.probProb() * ratio;
 
         if (urng_() < std::abs(ratioAcc))
         {
+
+#ifdef SLMC
+            logDeterminant_ += std::log(std::abs(ratio));
+
+#endif
             updStats_["Removes"][1]++;
             if (ratioAcc < .0)
             {
@@ -642,7 +571,7 @@ class ABC_MarkovChain
     {
         AssertSizes();
 #ifdef SLMC
-        configParser_.SaveConfig(dataCT_->vertices_);
+        configParser_.SaveConfig(dataCT_->vertices_, logDeterminant_, dataCT_->sign_);
 #else
         const SiteVector_t FVupM1 = (nfdata_.FVup_ - 1.0);
         const SiteVector_t FVdownM1 = (nfdata_.FVdown_ - 1.0);
@@ -715,6 +644,8 @@ class ABC_MarkovChain
 
 #ifdef SLMC
     Diagrammatic::ConfigParser configParser_;
+    double logDeterminant_;
+
 #endif
     UpdStats_t updStats_; //[0] = number of propsed, [1]=number of accepted
 

@@ -230,7 +230,7 @@ class ABC_H0
 
     void CalculateNonIntDos()
     {
-        Logging::Info("Start calculating Non-interacting density of states.");
+        Logging::Info("Start calculating Non-interacting density of states, in reduced brillouin zone (ktilde).");
         const double NW = 2000;
         const double wlimit = 4.00;
 

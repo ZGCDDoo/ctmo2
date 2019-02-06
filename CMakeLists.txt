@@ -216,6 +216,7 @@ if (${TEST})
             MarkovChainTests
             MarkovChainSquare2x2Tests
             MarkovChainTriangle2x2Tests
+            MarkovChainTriangle2x2_SLMC_Tests
             MatrixTests
             ObservablesTests
             UTensorSimpleTests

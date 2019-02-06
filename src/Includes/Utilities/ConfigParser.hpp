@@ -19,7 +19,7 @@ class ConfigParser
 
     explicit ConfigParser() : configs_() {}
 
-    void SaveConfig(const Vertices &vertices_)
+    void SaveConfig(const Vertices &vertices_, const double &logDeterminant, const Sign_t &sign)
     {
         const size_t ss = vertices_.size();
         std::vector<int> auxSpins(ss);
@@ -34,6 +34,8 @@ class ConfigParser
 
         configs_[std::to_string(configId_)]["taus"] = taus;
         configs_[std::to_string(configId_)]["auxSpins"] = auxSpins;
+        configs_[std::to_string(configId_)]["logDeterminant"] = logDeterminant;
+        configs_[std::to_string(configId_)]["sign"] = sign;
 
         ++configId_;
         if (configId_ == NUM_MAX_CONFIGS)
