@@ -11,30 +11,27 @@
     :target: https://travis-ci.com/ZGCDDoo/ctmo
     
 
-Graham
--------
+Introduction
+--------------
 
-g++
-^^^^^^
+The documentation can be found at the following website: `Documentation <https://zgcddoo.github.io/ctmo/>`_
+By following the previous link, you will get all the necessary information to get started:
 
-* module reset 
-* module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi
-* mkdir build && cd build && cmake -DHOME=OFF -DGRAHAM=ON -DMPI_BUILD=ON .. && make
+  - Installation procedures and supported platforms
+  - Tutorials and examples
 
-icpc (mpic++)
-^^^^^^^^^^^^^^
-* module reset
-* module load intel/2017.5 armadillo boost-mpi
-* mkdir build && cd build && cmake -DHOME=OFF -DGRAHAM=ON -DMPI_BUILD=ON .. && make
+Issues and Questions
+---------------------
 
-Mp2
-------
+The installation and use should be straitforward if you follow the documentaion.
+If you have any issues or questions however, please contact my directly or open an issue.
 
-g++ and icpc (mpic++)
-^^^^^^^^^^^^^^^^^^^^^^
-* module reset
-* module load cmake/3.6.1  gcc/6.1.0  intel64/17.4  boost64/1.65.1_intel17 openmpi/1.8.4_intel17  armadillo/8.300.0
-* mkdir build && cd build && cmake -DHOME=OFF -DMP2=ON -DMPI_BUILD=ON .. && make
+
+Contact info
+--------------
+Please contact me at charles-david.hebert@usherbrooke.ca
+
+
 
 Aknowledgements and special thanks
 ----------------------------------
