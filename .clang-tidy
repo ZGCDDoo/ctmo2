@@ -4,9 +4,10 @@ Checks: >
     cppcoreguidelines-*,
     clang-analyzer-*,
     hicpp-*,
-    #misc-*,
+    # misc-*, use only for non-header only project
     modernize-*,
     performance-*,
     portability-*,
     readability-*,
+    
    
