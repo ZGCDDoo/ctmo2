@@ -1,9 +1,7 @@
 #pragma once
 
 #include "MonteCarlo.hpp"
-
 #include "MarkovChain.hpp"
-#include "../Utilities/MPITools.hpp"
 
 namespace MC
 {

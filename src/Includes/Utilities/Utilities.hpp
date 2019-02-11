@@ -1,25 +1,5 @@
 #pragma once
 
-#include <cstdlib>
-#include <cmath>
-#include <iomanip>
-#include <iostream>
-#include <fstream>
-#include <valarray>
-#include <vector>
-#include <utility>
-#include <set>
-#include <algorithm>
-#include <fstream>
-#include <cassert>
-#include <boost/random.hpp>
-#include <boost/filesystem.hpp>
-#include <mm_malloc.h>
-#include <valarray>
-#include <vector>
-#include <string>
-#include <ccomplex>
-
 // External Libraries
 #include <armadillo>
 #include "../../deps/nlohmann_json/json.hpp"
@@ -70,11 +50,6 @@ using UpdStats_t = std::map<std::string, std::valarray<size_t>>;
 namespace Utilities
 {
 
-typedef boost::mt19937 EngineTypeMt19937_t;
-typedef boost::lagged_fibonacci3217 EngineTypeFibonacci3217_t;
-typedef boost::uniform_real<double> UniformDistribution_t;
-typedef boost::variate_generator<EngineTypeMt19937_t &, UniformDistribution_t> UniformRngMt19937_t;
-typedef boost::variate_generator<EngineTypeFibonacci3217_t &, UniformDistribution_t> UniformRngFibonacci3217_t;
 
 std::string GetSpinName(const FermionSpin_t &spin) { return (spin == FermionSpin_t::Up ? "Up" : "Down"); }
 

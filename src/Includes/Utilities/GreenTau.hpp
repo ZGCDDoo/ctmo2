@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Fourier.hpp"
-#include "MPITools.hpp"
 #include "IO.hpp"
 
 namespace GreenTau

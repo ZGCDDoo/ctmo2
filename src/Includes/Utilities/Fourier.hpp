@@ -1,4 +1,5 @@
 #pragma once
+
 #include "GreenMat.hpp"
 
 namespace Fourier

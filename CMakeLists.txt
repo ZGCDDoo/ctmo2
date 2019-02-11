@@ -67,7 +67,7 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 #-------------------------------------------------------------------------------------------------------------
 message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 
-#set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -Wshadow -Wnon-virtual-dtor  -pipe -fomit-frame-pointer -Ofast")
+set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -Wshadow -Wnon-virtual-dtor  -pipe -fomit-frame-pointer -Ofast")
 if (${STD14})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
     message(STATUS "Compiling with -std=c++14 standard. ")

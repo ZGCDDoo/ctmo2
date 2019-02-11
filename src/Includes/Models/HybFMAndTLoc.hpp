@@ -1,10 +1,8 @@
 #pragma once
 
 #include "../Models/ABC_H0.hpp"
-#include "../Utilities/Integrator.hpp"
 #include "../Utilities/Conventions.hpp"
 #include "../Utilities/Fourier_DCA.hpp"
-#include "../Utilities/Logging.hpp"
 
 namespace Models
 {

@@ -1,5 +1,7 @@
 #include "../../Utilities/Utilities.hpp"
 #include "../../Utilities/Fourier.hpp"
+#include "../../Utilities/UtilitiesRandom.hpp"
+
 
 namespace Markov
 {

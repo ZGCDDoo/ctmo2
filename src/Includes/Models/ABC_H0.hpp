@@ -1,5 +1,6 @@
 #pragma once
 #include "../Utilities/Logging.hpp"
+#include <boost/filesystem.hpp>
 
 namespace Models
 {
