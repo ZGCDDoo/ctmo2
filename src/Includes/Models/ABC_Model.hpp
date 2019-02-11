@@ -2,7 +2,6 @@
 
 #include "../Utilities/Conventions.hpp"
 #include "../Utilities/MPITools.hpp"
-#include "../Utilities/Integrator.hpp"
 #include "../Utilities/GreenMat.hpp"
 #include "../Utilities/IO.hpp"
 #include "ABC_H0.hpp"

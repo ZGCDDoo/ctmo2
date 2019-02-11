@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Integrator.hpp"
 #include "MPITools.hpp"
 #include "ABC_SelfConsistency.hpp"
 #include "../Models/ABC_Model.hpp"

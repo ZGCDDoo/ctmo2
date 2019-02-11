@@ -99,7 +99,7 @@ class ABC_H0
         }
     }
 
-    double Eps0k(const double &kx, const double &ky, const double &kz = 0.0, const size_t &NIndepOrbIndex = 0)
+    double Eps0k(const double &kx, const double &ky, const double &kz = 0.0, const size_t &NIndepOrbIndex = 0) const
     {
         const double eps0k =
 
@@ -126,7 +126,7 @@ class ABC_H0
         return eps0k;
     }
 
-    ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) // return t(ktilde)
+    ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) const // return t(ktilde)
     {
 
         const cd_t im = cd_t(0.0, 1.0);
@@ -165,7 +165,7 @@ class ABC_H0
         return (HoppingKTilde / static_cast<double>(Nc));
     }
 
-    void SaveTKTildeAndHybFM()
+    void SaveTKTildeAndHybFM() const
     {
         // check if  file exists:
         using boost::filesystem::exists;
@@ -228,7 +228,7 @@ class ABC_H0
         CalculateNonIntDos();
     }
 
-    void CalculateNonIntDos()
+    void CalculateNonIntDos() const
     {
         Logging::Info("Start calculating Non-interacting density of states, in reduced brillouin zone (ktilde).");
         const double NW = 2000;

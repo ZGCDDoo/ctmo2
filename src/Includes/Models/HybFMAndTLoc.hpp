@@ -34,60 +34,50 @@ class HybFMAndTLoc
 
         // Get TLoc = Int[t(ktilde)]
         Logging::Warn("Calculating tLoc");
+        const size_t NKPTS = h0.NKPTS();
+        const double kxCenter = M_PI / static_cast<double>(h0.Nx);
+        const double kyCenter = M_PI / static_cast<double>(h0.Ny);
+        const double kzCenter = M_PI / static_cast<double>(h0.Nz);
 
-        TKTildeK tktildeK(h0);
-        const ClusterMatrixCD_t tlocK = Integrator::CubatureKTildeDCA(tktildeK);
+        const size_t kxtildepts = (std::abs(h0.txVec().at(0)) < 1e-10) ? 1 : NKPTS;
+        const size_t kytildepts = (std::abs(h0.tyVec().at(0)) < 1e-10) ? 1 : NKPTS;
+        const size_t kztildepts = (std::abs(h0.tzVec().at(0)) < 1e-10) ? 1 : NKPTS;
 
-        // Get Int[ t(ktilde)^2 ]
-        Logging::Warn("Calculating hybFM");
-        TKTildeSquaredK tktildesquaredK(h0);
-        const ClusterMatrixCD_t tktildeSquaredKIntegrated = Integrator::CubatureKTildeDCA(tktildesquaredK);
+        ClusterMatrixCD_t tlocK(h0.n_rows(), h0.n_rows());
+        tlocK.zeros();
+        ClusterMatrixCD_t hybFMK(h0.n_rows(), h0.n_rows());
+        hybFMK.zeros();
 
-        const ClusterMatrixCD_t hybFMK = tktildeSquaredKIntegrated - tlocK * tlocK;
+        for (size_t KIndex = 0; KIndex < h0.KWaveVectors().size(); KIndex++)
+        {
+            const double Kx = h0.KWaveVectors().at(KIndex)(0);
+            const double Ky = h0.KWaveVectors().at(KIndex)(1);
+            const double Kz = h0.KWaveVectors().at(KIndex)(2);
+
+            for (size_t kxindex = 0; kxindex < kxtildepts; kxindex++)
+            {
+                const double kx = (Kx - kxCenter) + static_cast<double>(kxindex) / static_cast<double>(NKPTS - 1) * 2.0 * kxCenter;
+                for (size_t kyindex = 0; kyindex < kytildepts; kyindex++)
+                {
+                    const double ky = (Ky - kyCenter) + static_cast<double>(kyindex) / static_cast<double>(NKPTS - 1) * 2.0 * kyCenter;
+                    for (size_t kzindex = 0; kzindex < kztildepts; kzindex++)
+                    {
+                        const double kz = (Kz - kzCenter) + static_cast<double>(kzindex) / static_cast<double>(NKPTS - 1) * 2.0 * kzCenter;
+                        const double epsk = h0.Eps0k(kx, ky, kz);
+                        tlocK(KIndex, KIndex) += epsk;
+                        hybFMK(KIndex, KIndex) += epsk * epsk;
+                    }
+                }
+            }
+            tlocK(KIndex, KIndex) /= static_cast<double>(kxtildepts * kytildepts * kztildepts);
+            hybFMK(KIndex, KIndex) /= static_cast<double>(kxtildepts * kytildepts * kztildepts);
+        }
+        hybFMK -= tlocK * tlocK;
 
         tlocK.save(tlocFName, arma::arma_binary);
         hybFMK.save(hybFMFName, arma::arma_binary);
         Logging::Debug("End of CalculateHybFMAndTLoc");
     }
-
-    struct TKTildeK
-    {
-
-        explicit TKTildeK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
-        size_t n_rows() const { return h0_.n_rows(); };
-        size_t n_cols() const { return h0_.n_cols(); };
-
-        Models::ABC_H0 h0_;
-        const size_t Nx;
-        const size_t Ny;
-        const size_t Nz;
-        const size_t Nc;
-
-        ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) // return t(ktilde)^2
-        {
-            return (FourierDCA::RtoK(h0_(kTildeX, kTildeY, kTildeZ), h0_.RSites(), h0_.KWaveVectors()));
-        }
-    };
-
-    struct TKTildeSquaredK
-    {
-
-        explicit TKTildeSquaredK(const Models::ABC_H0 &h0) : h0_(h0), Nx(h0.Nx), Ny(h0.Ny), Nz(h0.Nz), Nc(h0.Nc){};
-        size_t n_rows() const { return h0_.n_rows(); };
-        size_t n_cols() const { return h0_.n_cols(); };
-
-        Models::ABC_H0 h0_;
-        const size_t Nx;
-        const size_t Ny;
-        const size_t Nz;
-        const size_t Nc;
-
-        ClusterMatrixCD_t operator()(const double &kTildeX, const double &kTildeY, const double &kTildeZ) // return t(ktilde)^2
-        {
-            const ClusterMatrixCD_t tmp = h0_(kTildeX, kTildeY, kTildeZ);
-            return (FourierDCA::RtoK(tmp * tmp, h0_.RSites(), h0_.KWaveVectors()));
-        }
-    };
-};
+}; // namespace Models
 
 } // namespace Models

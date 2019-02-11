@@ -10,7 +10,7 @@
         "hybUpFile": "hybUp1.dat",
         "modelFile": "Square2x2.model",
         "J_H": 0.0,
-        "nkpts": 200,
+        "nkpts": 1000,
         "nOrb": 1,
         "U": 3.0,
         "UPrime": 0.0,
