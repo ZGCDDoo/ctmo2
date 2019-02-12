@@ -3,7 +3,6 @@
 #include "Includes/Utilities/SelfConsistencyBuilder.hpp"
 #include "Includes/Utilities/FS.hpp"
 #include "Includes/PrintVersion.hpp"
-#include "Includes/Utilities/Logging.hpp"
 #include "Includes/Utilities/CMDParser.hpp"
 
 int main(int argc, char **argv)

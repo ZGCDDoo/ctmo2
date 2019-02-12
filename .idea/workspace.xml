@@ -2,33 +2,33 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="ctmo" targetName="GreenMatTests" />
-      <config projectName="ctmo" targetName="UTensorSimpleTests" />
-      <config projectName="ctmo" targetName="SelfConsistencyTests" />
-      <config projectName="ctmo" targetName="ABC_ModelTests" />
-      <config projectName="ctmo" targetName="FourierTests" />
-      <config projectName="ctmo" targetName="IOTests" />
-      <config projectName="ctmo" targetName="UtilitiesTests" />
-      <config projectName="ctmo" targetName="gtest" />
-      <config projectName="ctmo" targetName="MarkovChainTests" />
-      <config projectName="ctmo" targetName="gtest_main" />
-      <config projectName="ctmo" targetName="Fourier_DCATests" />
-      <config projectName="ctmo" targetName="gmock_main" />
-      <config projectName="ctmo" targetName="HybFMAndTLocTests" />
-      <config projectName="ctmo" targetName="MatrixTests" />
-      <config projectName="ctmo" targetName="FillingAndDoccTests" />
-      <config projectName="ctmo" targetName="ctmo_slmc" />
-      <config projectName="ctmo" targetName="GreenTauTests" />
-      <config projectName="ctmo" targetName="VerticesSimpleTests" />
-      <config projectName="ctmo" targetName="MarkovChainTriangle2x2_SLMC_Tests" />
-      <config projectName="ctmo" targetName="MarkovChainTriangle2x2Tests" />
-      <config projectName="ctmo" targetName="ObservablesTests" />
-      <config projectName="ctmo" targetName="GreenBinningTests" />
-      <config projectName="ctmo" targetName="ABC_H0Tests" />
-      <config projectName="ctmo" targetName="gmock" />
-      <config projectName="ctmo" targetName="ctmo" />
       <config projectName="ctmo" targetName="MarkovChainSquare2x2Tests" />
+      <config projectName="ctmo" targetName="ctmo" />
+      <config projectName="ctmo" targetName="ABC_H0Tests" />
+      <config projectName="ctmo" targetName="gtest" />
       <config projectName="ctmo" targetName="ctmo_dca" />
+      <config projectName="ctmo" targetName="gmock" />
+      <config projectName="ctmo" targetName="MatrixTests" />
+      <config projectName="ctmo" targetName="UTensorSimpleTests" />
+      <config projectName="ctmo" targetName="MarkovChainTriangle2x2_SLMC_Tests" />
+      <config projectName="ctmo" targetName="UtilitiesTests" />
+      <config projectName="ctmo" targetName="ObservablesTests" />
+      <config projectName="ctmo" targetName="ctmo_slmc" />
+      <config projectName="ctmo" targetName="FourierTests" />
+      <config projectName="ctmo" targetName="ABC_ModelTests" />
+      <config projectName="ctmo" targetName="SelfConsistencyTests" />
+      <config projectName="ctmo" targetName="VerticesSimpleTests" />
+      <config projectName="ctmo" targetName="GreenBinningTests" />
+      <config projectName="ctmo" targetName="FillingAndDoccTests" />
+      <config projectName="ctmo" targetName="gmock_main" />
+      <config projectName="ctmo" targetName="GreenMatTests" />
+      <config projectName="ctmo" targetName="IOTests" />
+      <config projectName="ctmo" targetName="GreenTauTests" />
+      <config projectName="ctmo" targetName="MarkovChainTriangle2x2Tests" />
+      <config projectName="ctmo" targetName="MarkovChainTests" />
+      <config projectName="ctmo" targetName="Fourier_DCATests" />
+      <config projectName="ctmo" targetName="HybFMAndTLocTests" />
+      <config projectName="ctmo" targetName="gtest_main" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -38,29 +38,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt.user" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/MonteCarlo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/MonteCarlo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/Obs/GreenBinning.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/Obs/GreenBinning.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/Obs/KineticEnergy.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/Obs/KineticEnergy.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/IS/Obs/Observables.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/IS/Obs/Observables.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/FS.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/FS.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/Fourier.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/Fourier.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/IO.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/IO.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/MPIResult.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/MPIResult.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/Utilities.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/Utilities.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/TestTools.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/TestTools.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.clang-tidy" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-tidy" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -71,7 +49,7 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Includes/Models/UTensorSimple.hpp">
           <provider selected="true" editor-type-id="text-editor" />
@@ -80,7 +58,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
+            <state relative-caret-position="76">
               <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
               <folding>
                 <element signature="e#14#45#0" expanded="true" />
@@ -241,8 +219,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -400,12 +378,9 @@
     <list>
       <item itemvalue="Application.ABC_H0Tests" />
       <item itemvalue="Application.ABC_ModelTests" />
-      <item itemvalue="Application.ctmo" />
-      <item itemvalue="Application.ctmo_dca" />
-      <item itemvalue="Application.ctmo_slmc" />
       <item itemvalue="Application.FillingAndDoccTests" />
-      <item itemvalue="Application.Fourier_DCATests" />
       <item itemvalue="Application.FourierTests" />
+      <item itemvalue="Application.Fourier_DCATests" />
       <item itemvalue="Application.GreenBinningTests" />
       <item itemvalue="Application.GreenMatTests" />
       <item itemvalue="Application.GreenTauTests" />
@@ -413,14 +388,17 @@
       <item itemvalue="Application.IOTests" />
       <item itemvalue="Application.MarkovChainSquare2x2Tests" />
       <item itemvalue="Application.MarkovChainTests" />
-      <item itemvalue="Application.MarkovChainTriangle2x2_SLMC_Tests" />
       <item itemvalue="Application.MarkovChainTriangle2x2Tests" />
+      <item itemvalue="Application.MarkovChainTriangle2x2_SLMC_Tests" />
       <item itemvalue="Application.MatrixTests" />
       <item itemvalue="Application.ObservablesTests" />
       <item itemvalue="Application.SelfConsistencyTests" />
       <item itemvalue="Application.UTensorSimpleTests" />
       <item itemvalue="Application.UtilitiesTests" />
       <item itemvalue="Application.VerticesSimpleTests" />
+      <item itemvalue="Application.ctmo" />
+      <item itemvalue="Application.ctmo_dca" />
+      <item itemvalue="Application.ctmo_slmc" />
       <item itemvalue="Application.gmock" />
       <item itemvalue="Application.gmock_main" />
       <item itemvalue="Application.gtest" />
@@ -446,18 +424,20 @@
       <workItem from="1549307395542" duration="2472000" />
       <workItem from="1549389891339" duration="1403000" />
       <workItem from="1549847334420" duration="2617000" />
+      <workItem from="1549921712319" duration="19000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14715000" />
+    <option name="totallyTimeSpent" value="14734000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.19551282" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.19764957" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.31629393" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32890365" />
@@ -469,7 +449,7 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="CMake" order="11" visible="true" weight="0.2886049" />
+      <window_info anchor="bottom" id="CMake" order="11" visible="true" weight="0.28966987" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32779622" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -528,13 +508,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/IntegratorTests.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test/IntegratorTests.cpp" />
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-91" />
@@ -794,7 +768,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
+        <state relative-caret-position="76">
           <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
           <folding>
             <element signature="e#14#45#0" expanded="true" />
