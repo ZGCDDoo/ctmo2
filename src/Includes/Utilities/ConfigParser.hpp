@@ -6,7 +6,6 @@
 #define CTMO_CONFIGPARSER_HPP
 
 #include <snappy.h>
-#include "Utilities.hpp"
 #include "VerticesSimple.hpp"
 
 namespace Diagrammatic

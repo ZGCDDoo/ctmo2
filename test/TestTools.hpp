@@ -1,6 +1,6 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
-#include "../src/Includes/Utilities/Utilities.hpp"
+
 
 namespace TestTools
 {
@@ -9,7 +9,7 @@ using namespace boost::filesystem;
 
 void RemoveFilesForTests()
 {
-    std::vector<std::string> files = {"tloc.arma", "tktilde.arma", "hybFM.arma", "config.dat"};
+    const std::vector<std::string> files = {"tloc.arma", "tktilde.arma", "hybFM.arma", "config.dat"};
 
     for (const std::string &ss : files)
     {

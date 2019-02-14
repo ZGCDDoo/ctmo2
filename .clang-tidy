@@ -1,0 +1,13 @@
+Checks: >
+    bugprone-*,
+    boost-*,
+    cppcoreguidelines-*,
+    clang-analyzer-*,
+    hicpp-*,
+    # misc-*, use only for non-header only project
+    modernize-*,
+    performance-*,
+    portability-*,
+    readability-*,
+    
+   

@@ -88,7 +88,6 @@ endif ()
 
 
 set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/src/Includes)
-add_subdirectory(${PROJECT_SOURCE_DIR}/deps/cubature)
 include_directories(${PROJECT_SOURCE_DIR}/deps/spdlog/include)
 
 find_package(LAPACK REQUIRED)
@@ -96,7 +95,7 @@ find_package(LAPACK REQUIRED)
 #-------------HOME--------------------------------------------------
 if (${HOME})
     find_package(Boost REQUIRED mpi serialization filesystem system program_options)
-    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo cubature)
+    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo )
    
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         message(STATUS "Compiling with GNU, setting '-Werror' flag. ")
@@ -108,7 +107,7 @@ endif ()
 
 if (${MAC})
     find_package(Boost REQUIRED mpi serialization filesystem system)
-    set(LIBRARIES_EXEC lapack blas ${Boost_LIBRARIES} armadillo cubature)
+    set(LIBRARIES_EXEC lapack blas ${Boost_LIBRARIES} armadillo )
 endif ()
 
 
@@ -116,7 +115,7 @@ endif ()
 if (${GRAHAM})
     set(TEST OFF)
     set(CMAKE_EXE_LINKER_FLAGS "-L${MKLROOT}/lib/intel64")
-    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi cubature)
+    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi )
 endif ()
 #-------------GRAHAM--------------------------------------------------
 
@@ -126,7 +125,7 @@ if (${MP2})
     set(TEST OFF)
     SET(CMAKE_EXE_LINKER_FLAGS "-L${MKLROOT}/lib/intel64 -L/opt/boost64/1.65.1/lib -L/opt/armadillo/8.300.0/usr/lib64")
     include_directories(/opt/armadillo/8.300.0/usr/include /opt/boost64/1.65.1/include/boost/ ${MKLROOT}/include)
-    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi cubature)
+    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi )
 endif ()
 #-------------MP2--------------------------------------------------
 
@@ -209,7 +208,6 @@ if (${TEST})
             GreenMatTests
             GreenTauTests
             HybFMAndTLocTests
-            IntegratorTests
             IOTests
             UtilitiesTests
             SelfConsistencyTests

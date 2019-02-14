@@ -1,13 +1,11 @@
 #pragma once
 
-#include "../../Utilities/Utilities.hpp"
-#include "../../Utilities/LinAlg.hpp"
+
 #include "../../Utilities/MPIResult.hpp"
 
 #include "GreenBinning.hpp"
 #include "FillingAndDocc.hpp"
 #include "KineticEnergy.hpp"
-#include "../ISData.hpp"
 #include "../ISResult.hpp"
 
 namespace Markov

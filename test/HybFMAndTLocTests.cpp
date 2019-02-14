@@ -4,7 +4,7 @@
 #include "../src/Includes/Models/ABC_H0.hpp"
 #include "../src/Includes/Models/HybFMAndTLoc.hpp"
 
-const double delta = 5e-9;
+const double delta = 5e-3;
 
 Json BuildJson()
 {
@@ -17,7 +17,7 @@ Json BuildJson()
                 "Nz": 1
             },
             "nOrb": 1,
-            "nkpts": 100,
+            "nkpts": 800,
             "tParameters": {
                 "00": {
                     "tIntra": 0.0,

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../../Utilities/Utilities.hpp"
+
 #include "../../Utilities/LinAlg.hpp"
 #include "../ISData.hpp"
-#include "../../Utilities/Matrix.hpp"
+#include "../../Utilities/UtilitiesRandom.hpp"
+
 
 namespace Markov
 {
