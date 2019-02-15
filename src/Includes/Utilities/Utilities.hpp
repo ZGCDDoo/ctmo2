@@ -2,7 +2,7 @@
 
 // External Libraries
 #include <armadillo>
-#include "../../deps/nlohmann_json/json.hpp"
+#include "json.hpp"
 
 using Json = nlohmann::json;
 
@@ -49,7 +49,6 @@ using UpdStats_t = std::map<std::string, std::valarray<size_t>>;
 
 namespace Utilities
 {
-
 
 std::string GetSpinName(const FermionSpin_t &spin) { return (spin == FermionSpin_t::Up ? "Up" : "Down"); }
 

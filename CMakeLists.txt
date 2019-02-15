@@ -1,31 +1,17 @@
 #Inspired by https://github.com/dmonopoly/gtest-cmake-example
 #           https://github.com/misaka-10032/boost-mpi-examples
+#           https://github.com/mpusz/new-project-template
+#           https://github.com/lefticus/cpp_starter_project
 
-cmake_minimum_required(VERSION 2.8.2)
+cmake_minimum_required(VERSION 3.10)
 set(PROJECT_NAME ctmo)
 
 
-option(TEST "Build all tests." ON) # Makes boolean 'test' available.
-option(HOME "home build" ON) #builds for linux, default
-option(MAC "mac build" OFF)
-option(GRAHAM "graham build" OFF)
-option(MP2 "mp2 build" OFF)
-option(MPI_BUILD "build with mpi" OFF)
-option(CLANG_BUILD "build with clang" OFF)
-option(OPTIMIZE "turn on all optimizations" OFF)
-option(STD14 "use -std=c++14" OFF)
-
-
-if (${MP2})
-    SET(CMAKE_CXX_COMPILER g++)
-elseif (${MPI_BUILD})
-    SET(CMAKE_CXX_COMPILER mpic++)
-elseif (${CLANG_BUILD})
-    SET(CMAKE_CXX_COMPILER clang++)
-else ()
-    SET(CMAKE_CXX_COMPILER g++)
-endif ()
-
+option(BUILD_TESTS "Build all tests." ON) # Makes boolean 'test' available.
+option(BUILD_HOME "home build" ON) #builds for linux, default
+option(BUILD_MAC "mac build" OFF)
+option(BUILD_GRAHAM "graham build" OFF)
+option(BUILD_MPI "build with mpi" OFF)
 
 
 project("${PROJECT_NAME}")
@@ -62,72 +48,44 @@ configure_file(
 )
 
 include_directories(${CMAKE_BINARY_DIR}/generated)
+include(${PROJECT_SOURCE_DIR}/cmake/compile_options.txt)
+include(${PROJECT_SOURCE_DIR}/cmake/tools.cmake)
+#conan_init(cmake)
 
 
 #-------------------------------------------------------------------------------------------------------------
 message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 
-set(CMAKE_CXX_FLAGS " -Wall -Wextra -pedantic -Wshadow -Wnon-virtual-dtor  -pipe -fomit-frame-pointer -Ofast")
-if (${STD14})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    message(STATUS "Compiling with -std=c++14 standard. ")
-else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-    message(STATUS "Compiling with -std=c++1z standard. ")
-endif ()
 
-if (${OPTIMIZE})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DARMA_NO_DEBUG")
-endif ()
-
-if (${MPI_BUILD})
+if (${BUILD_MPI})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVEMPI")
-    message(STATUS "Compiling with Open MPI. ")
-    set(TEST OFF)
+    message(STATUS "Compiling with Open MPI. Have you set CXX=mpic++ ?")
+    set(BUILD_TESTS OFF)
 endif ()
 
-
-set(COMMON_INCLUDES ${PROJECT_SOURCE_DIR}/src/Includes)
-include_directories(${PROJECT_SOURCE_DIR}/deps/spdlog/include)
 
 find_package(LAPACK REQUIRED)
+find_package(Boost REQUIRED COMPONENTS mpi serialization filesystem system program_options)
 
 #-------------HOME--------------------------------------------------
-if (${HOME})
-    find_package(Boost REQUIRED mpi serialization filesystem system program_options)
-    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo )
-   
-    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        message(STATUS "Compiling with GNU, setting '-Werror' flag. ")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-    endif ()
-
+if (${BUILD_HOME})
+    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo)
 endif ()
 #-------------HOME--------------------------------------------------
 
-if (${MAC})
+if (${BUILD_MAC})
     find_package(Boost REQUIRED mpi serialization filesystem system)
-    set(LIBRARIES_EXEC lapack blas ${Boost_LIBRARIES} armadillo )
+    set(LIBRARIES_EXEC lapack blas ${Boost_LIBRARIES} armadillo)
 endif ()
 
 
 #-------------GRAHAM--------------------------------------------------
-if (${GRAHAM})
-    set(TEST OFF)
+if (${BUILD_GRAHAM})
+    set(BUILD_TESTS OFF)
     set(CMAKE_EXE_LINKER_FLAGS "-L${MKLROOT}/lib/intel64")
-    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi )
+    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi)
 endif ()
 #-------------GRAHAM--------------------------------------------------
-
-
-#-------------MP2--------------------------------------------------
-if (${MP2})
-    set(TEST OFF)
-    SET(CMAKE_EXE_LINKER_FLAGS "-L${MKLROOT}/lib/intel64 -L/opt/boost64/1.65.1/lib -L/opt/armadillo/8.300.0/usr/lib64")
-    include_directories(/opt/armadillo/8.300.0/usr/include /opt/boost64/1.65.1/include/boost/ ${MKLROOT}/include)
-    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi )
-endif ()
-#-------------MP2--------------------------------------------------
 
 
 ################################
@@ -148,9 +106,24 @@ foreach (executable ${EXECECUTABLES})
             )
 endforeach ()
 
+message(STATUS "BOOST LIBS = ${Boost_LIBRARIES}")
 foreach (executable ${EXECECUTABLES})
-    target_link_libraries(${executable} ${LIBRARIES_EXEC})
-    install(TARGETS ${executable} DESTINATION $ENV{HOME}/bin)
+    target_link_libraries(${executable} PRIVATE 
+                          ${LIBRARIES_EXEC} 
+                          compile_options
+                          )
+    target_include_directories(${executable} PRIVATE 
+                               ${PROJECT_SOURCE_DIR}/deps/spdlog/include
+                               ${PROJECT_SOURCE_DIR}/deps/nlohmann_json)
+
+                          
+    
+    install(TARGETS ${executable} EXPORT ${CMAKE_PROJECT_NAME}Targets
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib
+            RUNTIME DESTINATION bin
+            INCLUDES DESTINATION include
+            )
 endforeach ()
 
 
@@ -163,10 +136,10 @@ endforeach ()
 
 ################################
 
-if (${TEST})
+if (${BUILD_TESTS})
     enable_testing()
 
-    # Download and unpack googletest at configure time
+     # Download and unpack googletest at configure time
     configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
             RESULT_VARIABLE result
@@ -197,7 +170,7 @@ if (${TEST})
     if (CMAKE_VERSION VERSION_LESS 2.8.11)
         include_directories("${gtest_SOURCE_DIR}/include")
     endif ()
-
+    
     set(TESTS
             ABC_H0Tests
             ABC_ModelTests
@@ -232,16 +205,19 @@ if (${TEST})
 
     set(LIBRARIES_TEST ${LIBRARIES_EXEC} gtest gtest_main)
     foreach (test ${TESTS})
-        target_link_libraries(${test} ${LIBRARIES_TEST})
+        target_link_libraries(${test} PRIVATE 
+                          ${LIBRARIES_TEST}
+                          compile_options
+                          )
+    target_include_directories(${test} PRIVATE 
+                               ${PROJECT_SOURCE_DIR}/deps/spdlog/include
+                               ${PROJECT_SOURCE_DIR}/deps/nlohmann_json)
     endforeach ()
 
     foreach (test ${TESTS})
         add_test(NAME ${test} COMMAND ./${test})
     endforeach ()
 
-    #add_test(NAME ObservablesDMFTTests COMMAND "python3" ../test/obs_dmft_tests.py)
-    #add_test(NAME ObservablesCDMFTTests COMMAND "python3" ../test/obs_cdmft_tests.py)
-    #add_test(NAME ObservablesCDMFTBinningTests COMMAND "python3" ../test/obs_cdmft_binning_tests.py)
 endif ()
 
 
