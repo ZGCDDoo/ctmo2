@@ -219,7 +219,9 @@ if (${BUILD_TESTS})
                           )
     target_include_directories(${test} PRIVATE 
                                ${PROJECT_SOURCE_DIR}/deps/spdlog/include
-                               ${PROJECT_SOURCE_DIR}/deps/nlohmann_json)
+                               ${PROJECT_SOURCE_DIR}/deps/nlohmann_json
+                               ${PROJECT_SOURCE_DIR}/include
+                               )
     endforeach ()
 
     foreach (test ${TESTS})

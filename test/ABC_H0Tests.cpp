@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Models/ABC_H0.hpp"
+#include "ctmo/Model/ABC_H0.hpp"
 #include "TestTools.hpp"
 
 const double DELTA = 1e-7;
