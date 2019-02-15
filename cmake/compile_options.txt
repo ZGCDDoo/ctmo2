@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
-
+if (TARGET compile_options)
+    # header included already
+    return()
+endif()
 
 # Link this 'library' to use the following warnings
 add_library(compile_options INTERFACE)

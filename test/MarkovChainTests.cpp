@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "../src/Includes/IS/MarkovChain.hpp"
+#include "ctmo/ImpuritySolver/MarkovChain.hpp"
 
 using namespace LinAlg;
 
 const double DELTA = 1e-10;
-const std::string FNAME = "../test/data/DMFT/params1.json";
+const std::string FNAME = "../../test/data/DMFT/params1.json";
 using Model_t = Models::ABC_Model_2D;
 using IOModel_t = IO::Base_IOModel;
 

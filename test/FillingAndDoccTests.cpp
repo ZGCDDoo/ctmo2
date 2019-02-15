@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../src/Includes/IS/Obs/FillingAndDocc.hpp"
+#include "ctmo/ImpuritySolver/FillingAndDocc.hpp"
 
 using Model_t = Models::ABC_Model_2D;
 using IOModel_t = IO::Base_IOModel;
@@ -10,7 +10,7 @@ using FillingAndDocc_t = Markov::Obs::FillingAndDocc;
 using ISDataCT_t = Markov::Obs::ISDataCT;
 
 // const double DELTA = 1e-11;
-const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
+const std::string FNAME = "../../test/data/cdmft_square2x2/params1.json";
 
 FillingAndDocc_t BuildFillingAndDocc() // for Square2x2
 {

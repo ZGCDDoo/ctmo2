@@ -69,7 +69,7 @@ function(configure_and_install _configure_in_file_path _version_compare_rules)
     install(EXPORT ${CMAKE_PROJECT_NAME}Targets
             DESTINATION ${ConfigPackageDestination}
             FILE ${CMAKE_PROJECT_NAME}-targets.cmake
-            NAMESPACE mp::
+            NAMESPACE ctmo::
             COMPONENT Devel)
     install(FILES
             "${ConfigPackageSource}/${CMAKE_PROJECT_NAME}-config.cmake"

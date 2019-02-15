@@ -8,8 +8,8 @@
     "model": {
         "delta": 0.01,
         "nOrb": 2,
-        "hybUpFile": "../test/data/DMFT/hyb_2Orb.dat",
-        "modelFile": "../data/SIAM_Square.model",
+        "hybUpFile": "../../test/data/DMFT/hyb_2Orb.dat",
+        "modelFile": "../../data/SIAM_Square.model",
         "nkpts": 100,
         "mu": 1.0,
         "U": 3.0,

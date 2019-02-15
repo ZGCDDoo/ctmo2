@@ -2,6 +2,6 @@
 #define VERSION_H
 
 #define GIT_BRANCH "cmake"
-#define GIT_COMMIT_HASH "65d7957"
+#define GIT_COMMIT_HASH "e69c554"
 
 #endif
