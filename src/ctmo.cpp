@@ -1,9 +1,9 @@
 
-#include "Includes/IS/MonteCarloBuilder.hpp"
-#include "Includes/Utilities/SelfConsistencyBuilder.hpp"
-#include "Includes/Utilities/FS.hpp"
-#include "Includes/PrintVersion.hpp"
-#include "Includes/Utilities/CMDParser.hpp"
+#include "ctmo/MonteCarlo/MonteCarloBuilder.hpp"
+#include "ctmo/SelfConsistency/SelfConsistencyBuilder.hpp"
+#include "ctmo/Foundations/FS.hpp"
+#include "ctmo/Foundations/PrintVersion.hpp"
+#include "ctmo/Foundations/CMDParser.hpp"
 
 int main(int argc, char **argv)
 {

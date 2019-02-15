@@ -14,7 +14,7 @@ option(BUILD_GRAHAM "graham build" OFF)
 option(BUILD_MPI "build with mpi" OFF)
 
 
-project("${PROJECT_NAME}")
+project("${PROJECT_NAME}" VERSION 2.2.0)
 
 
 # Git version, etc, taken from: http://xit0.org/2013/04/cmake-use-git-branch-and-commit-details-in-project/
@@ -40,14 +40,13 @@ execute_process(
 message(STATUS "Git current branch: ${GIT_BRANCH}")
 message(STATUS "Git commit hash: ${GIT_COMMIT_HASH}")
 
-message(STATUS "Generating version.h")
+message(STATUS "Generating Version_ctmo.hpp")
 
 configure_file(
-        ${CMAKE_SOURCE_DIR}/src/Includes/Version.hpp.in
-        ${CMAKE_BINARY_DIR}/generated/Version.hpp
+        ${CMAKE_SOURCE_DIR}/include/ctmo/Foundations/Version.hpp.in
+        ${CMAKE_SOURCE_DIR}/include/ctmo/Foundations/Version_ctmo.hpp
 )
 
-include_directories(${CMAKE_BINARY_DIR}/generated)
 include(${PROJECT_SOURCE_DIR}/cmake/compile_options.txt)
 include(${PROJECT_SOURCE_DIR}/cmake/tools.cmake)
 #conan_init(cmake)
@@ -114,7 +113,8 @@ foreach (executable ${EXECECUTABLES})
                           )
     target_include_directories(${executable} PRIVATE 
                                ${PROJECT_SOURCE_DIR}/deps/spdlog/include
-                               ${PROJECT_SOURCE_DIR}/deps/nlohmann_json)
+                               ${PROJECT_SOURCE_DIR}/deps/nlohmann_json
+                               ${PROJECT_SOURCE_DIR}/include)
 
                           
     
@@ -125,6 +125,14 @@ foreach (executable ${EXECECUTABLES})
             INCLUDES DESTINATION include
             )
 endforeach ()
+
+#install(DIRECTORY include/ctmo
+#    DESTINATION include
+#    COMPONENT Devel
+#)
+
+# generate configuration files and install the package
+#configure_and_install(${PROJECT_SOURCE_DIR}/cmake/simple_package-config.cmake.in SameMajorVersion)
 
 
 #--------------------end Executables ----------------------------------------------------------
