@@ -1,7 +1,6 @@
 #include <boost/filesystem.hpp>
 #include <iostream>
 
-
 namespace TestTools
 {
 
