@@ -85,6 +85,7 @@ class FillingAndDocc
         double doccTotalCurrent = 0.0;
         size_t index = 0;
         for (size_t oo = 0; oo < dataCT_->NOrb_; oo++)
+        {
             for (size_t kk = 0; kk < ioModelPtr_->fillingSites().size(); kk++)
             {
 
@@ -93,6 +94,7 @@ class FillingAndDocc
                 doccTotalCurrent += factFilling * doccCurrent_[index];
                 index++;
             }
+        }
         return doccTotalCurrent;
     };
 
@@ -121,7 +123,7 @@ class FillingAndDocc
         SiteVector_t vec1Down(KKDown);
         SiteVector_t vec2Down(KKDown);
 
-        const double sign = static_cast<double>(dataCT_->sign_);
+        const auto sign = static_cast<double>(dataCT_->sign_);
         const size_t fillingSize = ioModelPtr_->fillingSites().size();
 
         for (size_t oIndex = 0; oIndex < dataCT_->NOrb_; oIndex++)
@@ -164,7 +166,7 @@ class FillingAndDocc
                     double dotup = 0.0;
                     double dotdown = 0.0;
 
-                    if (KK)
+                    if (static_cast<bool>(KK))
                     {
                         dotup = LinAlg::Dot(vec1Up, *(dataCT_->MupPtr_), vec2Up);
                         dotdown = LinAlg::Dot(vec1Down, *(dataCT_->MdownPtr_), vec2Down);

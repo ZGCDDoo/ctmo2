@@ -33,7 +33,7 @@ class ISDataCT
 #ifndef AFM
           green0CachedUp_(modelPtr->greenCluster0MatUp(), modelPtr_->ioModelPtr(), jjSim["solver"]["ntau"]),
 #endif
-          MupPtr_(new Matrix_t()), MdownPtr_(new Matrix_t()), vertices_(), beta_(modelPtr->beta()), NOrb_(modelPtr->NOrb()), sign_(1)
+          MupPtr_(new Matrix_t()), MdownPtr_(new Matrix_t()), beta_(modelPtr->beta()), NOrb_(modelPtr->NOrb()), sign_(1)
 
     {
         Logging::Trace("ISData Created. ");

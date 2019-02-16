@@ -15,6 +15,11 @@ class ABC_H0
     const size_t Nc;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
+    ABC_H0(ABC_H0 &&abc_h0) = default;
+
+    ABC_H0 &operator=(const ABC_H0 &abc_H0) = delete;
+    ABC_H0 &operator=(ABC_H0 &&abc_H0) = delete;
+
     explicit ABC_H0(const Json &jjSim)
         : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()), Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
           Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()), Nc(Nx * Ny * Nz), RSites_(Nc), KWaveVectors_(Nc),
@@ -43,7 +48,7 @@ class ABC_H0
         Logging::Debug("ABC_H0 Constructed. ");
     }
 
-    ~ABC_H0() {}
+    ~ABC_H0() = default;
 
     std::vector<double> tIntraOrbitalVec() const { return tIntraOrbitalVec_; };
     std::vector<double> txVec() const { return txVec_; };
@@ -232,7 +237,7 @@ class ABC_H0
     void CalculateNonIntDos() const
     {
         Logging::Info("Start calculating Non-interacting density of states, in reduced brillouin zone (ktilde).");
-        const double NW = 2000;
+        const size_t NW = 2000;
         const double wlimit = 4.00;
 
         ClusterCubeCD_t tktildeGrid;

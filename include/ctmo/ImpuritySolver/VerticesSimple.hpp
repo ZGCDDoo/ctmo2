@@ -9,7 +9,7 @@
 
 namespace Diagrammatic
 {
-typedef LinAlg::Matrix_t Matrix_t;
+using Matrix_t = LinAlg::Matrix_t;
 
 enum class VertexType
 {
@@ -26,12 +26,12 @@ const size_t INVALID = 999;
 class VertexPart
 {
   public:
-    VertexPart(){};
-
+    VertexPart() = default;
     ~VertexPart() = default;
-
     VertexPart(const VertexPart &vp) = default;
+    VertexPart(VertexPart &&vp) = default;
     VertexPart &operator=(const VertexPart &vp) = default;
+    VertexPart &operator=(VertexPart &&vp) = default;
 
     VertexPart(const VertexType vtype, const Tau_t &tau, const Site_t &site, const FermionSpin_t &spin, const size_t &orbital,
                const AuxSpin_t &aux)
@@ -81,8 +81,10 @@ class Vertex
 
   public:
     Vertex() = default;
-
     Vertex(const Vertex &v) = default;
+    Vertex(Vertex &&v) = default;
+    Vertex &operator=(const Vertex &v) = default;
+    Vertex &operator=(Vertex &&v) = default;
 
     ~Vertex() = default;
 
@@ -91,8 +93,6 @@ class Vertex
 
     {
     }
-
-    Vertex &operator=(const Vertex &v) = default;
 
     void FlipAux()
     {
@@ -128,12 +128,13 @@ class Vertices
 {
 
   public:
-    Vertices() : key_(0){};
+    Vertices() = default;
     ~Vertices() = default;
-
     Vertices(const Vertices &vp) = default;
+    Vertices(Vertices &&vp) = default;
 
     Vertices &operator=(const Vertices &vertices) = default;
+    Vertices &operator=(Vertices &&vertices) = default;
 
     void AppendVertex(const Vertex &vertex)
     {
@@ -170,12 +171,12 @@ class Vertices
 
         std::cout << "Start Print " << std::endl;
 
-        for (size_t ii = 0; ii < indexPartUpVec_.size(); ii++)
+        for (size_t ii : indexPartUpVec_)
         {
             std::cout << "indexPartUpVec_.at(ii)  = " << indexPartUpVec_.at(ii) << std::endl;
         }
 
-        for (size_t ii = 0; ii < indexPartDownVec_.size(); ii++)
+        for (size_t ii : indexPartDownVec_)
         {
             std::cout << "indexPartDownVec__.at(ii)  = " << indexPartDownVec_.at(ii) << std::endl;
         }
@@ -351,7 +352,7 @@ class Vertices
     std::vector<UInt64_t> indexPartDownVec_; // Ex: The row and col 0 of Ndown_ is associtated to the vertexPart of the vertex given by the
                                              // id of indexPartDownVec_.at(0)
     std::vector<UInt64_t> verticesKeysVec_;  // Each vertex has a unqique key identifying it
-    UInt64_t key_;
+    UInt64_t key_{0};
 
 }; // namespace Diagrammatic
 
@@ -362,62 +363,69 @@ class AuxHelper
 
     double auxValue(const FermionSpin_t &spin, const AuxSpin_t &aux) const
     {
+        double value = -99999.0;
         if (spin == FermionSpin_t::Up)
         {
-            return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_);
+            value = ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_);
         }
         else
         {
-            return ((aux == AuxSpin_t::Down) ? 1.0 + delta_ : -delta_);
+            value = ((aux == AuxSpin_t::Down) ? 1.0 + delta_ : -delta_);
         }
+        return value;
     }
 
     double auxValueBar(const FermionSpin_t &spin, const AuxSpin_t &aux) const
     {
+        double value = -99999.0;
         if (spin == FermionSpin_t::Up)
         {
-            return ((aux == AuxSpin_t::Up) ? -delta_ : 1.0 + delta_);
+            value = ((aux == AuxSpin_t::Up) ? -delta_ : 1.0 + delta_);
         }
         else
         {
-            return ((aux == AuxSpin_t::Down) ? -delta_ : 1.0 + delta_);
+            value = ((aux == AuxSpin_t::Down) ? -delta_ : 1.0 + delta_);
         }
+        return value;
     }
 
     double auxPh(const AuxSpin_t &aux) const { return ((aux == AuxSpin_t::Up) ? 1.0 + delta_ : -delta_); }
 
     double FAux(const VertexPart &vp) const
     {
-
+        double value = -99999.0;
         if (vp.vtype() == Diagrammatic::VertexType::Phonon)
         {
-            return (auxPh(vp.aux()) / (auxPh(vp.aux()) - 1.0));
+            value = (auxPh(vp.aux()) / (auxPh(vp.aux()) - 1.0));
         }
         else
         {
             if (vp.aux() == AuxSpin_t::Zero)
             {
-                return 1.0;
+                value = 1.0;
             }
             else
             {
-                return (auxValue(vp.spin(), vp.aux()) / (auxValue(vp.spin(), vp.aux()) - 1.0));
+                value = (auxValue(vp.spin(), vp.aux()) / (auxValue(vp.spin(), vp.aux()) - 1.0));
             }
         }
+
+        return value;
     }
 
     double FAuxBar(const VertexPart &vp) const
     {
-        // return FAux_sigma(-s);
+        double value = -99999.0;
         if (vp.vtype() == VertexType::Phonon)
         {
-            return FAux(vp);
+            value = FAux(vp);
         }
         else
         {
             const AuxSpin_t sBar = (vp.aux() == AuxSpin_t::Up) ? AuxSpin_t::Down : AuxSpin_t::Up;
-            return (auxValue(vp.spin(), sBar) / (auxValue(vp.spin(), sBar) - 1.0));
+            value = (auxValue(vp.spin(), sBar) / (auxValue(vp.spin(), sBar) - 1.0));
         }
+        return value;
     }
 
     double gamma(const VertexPart &vpI, const VertexPart &vpJ) const // little gamma
@@ -463,7 +471,7 @@ class VertexBuilder
     {
         assert(NOrb_ == 1);
         const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
+        const Site_t site = static_cast<Site_t>(urng() * Nc_);
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
         const Orbital_t o1 = 0;
         const Orbital_t o2 = 0;
@@ -484,11 +492,11 @@ class VertexBuilder
         }
 
         const Tau_t tau = urng() * beta_;
-        const Site_t site = urng() * Nc_;
+        const Site_t site = static_cast<Site_t>(urng() * Nc_);
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
-        Orbital_t o1 = urng() * NOrb_;
-        Orbital_t o2 = urng() * NOrb_;
+        Orbital_t o1 = static_cast<Orbital_t>(urng() * NOrb_);
+        Orbital_t o2 = static_cast<Orbital_t>(urng() * NOrb_);
         FermionSpin_t spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
         FermionSpin_t spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
 
@@ -498,8 +506,8 @@ class VertexBuilder
         {
             while ((o1 == o2) && (spin1 == spin2))
             {
-                o1 = urng() * NOrb_;
-                o2 = urng() * NOrb_;
+                o1 = static_cast<Orbital_t>(urng() * NOrb_);
+                o2 = static_cast<Orbital_t>(urng() * NOrb_);
                 spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
                 spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
             }
@@ -511,7 +519,7 @@ class VertexBuilder
 
                 return Vertex(vertextype, vStart, vEnd, GetProbProb(vStart, vEnd));
             }
-            else if ((o1 != o2) && (spin1 != spin2))
+            else if ((o1 != o2) && (spin1 != spin2)) // NOLINT: I want the multiple returns.
             {
                 vertextype = VertexType::HubbardInter;
                 const VertexPart vStart(vertextype, tau, site, FermionSpin_t::Up, o1, aux);
@@ -654,7 +662,7 @@ class VertexBuilder
         {
             return 1e-14;
         }
-        else if (std::abs(w0 * beta_) > 25.0)
+        else if (std::abs(w0 * beta_) > 25.0) // NOLINT: I want the multiple returns.
         {
             return 1e-14;
         }
@@ -671,7 +679,7 @@ class VertexBuilder
                 Logging::Critical("GetDeltaTauPhonon: deltaTau < 0.0 ? ");
                 return 0.0 + 1e-14;
             }
-            else if (deltaTau > beta_)
+            else if (deltaTau > beta_) // NOLINT: I want the multiple returns.
             {
                 Logging::Critical("GetDeltaTauPhonon: deltaTau > beta  ? ");
                 return beta_ - 1e-14;

@@ -81,7 +81,9 @@ class ABC_MarkovChain
     }
 
     ABC_MarkovChain(const ABC_MarkovChain &abc_markovchain) = default;
-    // ABC_MarkovChain
+    ABC_MarkovChain &operator=(const ABC_MarkovChain &abc_markovchain) = delete;
+    ABC_MarkovChain(ABC_MarkovChain &&abc_markovChain) = default;
+    ABC_MarkovChain &operator=(ABC_MarkovChain &&abc_markovChain) = delete;
 
     virtual ~ABC_MarkovChain() = default;
 
@@ -600,10 +602,9 @@ class ABC_MarkovChain
     {
 
         SaveUpd("Thermalization");
-        for (auto it = updStats_.begin(); it != updStats_.end(); ++it)
+        for (auto &updStat : updStats_)
         {
-            std::string key = it->first;
-            updStats_[key] = 0;
+            updStat.second = 0;
         }
     }
 

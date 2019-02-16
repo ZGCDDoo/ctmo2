@@ -20,7 +20,7 @@ class ISResult
 {
     // greenMatUp is the tabularform
   public:
-    ISResult(){};
+    ISResult() = default;
 
     ISResult(const std::map<std::string, double> &obsScal, const ClusterMatrixCD_t &greenMatUp, const ClusterMatrixCD_t &greenMatDown,
              const std::vector<double> &fillingUp, const std::vector<double> &fillingDown)

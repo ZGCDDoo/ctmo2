@@ -25,14 +25,12 @@ struct Timer
             std::time_t timeNow = std::chrono::system_clock::to_time_t(timeChrono);
             std::cout << "\t " << std::ctime(&timeNow) << std::endl;
         }
-
-        return;
     }
 
     bool End() { return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_).count() > duration_; };
 
   private:
-    double duration_;
+    double duration_{0.0};
     std::chrono::steady_clock::time_point start_;
 };
 
@@ -46,6 +44,12 @@ template <typename TMarkovChain_t> class MonteCarlo : public ABC_MonteCarlo
           thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
     {
     }
+
+    MonteCarlo(const MonteCarlo &monteCarlo) = default;
+    MonteCarlo(MonteCarlo &&monteCarlo) noexcept = default;
+
+    MonteCarlo &operator=(const MonteCarlo &monteCarlo) = delete;
+    MonteCarlo &operator=(MonteCarlo &&monteCarlo) = delete;
 
     ~MonteCarlo() override = default;
 
@@ -131,5 +135,5 @@ template <typename TMarkovChain_t> class MonteCarlo : public ABC_MonteCarlo
     size_t NMeas_;
     size_t NCleanUpdates_;
     bool thermFromConfig_;
-}; // namespace MC
+};
 } // namespace MC

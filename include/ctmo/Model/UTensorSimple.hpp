@@ -34,7 +34,13 @@ class UTensor
         Logging::Debug("UTensor Created. ");
     }
 
-    ~UTensor() {}
+    UTensor(const UTensor &uTensor) = default;
+    UTensor(UTensor &&uTensor) = default;
+
+    UTensor &operator=(const UTensor &uTensor) = delete;
+    UTensor &operator=(UTensor &&uTensor) = delete;
+
+    ~UTensor() = default;
 
     double auxMu() const { return auxMu_; };
 

@@ -18,7 +18,7 @@ class ABC_Model_2D
 
   public:
     explicit ABC_Model_2D(const Json &jjSim)
-        : ioModelPtr_(new IO::Base_IOModel(jjSim)), h0_(jjSim), hybFM_(), tLoc_(), beta_(jjSim["model"]["beta"].get<double>()),
+        : ioModelPtr_(new IO::Base_IOModel(jjSim)), h0_(jjSim), beta_(jjSim["model"]["beta"].get<double>()),
           mu_(jjSim["model"]["mu"].get<double>()), NOrb_(jjSim["model"]["nOrb"].get<size_t>()), Nc_(h0_.Nc)
     {
         Logging::Debug("Start ABC_Model Constructor. ");
@@ -60,7 +60,8 @@ class ABC_Model_2D
 
         const size_t NHyb = hybtmpUp.n_slices;
         const double factNHyb = 3.0;
-        const size_t NHyb_HF = std::max<double>(factNHyb * static_cast<double>(NHyb), 0.5 * (MIN_EHYB_ * beta_ / M_PI - 1.0));
+        const size_t NHyb_HF =
+            static_cast<size_t>(std::max<double>(factNHyb * static_cast<double>(NHyb), 0.5 * (MIN_EHYB_ * beta_ / M_PI - 1.0)));
         hybtmpUp.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
 #ifdef AFM
         hybtmpDown.resize(Nc_ * NOrb_, Nc_ * NOrb_, NHyb_HF);
@@ -98,6 +99,12 @@ class ABC_Model_2D
         this->greenCluster0MatDown_ = GreenMat::GreenCluster0Mat(this->hybridizationMatDown_, this->tLoc_, ut.auxMu(), this->beta_);
 #endif
     }
+
+    ABC_Model_2D(const ABC_Model_2D &abc_model) = default;
+    ABC_Model_2D(ABC_Model_2D &&abc_model) = default;
+
+    ABC_Model_2D &operator=(const ABC_Model_2D &abc_model) = delete;
+    ABC_Model_2D &operator=(ABC_Model_2D &&abc_model) = delete;
 
     ~ABC_Model_2D() = default;
 

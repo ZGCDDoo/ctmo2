@@ -18,7 +18,7 @@ class GreenBinning
   public:
     GreenBinning(const std::shared_ptr<ISDataCT> &dataCT, const Json &jjSim, const FermionSpin_t &spin)
         : dataCT_(dataCT), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
-          NMat_(0.5 * (jjSim["solver"]["eCutGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0)), spin_(spin),
+          NMat_(static_cast<size_t>(0.5 * (jjSim["solver"]["eCutGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0))), spin_(spin),
           NOrb_(jjSim["model"]["nOrb"].get<size_t>())
     {
 
@@ -46,7 +46,7 @@ class GreenBinning
 
         const size_t kkSpin = (spin_ == FermionSpin_t::Up) ? dataCT_->vertices_.NUp() : dataCT_->vertices_.NDown();
         const double DeltaInv = N_BIN_TAU / dataCT_->beta_;
-        if (kkSpin)
+        if (static_cast<bool>(kkSpin))
         {
             for (size_t p1 = 0; p1 < kkSpin; ++p1)
             {
@@ -67,7 +67,7 @@ class GreenBinning
                         tau += dataCT_->beta_;
                     }
 
-                    const int index = DeltaInv * tau;
+                    const int index = static_cast<int>(DeltaInv * tau);
                     const double dTau = tau - (static_cast<double>(index) + 0.5) / DeltaInv;
 
                     M0Bins_.at(ll).at(index) += temp;
@@ -122,7 +122,7 @@ class GreenBinning
                 indep_M_matsubara_sampled(ll) = temp_matsubara;
             }
             const ClusterMatrixCD_t dummy1 = ioModelPtr_->IndepToFull(indep_M_matsubara_sampled, NOrb_);
-            const ClusterMatrixCD_t green0 = green0CubeMatsubara.slice(n);
+            const ClusterMatrixCD_t &green0 = green0CubeMatsubara.slice(n);
 
             greenCube.slice(n) = green0 - green0 * dummy1 * green0 / (dataCT_->beta_ * signMeas);
         }

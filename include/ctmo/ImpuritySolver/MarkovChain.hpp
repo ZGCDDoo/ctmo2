@@ -12,6 +12,11 @@ class MarkovChain : public ABC_MarkovChain
   public:
     MarkovChain(const Json &jjSim, const size_t &seed) : ABC_MarkovChain(jjSim, seed), auxH_(jjSim["model"]["delta"].get<double>()){};
 
+    MarkovChain(const MarkovChain &markovChain) = default;
+    MarkovChain(MarkovChain &&markovChain) = default;
+    MarkovChain &operator=(const MarkovChain &markovChain) = delete;
+    MarkovChain &operator=(MarkovChain &&markovChain) = delete;
+
     ~MarkovChain() override = default;
 
 #ifdef GREEN_STYLE
@@ -44,7 +49,7 @@ class MarkovChain : public ABC_MarkovChain
 
     double FAuxBar(const VertexPart &vp) const override { return (auxH_.FAuxBar(vp)); }
 
-    virtual double gamma(const VertexPart &vpI, const VertexPart &vpJ) const override { return auxH_.gamma(vpI, vpJ); }
+    double gamma(const VertexPart &vpI, const VertexPart &vpJ) const override { return auxH_.gamma(vpI, vpJ); }
 
 #endif
 
