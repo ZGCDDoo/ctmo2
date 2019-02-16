@@ -47,9 +47,9 @@ template <typename TMarkovChain_t> class MonteCarlo : public ABC_MonteCarlo
     {
     }
 
-    ~MonteCarlo(){};
+    ~MonteCarlo() override = default;
 
-    void RunMonteCarlo()
+    void RunMonteCarlo() override
     {
         Timer timer;
 

@@ -1,13 +1,15 @@
 Checks: >
-    bugprone-*,
+    bugprone-*
     boost-*,
     cppcoreguidelines-*,
     clang-analyzer-*,
     hicpp-*,
-    # misc-*, use only for non-header only project
+    #misc-*,
     modernize-*,
     performance-*,
     portability-*,
     readability-*,
     
-   
+HeaderFilterRegex: >
+                "include/ctmo/Foundations/*|include/ctmo/ImpuritySolver/*|include/ctmo/Model/*|include/ctmo/MonteCarlo/*|include/ctmo/SelfConsistency/*"   
+
