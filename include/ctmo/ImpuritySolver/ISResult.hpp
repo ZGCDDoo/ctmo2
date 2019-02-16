@@ -22,9 +22,9 @@ class ISResult
   public:
     ISResult() = default;
 
-    ISResult(const std::map<std::string, double> &obsScal, const ClusterMatrixCD_t &greenMatUp, const ClusterMatrixCD_t &greenMatDown,
+    ISResult(std::map<std::string, double> obsScal, const ClusterMatrixCD_t &greenMatUp, const ClusterMatrixCD_t &greenMatDown,
              const std::vector<double> &fillingUp, const std::vector<double> &fillingDown)
-        : obsScal_(obsScal), n_rows_(greenMatUp.n_rows), n_cols_(greenMatUp.n_cols), greenTabUp_(n_rows_ * n_cols_),
+        : obsScal_(std::move(obsScal)), n_rows_(greenMatUp.n_rows), n_cols_(greenMatUp.n_cols), greenTabUp_(n_rows_ * n_cols_),
 #ifdef AFM
 
           greenTabDown_(n_rows_ * n_cols_),

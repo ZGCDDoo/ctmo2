@@ -18,8 +18,8 @@ class Observables
 
   public:
     // Observables(){};
-    Observables(const std::shared_ptr<ISDataCT> &dataCT, const Json &jjSim)
-        : dataCT_(dataCT), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
+    Observables(std::shared_ptr<ISDataCT> dataCT, const Json &jjSim)
+        : dataCT_(std::move(dataCT)), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
           rng_(jjSim["monteCarlo"]["seed"].get<size_t>() + mpiUt::Tools::Rank() * mpiUt::Tools::Rank()),
           urngPtr_(new Utilities::UniformRngFibonacci3217_t(rng_, Utilities::UniformDistribution_t(0.0, 1.0))),
           greenBinningUp_(dataCT_, jjSim, FermionSpin_t::Up), greenBinningDown_(dataCT_, jjSim, FermionSpin_t::Down),

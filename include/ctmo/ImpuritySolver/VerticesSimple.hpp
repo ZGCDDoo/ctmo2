@@ -88,8 +88,8 @@ class Vertex
 
     ~Vertex() = default;
 
-    Vertex(const VertexType &vtype, const VertexPart &vStart, const VertexPart &vEnd, const double &probProb)
-        : vtype_(vtype), vStart_(vStart), vEnd_(vEnd), probProb_(probProb)
+    Vertex(const VertexType &vtype, VertexPart vStart, VertexPart vEnd, const double &probProb)
+        : vtype_(vtype), vStart_(std::move(vStart)), vEnd_(std::move(vEnd)), probProb_(probProb)
 
     {
     }
@@ -471,7 +471,7 @@ class VertexBuilder
     {
         assert(NOrb_ == 1);
         const Tau_t tau = urng() * beta_;
-        const Site_t site = static_cast<Site_t>(urng() * Nc_);
+        const auto site = static_cast<Site_t>(urng() * Nc_);
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
         const Orbital_t o1 = 0;
         const Orbital_t o2 = 0;
@@ -492,11 +492,11 @@ class VertexBuilder
         }
 
         const Tau_t tau = urng() * beta_;
-        const Site_t site = static_cast<Site_t>(urng() * Nc_);
+        const auto site = static_cast<Site_t>(urng() * Nc_);
         const AuxSpin_t aux = urng() < 0.5 ? AuxSpin_t::Up : AuxSpin_t::Down;
 
-        Orbital_t o1 = static_cast<Orbital_t>(urng() * NOrb_);
-        Orbital_t o2 = static_cast<Orbital_t>(urng() * NOrb_);
+        auto o1 = static_cast<Orbital_t>(urng() * NOrb_);
+        auto o2 = static_cast<Orbital_t>(urng() * NOrb_);
         FermionSpin_t spin1 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
         FermionSpin_t spin2 = (urng() < 0.5) ? FermionSpin_t::Up : FermionSpin_t::Down;
 

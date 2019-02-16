@@ -16,8 +16,8 @@ class GreenBinning
 {
 
   public:
-    GreenBinning(const std::shared_ptr<ISDataCT> &dataCT, const Json &jjSim, const FermionSpin_t &spin)
-        : dataCT_(dataCT), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
+    GreenBinning(std::shared_ptr<ISDataCT> dataCT, const Json &jjSim, const FermionSpin_t &spin)
+        : dataCT_(std::move(dataCT)), modelPtr_(dataCT_->modelPtr_), ioModelPtr_(modelPtr_->ioModelPtr()),
           NMat_(static_cast<size_t>(0.5 * (jjSim["solver"]["eCutGreen"].get<double>() * dataCT_->beta() / M_PI - 1.0))), spin_(spin),
           NOrb_(jjSim["model"]["nOrb"].get<size_t>())
     {

@@ -10,8 +10,8 @@ namespace Obs
 template <typename TModel, typename TIOModel> class KineticEnergy
 {
   public:
-    KineticEnergy(const std::shared_ptr<TModel> &modelPtr, const ClusterCubeCD_t &greenMat)
-        : modelPtr_(modelPtr), ioModel_(), greenMat_(greenMat){};
+    KineticEnergy(const std::shared_ptr<TModel> &modelPtr, ClusterCubeCD_t greenMat)
+        : modelPtr_(modelPtr), ioModel_(), greenMat_(std::move(greenMat)){};
 
     double GetKineticEnergy()
     {
