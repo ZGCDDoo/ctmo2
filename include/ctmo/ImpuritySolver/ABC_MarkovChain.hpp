@@ -23,19 +23,19 @@ using Matrix_t = LinAlg::Matrix_t;
 struct UpdData
 {
 
-    UpdData() : NQUp_(), NQDown_(), newLastRowUp_(), newLastRowDown_(), sTildeUpI_(0.0), sTildeDownI_(0.0){};
+    UpdData() = default;
     SiteVector_t NQUp_;
     SiteVector_t NQDown_;
     SiteVector_t newLastRowUp_;
     SiteVector_t newLastRowDown_;
-    double sTildeUpI_;
-    double sTildeDownI_;
+    double sTildeUpI_{0.0};
+    double sTildeDownI_{0.0};
 };
 
 struct NFData
 {
 
-    NFData() : FVup_(), FVdown_(), Nup_(), Ndown_(), dummy_(){};
+    NFData() = default;
     SiteVector_t FVup_;
     SiteVector_t FVdown_;
     Matrix_t Nup_;
@@ -54,7 +54,7 @@ class ABC_MarkovChain
     const double PROBREMOVE = 1.0 - PROBINSERT;
 
     ABC_MarkovChain(const Json &jj, const size_t &seed)
-        : modelPtr_(new Model_t(jj)), rng_(seed), urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)), nfdata_(), upddata_(),
+        : modelPtr_(new Model_t(jj)), rng_(seed), urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
           dataCT_(new Obs::ISDataCT(jj, modelPtr_)), obs_(dataCT_, jj), vertexBuilder_(jj, modelPtr_->Nc()),
 #ifdef SLMC
           configParser_(), logDeterminant_(0.0),
@@ -79,6 +79,9 @@ class ABC_MarkovChain
         }
         Logging::Debug("MarkovChain Created.");
     }
+
+    ABC_MarkovChain(const ABC_MarkovChain &abc_markovchain) = default;
+    // ABC_MarkovChain
 
     virtual ~ABC_MarkovChain() = default;
 
@@ -152,7 +155,7 @@ class ABC_MarkovChain
         {
             upddata_.sTildeUpI_ = -faux + GetGreenTau0(x, x) * fauxM1;
 
-            if (nfdata_.Nup_.n_rows())
+            if (static_cast<bool>(nfdata_.Nup_.n_rows()))
             {
                 const size_t kkoldUp = dataCT_->vertices_.NUp();
                 upddata_.newLastRowUp_.set_size(kkoldUp);
@@ -172,7 +175,7 @@ class ABC_MarkovChain
         {
             upddata_.sTildeDownI_ = -faux + GetGreenTau0(x, x) * fauxM1;
 
-            if (nfdata_.Ndown_.n_rows())
+            if (static_cast<bool>(nfdata_.Ndown_.n_rows()))
             {
                 const size_t kkoldDown = dataCT_->vertices_.NDown();
                 upddata_.newLastRowDown_.set_size(kkoldDown);
@@ -222,7 +225,7 @@ class ABC_MarkovChain
                 dataCT_->sign_ *= -1;
             }
 
-            if (nfdata_.Nup_.n_rows())
+            if (static_cast<bool>(nfdata_.Nup_.n_rows()))
             {
                 LinAlg::BlockRankOneUpgrade(nfdata_.Nup_, upddata_.NQUp_, upddata_.newLastRowUp_, 1.0 / upddata_.sTildeUpI_);
                 nfdata_.FVup_.resize(kknewUp);
@@ -236,7 +239,7 @@ class ABC_MarkovChain
                 nfdata_.FVup_(0) = fauxup;
             }
 
-            if (nfdata_.Ndown_.n_rows())
+            if (static_cast<bool>(nfdata_.Ndown_.n_rows()))
             {
                 LinAlg::BlockRankOneUpgrade(nfdata_.Ndown_, upddata_.NQDown_, upddata_.newLastRowDown_, 1.0 / upddata_.sTildeDownI_);
                 nfdata_.FVdown_.resize(kknewDown);
@@ -277,7 +280,7 @@ class ABC_MarkovChain
         const double s10 = GetGreenTau0(y, x) * fauxM1;
         const double s11 = -fauxBar + GetGreenTau0(y, y) * fauxM1Bar;
 
-        if (Nspin.n_rows())
+        if (static_cast<bool>(Nspin.n_rows()))
         {
             assert(Nspin.n_rows());
             const size_t kkold = dataCT_->vertices_.size();
@@ -356,11 +359,11 @@ class ABC_MarkovChain
     {
         AssertSizes();
         const size_t kk = dataCT_->vertices_.size();
-        if (kk)
+        if (static_cast<bool>(kk))
         {
             updStats_["Removes"][0]++;
 
-            const size_t pp = static_cast<size_t>(urng_() * dataCT_->vertices_.size());
+            const auto pp = static_cast<size_t>(urng_() * dataCT_->vertices_.size());
             const Vertex vertex = dataCT_->vertices_.at(pp);
             const VertexPart x = vertex.vStart();
             const VertexPart y = vertex.vEnd();

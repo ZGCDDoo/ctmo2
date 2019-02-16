@@ -1,9 +1,19 @@
 Checks: >
     bugprone-*
     boost-*,
-    cppcoreguidelines-*,
+    #cppcoreguidelines-*,
+    cppcoreguidelines-special-member-functions,
+    cppcoreguidelines-narrowing-conversions,
+    cppcoreguidelines-avoid-goto,
+    cppcoreguidelines-c-copy-assignment-signature,
+    cppcoreguidelines-interfaces-global-init,
+    cppcoreguidelines-macro-usage,
+    cppcoreguidelines-no-malloc,
+    cppcoreguidelines-non-private-member-variables-in-classes,
+    cppcoreguidelines-owning-memory,
+    cppcoreguidelines-pro-bounds-constant-array-index,
     clang-analyzer-*,
-    hicpp-*,
+    #hicpp-*, # repeats many of cppcoreguidelines
     #misc-*,
     modernize-*,
     performance-*,

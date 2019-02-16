@@ -1,4 +1,4 @@
 #!/bin/bash
 
-clang-tidy -p build/ src/ctmo.cpp # -fix
+clang-tidy-7 -p build/ src/ctmo.cpp # -fix
 

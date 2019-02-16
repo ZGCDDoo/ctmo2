@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.10)
 project(ctmo_cdh VERSION 2.2.0)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Git version, etc, taken from: http://xit0.org/2013/04/cmake-use-git-branch-and-commit-details-in-project/
 #   or https://github.com/pmirshad/cmake-with-git-metadata
