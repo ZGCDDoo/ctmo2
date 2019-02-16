@@ -6,7 +6,8 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     mkdir build
     cd build
     cmake .. && make -j 2
-
+    cd test
+    
     ./SelfConsistencyTests
     ./MarkovChainTests
     ./MarkovChainTriangle2x2Tests
