@@ -2,8 +2,8 @@
 
 #include <gtest/gtest.h>
 
-#include "../src/Includes/Utilities/Fourier_DCA.hpp"
-#include "../src/Includes/Models/ABC_H0.hpp"
+#include "ctmo/Foundations/Fourier_DCA.hpp"
+#include "ctmo/Model/ABC_H0.hpp"
 
 using namespace FourierDCA;
 

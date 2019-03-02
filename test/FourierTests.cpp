@@ -1,8 +1,8 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/Fourier.hpp"
-#include "../src/Includes/Utilities/GreenMat.hpp"
+#include "ctmo/Foundations/Fourier.hpp"
+#include "ctmo/Foundations/GreenMat.hpp"
 //#include "../src/Includes/ModelTriangle2x2.hpp"
 
 // TO DO MOve greenMat and GreenTau tests to seperate files.

@@ -1,8 +1,8 @@
 #define DCA
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Models/ABC_H0.hpp"
-#include "../src/Includes/Models/HybFMAndTLoc.hpp"
+#include "ctmo/Model/ABC_H0.hpp"
+#include "ctmo/Model/HybFMAndTLoc.hpp"
 
 const double delta = 5e-3;
 

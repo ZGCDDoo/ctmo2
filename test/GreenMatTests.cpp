@@ -1,7 +1,7 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/GreenMat.hpp"
+#include "ctmo/Foundations/GreenMat.hpp"
 
 // TO DO MOve greenMat and GreenTau tests to seperate files.
 

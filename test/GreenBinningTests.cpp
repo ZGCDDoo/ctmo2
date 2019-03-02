@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../src/Includes/IS/Obs/GreenBinning.hpp"
+#include "ctmo/ImpuritySolver/GreenBinning.hpp"
 
 using Model_t = Models::ABC_Model_2D;
 using IOModel_t = IO::Base_IOModel;
@@ -9,7 +9,7 @@ using GreenBinning_t = Markov::Obs::GreenBinning;
 using ISDataCT_t = Markov::Obs::ISDataCT;
 
 // const double DELTA = 1e-11;
-const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
+const std::string FNAME = "../../test/data/cdmft_square2x2/params1.json";
 
 GreenBinning_t BuildGreenBinning() // for Square2x2
 {

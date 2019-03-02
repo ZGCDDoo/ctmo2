@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/GreenMat.hpp"
-#include "../src/Includes/Utilities/GreenTau.hpp"
-#include "../src/Includes/Utilities/Fourier.hpp"
+#include "ctmo/Foundations/GreenMat.hpp"
+#include "ctmo/Foundations/GreenTau.hpp"
+#include "ctmo/Foundations/Fourier.hpp"
 
 const double DELTADIAG = 1e-2;
 const double DELTANONDIAG = 1e-2;
@@ -26,7 +26,7 @@ Json BuildJson()
                         "Ny": 2,
                         "Nz": 1
             },
-            "modelFile": "../data/Square2x2.model",
+            "modelFile": "../../data/Square2x2.model",
             "nOrb": 1,
             "nkpts": 100
         },

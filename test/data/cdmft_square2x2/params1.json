@@ -7,8 +7,8 @@
     },
     "model": {
         "beta": 5.0,
-        "hybUpFile": "../test/data/cdmft_square2x2/hyb_2Orb.dat",
-        "modelFile": "../data/Square2x2.model",
+        "hybUpFile": "../../test/data/cdmft_square2x2/hyb_2Orb.dat",
+        "modelFile": "../../data/Square2x2.model",
         "J_H": 1.0,
         "nkpts": 100,
         "nOrb": 2,

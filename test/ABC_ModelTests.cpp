@@ -1,6 +1,6 @@
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Models/ABC_Model.hpp"
+#include "ctmo/Model/ABC_Model.hpp"
 #include "TestTools.hpp"
 
 Json BuildJson()
@@ -15,8 +15,8 @@ Json BuildJson()
     },
     "model": {
         "beta": 33.3,
-        "hybUpFile": "../test/data/DMFT/hybfm_SIAM_Square.dat",
-        "modelFile": "../data/SIAM_Square.model",
+        "hybUpFile": "../../test/data/DMFT/hybfm_SIAM_Square.dat",
+        "modelFile": "../../data/SIAM_Square.model",
         "J_H": 0.0,
         "nkpts": 60,
         "nOrb": 1,

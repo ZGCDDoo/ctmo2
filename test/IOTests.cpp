@@ -1,10 +1,10 @@
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/IO.hpp"
+#include "ctmo/Foundations/IO.hpp"
 
 const double DELTA = 1e-12;
 const size_t NOrb = 5;
-const std::string FNAME = "../test/data/cdmft_square4x4/hyb_5Orb.dat";
+const std::string FNAME = "../../test/data/cdmft_square4x4/hyb_5Orb.dat";
 
 Json BuildJson()
 {
@@ -15,7 +15,7 @@ Json BuildJson()
                         "Ny": 4,
                         "Nz": 1
             },
-            "modelFile": "../data/Square4x4.model",
+            "modelFile": "../../data/Square4x4.model",
             "nOrb": 1,
             "nkpts": 100,
             "tParameters": 
