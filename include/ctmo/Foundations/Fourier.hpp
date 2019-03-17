@@ -21,7 +21,8 @@ cd_t MatToTau(const SiteVectorCD_t &greenMat, const double &tau,
     return (greenTau / beta);
 }
 
-cd_t MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double &beta, const cd_t &fm, const cd_t &sm, const cd_t &tm)
+cd_t MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double &beta, const cd_t &fm, const cd_t &sm,
+                      const cd_t &tm)
 {
 
     cd_t result{0.0, 0.0};
@@ -60,7 +61,8 @@ ClusterMatrixCD_t MatToTauCluster(const GreenMat::GreenCluster0Mat &greenCluster
     for (size_t n = 0; n < dataMat.n_slices; n++)
     {
         cd_t iwn(0.0, (2.0 * n + 1.0) * M_PI / beta);
-        dataMat.slice(n) -= greenCluster0Mat.fm() / (iwn) + greenCluster0Mat.sm() / (iwn * iwn) + greenCluster0Mat.tm() / (iwn * iwn * iwn);
+        dataMat.slice(n) -= greenCluster0Mat.fm() / (iwn) + greenCluster0Mat.sm() / (iwn * iwn) +
+                            greenCluster0Mat.tm() / (iwn * iwn * iwn);
     }
 
     for (size_t i = 0; i < dataMat.n_rows; i++)
