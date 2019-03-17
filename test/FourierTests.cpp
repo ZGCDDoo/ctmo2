@@ -26,12 +26,14 @@ TEST(FourierTest, Init)
     }
     // std::cout << "greenMat = " << greenMat << std::endl;
     double tau = beta / 2.0;
-    double greenTau = Fourier::MatToTau(greenMat, tau, beta);
-    double greenTauGood = -std::exp(mu * tau) * (1.0 - 1.0 / (1.0 + std::exp(-beta * mu)));
+    cd_t greenTau = Fourier::MatToTau(greenMat, tau, beta);
+    cd_t greenTauGood = -std::exp(mu * tau) * (1.0 - 1.0 / (1.0 + std::exp(-beta * mu)));
 
     std::cout << "greenTau = " << greenTau << std::endl;
     std::cout << "greenTauGood = " << greenTauGood << std::endl;
-    ASSERT_NEAR(greenTauGood, greenTau, DELTA);
+    ASSERT_NEAR(greenTauGood.real(), greenTau.real(), DELTA);
+    ASSERT_NEAR(greenTauGood.imag(), greenTau.imag(), DELTA);
+    ASSERT_DOUBLE_EQ(greenTau.imag(), 0.0);
 }
 
 TEST(FourierTest, MatToTauCluster)
@@ -69,34 +71,17 @@ TEST(FourierTest, MatToTauCluster)
     // greenCluster0Mat.tm().print();
 
     const double tau = beta / 20.330;
-    ClusterMatrix_t greenCluster0Tau = Fourier::MatToTauCluster(greenCluster0Mat, tau);
+    ClusterMatrixCD_t greenCluster0Tau = Fourier::MatToTauCluster(greenCluster0Mat, tau);
     // std::cout << "greenCluster0Tau.print(); = " << std::endl;
 
     double goodResult = -0.28057847825125032;
     // std::cout << "g(0,0) - goodResult " << greenCluster0Tau(0, 0) - goodResult << std::endl;
 
     double eps = std::abs(1.0 - goodResult / greenCluster0Tau(0, 0));
-    eps += std::abs(1.0 - greenCluster0Tau(0, 0) / greenCluster0Tau(1, 1));
+    eps += std::abs(1.0 - greenCluster0Tau(0, 0).real() / greenCluster0Tau(1, 1).real());
     ASSERT_TRUE(DELTA > eps);
-    ASSERT_NEAR(goodResult, greenCluster0Tau(0, 0), DELTA);
+    ASSERT_NEAR(goodResult, greenCluster0Tau(0, 0).real(), DELTA);
 }
-
-// TEST(FourierTest, )
-// {
-//     std::ifstream fin("testtriangle.json");
-//     Json jj;
-//     fin >> jj;
-//     Models::ModelTriangle_2D<2, 2> modelTriangle(jj);
-//     GreenMat::GreenCluster0Mat greenCluster0Mat = modelTriangle.greenCluster0Mat();
-//     const size_t NTau = 10000;
-//     double beta = modelTriangle.beta();
-//     cd_t iwn(0.0, M_PI / beta); //first frequency
-
-//     GreenTau::GreenCluster0Tau greenCluster0Tau(greenCluster0Mat, NTau);
-//     cd_t gfiwn = Fourier::TauToMat(greenCluster0Tau.data().tube(0, 0), iwn, beta);
-//     std::cout << "matTotau and back : gfiwn = " << gfiwn << std::endl;
-//     std::cout << " greenCluster0Mat.data()(0,0,0)  = " << greenCluster0Mat.data()(0, 0, 0) << std::endl;
-// }
 
 int main(int argc, char **argv)
 {

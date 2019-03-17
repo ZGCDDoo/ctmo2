@@ -2,33 +2,25 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="ctmo" targetName="MarkovChainSquare2x2Tests" />
-      <config projectName="ctmo" targetName="ctmo" />
-      <config projectName="ctmo" targetName="ABC_H0Tests" />
-      <config projectName="ctmo" targetName="gtest" />
-      <config projectName="ctmo" targetName="ctmo_dca" />
-      <config projectName="ctmo" targetName="gmock" />
-      <config projectName="ctmo" targetName="MatrixTests" />
-      <config projectName="ctmo" targetName="UTensorSimpleTests" />
-      <config projectName="ctmo" targetName="MarkovChainTriangle2x2_SLMC_Tests" />
-      <config projectName="ctmo" targetName="UtilitiesTests" />
-      <config projectName="ctmo" targetName="ObservablesTests" />
-      <config projectName="ctmo" targetName="ctmo_slmc" />
-      <config projectName="ctmo" targetName="FourierTests" />
-      <config projectName="ctmo" targetName="ABC_ModelTests" />
-      <config projectName="ctmo" targetName="SelfConsistencyTests" />
-      <config projectName="ctmo" targetName="VerticesSimpleTests" />
-      <config projectName="ctmo" targetName="GreenBinningTests" />
-      <config projectName="ctmo" targetName="FillingAndDoccTests" />
-      <config projectName="ctmo" targetName="gmock_main" />
-      <config projectName="ctmo" targetName="GreenMatTests" />
-      <config projectName="ctmo" targetName="IOTests" />
-      <config projectName="ctmo" targetName="GreenTauTests" />
-      <config projectName="ctmo" targetName="MarkovChainTriangle2x2Tests" />
-      <config projectName="ctmo" targetName="MarkovChainTests" />
-      <config projectName="ctmo" targetName="Fourier_DCATests" />
-      <config projectName="ctmo" targetName="HybFMAndTLocTests" />
-      <config projectName="ctmo" targetName="gtest_main" />
+      <config projectName="ctmo_cdh" targetName="Fourier_DCATests" />
+      <config projectName="ctmo_cdh" targetName="MarkovChainSquare2x2Tests" />
+      <config projectName="ctmo_cdh" targetName="ABC_H0Tests" />
+      <config projectName="ctmo_cdh" targetName="HybFMAndTLocTests" />
+      <config projectName="ctmo_cdh" targetName="gmock_main" />
+      <config projectName="ctmo_cdh" targetName="IOTests" />
+      <config projectName="ctmo_cdh" targetName="gtest" />
+      <config projectName="ctmo_cdh" targetName="MarkovChainTests" />
+      <config projectName="ctmo_cdh" targetName="FillingAndDoccTests" />
+      <config projectName="ctmo_cdh" targetName="GreenMatTests" />
+      <config projectName="ctmo_cdh" targetName="ABC_ModelTests" />
+      <config projectName="ctmo_cdh" targetName="gmock" />
+      <config projectName="ctmo_cdh" targetName="gtest_main" />
+      <config projectName="ctmo_cdh" targetName="ctmo" />
+      <config projectName="ctmo_cdh" targetName="ctmo_dca" />
+      <config projectName="ctmo_cdh" targetName="GreenBinningTests" />
+      <config projectName="ctmo_cdh" targetName="ctmo_slmc" />
+      <config projectName="ctmo_cdh" targetName="GreenTauTests" />
+      <config projectName="ctmo_cdh" targetName="FourierTests" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -38,7 +30,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.clang-tidy" beforeDir="false" afterPath="$PROJECT_DIR$/.clang-tidy" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Fourier.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Fourier.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/GreenMat.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/GreenMat.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/GreenTau.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/GreenTau.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/FourierTests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test/FourierTests.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -50,101 +48,71 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Models/UTensorSimple.hpp">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
-              <folding>
-                <element signature="e#14#45#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
-              <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
-              <folding>
-                <element signature="e#13#48#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/Observables.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/KineticEnergy.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
-              <folding>
-                <element signature="e#0#40#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/GreenBinning.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
-              <folding>
-                <element signature="e#14#51#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MonteCarlo.hpp">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
+        <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/Fourier.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
+            <state relative-caret-position="342">
+              <caret line="46" selection-start-line="46" selection-end-line="46" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/GreenMat.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="117" column="134" selection-start-line="117" selection-start-column="134" selection-end-line="117" selection-end-column="134" />
               <folding>
-                <element signature="e#14#57#0" expanded="true" />
+                <element signature="e#13#54#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp">
+        <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/IO.hpp">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/GreenTau.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
-              <caret line="2" column="22" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+            <state relative-caret-position="1900">
+              <caret line="189" column="1" selection-start-line="189" selection-start-column="1" selection-end-line="189" selection-end-column="1" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/ctmo/Model/ABC_H0.hpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-537">
+              <caret line="103" column="13" selection-start-line="103" selection-start-column="13" selection-end-line="103" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/data/cdmft_square2x2/params1.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="456">
+              <caret line="24" column="9" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/FourierTests.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="543">
+              <caret line="84" column="57" selection-start-line="84" selection-start-column="57" selection-end-line="84" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/Fourier_DCA.hpp">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -163,6 +131,8 @@
       <find>typedef</find>
       <find>#include &quot;Logging</find>
       <find>cxx_flags</find>
+      <find>fourier</find>
+      <find>result</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -204,14 +174,18 @@
         <option value="$PROJECT_DIR$/src/Includes/Utilities/FS.hpp" />
         <option value="$PROJECT_DIR$/src/Includes/Utilities/Fourier.hpp" />
         <option value="$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" />
+        <option value="$PROJECT_DIR$/include/ctmo/Foundations/GreenTau.hpp" />
+        <option value="$PROJECT_DIR$/include/ctmo/Foundations/GreenMat.hpp" />
+        <option value="$PROJECT_DIR$/test/data/cdmft_square2x2/params1.json" />
+        <option value="$PROJECT_DIR$/include/ctmo/Foundations/Fourier.hpp" />
+        <option value="$PROJECT_DIR$/test/FourierTests.cpp" />
       </list>
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1920" />
     <option name="width" value="1920" />
-    <option name="height" value="1080" />
+    <option name="height" value="1044" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -219,7 +193,35 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="cdmft_square2x2" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scope" />
     </panes>
   </component>
@@ -239,138 +241,98 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.MarkovChainTriangle2x2Tests">
-    <configuration name="ABC_H0Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ABC_H0Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ABC_H0Tests">
+  <component name="RunManager" selected="Application.FourierTests">
+    <configuration name="ABC_H0Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ABC_H0Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ABC_H0Tests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ABC_ModelTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ABC_ModelTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ABC_ModelTests">
+    <configuration name="ABC_ModelTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ABC_ModelTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ABC_ModelTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="FillingAndDoccTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="FillingAndDoccTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="FillingAndDoccTests">
+    <configuration name="FillingAndDoccTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="FillingAndDoccTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="FillingAndDoccTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="FourierTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="FourierTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="FourierTests">
+    <configuration name="FourierTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="FourierTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="FourierTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Fourier_DCATests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="Fourier_DCATests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="Fourier_DCATests">
+    <configuration name="Fourier_DCATests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="Fourier_DCATests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="Fourier_DCATests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GreenBinningTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="GreenBinningTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="GreenBinningTests">
+    <configuration name="GreenBinningTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="GreenBinningTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="GreenBinningTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GreenMatTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="GreenMatTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="GreenMatTests">
+    <configuration name="GreenMatTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="GreenMatTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="GreenMatTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GreenTauTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="GreenTauTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="GreenTauTests">
+    <configuration name="GreenTauTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="GreenTauTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="GreenTauTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="HybFMAndTLocTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="HybFMAndTLocTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="HybFMAndTLocTests">
+    <configuration name="HybFMAndTLocTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="HybFMAndTLocTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="HybFMAndTLocTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="IOTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="IOTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="IOTests">
+    <configuration name="IOTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="IOTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="IOTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MarkovChainSquare2x2Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MarkovChainSquare2x2Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MarkovChainSquare2x2Tests">
+    <configuration name="MarkovChainSquare2x2Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="MarkovChainSquare2x2Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="MarkovChainSquare2x2Tests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MarkovChainTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MarkovChainTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MarkovChainTests">
+    <configuration name="MarkovChainTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="MarkovChainTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="MarkovChainTests">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MarkovChainTriangle2x2Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MarkovChainTriangle2x2Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MarkovChainTriangle2x2Tests">
+    <configuration name="ctmo" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MarkovChainTriangle2x2_SLMC_Tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MarkovChainTriangle2x2_SLMC_Tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MarkovChainTriangle2x2_SLMC_Tests">
+    <configuration name="ctmo_dca" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo_dca" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo_dca">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MatrixTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="MatrixTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="MatrixTests">
+    <configuration name="ctmo_slmc" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo_slmc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo_slmc">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ObservablesTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ObservablesTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ObservablesTests">
+    <configuration name="gmock" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="gmock" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SelfConsistencyTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="SelfConsistencyTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="SelfConsistencyTests">
+    <configuration name="gmock_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="gmock_main" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UTensorSimpleTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="UTensorSimpleTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="UTensorSimpleTests">
+    <configuration name="gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="gtest" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="UtilitiesTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="UtilitiesTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="UtilitiesTests">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="VerticesSimpleTests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="VerticesSimpleTests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="VerticesSimpleTests">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ctmo" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ctmo" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ctmo">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ctmo_dca" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ctmo_dca" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ctmo_dca">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ctmo_slmc" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="ctmo_slmc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo" RUN_TARGET_NAME="ctmo_slmc">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="gmock" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="gmock" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="gmock_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="gmock_main" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="gtest" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="gtest" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo" TARGET_NAME="gtest_main" CONFIG_NAME="Debug">
+    <configuration name="gtest_main" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="gtest_main" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -388,14 +350,6 @@
       <item itemvalue="Application.IOTests" />
       <item itemvalue="Application.MarkovChainSquare2x2Tests" />
       <item itemvalue="Application.MarkovChainTests" />
-      <item itemvalue="Application.MarkovChainTriangle2x2Tests" />
-      <item itemvalue="Application.MarkovChainTriangle2x2_SLMC_Tests" />
-      <item itemvalue="Application.MatrixTests" />
-      <item itemvalue="Application.ObservablesTests" />
-      <item itemvalue="Application.SelfConsistencyTests" />
-      <item itemvalue="Application.UTensorSimpleTests" />
-      <item itemvalue="Application.UtilitiesTests" />
-      <item itemvalue="Application.VerticesSimpleTests" />
       <item itemvalue="Application.ctmo" />
       <item itemvalue="Application.ctmo_dca" />
       <item itemvalue="Application.ctmo_slmc" />
@@ -425,22 +379,23 @@
       <workItem from="1549389891339" duration="1403000" />
       <workItem from="1549847334420" duration="2617000" />
       <workItem from="1549921712319" duration="19000" />
+      <workItem from="1552780201398" duration="3489000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14734000" />
+    <option name="totallyTimeSpent" value="18223000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.19764957" />
+      <window_info content_ui="combo" id="Project" order="2" visible="true" weight="0.19978632" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.31629393" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32890365" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32890365" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -449,8 +404,8 @@
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="CMake" order="11" visible="true" weight="0.28966987" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32779622" />
+      <window_info anchor="bottom" id="CMake" order="11" weight="0.29073483" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32668883" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -472,43 +427,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MarkovChainSubMatrix.hpp" />
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChainSubMatrix.hpp" />
-    <entry file="file://$USER_HOME$/.local/share/applications/jetbrains-clion.desktop">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MarkovChain.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="16" selection-start-line="19" selection-start-column="16" selection-end-line="19" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/GreenTauTests.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2004">
-          <caret line="104" column="5" selection-start-line="104" selection-start-column="5" selection-end-line="104" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/VerticesSimpleTests.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/UtilitiesTests.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="419" column="25" selection-start-line="419" selection-start-column="25" selection-end-line="419" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/IntegratorTests.cpp" />
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-91" />
@@ -534,37 +452,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ISData.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-95">
-          <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-          <folding>
-            <element signature="e#14#50#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarlo.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="25" selection-start-line="2" selection-start-column="25" selection-end-line="2" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="39" selection-start-line="2" selection-start-column="39" selection-end-line="2" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ISData.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarlo.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/MonteCarloBuilder.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_Model.hpp" />
     <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1368">
@@ -611,232 +502,85 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#14#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/UtilitiesRandom.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="13" column="4" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Utilities.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-          <folding>
-            <element signature="e#36#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistencyBuilder.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-          <folding>
-            <element signature="e#25#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency_DCA.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#14#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-          <folding>
-            <element signature="e#15#49#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/MPITools.hpp">
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/VerticesSimple.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/UtilitiesRandom.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Utilities.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistencyBuilder.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency_DCA.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/SelfConsistency.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/MPITools.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/MPIResult.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Matrix.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Logging.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/LinAlg.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/IOConstruct.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/IO.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/GreenMat.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/FS.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Fourier_DCA.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Fourier.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Conventions.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/CMDParser.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/ABC_SelfConsistency.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Models/UTensorSimple.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/Observables.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/KineticEnergy.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/GreenBinning.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MonteCarlo.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp" />
+    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp" />
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/Fourier_DCA.hpp">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/MPIResult.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Matrix.hpp">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/IO.hpp">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Logging.hpp">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/GreenMat.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="5" column="23" selection-start-line="5" selection-start-column="23" selection-end-line="5" selection-end-column="23" />
+        <state relative-caret-position="144">
+          <caret line="117" column="134" selection-start-line="117" selection-start-column="134" selection-end-line="117" selection-end-column="134" />
           <folding>
-            <element signature="e#14#40#0" expanded="true" />
+            <element signature="e#13#54#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/LinAlg.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/IOConstruct.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/IO.hpp">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/GreenTau.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
-          <folding>
-            <element signature="e#14#40#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1900">
+          <caret line="189" column="1" selection-start-line="189" selection-start-column="1" selection-end-line="189" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/GreenMat.hpp">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Model/ABC_H0.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#13#37#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-537">
+          <caret line="103" column="13" selection-start-line="103" selection-start-column="13" selection-end-line="103" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/FS.hpp">
+    <entry file="file://$PROJECT_DIR$/test/data/cdmft_square2x2/params1.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-          <folding>
-            <element signature="e#14#36#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="456">
+          <caret line="24" column="9" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Fourier_DCA.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Fourier.hpp">
+    <entry file="file://$PROJECT_DIR$/test/FourierTests.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        <state relative-caret-position="543">
+          <caret line="84" column="57" selection-start-line="84" selection-start-column="57" selection-end-line="84" selection-end-column="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/Conventions.hpp">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Foundations/Fourier.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#14#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/ConfigParser.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/CMDParser.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#14#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/ABC_SelfConsistency.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Models/UTensorSimple.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Models/HybFMAndTLoc.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
-          <folding>
-            <element signature="e#14#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Models/ABC_H0.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
-          <folding>
-            <element signature="e#13#48#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/Observables.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/KineticEnergy.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/GreenBinning.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/Obs/FillingAndDocc.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-          <folding>
-            <element signature="e#14#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MonteCarlo.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/Utilities/GreenTau.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="2" column="22" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Includes/IS/ABC_MarkovChain.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
-          <folding>
-            <element signature="e#14#57#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="342">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
         </state>
       </provider>
     </entry>

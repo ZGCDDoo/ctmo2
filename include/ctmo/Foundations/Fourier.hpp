@@ -5,25 +5,26 @@
 namespace Fourier
 {
 
-double MatToTau(const SiteVectorCD_t &greenMat, const double &tau,
-                const double &beta) // Only for a "scalar green function, not a cluster green"
+cd_t MatToTau(const SiteVectorCD_t &greenMat, const double &tau,
+              const double &beta) // Only for a "scalar green function, not a cluster green"
 {
-    double greenTau = 0.0;
+    cd_t greenTau = 0.0;
+    const cd_t im{0.0, 1.0};
 
     for (size_t n = 0; n < greenMat.size(); n++)
     {
         const double wn = (2.0 * n + 1.0) * M_PI / beta;
-        greenTau += std::cos(wn * tau) * greenMat(n).real() + std::sin(wn * tau) * greenMat(n).imag();
+        greenTau += std::exp(-im * wn * tau) * greenMat(n);
+        greenTau += std::exp(im * wn * tau) * std::conj(greenMat(n));
     }
 
-    return (2.0 * greenTau / beta);
+    return (greenTau / beta);
 }
 
-double MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double &beta, const double &fm, const double &sm,
-                        const double &tm)
+cd_t MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double &beta, const cd_t &fm, const cd_t &sm, const cd_t &tm)
 {
 
-    double result = 0.0;
+    cd_t result{0.0, 0.0};
 
     // result+= les moments en tau calculés analytiquement
     result += -0.5 * fm;
@@ -42,7 +43,7 @@ double MatToTauAnalytic(SiteVectorCD_t greenMat, const double &tau, const double
     return result;
 }
 
-ClusterMatrix_t MatToTauCluster(const GreenMat::GreenCluster0Mat &greenCluster0Mat, const double &tau)
+ClusterMatrixCD_t MatToTauCluster(const GreenMat::GreenCluster0Mat &greenCluster0Mat, const double &tau)
 {
 
     ClusterCubeCD_t dataMat = greenCluster0Mat.data();
@@ -58,8 +59,8 @@ ClusterMatrix_t MatToTauCluster(const GreenMat::GreenCluster0Mat &greenCluster0M
     // On transforme la greenMat moins ses moments
     for (size_t n = 0; n < dataMat.n_slices; n++)
     {
-        cd_t wn(0.0, (2.0 * n + 1.0) * M_PI / beta);
-        dataMat.slice(n) -= greenCluster0Mat.fm() / (wn) + greenCluster0Mat.sm() / (wn * wn) + greenCluster0Mat.tm() / (wn * wn * wn);
+        cd_t iwn(0.0, (2.0 * n + 1.0) * M_PI / beta);
+        dataMat.slice(n) -= greenCluster0Mat.fm() / (iwn) + greenCluster0Mat.sm() / (iwn * iwn) + greenCluster0Mat.tm() / (iwn * iwn * iwn);
     }
 
     for (size_t i = 0; i < dataMat.n_rows; i++)
@@ -70,34 +71,7 @@ ClusterMatrix_t MatToTauCluster(const GreenMat::GreenCluster0Mat &greenCluster0M
         }
     }
 
-    ClusterMatrix_t resultReal(arma::real(result));
-    return resultReal;
+    return result;
 }
-
-// ClusterMatrixCD_t KToR(const ClusterSitesCD_t &vectorK, const ClusterSites_t &KWaveVectors, const ClusterSites_t &RSites)
-// {
-//     const size_t NN = vectorK.n_elem;
-//     assert(NN == Rsites.n_elem);
-//     assert(NN == vectorK.n_elem);
-
-//     ClusterMatrixCD_t matrixR(NN, NN);
-//     matrixR.zeros();
-
-//     for (size_t ii = 0; ii < NN; ii++)
-//     {
-//         for (size_t jj = 0; jj < NN; jj++)
-//         {
-
-//             const SiteVector_t Rdiff = RSites_[ii] - RSites_.at(jj);
-//             for (size_t KK = 0; KK < NN; KK++)
-//             {
-//                 matrixR(ii, jj) += std::exp(im * dot(KWaveVectors(kk), Rdiff)) * vectorK(KK);
-//             }
-//         }
-//     }
-
-//     R /= static_cast<double>(NN);
-//     return R;
-// }
 
 } // namespace Fourier

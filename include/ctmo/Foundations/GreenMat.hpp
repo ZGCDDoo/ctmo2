@@ -1,6 +1,7 @@
 #pragma once
 #include "ctmo/Foundations/Utilities.hpp"
 #include "ctmo/Foundations/Fourier_DCA.hpp"
+#include "ctmo/Foundations/Logging.hpp"
 
 namespace GreenMat
 {
@@ -114,6 +115,8 @@ class GreenCluster0Mat
     {
 
         // Watch OUT!!! hyb and tloc not fouriertransformed
+        Logging::Debug("Fourier Transforming Green Matsubara from Real to K space. Watch out, tLoc and hyb not Fourier Transformed.");
+
         data_ = FourierDCA::KtoR(data_, RSites, KWaveVectors);
         zm_ = FourierDCA::KtoR(zm_, RSites, KWaveVectors);
         fm_ = FourierDCA::KtoR(fm_, RSites, KWaveVectors);

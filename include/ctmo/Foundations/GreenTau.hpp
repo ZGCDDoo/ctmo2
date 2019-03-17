@@ -64,10 +64,10 @@ class GreenCluster0Tau
             }
 
             const SiteVectorCD_t greenMat = gfMatCluster_.data().tube(s1, s2);
-            const double fm = gfMatCluster_.fm()(s1, s2).real();
-            const double sm = gfMatCluster_.sm()(s1, s2).real();
-            const double tm = gfMatCluster_.tm()(s1, s2).real();
-            result.at(tt) = Fourier::MatToTauAnalytic(greenMat, tau, beta_, fm, sm, tm);
+            const cd_t fm = gfMatCluster_.fm()(s1, s2);
+            const cd_t sm = gfMatCluster_.sm()(s1, s2);
+            const cd_t tm = gfMatCluster_.tm()(s1, s2);
+            result.at(tt) = Fourier::MatToTauAnalytic(greenMat, tau, beta_, fm, sm, tm).real();
         }
 
         return result;
