@@ -129,6 +129,8 @@ class ABC_H0
             2.0 * t3Vec_.at(NIndepOrbIndex) *
                 (std::cos(kx + ky + kz) + std::cos(kx + ky - kz) + std::cos(kx - ky + kz) + std::cos(-kx + ky + kz));
 
+//        const double tsin = tsinVec.at(NIndepOrbIndex);
+//        eps0k += cd_t(2.0*tsin*std::sin(kx), -2.0*tsin*std::sin(ky) );
         return eps0k;
     }
 
@@ -143,7 +145,7 @@ class ABC_H0
 
         for (size_t o1 = 0; o1 < NOrb_; o1++)
         {
-            for (size_t o2 = 0; o2 < NOrb_; o2++)
+            for (size_t o2 = o1; o2 < NOrb_; o2++)
             {
                 const size_t NIndepOrbIndex = Utilities::GetIndepOrbitalIndex(o1, o2, NOrb_);
                 for (size_t i = 0; i < Nc; i++)
@@ -161,6 +163,13 @@ class ABC_H0
                             HoppingKTilde(i + o1 * Nc, j + o2 * Nc) +=
                                 std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) *
                                 Eps0k(K(0) + kTildeX, K(1) + kTildeY, K(2) + kTildeZ, NIndepOrbIndex);
+                            if(o1!=o2)
+                            {
+                                HoppingKTilde(i + o2 * Nc, j + o1 * Nc) +=
+                                        std::exp(im * dot(K + ktilde, RSites_.at(i) - RSites_[j])) *
+                                        std::conj(Eps0k(K(0) + kTildeX, K(1) + kTildeY, K(2) + kTildeZ, NIndepOrbIndex)
+                                        );
+                            }
 #endif
                         }
                     }
