@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ctmo/Foundations/Logging.hpp"
 #include <boost/filesystem.hpp>
 
@@ -15,31 +16,57 @@ class ABC_H0
     const size_t Nc;
 
     ABC_H0(const ABC_H0 &abc_h0) = default;
+
     ABC_H0(ABC_H0 &&abc_h0) = default;
 
     ABC_H0 &operator=(const ABC_H0 &abc_H0) = delete;
+
     ABC_H0 &operator=(ABC_H0 &&abc_H0) = delete;
 
     explicit ABC_H0(const Json &jjSim)
         : Nx(jjSim["model"]["cluster"]["Nx"].get<size_t>()), Ny(jjSim["model"]["cluster"]["Ny"].get<size_t>()),
           Nz(jjSim["model"]["cluster"]["Nz"].get<size_t>()), Nc(Nx * Ny * Nz), RSites_(Nc), KWaveVectors_(Nc),
           NOrb_(jjSim["model"]["nOrb"].get<size_t>()), NKPTS_(jjSim["model"]["nkpts"].get<size_t>())
-
     {
 
         Logging::Debug("Start ABC_H0 Constructor. ");
-        for (size_t k = 0; k < Nz; k++)
+        if ((jjSim["model"].find("RSites") != jjSim["model"].end()) && (jjSim["model"].find("KWaveVectors") != jjSim["model"].end()))
         {
-            for (size_t j = 0; j < Ny; j++)
+            const auto RS = jjSim["model"]["RSites"];
+            for (auto it = RS.begin(); it != RS.end(); ++it)
             {
-                for (size_t i = 0; i < Nx; i++)
-                {
+                const size_t ii = std::distance(RS.begin(), it);
+                const std::vector<double> v = it.value();
+                RSites_.at(ii) = v;
+                RSites_.at(ii).print();
+                std::cout << "\n";
+            }
+            const auto KW = jjSim["model"]["KWaveVectors"];
+            for (auto it = KW.begin(); it != KW.end(); ++it)
+            {
+                const size_t ii = std::distance(KW.begin(), it);
+                const std::vector<double> v = it.value();
+                KWaveVectors_.at(ii) = v;
+            }
 
-                    const size_t index = i + Nx * j + (Nx * Ny) * k;
-                    RSites_.at(index) = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(k)};
-                    KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx),
-                                               static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny),
-                                               static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
+            Logging::Warn("Advanced Usage, setting manually RSites and KWaveVectors. ");
+            Logging::Warn(".... You should implement the Self-Consistency accordingly, dangerous. ");
+        }
+        else
+        {
+            for (size_t k = 0; k < Nz; k++)
+            {
+                for (size_t j = 0; j < Ny; j++)
+                {
+                    for (size_t i = 0; i < Nx; i++)
+                    {
+
+                        const size_t index = i + Nx * j + (Nx * Ny) * k;
+                        RSites_.at(index) = {static_cast<double>(i), static_cast<double>(j), static_cast<double>(k)};
+                        KWaveVectors_.at(index) = {static_cast<double>(i) * 2.0 * M_PI / static_cast<double>(Nx),
+                                                   static_cast<double>(j) * 2.0 * M_PI / static_cast<double>(Ny),
+                                                   static_cast<double>(k) * 2.0 * M_PI / static_cast<double>(Nz)};
+                    }
                 }
             }
         }
@@ -51,24 +78,41 @@ class ABC_H0
     ~ABC_H0() = default;
 
     std::vector<double> tIntraOrbitalVec() const { return tIntraOrbitalVec_; };
+
     std::vector<double> txVec() const { return txVec_; };
+
     std::vector<double> tyVec() const { return tyVec_; };
+
     std::vector<double> tzVec() const { return tzVec_; };
+
     std::vector<double> txyVec() const { return txyVec_; };
+
     std::vector<double> tx_yVec() const { return tx_yVec_; };
+
     std::vector<double> txzVec() const { return txzVec_; };
+
     std::vector<double> tx_zVec() const { return tx_zVec_; };
+
     std::vector<double> tyzVec() const { return tyzVec_; };
+
     std::vector<double> ty_zVec() const { return ty_zVec_; };
+
     std::vector<double> t2xVec() const { return t2xVec_; };
+
     std::vector<double> t2yVec() const { return t2yVec_; };
+
     std::vector<double> t2zVec() const { return t2zVec_; };
+
     std::vector<double> t3Vec() const { return t3Vec_; };
 
     size_t n_rows() const { return Nc * NOrb_; };
+
     size_t n_cols() const { return Nc * NOrb_; };
+
     size_t NKPTS() const { return NKPTS_; };
+
     ClusterSites_t RSites() const { return RSites_; };
+
     ClusterSites_t KWaveVectors() const { return KWaveVectors_; };
 
     void ReadInHoppings(const Json &jjSim)

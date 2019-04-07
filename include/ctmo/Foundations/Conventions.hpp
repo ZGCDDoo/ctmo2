@@ -7,6 +7,8 @@
 namespace Conventions
 {
 
+const std::string CTMO_VERION = "2.0.0";
+
 using MapSS_t = std::map<std::string, std::string>;
 using NameVector_t = std::vector<std::string>;
 
