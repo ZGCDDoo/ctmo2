@@ -7,13 +7,14 @@
 
 #include <snappy.h>
 #include "ctmo/ImpuritySolver/VerticesSimple.hpp"
+#include "ctmo/deps/nlohmann_json/json.hpp"
 
 namespace Diagrammatic
 {
 class ConfigParser
 {
   public:
-    const size_t NUM_MAX_CONFIGS = 5000;
+    const size_t NUM_MAX_CONFIGS = 100;
     const std::string NAME_PREFIX_BATCH = "configsBatch";
 
     explicit ConfigParser() : configs_() {}
@@ -39,19 +40,26 @@ class ConfigParser
         ++configId_;
         if (configId_ == NUM_MAX_CONFIGS)
         {
-            const std::string batchStr = configs_.dump();
-            std::string batchStrCompressed;
-            snappy::Compress(batchStr.data(), batchStr.size(), &batchStrCompressed);
-            const std::string fileName = NAME_PREFIX_BATCH + std::to_string(batchId_) + ".snappy";
+            const std::vector<std::uint8_t> msgpackConfigs = nlohmann::json::to_msgpack(configs_);
+            cocnst std::string msgpackConfigsStr(msgpackConfigs.begin(), msgpackConfigs.end());
+            std::string msgpackConfigsStrCompressed;
+            snappy::Compress(msgpackConfigsStr.data(), msgpackConfigsStr.size(), &msgpackConfigsStrCompressed);
+            const std::string fileName = NAME_PREFIX_BATCH + std::to_string(batchId_) + "msgpack.snappy";
             std::ofstream fout(fileName);
-            fout << batchStrCompressed;
+            fout << msgpackConfigsStrCompressed;
             fout.close();
 
             configs_.clear();
             configId_ = 0;
             ++batchId_;
+//            WriteToDB(msgpackConfigsStrCompressed);
         }
     }
+
+//    void WriteToDB(const std::string& configsStr)
+//    {
+//
+//    }
 
   private:
     Json configs_;
