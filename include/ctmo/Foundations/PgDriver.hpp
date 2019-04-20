@@ -72,29 +72,18 @@ public:
         pgUser_ = pt.get<std::string>("POSTGRESQL.user");
         pgPassword_ = pt.get<std::string>("POSTGRESQL.password");
         pgDatabase_ = pt.get<std::string>("POSTGRESQL.database");
+        pgTable_ = pt.get<std::string>("POSTGRESQL.table");
 
     }
 
     bool SaveBytea(const std::string &binaryData)
     {
-        pqxx::work txn{connection_};
-
+        connected_ = Connect();
+        pqxx::work wTxn{connection_};
+        connection_.prepare("insertBatch", "INSERT INTO" + pgTable_ + "(simulation_id , batch) VALUES ($1, $2)");
         pqxx::result r = txn.exec("SELECT name, salary FROM Employee");
-        for (auto row: r)
-            std::cout
-                    // Address column by name.  Use c_str() to get C-style string.
-                    << row["name"].c_str()
-                    << " makes "
-                    // Address column by zero-based index.  Use as<int>() to parse as int.
-                    << row[1].as<int>()
-                    << "."
-                    << std::endl;
-
-        // Not really needed, since we made no changes, but good habit to be
-        // explicit about when the transaction is done.
-        txn.commit();
-
-        // Connection object goes out of scope here.  It closes automatically.
+        pqxx::result r = work.prepared("insertBatch")(-999)(pqxx::binarystring(binaryData)).exec();
+        wTxn.commit();
         return true;
     }
 
@@ -102,6 +91,7 @@ protected:
     PgDriver()
     {
         timer_.Start(POSTGRES_CONNECT_TIME_DELAY);
+        connected_ = Connect();
     };
 
     virtual ~PgDriver();
@@ -136,7 +126,7 @@ private:
             std::cerr << e.what() << std::endl;
         }
 
-        if (connection_.is_open())
+        if (!connection_.is_open())
         {
             printf("Impossible to connect database");
             return false;

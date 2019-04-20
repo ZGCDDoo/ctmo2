@@ -587,7 +587,9 @@ class ABC_MarkovChain
 
     void SaveMeas()
     {
-
+#ifdef SLMC
+        Logging::Info("Saved " + std::to_string(configParser_.batchesSaved()) + " Batches of configurations");
+#else
         obs_.Save();
         Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
         SaveUpd("Measurements");
@@ -595,7 +597,9 @@ class ABC_MarkovChain
         {
             dataCT_->vertices_.SaveConfig("Config.dat");
         }
+
         Logging::Info("Finished Saving MarkovChain.");
+#endif
     }
 
     void SaveTherm()

@@ -8,6 +8,9 @@
 #include <snappy.h>
 #include "ctmo/ImpuritySolver/VerticesSimple.hpp"
 #include "ctmo/deps/nlohmann_json/json.hpp"
+#include "ctmo/Foundations/Logging.hpp"
+
+#include <csignal>
 
 namespace Diagrammatic
 {
@@ -15,11 +18,14 @@ class ConfigParser
 {
 public:
     const size_t NUM_MAX_CONFIGS = 500;
+    const size_t NUM_MAX_BATCH_SAVED = 100000000;
     const std::string NAME_PREFIX = "configs_";
     const std::string NAME_SUFFIX = "_ctmo.bin";
 
     explicit ConfigParser(const size_t &rank) : configs_(), rank_{rank}
     {}
+
+    int batchesSaved() const {return batchesSaved_;}
 
     void SaveConfig(const Vertices &vertices_, const double &logDeterminant, const Sign_t &sign)
     {
@@ -42,9 +48,15 @@ public:
         ++configId_;
         if (configId_ == NUM_MAX_CONFIGS)
         {
-//            if(tries_ != 0)
-//            {
-//                return;
+//            if(batchesSaved_ == 21)
+//            {   if(mpiUt::Tools::Rank() == mpiUt::Tools::master)
+//                {
+//                    const std::string jjStr = configs_.dump();
+//                    std::ofstream foutTmp("batchConfig21.json");
+//                    foutTmp << jjStr << std::endl;
+//                    foutTmp.close();
+//                }
+//
 //            }
             const std::vector<std::uint8_t> msgpackConfigs = nlohmann::json::to_msgpack(configs_);
             const std::string msgpackConfigsStr(msgpackConfigs.begin(), msgpackConfigs.end());
@@ -53,7 +65,6 @@ public:
             const std::string fileName = NAME_PREFIX + std::to_string(rank_) + NAME_SUFFIX;
 
             const std::uint32_t sizeStr = msgpackConfigsStrCompressed.size();
-            std::cout << "sizeStr = " << sizeStr << std::endl;
             std::vector<char> dataBin;
             dataBin.insert(dataBin.end(), reinterpret_cast<const char *>(&sizeStr),
                            reinterpret_cast<const char *>(&sizeStr) + sizeof(std::uint32_t));
@@ -65,7 +76,12 @@ public:
 
             configs_.clear();
             configId_ = 0;
-//            tries_++;
+            batchesSaved_++;
+            if(batchesSaved_ > NUM_MAX_BATCH_SAVED)
+            {
+                Logging::Info("In SLMC, NUM_BATCH_SAVED attained, exiting");
+                raise(SIGINT);
+            }
         }
     }
 
@@ -74,7 +90,7 @@ private:
     Json configs_;
     size_t configId_{0};
     const size_t rank_;
-//    int tries_{0};
+    size_t batchesSaved_{0};
 };
 } // namespace Diagrammatic
 
