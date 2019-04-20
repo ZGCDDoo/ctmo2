@@ -57,7 +57,7 @@ class ABC_MarkovChain
         : modelPtr_(new Model_t(jj)), rng_(seed), urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
           dataCT_(new Obs::ISDataCT(jj, modelPtr_)), obs_(dataCT_, jj), vertexBuilder_(jj, modelPtr_->Nc()),
 #ifdef SLMC
-          configParser_(mpiUt::Tools::Rank()), logDeterminant_(0.0),
+          configParser_(mpiUt::Tools::Rank(), jj["slmc"]["simulation_id"]), logDeterminant_(0.0),
 #endif
           updsamespin_(0), isOneOrbitalOptimized_(jj["solver"]["isOneOrbitalOptimized"].get<bool>())
     {

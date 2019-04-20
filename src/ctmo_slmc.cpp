@@ -1,4 +1,6 @@
 #define SLMC
+#define HAVE_POSTGRES
+
 
 #include "ctmo/MonteCarlo/MonteCarloBuilder.hpp"
 #include "ctmo/SelfConsistency/SelfConsistencyBuilder.hpp"
@@ -96,7 +98,6 @@ int main(int argc, char **argv)
 
     mpi::broadcast(world, jjSimStr, mpiUt::Tools::master);
     mpi::broadcast(world, ITER, mpiUt::Tools::master);
-    mpi::broadcast(world, doSC, mpiUt::Tools::master);
 
     jjSim = Json::parse(jjSimStr);
 

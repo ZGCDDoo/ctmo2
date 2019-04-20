@@ -10,6 +10,10 @@
 #include "ctmo/deps/nlohmann_json/json.hpp"
 #include "ctmo/Foundations/Logging.hpp"
 
+#ifdef HAVE_POSTGRES
+#include "ctmo/Foundations/PgDriver.hpp"
+#endif
+
 #include <csignal>
 
 namespace Diagrammatic
@@ -17,15 +21,19 @@ namespace Diagrammatic
 class ConfigParser
 {
 public:
-    const size_t NUM_MAX_CONFIGS = 500;
-    const size_t NUM_MAX_BATCH_SAVED = 100000000;
     const std::string NAME_PREFIX = "configs_";
     const std::string NAME_SUFFIX = "_ctmo.bin";
+    const size_t NUM_MAX_CONFIGS = 500;
+    const size_t NUM_MAX_BATCH_SAVED = 10;
 
-    explicit ConfigParser(const size_t &rank) : configs_(), rank_{rank}
+    const static int SIMULATION_ID_DEFAULT = -9999;
+
+    explicit ConfigParser(const size_t &rank, const int& simulation_id=SIMULATION_ID_DEFAULT)
+            : configs_(), rank_{rank}, simulationId_{simulation_id}
     {}
 
-    int batchesSaved() const {return batchesSaved_;}
+    int batchesSaved() const
+    { return batchesSaved_; }
 
     void SaveConfig(const Vertices &vertices_, const double &logDeterminant, const Sign_t &sign)
     {
@@ -77,11 +85,16 @@ public:
             configs_.clear();
             configId_ = 0;
             batchesSaved_++;
-            if(batchesSaved_ > NUM_MAX_BATCH_SAVED)
+            if (batchesSaved_ > NUM_MAX_BATCH_SAVED)
             {
                 Logging::Info("In SLMC, NUM_BATCH_SAVED attained, exiting");
                 raise(SIGINT);
             }
+
+#ifdef HAVE_POSTGRES
+            DB::PgDriver* pgDriverPtr = DB::PgDriver::getInstance();
+            pgDriverPtr->SaveBytea(msgpackConfigsStrCompressed, simulationId_);
+#endif
         }
     }
 
@@ -90,7 +103,9 @@ private:
     Json configs_;
     size_t configId_{0};
     const size_t rank_;
+    const int simulationId_;
     size_t batchesSaved_{0};
+
 };
 } // namespace Diagrammatic
 

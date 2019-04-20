@@ -31,7 +31,7 @@ find_package(Boost REQUIRED COMPONENTS mpi serialization filesystem system progr
 
 #-------------HOME--------------------------------------------------
 if (${BUILD_HOME})
-    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo)
+    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo pq pqxx)
 endif ()
 #-------------HOME--------------------------------------------------
 
@@ -72,19 +72,26 @@ foreach (executable ${EXECECUTABLES})
 endforeach ()
 
 foreach (executable ${EXECECUTABLES})
-    target_link_libraries(${executable} PRIVATE 
-                          ${LIBRARIES_EXEC} 
-                          compile_options
-                          )
-    target_include_directories(${executable} PUBLIC 
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/ctmo/deps/spdlog/include>     
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/ctmo/deps/nlohmann_json>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-        $<INSTALL_INTERFACE:include>
-        $<INSTALL_INTERFACE:include/ctmo/deps>
-    )
-                     
-    
+    if (${executable} STREQUAL "ctmo_slmc")
+        target_link_libraries(${executable} PRIVATE
+                ${LIBRARIES_EXEC} pqxx pq
+                compile_options
+                )
+    else ()
+        target_link_libraries(${executable} PRIVATE
+                ${LIBRARIES_EXEC}
+                compile_options
+                )
+    endif ()
+    target_include_directories(${executable} PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/ctmo/deps/spdlog/include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include/ctmo/deps/nlohmann_json>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+            $<INSTALL_INTERFACE:include>
+            $<INSTALL_INTERFACE:include/ctmo/deps>
+            )
+
+
     install(TARGETS ${executable} EXPORT ${CMAKE_PROJECT_NAME}Targets
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib
@@ -96,7 +103,7 @@ endforeach ()
 install(DIRECTORY ../include/ctmo
         DESTINATION include
         COMPONENT Devel
-)
+        )
 
 
 # generate configuration files and install the package

@@ -51,11 +51,11 @@ private:
 class PgDriver
 {
 public:
-    static std::unique_ptr<PgDriver> getInstance()
+    static PgDriver* getInstance()
     {
         if (!pInstance_)
         {
-            pInstance_ = std::make_unique<PgDriver>();
+            pInstance_ = new PgDriver();
         }
         return pInstance_;
 
@@ -64,8 +64,8 @@ public:
     void Init(const std::string &configFile = "/etc/ctmo/ctmo.cnf")
     {
         // Read settings
-        const boost::property_tree::ptree pt;
-        const boost::property_tree::ini_parser::read_ini(configFile, pt);
+        boost::property_tree::ptree pt;
+        boost::property_tree::ini_parser::read_ini(configFile, pt);
 
         // Read mysql information
         pgHost_ = pt.get<std::string>("POSTGRESQL.host");
@@ -76,76 +76,92 @@ public:
 
     }
 
-    bool SaveBytea(const std::string &binaryData)
+    void SaveBytea(const std::string &binaryData, const int& simulation_id)
     {
-        connected_ = Connect();
-        pqxx::work wTxn{connection_};
-        connection_.prepare("insertBatch", "INSERT INTO" + pgTable_ + "(simulation_id , batch) VALUES ($1, $2)");
-        pqxx::result r = txn.exec("SELECT name, salary FROM Employee");
-        pqxx::result r = work.prepared("insertBatch")(-999)(pqxx::binarystring(binaryData)).exec();
+        pqxx::connection conn(
+                "username=" + pgUser_ +
+                "host=" + pgHost_ +
+                "password=" + pgPassword_ +
+                "dbname=" + pgDatabase_
+        );
+        pqxx::work wTxn{conn};
+        conn.prepare("insertBatch", "INSERT INTO" + pgTable_ + "(simulation_id , batch) VALUES ($1, $2)");
+        pqxx::result r = wTxn.prepared("insertBatch")(simulation_id)(pqxx::binarystring(binaryData)).exec();
         wTxn.commit();
-        return true;
+
+
+        tx.exec_params(
+                "INSERT INTO stream_from_test VALUES ($1,$2,$3,$4,$5,$6)",
+                1234,
+                "now",
+                4321,
+                ipv4{8, 8, 8, 8},
+                "hello world",
+                bytea{'\x00', '\x01', '\x02'}
+        );
+
     }
 
 protected:
+
+
+private:
     PgDriver()
     {
-        timer_.Start(POSTGRES_CONNECT_TIME_DELAY);
-        connected_ = Connect();
     };
 
     virtual ~PgDriver();
 
-private:
-
-    bool Connect()
-    {
-        // Check if we need to reconnect
-        if (timer_.End())
-        {
-            if (connected_)
-            {
-                connection_.disconnect();
-                connected_ = false;
-            }
-            timer_.Start(POSTGRES_CONNECT_TIME_DELAY);
-        }
-
-
-        try
-        {
-            connection_ = pqxx::connection(
-                    "username=" + pgUser_ +
-                    "host=" + pgHost_ +
-                    "password=" + pgPassword_ +
-                    "dbname=" + pgDatabase_
-            );
-        }
-        catch (const std::exception &e)
-        {
-            std::cerr << e.what() << std::endl;
-        }
-
-        if (!connection_.is_open())
-        {
-            printf("Impossible to connect database");
-            return false;
-        }
-        connected_ = true;
-        return true;
-    }
+//    bool Connect()
+//    {
+//        // Check if we need to reconnect
+//        if (timer_.End())
+//        {
+//            if (connected_)
+//            {
+//                connection_.disconnect();
+//                connected_ = false;
+//            }
+//            timer_.Start(POSTGRES_CONNECT_TIME_DELAY);
+//        }
+//
+//
+//        try
+//        {
+//            connection_ = pqxx::connection(
+//                    "username=" + pgUser_ +
+//                    "host=" + pgHost_ +
+//                    "password=" + pgPassword_ +
+//                    "dbname=" + pgDatabase_
+//            );
+//        }
+//        catch (const std::exception &e)
+//        {
+//            std::cerr << e.what() << std::endl;
+//        }
+//
+//        if (!connection_.is_open())
+//        {
+//            printf("Impossible to connect database");
+//            return false;
+//        }
+//        connected_ = true;
+//        return true;
+//    }
 
 
-    static PgDriver pInstance_ = nullptr;
+    static PgDriver* pInstance_ ;
     std::string pgHost_{""};
     std::string pgUser_{""};
     std::string pgPassword_{""};
     std::string pgDatabase_{""};
-    bool connected_{false};
-    Timer timer_;
-    pqxx::connection connection_;
+    std::string pgTable_{""};
+
 
 };
+
+PgDriver* PgDriver::pInstance_ = nullptr;
+PgDriver::~PgDriver(){};
 }
 
 
