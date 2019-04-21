@@ -11,7 +11,9 @@
 #include "ctmo/Foundations/Logging.hpp"
 
 #ifdef HAVE_POSTGRES
+
 #include "ctmo/Foundations/PgDriver.hpp"
+
 #endif
 
 #include <csignal>
@@ -21,15 +23,13 @@ namespace Diagrammatic
 class ConfigParser
 {
 public:
-    const std::string NAME_PREFIX = "configs_";
-    const std::string NAME_SUFFIX = "_ctmo.bin";
-    const size_t NUM_MAX_CONFIGS = 500;
-    const size_t NUM_MAX_BATCH_SAVED = 10;
 
-    const static int SIMULATION_ID_DEFAULT = -9999;
 
-    explicit ConfigParser(const size_t &rank, const int& simulation_id=SIMULATION_ID_DEFAULT)
-            : configs_(), rank_{rank}, simulationId_{simulation_id}
+    explicit ConfigParser(const Json &jj)
+            : configs_(), batchSize_{jj["batchSize"].get<size_t>()},
+              maxBatchesSaved_{jj["maxBatchesSaved"].get<size_t>()},
+              simulationId_{jj["simulationId"].get<int>()},
+              rank_{mpiUt::Tools::Rank()}
     {}
 
     int batchesSaved() const
@@ -54,7 +54,7 @@ public:
         configs_[std::to_string(configId_)]["sign"] = sign;
 
         ++configId_;
-        if (configId_ == NUM_MAX_CONFIGS)
+        if (configId_ == batchSize_)
         {
 //            if(batchesSaved_ == 21)
 //            {   if(mpiUt::Tools::Rank() == mpiUt::Tools::master)
@@ -70,7 +70,7 @@ public:
             const std::string msgpackConfigsStr(msgpackConfigs.begin(), msgpackConfigs.end());
             std::string msgpackConfigsStrCompressed;
             snappy::Compress(msgpackConfigsStr.data(), msgpackConfigsStr.size(), &msgpackConfigsStrCompressed);
-            const std::string fileName = NAME_PREFIX + std::to_string(rank_) + NAME_SUFFIX;
+            const std::string fileName = namePrefix_ + std::to_string(rank_) + nameSuffix_;
 
             const std::uint32_t sizeStr = msgpackConfigsStrCompressed.size();
             std::vector<char> dataBin;
@@ -85,14 +85,14 @@ public:
             configs_.clear();
             configId_ = 0;
             batchesSaved_++;
-            if (batchesSaved_ > NUM_MAX_BATCH_SAVED)
+            if (batchesSaved_ > maxBatchesSaved_)
             {
                 Logging::Info("In SLMC, NUM_BATCH_SAVED attained, exiting");
                 raise(SIGINT);
             }
 
 #ifdef HAVE_POSTGRES
-            DB::PgDriver* pgDriverPtr = DB::PgDriver::getInstance();
+            DB::PgDriver *pgDriverPtr = DB::PgDriver::getInstance();
             pgDriverPtr->SaveBytea(msgpackConfigsStrCompressed, simulationId_);
 #endif
         }
@@ -102,9 +102,15 @@ public:
 private:
     Json configs_;
     size_t configId_{0};
-    const size_t rank_;
-    const int simulationId_;
     size_t batchesSaved_{0};
+
+    const std::string namePrefix_{"configs_"};
+    const std::string nameSuffix_{"_ctmo.bin"};
+    const size_t batchSize_;
+    const size_t maxBatchesSaved_;
+    const int simulationId_;
+    const int rank_;
+
 
 };
 } // namespace Diagrammatic

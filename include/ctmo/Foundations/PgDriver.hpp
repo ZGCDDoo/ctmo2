@@ -51,7 +51,7 @@ private:
 class PgDriver
 {
 public:
-    static PgDriver* getInstance()
+    static PgDriver *getInstance()
     {
         if (!pInstance_)
         {
@@ -61,6 +61,35 @@ public:
 
     }
 
+
+
+    void SaveBytea(const std::string &binaryData, const int &simulation_id)
+    {
+        pqxx::connection conn(
+                "user=" + pgUser_ + " " +
+                "host=" + pgHost_ + " " +
+                "password=" + pgPassword_ + " "
+                "dbname=" + pgDatabase_
+        );
+        pqxx::work wTxn{conn};
+//        conn.prepare("insertBatch", "INSERT INTO" + pgTable_ + "(simulation_id , batch) VALUES ($1, $2)");
+//        pqxx::result r = wTxn.prepared("insertBatch")(simulation_id)(pqxx::binarystring(binaryData)).exec();
+
+
+        wTxn.exec_params(
+                "INSERT INTO " + pgTable_ + "(simulation_id , batch) VALUES ($1, $2)",
+                simulation_id,
+                pqxx::binarystring(binaryData)
+        );
+        wTxn.commit();
+
+
+    }
+
+protected:
+
+
+private:
     void Init(const std::string &configFile = "/etc/ctmo/ctmo.cnf")
     {
         // Read settings
@@ -76,38 +105,9 @@ public:
 
     }
 
-    void SaveBytea(const std::string &binaryData, const int& simulation_id)
-    {
-        pqxx::connection conn(
-                "username=" + pgUser_ +
-                "host=" + pgHost_ +
-                "password=" + pgPassword_ +
-                "dbname=" + pgDatabase_
-        );
-        pqxx::work wTxn{conn};
-        conn.prepare("insertBatch", "INSERT INTO" + pgTable_ + "(simulation_id , batch) VALUES ($1, $2)");
-        pqxx::result r = wTxn.prepared("insertBatch")(simulation_id)(pqxx::binarystring(binaryData)).exec();
-        wTxn.commit();
-
-
-        tx.exec_params(
-                "INSERT INTO stream_from_test VALUES ($1,$2,$3,$4,$5,$6)",
-                1234,
-                "now",
-                4321,
-                ipv4{8, 8, 8, 8},
-                "hello world",
-                bytea{'\x00', '\x01', '\x02'}
-        );
-
-    }
-
-protected:
-
-
-private:
     PgDriver()
     {
+        Init();
     };
 
     virtual ~PgDriver();
@@ -150,7 +150,7 @@ private:
 //    }
 
 
-    static PgDriver* pInstance_ ;
+    static PgDriver *pInstance_;
     std::string pgHost_{""};
     std::string pgUser_{""};
     std::string pgPassword_{""};
@@ -160,8 +160,10 @@ private:
 
 };
 
-PgDriver* PgDriver::pInstance_ = nullptr;
-PgDriver::~PgDriver(){};
+PgDriver *PgDriver::pInstance_ = nullptr;
+
+PgDriver::~PgDriver()
+{};
 }
 
 

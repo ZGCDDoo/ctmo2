@@ -11,6 +11,7 @@ namespace MC
 struct Timer
 {
     Timer() = default;
+
     void Start(double duration)
     {
         duration_ = duration;
@@ -27,28 +28,41 @@ struct Timer
         }
     }
 
-    bool End() { return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_).count() > duration_; };
+    bool End()
+    {
+        return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - start_).count() >
+               duration_;
+    };
 
-  private:
+private:
     double duration_{0.0};
     std::chrono::steady_clock::time_point start_;
 };
 
-template <typename TMarkovChain_t> class MonteCarlo : public ABC_MonteCarlo
+template<typename TMarkovChain_t>
+class MonteCarlo : public ABC_MonteCarlo
 {
-  public:
+public:
     MonteCarlo(std::shared_ptr<TMarkovChain_t> markovchainPtr, const Json &jj)
-        : markovchainPtr_(std::move(markovchainPtr)), thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
-          measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()), updatesMeas_(jj["solver"]["updatesMeas"].get<size_t>()),
-          cleanUpdate_(jj["solver"]["cleanUpdate"].get<size_t>()), NMeas_(0), NCleanUpdates_(0),
-          thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
+            : markovchainPtr_(std::move(markovchainPtr)),
+              thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
+              measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()),
+#ifdef SLMC
+              updatesMeas_(jj["slmc"]["updatesMeas"].get<size_t>()),
+#else
+            updatesMeas_(jj["solver"]["updatesMeas"].get<size_t>()),
+#endif
+              cleanUpdate_(jj["solver"]["cleanUpdate"].get<size_t>()), NMeas_(0), NCleanUpdates_(0),
+              thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
     {
     }
 
     MonteCarlo(const MonteCarlo &monteCarlo) = default;
+
     MonteCarlo(MonteCarlo &&monteCarlo) noexcept = default;
 
     MonteCarlo &operator=(const MonteCarlo &monteCarlo) = delete;
+
     MonteCarlo &operator=(MonteCarlo &&monteCarlo) = delete;
 
     ~MonteCarlo() override = default;
@@ -120,11 +134,16 @@ template <typename TMarkovChain_t> class MonteCarlo : public ABC_MonteCarlo
     }
 
     // Getters
-    size_t NMeas() const { return NMeas_; }
-    size_t NCleanUpdates() const { return NCleanUpdates_; }
-    size_t updatesProposed() const { return markovchainPtr_->updatesProposed(); }
+    size_t NMeas() const
+    { return NMeas_; }
 
-  private:
+    size_t NCleanUpdates() const
+    { return NCleanUpdates_; }
+
+    size_t updatesProposed() const
+    { return markovchainPtr_->updatesProposed(); }
+
+private:
     // attributes
     const std::shared_ptr<TMarkovChain_t> markovchainPtr_;
     const double thermalizationTime_;

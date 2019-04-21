@@ -31,7 +31,7 @@ find_package(Boost REQUIRED COMPONENTS mpi serialization filesystem system progr
 
 #-------------HOME--------------------------------------------------
 if (${BUILD_HOME})
-    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo pq pqxx)
+    set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo)
 endif ()
 #-------------HOME--------------------------------------------------
 
