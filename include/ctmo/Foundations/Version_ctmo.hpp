@@ -2,6 +2,6 @@
 #define VERSION_H
 
 #define GIT_BRANCH "Postgres"
-#define GIT_COMMIT_HASH "db6b559"
+#define GIT_COMMIT_HASH "0567bf9"
 
 #endif

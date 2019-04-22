@@ -45,13 +45,16 @@ class MonteCarlo : public ABC_MonteCarlo
 public:
     MonteCarlo(std::shared_ptr<TMarkovChain_t> markovchainPtr, const Json &jj)
             : markovchainPtr_(std::move(markovchainPtr)),
-              thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
-              measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()),
 #ifdef SLMC
+              thermalizationTime_(jj["slmc"]["thermalizationTime"].get<double>()),
+              measurementTime_(jj["slmc"]["measurementTime"].get<double>()),
               updatesMeas_(jj["slmc"]["updatesMeas"].get<size_t>()),
 #else
+            thermalizationTime_(jj["monteCarlo"]["thermalizationTime"].get<double>()),
+            measurementTime_(jj["monteCarlo"]["measurementTime"].get<double>()),
             updatesMeas_(jj["solver"]["updatesMeas"].get<size_t>()),
 #endif
+
               cleanUpdate_(jj["solver"]["cleanUpdate"].get<size_t>()), NMeas_(0), NCleanUpdates_(0),
               thermFromConfig_(jj["monteCarlo"]["thermFromConfig"].get<bool>())
     {
