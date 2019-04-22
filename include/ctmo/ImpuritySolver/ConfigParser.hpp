@@ -60,7 +60,7 @@ public:
             {   if(mpiUt::Tools::Rank() == mpiUt::Tools::master)
                 {
                     const std::string jjStr = configs_.dump();
-                    std::ofstream foutTmp("batchConfig21.json");
+                    std::ofstream foutTmp("batchConfig11.json");
                     foutTmp << jjStr << std::endl;
                     foutTmp.close();
                 }
