@@ -56,16 +56,16 @@ public:
         ++configId_;
         if (configId_ == batchSize_)
         {
-//            if(batchesSaved_ == 21)
-//            {   if(mpiUt::Tools::Rank() == mpiUt::Tools::master)
-//                {
-//                    const std::string jjStr = configs_.dump();
-//                    std::ofstream foutTmp("batchConfig21.json");
-//                    foutTmp << jjStr << std::endl;
-//                    foutTmp.close();
-//                }
-//
-//            }
+            if(batchesSaved_ == 11)
+            {   if(mpiUt::Tools::Rank() == mpiUt::Tools::master)
+                {
+                    const std::string jjStr = configs_.dump();
+                    std::ofstream foutTmp("batchConfig21.json");
+                    foutTmp << jjStr << std::endl;
+                    foutTmp.close();
+                }
+
+            }
             const std::vector<std::uint8_t> msgpackConfigs = nlohmann::json::to_msgpack(configs_);
             const std::string msgpackConfigsStr(msgpackConfigs.begin(), msgpackConfigs.end());
             std::string msgpackConfigsStrCompressed;

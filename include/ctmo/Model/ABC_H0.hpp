@@ -38,8 +38,8 @@ class ABC_H0
                 const size_t ii = std::distance(RS.begin(), it);
                 const std::vector<double> v = it.value();
                 RSites_.at(ii) = v;
-                RSites_.at(ii).print();
-                std::cout << "\n";
+//                RSites_.at(ii).print();
+//                std::cout << "\n";
             }
             const auto KW = jjSim["model"]["KWaveVectors"];
             for (auto it = KW.begin(); it != KW.end(); ++it)
@@ -47,10 +47,11 @@ class ABC_H0
                 const size_t ii = std::distance(KW.begin(), it);
                 const std::vector<double> v = it.value();
                 KWaveVectors_.at(ii) = v;
+                KWaveVectors_.at(ii) *= 2.0*M_PI;
             }
 
-            Logging::Warn("Advanced Usage, setting manually RSites and KWaveVectors. ");
-            Logging::Warn(".... You should implement the Self-Consistency accordingly, dangerous. ");
+            Logging::Warn("Advanced Usage, setting manually RSites and KWaveVectors. KWaveVectors in units of 2*M_PI !");
+            Logging::Warn(".... You should implement the Self-Consistency accordingly, dangerous. Only for DCA !");
         }
         else
         {
