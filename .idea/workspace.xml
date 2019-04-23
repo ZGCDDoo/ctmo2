@@ -5,19 +5,19 @@
       <config projectName="ctmo_cdh" targetName="GreenBinningTests" />
       <config projectName="ctmo_cdh" targetName="ctmo_slmc" />
       <config projectName="ctmo_cdh" targetName="FourierTests" />
+      <config projectName="ctmo_cdh" targetName="MarkovChainSquare2x2Tests" />
       <config projectName="ctmo_cdh" targetName="FillingAndDoccTests" />
+      <config projectName="ctmo_cdh" targetName="ctmo_dca" />
       <config projectName="ctmo_cdh" targetName="gmock_main" />
       <config projectName="ctmo_cdh" targetName="ABC_ModelTests" />
-      <config projectName="ctmo_cdh" targetName="gtest" />
-      <config projectName="ctmo_cdh" targetName="Fourier_DCATests" />
-      <config projectName="ctmo_cdh" targetName="MarkovChainSquare2x2Tests" />
       <config projectName="ctmo_cdh" targetName="GreenMatTests" />
+      <config projectName="ctmo_cdh" targetName="MarkovChainTests" />
+      <config projectName="ctmo_cdh" targetName="Fourier_DCATests" />
       <config projectName="ctmo_cdh" targetName="IOTests" />
       <config projectName="ctmo_cdh" targetName="HybFMAndTLocTests" />
       <config projectName="ctmo_cdh" targetName="gtest_main" />
-      <config projectName="ctmo_cdh" targetName="MarkovChainTests" />
       <config projectName="ctmo_cdh" targetName="ABC_H0Tests" />
-      <config projectName="ctmo_cdh" targetName="ctmo_dca" />
+      <config projectName="ctmo_cdh" targetName="gtest" />
       <config projectName="ctmo_cdh" targetName="GreenTauTests" />
       <config projectName="ctmo_cdh" targetName="gmock" />
       <config projectName="ctmo_cdh" targetName="ctmo" />
@@ -30,8 +30,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ctmo/ImpuritySolver/ConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/ImpuritySolver/ConfigParser.hpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,11 +46,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/ConfigParser.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="588">
-              <caret line="62" column="55" selection-start-line="62" selection-start-column="55" selection-end-line="62" selection-end-column="55" />
+            <state relative-caret-position="-54">
+              <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
               <folding>
                 <element signature="e#109#128#0" expanded="true" />
               </folding>
@@ -61,7 +61,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/ABC_MarkovChain.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="424">
+            <state relative-caret-position="16038">
               <caret line="594" column="24" selection-start-line="594" selection-start-column="17" selection-end-line="594" selection-end-column="24" />
               <folding>
                 <element signature="e#14#61#0" expanded="true" />
@@ -73,7 +73,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/ctmo/MonteCarlo/MonteCarlo.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-305">
+            <state relative-caret-position="1323">
               <caret line="49" column="21" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="21" />
               <folding>
                 <element signature="e#14#53#0" expanded="true" />
@@ -85,7 +85,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/ctmo/Model/ABC_H0.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
+            <state relative-caret-position="1431">
               <caret line="53" column="112" selection-start-line="53" selection-start-column="112" selection-end-line="53" selection-end-column="112" />
             </state>
           </provider>
@@ -100,11 +100,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data/Triangle4x3_DCA.model">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="297">
-              <caret line="11" column="71" selection-start-line="11" selection-start-column="71" selection-end-line="11" selection-end-column="71" />
+              <caret line="11" column="7" selection-start-line="11" selection-start-column="7" selection-end-line="11" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -240,10 +240,10 @@
     <option name="configuration" value="0-ctmo_slmc" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1815" />
-    <option name="y" value="146" />
-    <option name="width" value="1410" />
-    <option name="height" value="805" />
+    <option name="x" value="240" />
+    <option name="y" value="130" />
+    <option name="width" value="1440" />
+    <option name="height" value="784" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -251,6 +251,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -263,97 +264,10 @@
               <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
-              <item name="Graham" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
-              <item name="Foundations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
-              <item name="ImpuritySolver" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
-              <item name="Model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="include" type="462c0819:PsiDirectoryNode" />
-              <item name="ctmo" type="462c0819:PsiDirectoryNode" />
-              <item name="MonteCarlo" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-              <item name="cdmft_square2x2" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="Simulations" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="Simulations" type="462c0819:PsiDirectoryNode" />
-              <item name="holstein_DMFT_T0.3" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -534,20 +448,22 @@
       <workItem from="1555857445843" duration="855000" />
       <workItem from="1555888042485" duration="3681000" />
       <workItem from="1555896809884" duration="3026000" />
-      <workItem from="1555939676727" duration="3740000" />
+      <workItem from="1555939676727" duration="4380000" />
+      <workItem from="1555967895158" duration="1940000" />
+      <workItem from="1555980616408" duration="117000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69277000" />
+    <option name="totallyTimeSpent" value="71974000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1920" y="0" width="1920" height="1080" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="2" weight="0.22435898" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.22435898" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.31629393" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32779622" />
@@ -557,9 +473,9 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50213677" side_tool="true" visible="true" weight="0.031948883" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5032051" side_tool="true" visible="true" weight="0.03322259" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.49786323" visible="true" weight="0.031948883" />
+      <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.49679488" visible="true" weight="0.03322259" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32668883" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -790,29 +706,19 @@
     <entry file="file://$PROJECT_DIR$/include/ctmo/Model/ABC_Model.hpp">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/Observables.hpp">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/ConfigParser.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2052">
-          <caret line="76" column="41" selection-start-line="76" selection-start-column="41" selection-end-line="76" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/ctmo/MonteCarlo/MonteCarlo.hpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-305">
-          <caret line="49" column="21" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="21" />
+        <state relative-caret-position="-54">
+          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
           <folding>
-            <element signature="e#14#53#0" expanded="true" />
+            <element signature="e#109#128#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/ABC_MarkovChain.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="424">
+        <state relative-caret-position="16038">
           <caret line="594" column="24" selection-start-line="594" selection-start-column="17" selection-end-line="594" selection-end-column="24" />
           <folding>
             <element signature="e#14#61#0" expanded="true" />
@@ -820,17 +726,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/include/ctmo/MonteCarlo/MonteCarlo.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1323">
+          <caret line="49" column="21" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="21" />
+          <folding>
+            <element signature="e#14#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/ctmo/Model/ABC_H0.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1431">
+          <caret line="53" column="112" selection-start-line="53" selection-start-column="112" selection-end-line="53" selection-end-column="112" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/data/Triangle4x4_DCA.model">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
           <caret line="15" column="96" selection-start-line="15" selection-start-column="96" selection-end-line="15" selection-end-column="96" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/Triangle4x3_DCA.model">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="11" column="71" selection-start-line="11" selection-start-column="71" selection-end-line="11" selection-end-column="71" />
         </state>
       </provider>
     </entry>
@@ -844,20 +760,20 @@
     <entry file="file://$PROJECT_DIR$/data/Triangle2x2.model">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/ctmo/Model/ABC_H0.hpp">
+    <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/Observables.hpp">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="53" column="112" selection-start-line="53" selection-start-column="112" selection-end-line="53" selection-end-column="112" />
+        <state relative-caret-position="2052">
+          <caret line="76" column="41" selection-start-line="76" selection-start-column="41" selection-end-line="76" selection-end-column="41" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/ConfigParser.hpp">
+    <entry file="file://$PROJECT_DIR$/data/Triangle4x3_DCA.model">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="588">
-          <caret line="62" column="55" selection-start-line="62" selection-start-column="55" selection-end-line="62" selection-end-column="55" />
-          <folding>
-            <element signature="e#109#128#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="297">
+          <caret line="11" column="7" selection-start-line="11" selection-start-column="7" selection-end-line="11" selection-end-column="7" />
         </state>
       </provider>
     </entry>
