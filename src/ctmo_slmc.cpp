@@ -1,10 +1,33 @@
 #define SLMC
+#define HAVE_POSTGRES
+
 
 #include "ctmo/MonteCarlo/MonteCarloBuilder.hpp"
 #include "ctmo/SelfConsistency/SelfConsistencyBuilder.hpp"
 #include "ctmo/Foundations/FS.hpp"
 #include "ctmo/Foundations/PrintVersion.hpp"
 #include "ctmo/Foundations/CMDParser.hpp"
+
+
+#include <csignal>
+
+
+void SIGINT_Handler(int sigNum)
+{
+
+    Logging::Info("Caught signal " + std::to_string(sigNum));
+    Logging::Info("If MonteCarloBuilder returned singleton, could exit more gracefully by saving");
+
+#ifdef HAVEMPI
+    mpi::environment env;
+    mpi::communicator world;
+    world.barrier();
+#endif
+
+    std::cout << "Rank = " << mpiUt::Tools::Rank() << std::endl;
+
+    exit(sigNum);
+}
 
 int main(int argc, char **argv)
 {
@@ -13,6 +36,9 @@ int main(int argc, char **argv)
     mpi::environment env;
     mpi::communicator world;
 #endif
+
+
+    signal(SIGINT, SIGINT_Handler);
 
     CMDParser::CMDInfo cmdInfo;
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
@@ -49,19 +75,6 @@ int main(int argc, char **argv)
 
     monteCarloMachinePtr->RunMonteCarlo();
 
-    if (cmdInfo.doSC())
-    {
-        Logging::Trace("ABC_SelfConsistency Creation...");
-        const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);
-        Logging::Trace("ABC_SelfConsistency Created...");
-
-        selfconUpPtr->DoSCGrid();
-
-        Logging::Trace("PrepareNextIter...");
-        IO::FS::PrepareNextIter(cmdInfo);
-        Logging::Trace("End PrepareNextIter...");
-    }
-
 #endif
 
 #ifdef HAVEMPI
@@ -73,11 +86,9 @@ int main(int argc, char **argv)
     }
 
     std::string jjSimStr;
-    bool doSC = true;
 
     if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
     {
-        doSC = cmdInfo.doSC();
 
         std::ifstream fin(fnameParams);
         fin >> jjSim;
@@ -87,7 +98,6 @@ int main(int argc, char **argv)
 
     mpi::broadcast(world, jjSimStr, mpiUt::Tools::master);
     mpi::broadcast(world, ITER, mpiUt::Tools::master);
-    mpi::broadcast(world, doSC, mpiUt::Tools::master);
 
     jjSim = Json::parse(jjSimStr);
 
@@ -105,23 +115,8 @@ int main(int argc, char **argv)
     Logging::Trace("ABC_MonteCarlo Created...");
 
     monteCarloMachinePtr->RunMonteCarlo();
-
     world.barrier();
 
-    if (doSC)
-    {
-        Logging::Trace("ABC_SelfConsistency Creation...");
-        const std::unique_ptr<SelfCon::ABC_SelfConsistency> selfconUpPtr = SelfCon::SelfConsistencyBuilder(jjSim, FermionSpin_t::Up);
-        Logging::Trace("ABC_SelfConsistency Created...");
-        selfconUpPtr->DoSCGrid();
-
-        if (mpiUt::Tools::Rank() == mpiUt::Tools::master)
-        {
-            Logging::Trace("PrepareNextIter...");
-            IO::FS::PrepareNextIter(cmdInfo);
-            Logging::Trace("End PrepareNextIter...");
-        }
-    }
 #endif
 
     return EXIT_SUCCESS;

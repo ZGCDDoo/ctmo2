@@ -57,7 +57,7 @@ class ABC_MarkovChain
         : modelPtr_(new Model_t(jj)), rng_(seed), urng_(rng_, Utilities::UniformDistribution_t(0.0, 1.0)),
           dataCT_(new Obs::ISDataCT(jj, modelPtr_)), obs_(dataCT_, jj), vertexBuilder_(jj, modelPtr_->Nc()),
 #ifdef SLMC
-          configParser_(), logDeterminant_(0.0),
+          configParser_(jj["slmc"]), logDeterminant_(0.0),
 #endif
           updsamespin_(0), isOneOrbitalOptimized_(jj["solver"]["isOneOrbitalOptimized"].get<bool>())
     {
@@ -587,7 +587,9 @@ class ABC_MarkovChain
 
     void SaveMeas()
     {
-
+#ifdef SLMC
+        Logging::Info("Saved " + std::to_string(configParser_.batchesSaved()) + " Batches of configurations");
+#else
         obs_.Save();
         Logging::Trace("updsamespin = " + std::to_string(updsamespin_));
         SaveUpd("Measurements");
@@ -595,7 +597,9 @@ class ABC_MarkovChain
         {
             dataCT_->vertices_.SaveConfig("Config.dat");
         }
+
         Logging::Info("Finished Saving MarkovChain.");
+#endif
     }
 
     void SaveTherm()

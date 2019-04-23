@@ -123,6 +123,7 @@ void PrepareNextIter(const CMDParser::CMDInfo &cmdInfo)
         params["model"]["mu"] = double(params["model"]["mu"]) - double(params["solver"]["S"]) * (nResult - nParams);
     }
     std::ofstream fout(cmdInfo.fnamePrefix() + std::to_string(iter + 1) + cmdInfo.fnameSuffix());
+    params["ctmoVersion"] = Conventions::CTMO_VERION;
     fout << std::setw(4) << params << std::endl;
     fout.close();
 

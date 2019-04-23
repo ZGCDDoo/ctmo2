@@ -61,5 +61,14 @@
         "level": "debug",
         "logToFile": true,
         "file": "ctmo.log"
+    },
+    "slmc":
+    {
+        "batchSize": 500,
+        "maxBatchesSaved": 20,
+        "updatesMeas": 100000,
+        "measurementTime": 60.0,
+        "thermalizationTime": 1.5,
+        "simulationId": -9999
     }
 }
