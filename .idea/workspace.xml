@@ -2,22 +2,22 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="ctmo_cdh" targetName="HybFMAndTLocTests" />
       <config projectName="ctmo_cdh" targetName="GreenBinningTests" />
       <config projectName="ctmo_cdh" targetName="ctmo_slmc" />
       <config projectName="ctmo_cdh" targetName="FourierTests" />
       <config projectName="ctmo_cdh" targetName="FillingAndDoccTests" />
-      <config projectName="ctmo_cdh" targetName="gmock_main" />
-      <config projectName="ctmo_cdh" targetName="ABC_ModelTests" />
-      <config projectName="ctmo_cdh" targetName="gtest" />
-      <config projectName="ctmo_cdh" targetName="MarkovChainSquare2x2Tests" />
-      <config projectName="ctmo_cdh" targetName="GreenMatTests" />
+      <config projectName="ctmo_cdh" targetName="ctmo_dca" />
       <config projectName="ctmo_cdh" targetName="Fourier_DCATests" />
-      <config projectName="ctmo_cdh" targetName="IOTests" />
+      <config projectName="ctmo_cdh" targetName="ABC_ModelTests" />
+      <config projectName="ctmo_cdh" targetName="gmock_main" />
+      <config projectName="ctmo_cdh" targetName="GreenMatTests" />
+      <config projectName="ctmo_cdh" targetName="MarkovChainSquare2x2Tests" />
       <config projectName="ctmo_cdh" targetName="MarkovChainTests" />
+      <config projectName="ctmo_cdh" targetName="IOTests" />
+      <config projectName="ctmo_cdh" targetName="HybFMAndTLocTests" />
       <config projectName="ctmo_cdh" targetName="gtest_main" />
       <config projectName="ctmo_cdh" targetName="ABC_H0Tests" />
-      <config projectName="ctmo_cdh" targetName="ctmo_dca" />
+      <config projectName="ctmo_cdh" targetName="gtest" />
       <config projectName="ctmo_cdh" targetName="GreenTauTests" />
       <config projectName="ctmo_cdh" targetName="gmock" />
       <config projectName="ctmo_cdh" targetName="ctmo" />
@@ -30,13 +30,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis/install_mpi.sh" beforeDir="false" afterPath="$PROJECT_DIR$/.travis/install_mpi.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.rst" beforeDir="false" afterPath="$PROJECT_DIR$/README.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis/install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/.travis/install.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/holstein_DMFT_T0.3/params1.json" beforeDir="false" afterPath="$PROJECT_DIR$/test/Simulations/holstein_DMFT_T0.3/params1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ctmo_slmc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ctmo_slmc.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,22 +48,24 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.rst">
+        <entry file="file://$PROJECT_DIR$/.travis/install.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="378">
+              <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="54">
+              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.travis/install.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-159" />
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis/install_mpi.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="135">
@@ -79,7 +77,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
+            <state relative-caret-position="432">
               <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
             </state>
           </provider>
@@ -218,7 +216,6 @@
         <option value="$PROJECT_DIR$/cmake/compile_options.txt" />
         <option value="$PROJECT_DIR$/include/ctmo/ImpuritySolver/MarkovChain.hpp" />
         <option value="$PROJECT_DIR$/examples/Graham/slurm.sh" />
-        <option value="$PROJECT_DIR$/src/ctmo_slmc.cpp" />
         <option value="$PROJECT_DIR$/src/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/include/ctmo/Foundations/PgDriver.hpp" />
         <option value="$PROJECT_DIR$/test/Simulations/holstein_DMFT_T0.3/params1.json" />
@@ -229,6 +226,8 @@
         <option value="$PROJECT_DIR$/README.rst" />
         <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/.travis/install_mpi.sh" />
+        <option value="$PROJECT_DIR$/.travis/install.sh" />
+        <option value="$PROJECT_DIR$/src/ctmo_slmc.cpp" />
       </list>
     </option>
   </component>
@@ -248,7 +247,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -261,10 +259,16 @@
               <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
               <item name=".travis" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="ctmo" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ctmo_private" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -450,19 +454,20 @@
       <workItem from="1555980616408" duration="117000" />
       <workItem from="1556210994508" duration="939000" />
       <workItem from="1556397885346" duration="262000" />
+      <workItem from="1556398596864" duration="117000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73175000" />
+    <option name="totallyTimeSpent" value="73292000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-6" y="0" width="1932" height="1050" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.22702992" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.22970085" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.31629393" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32779622" />
@@ -471,10 +476,10 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.50427353" side_tool="true" visible="true" weight="0.03322259" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49946582" visible="true" weight="0.32890365" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5005342" side_tool="true" weight="0.32890365" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.4957265" visible="true" weight="0.03322259" />
+      <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.49519232" weight="0.033076074" />
       <window_info anchor="bottom" id="Messages" order="12" weight="0.32668883" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -652,19 +657,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-          <folding>
-            <element signature="e#14#62#0" expanded="true" />
-            <element signature="e#483#554#0" expanded="true" />
-            <element signature="e#299#349#0" expanded="true" />
-            <element signature="e#1848#3000#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/Simulations/holstein_DMFT_T0.3/params1.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1728">
@@ -736,6 +728,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/data/Triangle4x4_DCA.model">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
@@ -770,29 +776,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.rst">
+    <entry file="file://$PROJECT_DIR$/.travis/install_mpi.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+        <state relative-caret-position="135">
+          <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.travis/install.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-159" />
+        <state relative-caret-position="378">
+          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis/install_mpi.sh">
+    <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="5" column="50" selection-start-line="5" selection-start-column="50" selection-end-line="5" selection-end-column="50" />
+        <state relative-caret-position="54">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
         </state>
       </provider>
     </entry>

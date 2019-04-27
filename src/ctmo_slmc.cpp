@@ -1,5 +1,5 @@
 #define SLMC
-#define HAVE_POSTGRES
+//#define HAVE_POSTGRES
 
 
 #include "ctmo/MonteCarlo/MonteCarloBuilder.hpp"

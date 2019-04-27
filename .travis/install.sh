@@ -8,11 +8,11 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     cmake .. && make -j 2
     cd test
     
-    ./SelfConsistencyTests
-    ./MarkovChainTests
-    ./MarkovChainTriangle2x2Tests
-    ./MarkovChainSquare2x2Tests
-    ./GreenTauTests
+    ./test/SelfConsistencyTests
+    ./test/MarkovChainTests
+    ./test/MarkovChainTriangle2x2Tests
+    ./test/MarkovChainSquare2x2Tests
+    ./test/GreenTauTests
 
 else
 
