@@ -7,9 +7,8 @@
 :Revision: $Revision: 2.0.0 $
 :Description: Description
 
-.. image:: https://travis-ci.com/ZGCDDoo/ctmo_private.svg?token=qU5DPfuxBM537pQaUFgc&branch=master
-    :target: https://travis-ci.com/ZGCDDoo/ctmo_private
-    
+.. image:: https://travis-ci.com/ZGCDDoo/ctmo_private2.svg?token=qU5DPfuxBM537pQaUFgc&branch=master
+    :target: https://travis-ci.com/ZGCDDoo/ctmo_private2
 
 Introduction
 --------------

@@ -1,7 +1,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define GIT_BRANCH "Postgres"
-#define GIT_COMMIT_HASH "cac99af"
+#define GIT_BRANCH "master"
+#define GIT_COMMIT_HASH "9480c86"
 
 #endif

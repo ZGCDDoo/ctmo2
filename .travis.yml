@@ -14,12 +14,15 @@ before_install:
                                                   brew install armadillo &&
                                                   brew install boost-mpi &&
                                                   brew install snappy
+                                                  brew install postgresql libpqxx
                                         ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y liblapack-dev
                                                 clang-6.0 build-essential cmake
                                                 libarmadillo-dev libboost-all-dev
                                                 libopenmpi-dev
                                                 python3-numpy tree libsnappy-dev
+                                                postgresql-server-9.6 libpqxx-dev pgadmin3
+
                                           ; fi
 
 # skip this step
