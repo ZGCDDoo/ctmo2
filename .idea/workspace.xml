@@ -30,9 +30,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.travis/install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/.travis/install.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ctmo_slmc.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ctmo_slmc.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -56,11 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="54">
-              <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+              <caret line="2" selection-start-line="2" selection-end-line="2" />
             </state>
           </provider>
         </entry>
@@ -74,11 +72,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+            <state relative-caret-position="378">
+              <caret line="23" column="69" selection-start-line="23" selection-start-column="69" selection-end-line="23" selection-end-column="69" />
             </state>
           </provider>
         </entry>
@@ -224,10 +222,10 @@
         <option value="$PROJECT_DIR$/include/ctmo/Model/ABC_H0.hpp" />
         <option value="$PROJECT_DIR$/include/ctmo/ImpuritySolver/ConfigParser.hpp" />
         <option value="$PROJECT_DIR$/README.rst" />
-        <option value="$PROJECT_DIR$/.travis.yml" />
         <option value="$PROJECT_DIR$/.travis/install_mpi.sh" />
         <option value="$PROJECT_DIR$/.travis/install.sh" />
         <option value="$PROJECT_DIR$/src/ctmo_slmc.cpp" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
       </list>
     </option>
   </component>
@@ -454,12 +452,12 @@
       <workItem from="1555980616408" duration="117000" />
       <workItem from="1556210994508" duration="939000" />
       <workItem from="1556397885346" duration="262000" />
-      <workItem from="1556398596864" duration="117000" />
+      <workItem from="1556398596864" duration="488000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73292000" />
+    <option name="totallyTimeSpent" value="73663000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
@@ -735,13 +733,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="16" column="81" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/Triangle4x4_DCA.model">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
@@ -783,6 +774,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.travis/install.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
@@ -790,10 +788,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ctmo_slmc.cpp">
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        <state relative-caret-position="378">
+          <caret line="23" column="69" selection-start-line="23" selection-start-column="69" selection-end-line="23" selection-end-column="69" />
         </state>
       </provider>
     </entry>
