@@ -13,8 +13,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then     brew update &&
                                                   brew install armadillo &&
                                                   brew install boost-mpi &&
-                                                  brew install snappy &&
-                                                  brew install postgresql libpqxx
+                                                  brew install snappy
                                         ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y liblapack-dev
                                                 clang-6.0 build-essential cmake
