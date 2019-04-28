@@ -21,8 +21,6 @@ before_install:
                                                 libarmadillo-dev libboost-all-dev
                                                 libopenmpi-dev
                                                 python3-numpy tree libsnappy-dev
-                                                #postgresql-server-9.5 libpqxx-dev pgadmin3
-
                                           ; fi
 
 # skip this step
