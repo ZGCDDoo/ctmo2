@@ -26,16 +26,18 @@ if (${BUILD_MPI})
 endif ()
 
 
-find_package(LAPACK REQUIRED)
+
 find_package(Boost REQUIRED COMPONENTS mpi serialization filesystem system program_options)
 
 #-------------HOME--------------------------------------------------
 if (${BUILD_HOME})
+    find_package(LAPACK REQUIRED)
     set(LIBRARIES_EXEC ${LAPACK_LIBRARIES} ${Boost_LIBRARIES} snappy armadillo)
 endif ()
 #-------------HOME--------------------------------------------------
 
 if (${BUILD_MAC})
+    find_package(LAPACK REQUIRED)
     find_package(Boost REQUIRED COMPONENTS mpi serialization filesystem system)
     set(LIBRARIES_EXEC lapack blas ${Boost_LIBRARIES} armadillo)
 endif ()
@@ -45,7 +47,7 @@ endif ()
 if (${BUILD_GRAHAM})
     set(BUILD_TESTS OFF)
     set(CMAKE_EXE_LINKER_FLAGS "-L${MKLROOT}/lib/intel64")
-    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core boost_filesystem boost_mpi)
+    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core ${Boost_LIBRARIES})
 endif ()
 #-------------GRAHAM--------------------------------------------------
 
