@@ -12,8 +12,16 @@ please remove the build directory if it exists, then retry :
 
 Dependencies
 --------------
+
+Mandatory Dependencies
+^^^^^^^^^^^^^^^^^^^^^^^
 1. Armadillo
 2. boost (mpi, serialization, filesystem, system)
+
+Optional Dependencies
+^^^^^^^^^^^^^^^^^^^^^^
+1. snappy
+2. Postgresql
 
 
 Pre-Steps
@@ -29,10 +37,9 @@ we present the instructions specific for Ubuntu or derivatives.
 
 1. Install the Dependencies
     $ sudo apt-get install libarmadillo-dev libboost-all-dev cmake
-2. | $ mkdir build && cd build && cmake -DTEST=OFF .. && make -j NUMBER_OF_CORES install
+2. | $ mkdir build && cd build && cmake -DBUILD_TESTS=OFF .. && make -j NUMBER_OF_CORES
    | # replace NUMBER_OF_CORE by say = 4
-3. Add this to your .bashrc: export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/${USER}/Installations/Libs/"
-   where ${USER} is your username.
+3. sudo make install
 
 
 Mac
@@ -43,23 +50,25 @@ This has been tested on macOS 10.13.6.
     $ brew install armadillo
     $ brew install boost
     $ brew install boost-mpi
-2. | $ mkdir build && cd build && cmake -DHOME=OFF -DMAC=ON  .. && make -j NUMBER_OF_CORES install
+2. | $ mkdir build && cd build && cmake -DBUILD_MAC=ON -DBUILD_HOME=OFF .. && make -j NUMBER_OF_CORES
    | # replace NUMBER_OF_CORE by say = 4
-
-Mp2
------
-1. $ module reset
-2. $ module load cmake/3.6.1  gcc/6.1.0  intel64/17.4  boost64/1.65.1_intel17 openmpi/1.8.4_intel17  armadillo/8.300.0
-3. $ mkdir build && cd build && cmake -DHOME=OFF -DMP2=ON -DMPI_BUILD=ON .. && make install
-4. Add this to your .bashrc: export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/${USER}/Installations/Libs/"
-   where ${USER} is your username.
+3. sudo make install
 
 
-Graham and Ceder
------------------
+
+Graham, Ceder, mp2b, ms2b
+--------------------------
 1. $ module reset 
 2. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi
 3. | $ mkdir build && cd build && \\
-   | cmake -DHOME=OFF -DGRAHAM=ON -DMPI_BUILD=ON  .. && make install
-4. Add this to your .bashrc: export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/${USER}/Installations/Libs/"
-   where ${USER} is your username.
+   | cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  .. 
+4. Copy the executaables to a know location on your path.
+   | For example: $ mkdir ~/bin && cp -i ../src/ctmo* ~/bin/
+   | Add the ~/bin to your path : 
+   | in ~/.bashrc add the following line at the end:
+   export PATH="$PATH:~/bin"
+
+
+
+Beluga
+-------
