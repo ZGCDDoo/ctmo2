@@ -50,6 +50,8 @@ This has been tested on macOS 10.13.6.
     $ brew install armadillo
     $ brew install boost
     $ brew install boost-mpi
+    $ brew install postgresql 
+    $ brew install snappy
 2. | $ mkdir build && cd build && cmake -DBUILD_MAC=ON -DBUILD_HOME=OFF .. && make -j NUMBER_OF_CORES
    | # replace NUMBER_OF_CORE by say = 4
 3. sudo make install
@@ -59,9 +61,9 @@ This has been tested on macOS 10.13.6.
 Graham, Ceder, mp2b, ms2b
 --------------------------
 1. $ module reset 
-2. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi
+2. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi snappy
 3. | $ mkdir build && cd build && \\
-   | cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  .. 
+   | CXX=mpiC++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF .. 
 4. Copy the executaables to a know location on your path.
    | For example: $ mkdir ~/bin && cp -i ../src/ctmo* ~/bin/
    | Add the ~/bin to your path : 
