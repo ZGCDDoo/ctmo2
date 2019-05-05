@@ -22,7 +22,7 @@ We use the convention "$" for the start of a shell command and "#" for commentin
 
 Executable names
 ^^^^^^^^^^^^^^^^^
-There are two main executables: *ctmo* and *ctmo_DCA*. The first executable uses the Cluster Dynamical mean field theory, whereas the second
+There are two main executables: *ctmo* and *ctmo_dca*. The first executable uses the Cluster Dynamical mean field theory, whereas the second
 executable uses Dynamical mean field theory.
 
 Hamiltonian

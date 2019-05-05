@@ -20,7 +20,7 @@ Graham (Mp2b): Tutorial 1
 5. $ module reset 
 6. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi
 7. $ cd test/Simulations/holstein_DMFT_T0.3
-8. $ srun ctmo params 1
+8. $ srun ctmo params1.json
 
  
 Home

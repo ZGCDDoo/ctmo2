@@ -85,12 +85,16 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mandatory-dependencies">Mandatory Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pre-steps">Pre-Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#linux-ubuntu-16-04">Linux (Ubuntu 16.04)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mac">Mac</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mp2">Mp2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#graham-and-ceder">Graham and Ceder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graham-ceder-mp2b-ms2b">Graham, Ceder, mp2b, ms2b</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#beluga">Beluga</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
@@ -169,10 +173,20 @@ please remove the build directory if it exists, then retry :</p>
 <div>$ rm -rf build</div></blockquote>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mandatory-dependencies">
+<h3>Mandatory Dependencies<a class="headerlink" href="#mandatory-dependencies" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Armadillo</li>
 <li>boost (mpi, serialization, filesystem, system)</li>
 </ol>
+</div>
+<div class="section" id="optional-dependencies">
+<h3>Optional Dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>snappy</li>
+<li>Postgresql</li>
+</ol>
+</div>
 </div>
 <div class="section" id="pre-steps">
 <h2>Pre-Steps<a class="headerlink" href="#pre-steps" title="Permalink to this headline">¶</a></h2>
@@ -194,12 +208,11 @@ we present the instructions specific for Ubuntu or derivatives.</p>
 </dl>
 </li>
 <li><div class="first line-block">
-<div class="line">$ mkdir build &amp;&amp; cd build &amp;&amp; cmake -DTEST=OFF .. &amp;&amp; make -j NUMBER_OF_CORES install</div>
+<div class="line">$ mkdir build &amp;&amp; cd build &amp;&amp; cmake -DBUILD_TESTS=OFF .. &amp;&amp; make -j NUMBER_OF_CORES</div>
 <div class="line"># replace NUMBER_OF_CORE by say = 4</div>
 </div>
 </li>
-<li><p class="first">Add this to your .bashrc: export LD_LIBRARY_PATH=”$LD_LIBRARY_PATH:/home/${USER}/Installations/Libs/”
-where ${USER} is your username.</p>
+<li><p class="first">sudo make install</p>
 </li>
 </ol>
 </div>
@@ -211,43 +224,43 @@ where ${USER} is your username.</p>
 <dt>Install the Dependencies (with Homebrew <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="https://brew.sh/">https://brew.sh/</a>)</span></dt>
 <dd><p class="first last">$ brew install armadillo
 $ brew install boost
-$ brew install boost-mpi</p>
+$ brew install boost-mpi
+$ brew install postgresql
+$ brew install snappy</p>
 </dd>
 </dl>
 </li>
 <li><div class="first line-block">
-<div class="line">$ mkdir build &amp;&amp; cd build &amp;&amp; cmake -DHOME=OFF -DMAC=ON  .. &amp;&amp; make -j NUMBER_OF_CORES install</div>
+<div class="line">$ mkdir build &amp;&amp; cd build &amp;&amp; cmake -DBUILD_MAC=ON -DBUILD_HOME=OFF .. &amp;&amp; make -j NUMBER_OF_CORES</div>
 <div class="line"># replace NUMBER_OF_CORE by say = 4</div>
 </div>
 </li>
+<li><p class="first">sudo make install</p>
+</li>
 </ol>
 </div>
-<div class="section" id="mp2">
-<h2>Mp2<a class="headerlink" href="#mp2" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li>$ module reset</li>
-<li>$ module load cmake/3.6.1  gcc/6.1.0  intel64/17.4  boost64/1.65.1_intel17 openmpi/1.8.4_intel17  armadillo/8.300.0</li>
-<li>$ mkdir build &amp;&amp; cd build &amp;&amp; cmake -DHOME=OFF -DMP2=ON -DMPI_BUILD=ON .. &amp;&amp; make install</li>
-<li>Add this to your .bashrc: export LD_LIBRARY_PATH=”$LD_LIBRARY_PATH:/home/${USER}/Installations/Libs/”
-where ${USER} is your username.</li>
-</ol>
-</div>
-<div class="section" id="graham-and-ceder">
-<h2>Graham and Ceder<a class="headerlink" href="#graham-and-ceder" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="graham-ceder-mp2b-ms2b">
+<h2>Graham, Ceder, mp2b, ms2b<a class="headerlink" href="#graham-ceder-mp2b-ms2b" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p class="first">$ module reset</p>
 </li>
-<li><p class="first">$ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi</p>
+<li><p class="first">$ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi snappy</p>
 </li>
 <li><div class="first line-block">
 <div class="line">$ mkdir build &amp;&amp; cd build &amp;&amp; \</div>
-<div class="line">cmake -DHOME=OFF -DGRAHAM=ON -DMPI_BUILD=ON  .. &amp;&amp; make install</div>
+<div class="line">CXX=mpiC++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF ..</div>
 </div>
 </li>
-<li><p class="first">Add this to your .bashrc: export LD_LIBRARY_PATH=”$LD_LIBRARY_PATH:/home/${USER}/Installations/Libs/”
-where ${USER} is your username.</p>
+<li><p class="first">Copy the executaables to a know location on your path.
+| For example: $ mkdir ~/bin &amp;&amp; cp -i ../src/ctmo* ~/bin/
+| Add the ~/bin to your path :
+| in ~/.bashrc add the following line at the end:
+export PATH=”$PATH:~/bin”</p>
 </li>
 </ol>
+</div>
+<div class="section" id="beluga">
+<h2>Beluga<a class="headerlink" href="#beluga" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
