@@ -86,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#graham-mp2b-tutorial-1">Graham (Mp2b): Tutorial 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#home">Home</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#home-tutorial-1-holstein-dmft">Home: Tutorial 1 = Holstein dmft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graham-mp2b-tutorial-1">Graham (Mp2b): Tutorial 1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#first-steps">First steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next steps</a></li>
 </ul>
 </li>
 </ul>
@@ -167,6 +167,8 @@ please remove the build directory if it exists, then retry :</p>
 <div>$ rm -rf build</div></blockquote>
 <div class="section" id="graham-mp2b-tutorial-1">
 <h2>Graham (Mp2b): Tutorial 1<a class="headerlink" href="#graham-mp2b-tutorial-1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="first-steps">
+<h3>First steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><div class="first line-block">
 <div class="line">Connect to Graham (Mp2b):</div>
@@ -175,27 +177,30 @@ please remove the build directory if it exists, then retry :</p>
 </li>
 <li><p class="first">Ensure you have done the Pre-Steps described in <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>.</p>
 </li>
-<li><p class="first">$ salloc  –time=01:00:00 –ntasks=1 –mem-per-cpu=4000</p>
-</li>
-<li><p class="first">Follow th Graham Procedure in <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>.</p>
+<li><p class="first">$ salloc  –time=01:00:00 –ntasks=1 –mem-per-cpu=4000 –account=def-tremblay</p>
 </li>
 <li><p class="first">$ module reset</p>
 </li>
 <li><p class="first">$ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi</p>
 </li>
-<li><p class="first">$ cd test/Simulations/holstein_DMFT_T0.3</p>
+<li><p class="first">$ cd ~/scratch</p>
+</li>
+<li><p class="first">$ cp -r ~/projects/def-tremblay/tutorial_ctmo ./</p>
 </li>
 <li><p class="first">$ srun ctmo params1.json</p>
 </li>
 </ol>
+<p>Here are the next steps.</p>
 </div>
-<div class="section" id="home">
-<h2>Home<a class="headerlink" href="#home" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="home-tutorial-1-holstein-dmft">
-<h3>Home: Tutorial 1 = Holstein dmft<a class="headerlink" href="#home-tutorial-1-holstein-dmft" title="Permalink to this headline">¶</a></h3>
-<p>If you installed on your computer
-1. $ cd test/Simulations/holstein_DMFT_T0.3
-2. $ bash runCDMFT.sh</p>
+<div class="section" id="next-steps">
+<h3>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h3>
+<p>This will produce many files. Look at them with ls:</p>
+<p>The important output files are greenUp.dat, hybUp.dat, selUp.dat. Note that the files are renamed corresponding to
+the current iteration.</p>
+<p>Let us plot the green fonction.</p>
+<blockquote>
+<div>$ gnuplot
+$ plot ‘greenUp.dat’ u 1:3 w lp ps 2</div></blockquote>
 </div>
 </div>
 </div>
