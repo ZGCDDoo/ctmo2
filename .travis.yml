@@ -8,12 +8,14 @@ compiler:
 os:
   - linux
   - osx
+    osx_image: xcode10.2
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then     brew update &&
                                                   brew install armadillo &&
                                                   brew install boost-mpi &&
-                                                  brew install snappy
+                                                  brew install snappy &&
+                                                  brew upgrade
                                         ; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y liblapack-dev
                                                 clang-6.0 build-essential cmake
