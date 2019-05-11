@@ -31,35 +31,9 @@
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/NMeas.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/commit.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/docc.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/docc0.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/greenUp82.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/greenUp_et.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/greenUp_moy.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/gtau_out.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/hybUp82.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/hybUp_et.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/hybUp_moy.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/k.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/n.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/n0Down.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/n0Up.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/nDownMatrix.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/nUpMatrix.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/params1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/params32.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/params82.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/selfUp82.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/selfUp_et.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/selfUp_moy.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/sign.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/slurm.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/Stats_U3/statsobs.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/params1.json" beforeDir="false" afterPath="$PROJECT_DIR$/test/Simulations/4x4_DCA/params1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA_b10_U3/params1.json" beforeDir="false" afterPath="$PROJECT_DIR$/test/Simulations/4x4_DCA_b10_U3/params1.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -82,7 +56,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="918">
+            <state>
               <caret line="34" column="8" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
             </state>
           </provider>
@@ -133,7 +107,7 @@
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="459">
-              <caret line="17" column="62" lean-forward="true" selection-start-line="17" selection-start-column="62" selection-end-line="17" selection-end-column="62" />
+              <caret line="17" column="62" selection-start-line="17" selection-start-column="62" selection-end-line="17" selection-end-column="62" />
             </state>
           </provider>
         </entry>
@@ -518,12 +492,12 @@
       <workItem from="1557511721570" duration="110000" />
       <workItem from="1557512741589" duration="771000" />
       <workItem from="1557585631296" duration="1715000" />
-      <workItem from="1557591297439" duration="145000" />
+      <workItem from="1557591297439" duration="877000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="82397000" />
+    <option name="totallyTimeSpent" value="83129000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
@@ -833,7 +807,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="918">
+        <state>
           <caret line="34" column="8" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
         </state>
       </provider>
@@ -882,7 +856,7 @@
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
-          <caret line="17" column="62" lean-forward="true" selection-start-line="17" selection-start-column="62" selection-end-line="17" selection-end-column="62" />
+          <caret line="17" column="62" selection-start-line="17" selection-start-column="62" selection-end-line="17" selection-end-column="62" />
         </state>
       </provider>
     </entry>
