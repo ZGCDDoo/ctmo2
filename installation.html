@@ -247,8 +247,9 @@ $ brew install snappy</p>
 <li><p class="first">$ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi snappy</p>
 </li>
 <li><div class="first line-block">
-<div class="line">$ mkdir build &amp;&amp; cd build &amp;&amp; \</div>
-<div class="line">CXX=mpiC++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF ..</div>
+<div class="line">$ mkdir build &amp;&amp; cd build</div>
+<div class="line">CXX=mpic++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF ..</div>
+<div class="line">make</div>
 </div>
 </li>
 <li><p class="first">Copy the executaables to a know location on your path.
@@ -261,6 +262,24 @@ export PATH=”$PATH:~/bin”</p>
 </div>
 <div class="section" id="beluga">
 <h2>Beluga<a class="headerlink" href="#beluga" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">$ module reset</p>
+</li>
+<li><p class="first">$ module load nixpkgs/16.09 gcc/7.3.0 cmake armadillo/7.950.1 snappy boost-mpi</p>
+</li>
+<li><div class="first line-block">
+<div class="line">$ mkdir build &amp;&amp; cd build</div>
+<div class="line">CXX=mpic++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF ..</div>
+<div class="line">make</div>
+</div>
+</li>
+<li><p class="first">Copy the executaables to a know location on your path.
+| For example: $ mkdir ~/bin &amp;&amp; cp -i ../src/ctmo* ~/bin/
+| Add the ~/bin to your path :
+| in ~/.bashrc add the following line at the end:
+export PATH=”$PATH:~/bin”</p>
+</li>
+</ol>
 </div>
 </div>
 
