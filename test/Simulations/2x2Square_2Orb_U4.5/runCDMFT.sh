@@ -1,16 +1,16 @@
 
 
 #!/bin/bash
-iter=1
-iterMax=3
+ITER=1
+ITERMAX=3
 myExe=ctmo
 nprocess=2
 
 rm tktilde.arma tloc.arma hybFM.arma config*.dat
-while [  $iter -lt $iterMax ];
+while [  $ITER -lt $ITERMAX ];
     do
-        mpirun -np $nprocess $myExe params${iter}.json
-	    iter=$[iter+1]
+        mpirun -np $nprocess $myExe params${ITER}.json
+	    ITER=$[ITER+1]
     done
 
 

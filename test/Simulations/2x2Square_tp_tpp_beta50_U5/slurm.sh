@@ -24,7 +24,7 @@ while [ $ITER -le $ITERMAX ]
 do
   echo begin iteration $ITER at: `date` >> logfile 
 
-  srun $myExe params${iter}.json
+  srun $myExe params${ITER}.json
 
   echo end iteration $ITER at: `date` >> logfile
   ITER=$[$ITER+1]
