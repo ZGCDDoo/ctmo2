@@ -29,10 +29,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Simulations/4x4_DCA/slurm.sh" beforeDir="false" />
-    </list>
+    <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -238,7 +235,7 @@
   <component name="OCResolveContextSettings">
     <option name="configuration" value="0-ctmo_slmc" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="6" />
     <option name="width" value="1268" />
     <option name="height" value="690" />
@@ -512,15 +509,15 @@
       <workItem from="1557512741589" duration="771000" />
       <workItem from="1557585631296" duration="1715000" />
       <workItem from="1557591297439" duration="877000" />
-      <workItem from="1557692154441" duration="1606000" />
+      <workItem from="1557692154441" duration="1965000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84735000" />
+    <option name="totallyTimeSpent" value="85094000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1044" extended-state="7" />
+    <frame x="0" y="0" width="1920" height="1044" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
