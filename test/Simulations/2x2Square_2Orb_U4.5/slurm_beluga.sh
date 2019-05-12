@@ -1,21 +1,20 @@
 #!/bin/bash
 #SBATCH --time=3:00:00
 #SBATCH --nodes=1
-#SBATCH --mem=31G
-#SBATCH --ntasks-per-node=24
+#SBATCH --ntasks-per-node=40
 #SBATCH --account=def-tremblay
 
 module reset
-module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi
+module load nixpkgs/16.09 gcc/7.3.0 cmake armadillo/7.950.1 snappy boost-mpi cmake
 
-ITER=82
-ITERMAX=100000
-myExe=cttg_DCA
+ITER=1
+ITERMAX=3
+myExe=ctmo
 
 if [ -a logfile ]
   then rm logfile
 fi
-rm tktilde.arma tloc.arma hybFM.arma config*.dat
+rm tktilde*.arma tloc*.arma hybFM*.arma config*.dat
 
 while [ $ITER -le $ITERMAX ]
 do
