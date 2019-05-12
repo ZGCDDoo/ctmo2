@@ -62,13 +62,16 @@ Graham, Ceder, mp2b, ms2b
 --------------------------
 1. $ module reset 
 2. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi snappy cmake
+
 3. | $ mkdir build && cd build
    | CXX=mpic++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF .. 
    | make
-4. Copy the executaables to a know location on your path.
+
+4. | Copy the executaables to a know location on your path.
    | For example: $ mkdir ~/bin && cp -i ../src/ctmo* ~/bin/
    | Add the ~/bin to your path : 
    | in ~/.bashrc add the following line at the end:
+
    export PATH="$PATH:~/bin"
 
 
@@ -77,11 +80,14 @@ Beluga
 -------
 1. $ module reset 
 2. $ module load nixpkgs/16.09 gcc/7.3.0 cmake armadillo/7.950.1 snappy boost-mpi cmake
+
 3. | $ mkdir build && cd build
    | CXX=mpic++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF .. 
    | make
-4. Copy the executaables to a know location on your path.
+   
+4. | Copy the executaables to a know location on your path.
    | For example: $ mkdir ~/bin && cp -i ../src/ctmo* ~/bin/
    | Add the ~/bin to your path : 
    | in ~/.bashrc add the following line at the end:
+
    export PATH="$PATH:~/bin"
