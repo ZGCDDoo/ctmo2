@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/serialization/vector.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/valarray.hpp>
 #include <boost/serialization/complex.hpp>

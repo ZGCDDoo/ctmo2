@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(ctmo_cdh_test VERSION 2.2.0)
 
-option(BUILD_TESTS "Build all tests." ON) # Makes boolean 'test' available.
+option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'test' available.
 
 if (${BUILD_TESTS})
 

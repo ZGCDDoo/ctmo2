@@ -47,7 +47,7 @@ endif ()
 if (${BUILD_GRAHAM})
     set(BUILD_TESTS OFF)
     set(CMAKE_EXE_LINKER_FLAGS "-L${MKLROOT}/lib/intel64")
-    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core ${Boost_LIBRARIES})
+    set(LIBRARIES_EXEC armadillo mkl_gf_lp64 mkl_sequential mkl_core ${Boost_LIBRARIES} snappy)
 endif ()
 #-------------GRAHAM--------------------------------------------------
 
