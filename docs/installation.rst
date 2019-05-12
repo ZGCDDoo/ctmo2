@@ -61,7 +61,7 @@ This has been tested on macOS 10.13.6.
 Graham, Ceder, mp2b, ms2b
 --------------------------
 1. $ module reset 
-2. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi snappy
+2. $ module load nixpkgs/16.09  gcc/5.4.0 armadillo boost-mpi snappy cmake
 3. | $ mkdir build && cd build
    | CXX=mpic++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF .. 
    | make
@@ -76,7 +76,7 @@ Graham, Ceder, mp2b, ms2b
 Beluga
 -------
 1. $ module reset 
-2. $ module load nixpkgs/16.09 gcc/7.3.0 cmake armadillo/7.950.1 snappy boost-mpi
+2. $ module load nixpkgs/16.09 gcc/7.3.0 cmake armadillo/7.950.1 snappy boost-mpi cmake
 3. | $ mkdir build && cd build
    | CXX=mpic++ cmake -DBUILD_GRAHAM=ON -DBUILD_MPI=ON  -DBUILD_HOME=OFF .. 
    | make
