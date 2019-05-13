@@ -5,7 +5,8 @@
 
 Welcome to ctmo's documentation!
 ================================
-
+Please contatct me if you would like to help out with the documentaion.
+I unfortunately don't have much time to work on enhancing it at this moment.
 
 .. toctree::
    :maxdepth: 1
@@ -15,6 +16,7 @@ Welcome to ctmo's documentation!
    tutorial
    params
    params-example
+   output
 
 
 

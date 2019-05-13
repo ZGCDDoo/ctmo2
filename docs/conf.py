@@ -47,7 +47,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "ctmo"
-copyright = "2018, Charles-David Hebert, Maxime Charlebois, Patrick Semon"
+copyright = "2019, Charles-David Hebert, Maxime Charlebois, Patrick Semon"
 author = "Charles-David Hebert, Maxime Charlebois, Patrick Semon"
 
 # The version info for the project you're documenting, acts as replacement for

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to ctmo’s documentation! &mdash; ctmo 2.0.0 documentation</title>
+  <title>Conventions &mdash; ctmo 2.0.0 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="intro.html" /> 
+    <link rel="prev" title="Example Parameter file" href="params-example.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -47,7 +47,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> ctmo
+            <a href="index.html" class="icon icon-home"> ctmo
           
 
           
@@ -81,15 +81,15 @@
               
             
             
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="params.html">The Parameter file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="params-example.html">Example Parameter file</a></li>
-<li class="toctree-l1"><a class="reference internal" href="output.html">Conventions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="output.html#important-output-files">Important Output files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="output.html#averaging-the-results">Averaging the results</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#important-output-files">Important Output files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#averaging-the-results">Averaging the results</a></li>
 </ul>
 
             
@@ -104,7 +104,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">ctmo</a>
+          <a href="index.html">ctmo</a>
         
       </nav>
 
@@ -133,15 +133,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Welcome to ctmo’s documentation!</li>
+      <li>Conventions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/output.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -154,22 +154,80 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-ctmo-s-documentation">
-<h1>Welcome to ctmo’s documentation!<a class="headerlink" href="#welcome-to-ctmo-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Please contatct me if you would like to help out with the documentaion.
-I unfortunately don’t have much time to work on enhancing it at this moment.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="params.html">The Parameter file</a></li>
-<li class="toctree-l1"><a class="reference internal" href="params-example.html">Example Parameter file</a></li>
-<li class="toctree-l1"><a class="reference internal" href="output.html">Conventions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="output.html#important-output-files">Important Output files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="output.html#averaging-the-results">Averaging the results</a></li>
-</ul>
+  <span class="target" id="output"></span><div class="section" id="conventions">
+<h1>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h1>
+<p>The conventions for the cluster sites follow the cartesian plan, starting by the site 0.
+The sites are numbered in the order of increasing x, then increasing y, then increasing z.</p>
+<p>The same applies to the definition of the K points in DCA.</p>
 </div>
+<div class="section" id="important-output-files">
+<h1>Important Output files<a class="headerlink" href="#important-output-files" title="Permalink to this headline">¶</a></h1>
+<p>The important output files are the following:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>outPutConvention.dat:</dt>
+<dd><p class="first">The outPut of the green, hyb and self files regarding the cluster sites.
+For example, if the outPutConvention file has the following form:
+(0,0)
+(0,1)
+(0,3)</p>
+<p class="last">We thus have N Independant green fuctions (NIndep “Sites pair”).
+Then the green function has the first column as the frequencies, the second and third column
+as the real and imaginary part of G_00 respectively and so on.
+If there are multiple orbitals, then we repeat this process for each orbital.
+Ex. Say 2 orbitals, o1 and o2, then we have the previous definition for (o1, o1), then (o1, o2), then (o2, o2)
+for a total of (3*3*2 + 1) columns, i.e 1 + [NIndep*NOrb*(NOrb+1)/2 ]*2 Columns.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>greenUp${ITER}.dat:</dt>
+<dd><p class="first last">The green function.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>selfUp${ITER}.dat:</dt>
+<dd><p class="first last">The self-energy function.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>hybUp${ITER}.dat:</dt>
+<dd><p class="first last">The hybridization function.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Obs.json:</dt>
+<dd><p class="first last">All the observables computed. For each of these observables, we also have
+a .dat file associated. For example, docc.dat, sign.dat, docc0_0.dat (double occupancy of site0, orbital0).
+Etc.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="averaging-the-results">
+<h1>Averaging the results<a class="headerlink" href="#averaging-the-results" title="Permalink to this headline">¶</a></h1>
+<p>Simple as using a python module:</p>
+<ol class="arabic simple">
+<li>module load python/3.7 scipy-stack</li>
+<li>pip install –user statsfiles</li>
+<li>cd DIRECTORY_OF_SIMULAION</li>
+<li><dl class="first docutils">
+<dt>Replace ${ITERSTART} in the following line with the iteration at which</dt>
+<dd>to start the averging.</dd>
+</dl>
+</li>
+<li>python -m statsfiles ${ITERSTART} –cdh</li>
+</ol>
+<p>Sometimes, you may encounter problems if the program ctmo has been terminated while
+it would have been writing files, such as the green function.
+Therefore, if you get an error of numpy shape, then remove the last iteraion of greenUp, selfUp and hybUp
+files and this should resolve the problem.</p>
 </div>
 
 
@@ -180,8 +238,8 @@ I unfortunately don’t have much time to work on enhancing it at this moment.</
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="intro.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+        <a href="params-example.html" class="btn btn-neutral" title="Example Parameter file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
