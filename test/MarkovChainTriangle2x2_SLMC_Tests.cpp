@@ -2,14 +2,14 @@
 
 #include <gtest/gtest.h>
 
-#include "../src/Includes/IS/MarkovChain.hpp"
+#include "ctmo/ImpuritySolver/MarkovChain.hpp"
 
 using namespace LinAlg;
 
 using Markov_t = Markov::MarkovChain;
 
 const double DELTA = 1e-10;
-const std::string FNAME = "../test/data/cdmft_triangle/testtriangle.json";
+const std::string FNAME = "../../test/data/cdmft_triangle/testtriangle.json";
 const size_t NSTEPS = 20000;
 
 Markov_t BuildMarkovChain()

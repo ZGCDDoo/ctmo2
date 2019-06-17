@@ -1,7 +1,7 @@
 
 #include <gtest/gtest.h>
 
-#include "../src/Includes/IS/Obs/Observables.hpp"
+#include "ctmo/ImpuritySolver/Observables.hpp"
 
 using Model_t = Models::ABC_Model_2D;
 using IOModel_t = IO::Base_IOModel;
@@ -10,7 +10,7 @@ using Obs_t = Markov::Obs::Observables;
 using ISDataCT_t = Markov::Obs::ISDataCT;
 
 // const double DELTA = 1e-11;
-const std::string FNAME = "../test/data/cdmft_square2x2/params1.json";
+const std::string FNAME = "../../test/data/cdmft_square2x2/params1.json";
 
 Obs_t BuildObs() // for Square2x2
 {

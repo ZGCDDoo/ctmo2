@@ -7,8 +7,8 @@
     },
     "model": {
         "beta": 10.10,
-        "hybUpFile": "../test/data/DMFT/hybfm_SIAM_Square.dat",
-        "modelFile": "../data/SIAM_Square.model",
+        "hybUpFile": "../../test/data/DMFT/hybfm_SIAM_Square.dat",
+        "modelFile": "../../data/SIAM_Square.model",
         "J_H": 0.0,
         "nkpts": 100,
         "nOrb": 1,

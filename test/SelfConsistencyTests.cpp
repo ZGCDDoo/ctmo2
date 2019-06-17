@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/SelfConsistency.hpp"
-#include "../src/Includes/Models/ABC_H0.hpp"
+#include "ctmo/SelfConsistency/SelfConsistency_CDMFT.hpp"
+#include "ctmo/Model/ABC_H0.hpp"
 
 const double DELTA = 1e-5;
 const double BETA = 10.1;
@@ -9,8 +9,8 @@ const size_t NMAT = 20;
 const double hybFM = 4.0;
 const double hartree = 0.1;
 const double fock = 0.312;
-const std::string FNAME_HYB = "../test/data/DMFT/hybfm_SIAM_Square.dat";
-const std::string FNAME_JSON = "../test/data/DMFT/params_selfcon.json";
+const std::string FNAME_HYB = "../../test/data/DMFT/hybfm_SIAM_Square.dat";
+const std::string FNAME_JSON = "../../test/data/DMFT/params_selfcon.json";
 
 using Model_t = Models::ABC_Model_2D;
 

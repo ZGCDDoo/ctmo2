@@ -1,7 +1,7 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/VerticesSimple.hpp"
+#include "ctmo/ImpuritySolver/VerticesSimple.hpp"
 #include "TestTools.hpp"
 
 const double DELTA_SMALL = 1e-11;

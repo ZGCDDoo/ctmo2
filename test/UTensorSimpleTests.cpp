@@ -1,10 +1,10 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Models/UTensorSimple.hpp"
+#include "ctmo/Model/UTensorSimple.hpp"
 
 const double DELTA = 1e-11;
-const std::string fname = "../test/data/cdmft_triangle/testtriangle.json";
+const std::string fname = "../../test/data/cdmft_triangle/testtriangle.json";
 
 using namespace Models;
 

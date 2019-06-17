@@ -1,8 +1,8 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/Utilities.hpp"
-#include "../src/Includes/Utilities/LinAlg.hpp"
+#include "ctmo/Foundations/Utilities.hpp"
+#include "ctmo/Foundations/LinAlg.hpp"
 
 using namespace Utilities;
 using namespace LinAlg;
@@ -19,6 +19,18 @@ TEST(UtilitiesTest, DotVectors)
     ASSERT_NEAR(DotVectors(v1, v2), arma::dot(v1, v2), 1e-10);
     ASSERT_NEAR(DotVectors(v1c, v2c).real(), arma::dot(v1c, v2c).real(), 1e-10);
     ASSERT_NEAR(DotVectors(v1c, v2c).imag(), arma::dot(v1c, v2c).imag(), 1e-10);
+}
+
+TEST(LianAlgTest, Solve)
+{
+
+SiteVector_t b = {6.0, -4.0, 27.0};
+Matrix_t A = {{1.0, 1.0, 1.0}, {0.0, 2.0, 5.0}, {2.0, 5.0, -1.0}};
+LinAlg::Solve(A, b);
+ASSERT_DOUBLE_EQ(b(0), 5);
+ASSERT_DOUBLE_EQ(b(1), 3);
+ASSERT_DOUBLE_EQ(b(2), -2);
+
 }
 
 TEST(UtilitiesTest, MatrixVectorMult)

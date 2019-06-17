@@ -1,7 +1,7 @@
 
 
 #include <gtest/gtest.h>
-#include "../src/Includes/Utilities/Matrix.hpp"
+#include "ctmo/Foundations/Matrix.hpp"
 
 using namespace LinAlg;
 using cd_t = std::complex<double>;
@@ -78,6 +78,7 @@ TEST(MatrixTest, CopyVectorIn)
 
     m1.Print();
 }
+
 
 TEST(MatrixTest, DiagonalMatrix)
 {

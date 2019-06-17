@@ -75,6 +75,27 @@ std::complex<double> DotVectors(const SiteVectorCD_t &v1, const SiteVectorCD_t &
     return zdotu_(&N, v1.memptr(), &inc, v2.memptr(), &inc);
 }
 
+void Solve(Matrix_t &A, SiteVector_t &b)
+{
+
+    // Solve the equation Ax=b, with A a square matrix, x and b vectors and we want to know x
+    // A and b are overwritten, b is overwritten by x and A is overwritten with LU factorisation.
+
+    // assert square matrix
+    assert(A.mem_n_cols() == A.mem_n_rows());
+    // assert vector and matrix compatible dimensions
+    assert(A.mem_n_rows() == b.n_elem);
+
+    const unsigned int N = static_cast<unsigned int>(A.n_rows());
+    const unsigned int NRHS = 1;
+    const unsigned int ld_A = static_cast<unsigned int>(A.mem_n_rows());
+    const unsigned int ld_b = N;
+    unsigned int ipiv[N];
+    int info;
+    dgesv_(&N, &NRHS, A.memptr(), &ld_A, ipiv, b.memptr(), &ld_b, &info);
+    assert(info == 0);
+}
+
 void MatrixVectorMult(const Matrix_t &A, const SiteVector_t &X, const double &alpha, SiteVector_t &Y)
 {
     const unsigned int N = A.n_cols();

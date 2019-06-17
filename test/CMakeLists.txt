@@ -53,14 +53,14 @@ if (${BUILD_TESTS})
             IOTests
             MarkovChainSquare2x2Tests
             MarkovChainTests
-            #UtilitiesTests
-            #SelfConsistencyTests
-            #MarkovChainTriangle2x2Tests
-            #MarkovChainTriangle2x2_SLMC_Tests
-            #MatrixTests
-            #ObservablesTests
-            #UTensorSimpleTests
-            #VerticesSimpleTests
+            UtilitiesTests
+            SelfConsistencyTests
+            MarkovChainTriangle2x2Tests
+            MarkovChainTriangle2x2_SLMC_Tests
+            MatrixTests
+            ObservablesTests
+            UTensorSimpleTests
+            VerticesSimpleTests
             )
 
     find_package(LAPACK REQUIRED)
