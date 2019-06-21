@@ -84,7 +84,7 @@ void Solve(Matrix_t &A, SiteVector_t &b)
     // assert square matrix
     assert(A.mem_n_cols() == A.mem_n_rows());
     // assert vector and matrix compatible dimensions
-    assert(A.mem_n_rows() == b.n_elem);
+    assert(A.n_rows() == b.n_elem);
 
     const unsigned int N = static_cast<unsigned int>(A.n_rows());
     const unsigned int NRHS = 1;
