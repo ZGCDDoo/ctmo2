@@ -7,7 +7,7 @@ sites
 (2,1,0)
 
 #cluster:
-# 3  4  5 
+# 3 4 5 
 # 0  1  2
 
 
@@ -17,4 +17,5 @@ green_function_symmetries
 #put as much as you can to constrain your problem:
 2 0 1 5 3 4 : +-
 3 4 5 0 1 2 : +-
-
+5 4 3 2 1 0 : +-
+2 1 0 5 4 3 : +-
