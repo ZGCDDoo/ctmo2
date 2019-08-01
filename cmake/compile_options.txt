@@ -11,7 +11,7 @@ target_compile_features(compile_options INTERFACE cxx_std_17)
 target_compile_options(compile_options
                        INTERFACE
                        -pipe
-                       -Ofast
+                       -O3
                        -fomit-frame-pointer
                        -Wall
                        -Wextra # reasonable and standard
