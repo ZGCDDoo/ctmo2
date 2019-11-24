@@ -3,8 +3,8 @@
 ==========================================================================
 
 :Authors: Charles-David Hébert
-:Date: $Date: 2018-09-07 $
-:Revision: $Revision: 2.0.0 $
+:Date: $Date: 2019-11-24 $
+:Revision: $Revision: 2.2.0 $
 :Description: Description
 
 .. image:: https://travis-ci.com/ZGCDDoo/ctmo_private2.svg?token=qU5DPfuxBM537pQaUFgc&branch=master
@@ -26,10 +26,21 @@ The installation and use should be straitforward if you follow the documentaion.
 If you have any issues or questions however, please contact my directly or open an issue.
 
 
+
+
 Contact info
 --------------
 Please contact me at charles-david.hebert@usherbrooke.ca
 
+
+
+
+Citation
+---------
+
+Please refer to this Github repository as well as to my fullname and affiliations:
+
+**Charles-David Hébert, Université de Sherbrooke**
 
 
 Aknowledgements and special thanks
