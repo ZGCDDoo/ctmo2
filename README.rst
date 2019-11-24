@@ -19,6 +19,18 @@ By following the previous link, you will get all the necessary information to ge
   - Installation procedures and supported platforms
   - Tutorials and examples
 
+
+
+This project is the "end" version of many continuous time solvers that I have written in the last two years and that has cristalized in this version / repository. It is stable, highly tested and has been used in production extensively. I'am making it publicly available hoping that it can help others in their scientific endeavors.
+
+
+
+Installtion via SnapCraft
+--------------------------
+The installtion on Linux platforms via Snapcraft is not yet documented on the web site. However, one can find detailed information on how to install the snap version (the preferred way on Linux, as it is straightforward and very easy) on the following website https://snapcraft.io/docs/getting-started
+The snap version can be found by clicking on the link above (to come).
+
+
 Issues and Questions
 ---------------------
 
