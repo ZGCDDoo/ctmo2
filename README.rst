@@ -3,12 +3,12 @@
 ==========================================================================
 
 :Authors: Charles-David Hébert
-:Date: $Date: 2019-11-24 $
-:Revision: $Revision: 2.2.0 $
+:Date: $Date: 2020-05-13 $
+:Revision: $Revision: 2.3.0 $
 :Description: Description
 
-.. image:: https://travis-ci.com/ZGCDDoo/ctmo_private2.svg?token=qU5DPfuxBM537pQaUFgc&branch=master
-    :target: https://travis-ci.com/ZGCDDoo/ctmo_private2
+.. image:: https://travis-ci.com/ZGCDDoo/ctmo2.svg?branch=master
+    :target: https://travis-ci.com/ZGCDDoo/ctmo2
 
 Introduction
 --------------
