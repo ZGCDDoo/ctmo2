@@ -72,8 +72,8 @@ class HybFMAndTLoc
         }
         hybFMK -= tlocK * tlocK;
 
-        tlocK.save(tlocFName, arma::arma_binary);
-        hybFMK.save(hybFMFName, arma::arma_binary);
+        tlocK.save(tlocFName, arma::arma_ascii);
+        hybFMK.save(hybFMFName, arma::arma_ascii);
         Logging::Debug("End of CalculateHybFMAndTLoc");
     }
 }; // namespace Models
