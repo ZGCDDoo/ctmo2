@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using NCtmo2.Core.Contexts.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,15 @@ namespace NCtmo2.API
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+
+            services.AddDbContext<SimulationLegacyContext>(options =>
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("LegacyDbNpgsql"),
+                                    x => x.MigrationsHistoryTable("__LegacyDbNpgsqlMigrationsHistory", "Legacy"));
+                options.UseSnakeCaseNamingConvention();
+                options.EnableDetailedErrors();
+                options.EnableSensitiveDataLogging();
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
