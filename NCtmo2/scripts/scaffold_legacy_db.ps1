@@ -13,5 +13,5 @@ dotnet ef dbcontext scaffold $connectionString $provider              `
         --context SimulationLegacyContext --verbose                   `
         --startup-project "src/NCtmo2.API/NCtmo2.API.csproj"          `
         --project "src/NCtmo2.Core/NCtmo2.Core.csproj"                `
-        --schema public --output-dir "src/NCtmo2.Core/Contexts/Legacy" 
+        --schema public --output-dir "Contexts/Legacy" 
 
