@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="ctmo_cdh" targetName="ctmo" />
@@ -9,17 +12,14 @@
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59f306b8-09cb-4eee-b369-3c05ef9f34db" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Models_Maxime/anisotropicplaquette4x4.model" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Models_Maxime/anisotropicplaquette4x4_DCA.model" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cppcheck.sh" beforeDir="false" afterPath="$PROJECT_DIR$/cppcheck.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Foundations/Version_ctmo.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/ctmo/Model/HybFMAndTLoc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/ctmo/Model/HybFMAndTLoc.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +76,15 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/cmake/simple_package-config.cmake.in" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/GreenBinning.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/Observables.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/ctmo/Foundations/PgDriver.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/ctmo/ImpuritySolver/FillingAndDocc.hpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Dockerfile" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectId" id="1h6uf5HDeK6gPXuQCtMLXMudglT" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -84,11 +93,16 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.advertisement.text.has.clang-format" value="true" />
     <property name="cf.advertisement.text.overridden" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
+    <property name="cidr.known.project.marker" value="true" />
+    <property name="cmake.loaded.for.project" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -96,30 +110,25 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RunManager" selected="CMake Application.ctmo">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="ctmo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ctmo" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo">
+    <configuration name="ctmo_dca" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo_dca" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo_dca">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ctmo_dca" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo_dca" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo_dca">
+    <configuration name="ctmo_slmc" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo_slmc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo_slmc">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ctmo_slmc" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ctmo_cdh" TARGET_NAME="ctmo_slmc" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ctmo_cdh" RUN_TARGET_NAME="ctmo_slmc">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -195,17 +204,23 @@
       <workItem from="1564328541788" duration="1242000" />
       <workItem from="1564671938577" duration="1783000" />
       <workItem from="1599343972640" duration="1182000" />
+      <workItem from="1623695254860" duration="1452000" />
+      <workItem from="1623701284876" duration="833000" />
+      <workItem from="1627339725136" duration="1281000" />
+      <workItem from="1629075323780" duration="209000" />
+      <workItem from="1629076000294" duration="80000" />
+      <workItem from="1629154109486" duration="594000" />
+      <workItem from="1629331341257" duration="614000" />
+      <workItem from="1629501527253" duration="3534000" />
+      <workItem from="1629851451365" duration="2616000" />
+      <workItem from="1630277676000" duration="2623000" />
+      <workItem from="1630623515382" duration="2925000" />
+      <workItem from="1636291245844" duration="602000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="519" y="280" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1599344400160">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="519" y="280" key="#com.intellij.fileTypes.FileTypeChooser/-1920.0.1280.693/0.0.1920.1040@0.0.1920.1040" timestamp="1599344400160" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
