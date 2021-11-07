@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.Core", "NCtmo2.Core\NCtmo2.Core.csproj", "{1158BF30-4C8E-476F-9233-11CD51741FCA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.Core", "src\NCtmo2.Core\NCtmo2.Core.csproj", "{1158BF30-4C8E-476F-9233-11CD51741FCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.API", "NCtmo2.API\NCtmo2.API.csproj", "{6AA74BB3-46FB-400A-BD49-FA73517EF84E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.API", "src\NCtmo2.API\NCtmo2.API.csproj", "{6AA74BB3-46FB-400A-BD49-FA73517EF84E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.Models", "NCtmo2.Models\NCtmo2.Models.csproj", "{139DB479-F21C-4C33-876A-C5F02750D608}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.Models", "src\NCtmo2.Models\NCtmo2.Models.csproj", "{139DB479-F21C-4C33-876A-C5F02750D608}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.MvcUI", "NCtmo2.MvcUI\NCtmo2.MvcUI.csproj", "{F67E19D7-3AFA-427B-B7B0-4C313F63E746}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NCtmo2.MvcUI", "src\NCtmo2.MvcUI\NCtmo2.MvcUI.csproj", "{F67E19D7-3AFA-427B-B7B0-4C313F63E746}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86A90811-9562-47F4-859C-D302EB51AAE2}"
 	ProjectSection(SolutionItems) = preProject
